@@ -19,7 +19,7 @@
 
 </script>
 	<div class="flex h-screen">
-		<Button class="absolute right-5 top-5">
+		<Button href="/login" class="absolute right-5 top-5">
 			Log In</Button>
 	
 		<div
@@ -51,6 +51,10 @@
 						  <div class="flex flex-col space-y-1.5">
 							<Label for="password">Password</Label>
 							<Input id="password" disabled={isLoading} type="password" placeholder="(Unique)" />
+						  </div>
+						  <div class="flex flex-col space-y-1.5">
+							<Label for="password">Invite Key</Label>
+							<Input id="password" disabled={isLoading} type="password" placeholder="(Unique, Required)" />
 						  </div>
 						  <div class="flex flex-col space-y-1.5">
 							<Label for="gender">Gender</Label>
