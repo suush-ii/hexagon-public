@@ -2,15 +2,9 @@
 	class="supports-backdrop-blur:bg-background/60 absolute top-0 z-40 w-full border-b bg-background/95 shadow-sm backdrop-blur"
 >
 	<div class="container flex h-14 items-center">
-		
 		<nav class="flex items-center space-x-4 lg:space-x-6">
-			<a
-				href="/home"
-				class="text-base font-medium transition-colors hover:text-primary"
-			>
-				Home
-			</a>
-		
+			<a href="/home" class="text-base font-medium transition-colors hover:text-primary"> Home </a>
+
 			<a
 				href="/games"
 				class="text-base font-medium text-muted-foreground transition-colors hover:text-primary"
@@ -32,9 +26,10 @@
 		</nav>
 	</div>
 
-	<div class="supports-backdrop-blur:bg-background/60 sticky top-0 z-40 w-full border-b bg-muted-foreground/5 shadow-sm backdrop-blur">
+	<div
+		class="supports-backdrop-blur:bg-background/60 sticky top-0 z-40 w-full border-b bg-muted-foreground/5 shadow-sm backdrop-blur"
+	>
 		<div class="container flex h-10 items-center">
-		
 			<nav class="flex items-center space-x-4 lg:space-x-6">
 				<a
 					href="/users/1/profile"
@@ -42,7 +37,7 @@
 				>
 					Profile
 				</a>
-			
+
 				<a
 					href="/friends/requests"
 					class="text-xs font-medium text-muted-foreground transition-colors hover:text-primary"
@@ -64,6 +59,4 @@
 			</nav>
 		</div>
 	</div>
-	
-
 </header>
