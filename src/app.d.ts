@@ -3,9 +3,9 @@
 declare global {
 	namespace App {
 		interface Error {
-			success: boolean,
-			message: string,
-			data?: Object
+			success: boolean;
+			message: string;
+			data?: object;
 		}
 		// interface Locals {}
 		// interface PageData {}

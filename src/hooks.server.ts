@@ -1,37 +1,30 @@
-import { redirect, type Handle, type HandleServerError } from "@sveltejs/kit"
-import { configTable } from "$lib/server/schema/config";
-import { DEBUG } from '$env/static/private'
-import { db } from "$lib/server/db";
-import { migrate } from "drizzle-orm/postgres-js/migrator";
+import { redirect, type Handle, type HandleServerError } from '@sveltejs/kit';
+import { configTable } from '$lib/server/schema/config';
+import { DEBUG } from '$env/static/private';
+import { db } from '$lib/server/db';
+import { migrate } from 'drizzle-orm/postgres-js/migrator';
 
-const protectedRoutes = [
-	'/account/dashboard'
-]
-const adminProtectedRoutes = [
-    '/temp/keygen'
-]
+const protectedRoutes = ['/account/dashboard'];
+const adminProtectedRoutes = ['/temp/keygen'];
 
-await migrate(db, { migrationsFolder: "./drizzle" });
+await migrate(db, { migrationsFolder: './drizzle' });
 
 export const handle: Handle = async ({ event, resolve }) => {
-    // Stage 1
-    
-    const config = await db
-    .select()
-    .from(configTable)
-    .limit(1);
+	// Stage 1
 
-    if (config.length === 0) {
-        await db.insert(configTable).values({});
-    }
+	const config = await db.select().from(configTable).limit(1);
 
-    if (config?.[0]?.maintenanceEnabled === true){
-        if (event.url.pathname != "/maintenance") {
-            throw redirect(302, "/maintenance")
-        }
-    }
+	if (config.length === 0) {
+		await db.insert(configTable).values({});
+	}
 
-    /*event.locals.auth = auth.handleRequest(event);
+	if (config?.[0]?.maintenanceEnabled === true) {
+		if (event.url.pathname != '/maintenance') {
+			throw redirect(302, '/maintenance');
+		}
+	}
+
+	/*event.locals.auth = auth.handleRequest(event);
 
     const session = await event.locals.auth.validate();
     if (session){
@@ -54,10 +47,10 @@ export const handle: Handle = async ({ event, resolve }) => {
         }
 	}*/
 
-    const response = await resolve(event) // Stage 2
-    //await pool.end();
+	const response = await resolve(event); // Stage 2
+	//await pool.end();
 
-    // Stage 3
+	// Stage 3
 
-    return response
-}
+	return response;
+};

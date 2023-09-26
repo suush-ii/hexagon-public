@@ -1,27 +1,22 @@
 <script lang="ts">
 	import { Button } from '$src/components/ui/button';
-	import * as Card from '$src/components/ui/card';
-	import * as Select from '$src/components/ui/select';
-	import { Input } from '$src/components/ui/input';
-	import { Label } from '$src/components/ui/label';
 	import { Loader2 } from 'lucide-svelte';
 
-	import * as Form from "$src/components/ui/form";
-	import { formSchema, type FormSchema } from "$lib/schemas/signupschema";
-    import type { SuperValidated } from "sveltekit-superforms";
-	import { superForm } from 'sveltekit-superforms/client';
+	import * as Form from '$src/components/ui/form';
+	import { formSchema, type FormSchema } from '$lib/schemas/signupschema';
+	import type { SuperValidated } from 'sveltekit-superforms';
 	import type { PageData } from './$types';
-	import { invalidate, invalidateAll } from '$app/navigation';
+	import { invalidateAll } from '$app/navigation';
 	import { onMount } from 'svelte';
 	import { spring } from 'svelte/motion';
 
-	export let data: PageData
+	export let data: PageData;
 
-	let form: SuperValidated<FormSchema> = data.form
+	let form: SuperValidated<FormSchema> = data.form;
 
-	$: clickerPage = data.clicker
+	$: clickerPage = data.clicker;
 
-	let clicker = clickerPage
+	let clicker = clickerPage;
 
 	const displayed_count = spring();
 	$: displayed_count.set(clickerPage);
@@ -33,45 +28,45 @@
 		return ((n % m) + m) % m;
 	}
 
-	$: if (!clicker){
-		clicker = clickerPage
+	$: if (!clicker) {
+		clicker = clickerPage;
 	}
 
-	$: if (clicker != clickerPage){		
+	$: if (clicker != clickerPage) {
 		// tick up/down
 		const interval = setInterval(() => {
-		if (clicker < clickerPage){
-			clicker += 1
-		}else if (clicker > clickerPage){
-			clicker -= 1
-		}
-      if (clicker === clickerPage) {
-        clearInterval(interval);
-      }
-    }, 300);
+			if (clicker < clickerPage) {
+				clicker += 1;
+			} else if (clicker > clickerPage) {
+				clicker -= 1;
+			}
+			if (clicker === clickerPage) {
+				clearInterval(interval);
+			}
+		}, 300);
 	}
 
 	let timer: number | undefined;
 
-	async function clickerInc(){
+	async function clickerInc() {
 		clearTimeout(timer);
 		timer = setTimeout(async () => {
 			//clicker = clicker+1
-			const updated = await fetch("/api/clicker", {method: "POST"})
-			const updatedJson = await updated.json()
-			clickerPage = updatedJson.data.clicker
+			const updated = await fetch('/api/clicker', { method: 'POST' });
+			const updatedJson = await updated.json();
+			clickerPage = updatedJson.data.clicker;
 		}, 200);
 	}
 
 	onMount(() => {
-	const interval = setInterval(()=> {
-    invalidateAll()
-  }, 30000)
+		const interval = setInterval(() => {
+			invalidateAll();
+		}, 30000);
 
-  return () => {
+		return () => {
 			clearInterval(interval);
 		};
-});
+	});
 </script>
 
 <div class="flex h-screen">
@@ -80,19 +75,21 @@
 	<div class="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
 		<div class="relative mx-auto font-bold z-20 flex items-center text-4xl">
 			<button on:click={clickerInc}>
-			<img alt="H" class="w-16" src="/hexagon128.png" />
+				<img alt="H" class="w-16" src="/hexagon128.png" />
 			</button>
-			exagon</div>
-
-			<div class="mx-auto overflow-hidden flex flex-row gap-1 h-4">
-				<p class="mx-auto text-sm text-muted-foreground">Has been clicked </p>
-		<div class="" style="transform: translate(0, {100 * offset}%)">
-			<p class="absolute top-[100%] mx-auto text-sm text-muted-foreground">{Math.floor($displayed_count)}</p>
-			<p class="mx-auto text-sm text-muted-foreground">{Math.floor($displayed_count + 1)}</p>
+			exagon
 		</div>
-		<p class="mx-auto text-sm text-muted-foreground">times.</p>
-	</div>
 
+		<div class="mx-auto overflow-hidden flex flex-row gap-1 h-4">
+			<p class="mx-auto text-sm text-muted-foreground">Has been clicked</p>
+			<div class="" style="transform: translate(0, {100 * offset}%)">
+				<p class="absolute top-[100%] mx-auto text-sm text-muted-foreground">
+					{Math.floor($displayed_count)}
+				</p>
+				<p class="mx-auto text-sm text-muted-foreground">{Math.floor($displayed_count + 1)}</p>
+			</div>
+			<p class="mx-auto text-sm text-muted-foreground">times.</p>
+		</div>
 
 		<div class="flex flex-col space-y-2 text-center">
 			<h1 class="text-2xl font-semibold tracking-tight">Create an account</h1>
@@ -101,26 +98,26 @@
 
 		<Form.Root method="POST" {form} schema={formSchema} let:config let:submitting>
 			<Form.Field {config} name="username">
-			  <Form.Item>
-				<Form.Label>Username</Form.Label>
-				<Form.Input disabled={submitting} placeholder="(3-20 Characters, no spaces)" />
-				<Form.Validation />
-			  </Form.Item>
+				<Form.Item>
+					<Form.Label>Username</Form.Label>
+					<Form.Input disabled={submitting} placeholder="(3-20 Characters, no spaces)" />
+					<Form.Validation />
+				</Form.Item>
 			</Form.Field>
 
 			<Form.Field {config} name="password">
 				<Form.Item>
-				  <Form.Label>Password</Form.Label>
-				  <Form.Input disabled={submitting} placeholder="(Unique)" type="password" />
-				  <Form.Validation />
+					<Form.Label>Password</Form.Label>
+					<Form.Input disabled={submitting} placeholder="(Unique)" type="password" />
+					<Form.Validation />
 				</Form.Item>
 			</Form.Field>
 
 			<Form.Field {config} name="key">
 				<Form.Item>
-				  <Form.Label>Invite Key</Form.Label>
-				  <Form.Input disabled={submitting} placeholder="(Unique)" />
-				  <Form.Validation />
+					<Form.Label>Invite Key</Form.Label>
+					<Form.Input disabled={submitting} placeholder="(Unique)" />
+					<Form.Validation />
 				</Form.Item>
 			</Form.Field>
 
@@ -128,27 +125,25 @@
 				<Form.Item>
 					<Form.Label>Gender</Form.Label>
 					<Form.Select disabled={submitting}>
-					  <Form.SelectTrigger placeholder="Select" />
-					  <Form.SelectContent>
-						<Form.SelectItem value="male">Male</Form.SelectItem>
-						<Form.SelectItem value="female">Female</Form.SelectItem>
-						<Form.SelectItem value="nonbinary">None</Form.SelectItem>
-					  </Form.SelectContent>
+						<Form.SelectTrigger placeholder="Select" />
+						<Form.SelectContent>
+							<Form.SelectItem value="male">Male</Form.SelectItem>
+							<Form.SelectItem value="female">Female</Form.SelectItem>
+							<Form.SelectItem value="nonbinary">None</Form.SelectItem>
+						</Form.SelectContent>
 					</Form.Select>
-					<Form.Description>
-					  You can always change this.
-					</Form.Description>
+					<Form.Description>You can always change this.</Form.Description>
 					<Form.Validation />
-				  </Form.Item>
+				</Form.Item>
 			</Form.Field>
-
 
 			<Form.Button disabled={submitting} class="w-full">
 				{#if submitting}
 					<Loader2 class="mr-2 h-4 w-4 animate-spin" />
 				{/if}
-				Sign Up!</Form.Button>
-		  </Form.Root>
+				Sign Up!</Form.Button
+			>
+		</Form.Root>
 
 		<p class="px-8 text-center text-sm text-muted-foreground">
 			By clicking continue, you agree to our

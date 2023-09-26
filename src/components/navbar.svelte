@@ -1,6 +1,5 @@
 <script lang="ts">
-export let loggedIn: boolean
-
+	export let loggedIn: boolean;
 </script>
 
 <header
@@ -32,38 +31,38 @@ export let loggedIn: boolean
 		</nav>
 	</div>
 	{#if loggedIn}
-	<div
-		class="supports-backdrop-blur:bg-background/60 sticky top-0 z-40 w-full border-b bg-muted-foreground/5 shadow-sm backdrop-blur"
-	>
-		<div class="container flex h-10 items-center">
-			<nav class="flex items-center space-x-4 lg:space-x-6">
-				<a
-					href="/users/1/profile"
-					class="text-xs font-medium text-muted-foreground transition-colors hover:text-primary"
-				>
-					Profile
-				</a>
+		<div
+			class="supports-backdrop-blur:bg-background/60 sticky top-0 z-40 w-full border-b bg-muted-foreground/5 shadow-sm backdrop-blur"
+		>
+			<div class="container flex h-10 items-center">
+				<nav class="flex items-center space-x-4 lg:space-x-6">
+					<a
+						href="/users/1/profile"
+						class="text-xs font-medium text-muted-foreground transition-colors hover:text-primary"
+					>
+						Profile
+					</a>
 
-				<a
-					href="/friends/requests"
-					class="text-xs font-medium text-muted-foreground transition-colors hover:text-primary"
-				>
-					Friends
-				</a>
-				<a
-					href="/avatar"
-					class="text-xs font-medium text-muted-foreground transition-colors hover:text-primary"
-				>
-					Customize
-				</a>
-				<a
-					href="/cum"
-					class="text-xs font-medium text-muted-foreground transition-colors hover:text-primary"
-				>
-					Cum
-				</a>
-			</nav>
+					<a
+						href="/friends/requests"
+						class="text-xs font-medium text-muted-foreground transition-colors hover:text-primary"
+					>
+						Friends
+					</a>
+					<a
+						href="/avatar"
+						class="text-xs font-medium text-muted-foreground transition-colors hover:text-primary"
+					>
+						Customize
+					</a>
+					<a
+						href="/cum"
+						class="text-xs font-medium text-muted-foreground transition-colors hover:text-primary"
+					>
+						Cum
+					</a>
+				</nav>
+			</div>
 		</div>
-	</div>
 	{/if}
 </header>
