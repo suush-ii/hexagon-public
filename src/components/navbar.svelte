@@ -1,8 +1,14 @@
+<script lang="ts">
+export let loggedIn: boolean
+
+</script>
+
 <header
 	class="supports-backdrop-blur:bg-background/60 absolute top-0 z-40 w-full border-b bg-background/95 shadow-sm backdrop-blur"
 >
 	<div class="container flex h-14 items-center">
 		<nav class="flex items-center space-x-4 lg:space-x-6">
+			<img alt="H" class="w-12" src="/hexagon128.png" />
 			<a href="/home" class="text-base font-medium transition-colors hover:text-primary"> Home </a>
 
 			<a
@@ -25,7 +31,7 @@
 			</a>
 		</nav>
 	</div>
-
+	{#if loggedIn}
 	<div
 		class="supports-backdrop-blur:bg-background/60 sticky top-0 z-40 w-full border-b bg-muted-foreground/5 shadow-sm backdrop-blur"
 	>
@@ -59,4 +65,5 @@
 			</nav>
 		</div>
 	</div>
+	{/if}
 </header>

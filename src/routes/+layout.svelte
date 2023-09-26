@@ -7,7 +7,7 @@
 
 {#if $page.url.pathname != '/'}
 	<!--TODO: if authorized-->
-	<Navbar />
+	<Navbar loggedIn={false} />
 {/if}
 
 <slot />

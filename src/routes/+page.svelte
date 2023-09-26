@@ -6,10 +6,19 @@
 	import { Label } from '$src/components/ui/label';
 	import { Loader2 } from 'lucide-svelte';
 
+	import * as Form from "$src/components/ui/form";
+	import { formSchema, type FormSchema } from "$lib/schemas/signupschema";
+    import type { SuperValidated } from "sveltekit-superforms";
+	import { superForm } from 'sveltekit-superforms/client';
+	import type { PageData } from './$types';
+    let form: SuperValidated<FormSchema>;
+
+	export let data: PageData
+
+
 	let isLoading = false;
 
 	async function onSubmit() {
-		console.log('wtf');
 		isLoading = true;
 
 		setTimeout(() => {
@@ -22,65 +31,66 @@
 	<Button href="/login" class="absolute right-5 top-5">Log In</Button>
 
 	<div class="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
-		<div class="relative mx-auto font-bold z-20 flex items-center text-5xl">Hexagon</div>
+		<div class="relative mx-auto font-bold z-20 flex items-center text-4xl">
+			<img alt="H" class="w-16" src="/hexagon128.png" />
+			exagon</div>
+		<p class="mx-auto text-sm text-muted-foreground">Has been clicked 555,555 times.</p>
 
 		<div class="flex flex-col space-y-2 text-center">
 			<h1 class="text-2xl font-semibold tracking-tight">Create an account</h1>
 			<p class="text-sm text-muted-foreground">Enter your details below to create your account</p>
 		</div>
 
-		<Card.Root>
-			<form on:submit|preventDefault={onSubmit}>
-				<Card.Content>
-					<div class="grid w-full items-center gap-4">
-						<div class="flex flex-col space-y-1.5">
-							<Label for="username">Username</Label>
-							<Input
-								id="username"
-								disabled={isLoading}
-								placeholder="(3-20 Characters, no spaces)"
-							/>
-						</div>
-						<div class="flex flex-col space-y-1.5">
-							<Label for="password">Password</Label>
-							<Input id="password" disabled={isLoading} type="password" placeholder="(Unique)" />
-						</div>
-						<div class="flex flex-col space-y-1.5">
-							<Label for="password">Invite Key</Label>
-							<Input
-								id="password"
-								disabled={isLoading}
-								type="password"
-								placeholder="(Unique, Required)"
-							/>
-						</div>
-						<div class="flex flex-col space-y-1.5">
-							<Label for="gender">Gender</Label>
-							<Select.Root disabled={isLoading}>
-								<Select.Trigger id="gender">
-									<Select.Value placeholder="Select" />
-								</Select.Trigger>
-								<Select.Content>
-									<Select.Item value="male" label="Male">{'Male'}</Select.Item>
+		<Form.Root on:submit={onSubmit} method="POST" {form} schema={formSchema} let:config let:submitting>
+			<Form.Field {config} name="username">
+			  <Form.Item>
+				<Form.Label>Username</Form.Label>
+				<Form.Input disabled={submitting} placeholder="(3-20 Characters, no spaces)" />
+				<Form.Validation />
+			  </Form.Item>
+			</Form.Field>
 
-									<Select.Item value="female" label="Female">{'Female'}</Select.Item>
+			<Form.Field {config} name="password">
+				<Form.Item>
+				  <Form.Label>Password</Form.Label>
+				  <Form.Input disabled={submitting} placeholder="(Unique)" type="password" />
+				  <Form.Validation />
+				</Form.Item>
+			</Form.Field>
 
-									<Select.Item value="nonbinary" label="None">{'None'}</Select.Item>
-								</Select.Content>
-							</Select.Root>
-						</div>
-					</div>
-				</Card.Content>
-				<Card.Footer>
-					<Button disabled={isLoading} type="submit" class="w-full">
-						{#if isLoading}
-							<Loader2 class="mr-2 h-4 w-4 animate-spin" />
-						{/if}
-						Sign Up!</Button
-					>
-				</Card.Footer>
-			</form>
-		</Card.Root>
+			<Form.Field {config} name="key">
+				<Form.Item>
+				  <Form.Label>Invite Key</Form.Label>
+				  <Form.Input disabled={submitting} placeholder="(Unique)" />
+				  <Form.Validation />
+				</Form.Item>
+			</Form.Field>
+
+			<Form.Field {config} name="gender">
+				<Form.Item>
+					<Form.Label>Gender</Form.Label>
+					<Form.Select disabled={submitting}>
+					  <Form.SelectTrigger placeholder="Select" />
+					  <Form.SelectContent>
+						<Form.SelectItem value="male">Male</Form.SelectItem>
+						<Form.SelectItem value="female">Female</Form.SelectItem>
+						<Form.SelectItem value="nonbinary">None</Form.SelectItem>
+					  </Form.SelectContent>
+					</Form.Select>
+					<Form.Description>
+					  You can always change this.
+					</Form.Description>
+					<Form.Validation />
+				  </Form.Item>
+			</Form.Field>
+
+
+			<Form.Button disabled={submitting} class="w-full">
+				{#if submitting}
+					<Loader2 class="mr-2 h-4 w-4 animate-spin" />
+				{/if}
+				Sign Up!</Form.Button>
+		  </Form.Root>
 
 		<p class="px-8 text-center text-sm text-muted-foreground">
 			By clicking continue, you agree to our
