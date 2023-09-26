@@ -11,9 +11,10 @@
     import type { SuperValidated } from "sveltekit-superforms";
 	import { superForm } from 'sveltekit-superforms/client';
 	import type { PageData } from './$types';
-    let form: SuperValidated<FormSchema>;
 
 	export let data: PageData
+
+	let form: SuperValidated<FormSchema> = data.form
 
 
 	let isLoading = false;
