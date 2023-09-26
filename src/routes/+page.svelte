@@ -11,21 +11,67 @@
     import type { SuperValidated } from "sveltekit-superforms";
 	import { superForm } from 'sveltekit-superforms/client';
 	import type { PageData } from './$types';
+	import { invalidate, invalidateAll } from '$app/navigation';
+	import { onMount } from 'svelte';
+	import { spring } from 'svelte/motion';
 
 	export let data: PageData
 
 	let form: SuperValidated<FormSchema> = data.form
 
+	$: clickerPage = data.clicker
 
-	let isLoading = false;
+	let clicker = clickerPage
 
-	async function onSubmit() {
-		isLoading = true;
+	const displayed_count = spring();
+	$: displayed_count.set(clickerPage);
 
-		setTimeout(() => {
-			isLoading = false;
-		}, 3000);
+	$: offset = modulo($displayed_count, 1);
+
+	function modulo(n: number, m: number) {
+		// handle negative numbers
+		return ((n % m) + m) % m;
 	}
+
+	$: if (!clicker){
+		clicker = clickerPage
+	}
+
+	$: if (clicker != clickerPage){		
+		// tick up/down
+		const interval = setInterval(() => {
+		if (clicker < clickerPage){
+			clicker += 1
+		}else if (clicker > clickerPage){
+			clicker -= 1
+		}
+      if (clicker === clickerPage) {
+        clearInterval(interval);
+      }
+    }, 300);
+	}
+
+	let timer: number | undefined;
+
+	async function clickerInc(){
+		clearTimeout(timer);
+		timer = setTimeout(async () => {
+			//clicker = clicker+1
+			const updated = await fetch("/api/clicker", {method: "POST"})
+			const updatedJson = await updated.json()
+			clickerPage = updatedJson.data.clicker
+		}, 200);
+	}
+
+	onMount(() => {
+	const interval = setInterval(()=> {
+    invalidateAll()
+  }, 30000)
+
+  return () => {
+			clearInterval(interval);
+		};
+});
 </script>
 
 <div class="flex h-screen">
@@ -33,16 +79,27 @@
 
 	<div class="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
 		<div class="relative mx-auto font-bold z-20 flex items-center text-4xl">
+			<button on:click={clickerInc}>
 			<img alt="H" class="w-16" src="/hexagon128.png" />
+			</button>
 			exagon</div>
-		<p class="mx-auto text-sm text-muted-foreground">Has been clicked 555,555 times.</p>
+
+			<div class="mx-auto overflow-hidden flex flex-row gap-1 h-4">
+				<p class="mx-auto text-sm text-muted-foreground">Has been clicked </p>
+		<div class="" style="transform: translate(0, {100 * offset}%)">
+			<p class="absolute top-[100%] mx-auto text-sm text-muted-foreground">{Math.floor($displayed_count)}</p>
+			<p class="mx-auto text-sm text-muted-foreground">{Math.floor($displayed_count + 1)}</p>
+		</div>
+		<p class="mx-auto text-sm text-muted-foreground">times.</p>
+	</div>
+
 
 		<div class="flex flex-col space-y-2 text-center">
 			<h1 class="text-2xl font-semibold tracking-tight">Create an account</h1>
 			<p class="text-sm text-muted-foreground">Enter your details below to create your account</p>
 		</div>
 
-		<Form.Root on:submit={onSubmit} method="POST" {form} schema={formSchema} let:config let:submitting>
+		<Form.Root method="POST" {form} schema={formSchema} let:config let:submitting>
 			<Form.Field {config} name="username">
 			  <Form.Item>
 				<Form.Label>Username</Form.Label>

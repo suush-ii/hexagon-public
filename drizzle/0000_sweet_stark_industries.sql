@@ -1,7 +1,8 @@
 CREATE TABLE IF NOT EXISTS "config" (
 	"maintenanceenabled" boolean PRIMARY KEY DEFAULT false NOT NULL,
 	"registrationenabled" boolean DEFAULT true NOT NULL,
-	"keysenabled" boolean DEFAULT false NOT NULL
+	"keysenabled" boolean DEFAULT false NOT NULL,
+	"pageclicker" integer DEFAULT 0
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "keys" (

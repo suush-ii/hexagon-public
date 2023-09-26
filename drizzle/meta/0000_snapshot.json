@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "pg",
-  "id": "54b04915-139c-4356-834a-2ba06474bfd7",
+  "id": "e778660d-6e5e-4187-9201-0e981cda0790",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "config": {
@@ -28,6 +28,13 @@
           "primaryKey": false,
           "notNull": true,
           "default": false
+        },
+        "pageclicker": {
+          "name": "pageclicker",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "default": 0
         }
       },
       "indexes": {},
