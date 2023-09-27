@@ -10,7 +10,8 @@ export const load: PageServerLoad = async () => {
 
 	return {
 		form: superValidate(formSchema),
-		clicker: config?.[0]?.pageClicker ?? 0
+		clicker: config?.[0]?.pageClicker ?? 0,
+		registration: config?.[0]?.registrationEnabled ?? true
 	};
 };
 

@@ -12,7 +12,7 @@
 
 	export let data: PageData;
 
-	let form: SuperValidated<FormSchema> = data.form;
+	let form:SuperValidated<FormSchema>
 
 	$: clickerPage = data.clicker;
 
@@ -61,7 +61,7 @@
 	onMount(() => {
 		const interval = setInterval(() => {
 			invalidateAll();
-		}, 30000);
+		}, 5000);
 
 		return () => {
 			clearInterval(interval);
@@ -83,13 +83,15 @@
 		<div class="mx-auto overflow-hidden flex flex-row gap-1 h-4">
 			<p class="mx-auto text-sm text-muted-foreground">Has been clicked</p>
 			<div class="" style="transform: translate(0, {100 * offset}%)">
-				<p class="absolute top-[100%] mx-auto text-sm text-muted-foreground">
-					{Math.floor($displayed_count)}
+				<p class="absolute top-[-100%] mx-auto text-sm text-muted-foreground">
+					{Math.floor($displayed_count + 1)}
 				</p>
-				<p class="mx-auto text-sm text-muted-foreground">{Math.floor($displayed_count + 1)}</p>
+				<p class="mx-auto text-sm text-muted-foreground">{Math.floor($displayed_count)}</p>
 			</div>
 			<p class="mx-auto text-sm text-muted-foreground">times.</p>
 		</div>
+
+		{#if data.registration}
 
 		<div class="flex flex-col space-y-2 text-center">
 			<h1 class="text-2xl font-semibold tracking-tight">Create an account</h1>
@@ -156,5 +158,12 @@
 			</a>
 			.
 		</p>
+
+		{:else}
+
+		<h1 class="text-2xl text-center mx-auto pb-96">Sorry! Registration is currently closed.</h1>
+
+		{/if}
+
 	</div>
 </div>
