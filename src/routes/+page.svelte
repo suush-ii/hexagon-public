@@ -12,7 +12,7 @@
 
 	export let data: PageData;
 
-	let form:SuperValidated<FormSchema>
+	let form: SuperValidated<FormSchema>;
 
 	$: clickerPage = data.clicker;
 
@@ -92,78 +92,73 @@
 		</div>
 
 		{#if data.registration}
+			<div class="flex flex-col space-y-2 text-center">
+				<h1 class="text-2xl font-semibold tracking-tight">Create an account</h1>
+				<p class="text-sm text-muted-foreground">Enter your details below to create your account</p>
+			</div>
 
-		<div class="flex flex-col space-y-2 text-center">
-			<h1 class="text-2xl font-semibold tracking-tight">Create an account</h1>
-			<p class="text-sm text-muted-foreground">Enter your details below to create your account</p>
-		</div>
+			<Form.Root method="POST" {form} schema={formSchema} let:config let:submitting>
+				<Form.Field {config} name="username">
+					<Form.Item>
+						<Form.Label>Username</Form.Label>
+						<Form.Input disabled={submitting} placeholder="(3-20 Characters, no spaces)" />
+						<Form.Validation />
+					</Form.Item>
+				</Form.Field>
 
-		<Form.Root method="POST" {form} schema={formSchema} let:config let:submitting>
-			<Form.Field {config} name="username">
-				<Form.Item>
-					<Form.Label>Username</Form.Label>
-					<Form.Input disabled={submitting} placeholder="(3-20 Characters, no spaces)" />
-					<Form.Validation />
-				</Form.Item>
-			</Form.Field>
+				<Form.Field {config} name="password">
+					<Form.Item>
+						<Form.Label>Password</Form.Label>
+						<Form.Input disabled={submitting} placeholder="(Unique)" type="password" />
+						<Form.Validation />
+					</Form.Item>
+				</Form.Field>
 
-			<Form.Field {config} name="password">
-				<Form.Item>
-					<Form.Label>Password</Form.Label>
-					<Form.Input disabled={submitting} placeholder="(Unique)" type="password" />
-					<Form.Validation />
-				</Form.Item>
-			</Form.Field>
+				<Form.Field {config} name="key">
+					<Form.Item>
+						<Form.Label>Invite Key</Form.Label>
+						<Form.Input disabled={submitting} placeholder="(Unique)" />
+						<Form.Validation />
+					</Form.Item>
+				</Form.Field>
 
-			<Form.Field {config} name="key">
-				<Form.Item>
-					<Form.Label>Invite Key</Form.Label>
-					<Form.Input disabled={submitting} placeholder="(Unique)" />
-					<Form.Validation />
-				</Form.Item>
-			</Form.Field>
+				<Form.Field {config} name="gender">
+					<Form.Item>
+						<Form.Label>Gender</Form.Label>
+						<Form.Select disabled={submitting}>
+							<Form.SelectTrigger placeholder="Select" />
+							<Form.SelectContent>
+								<Form.SelectItem value="male">Male</Form.SelectItem>
+								<Form.SelectItem value="female">Female</Form.SelectItem>
+								<Form.SelectItem value="nonbinary">None</Form.SelectItem>
+							</Form.SelectContent>
+						</Form.Select>
+						<Form.Description>You can always change this.</Form.Description>
+						<Form.Validation />
+					</Form.Item>
+				</Form.Field>
 
-			<Form.Field {config} name="gender">
-				<Form.Item>
-					<Form.Label>Gender</Form.Label>
-					<Form.Select disabled={submitting}>
-						<Form.SelectTrigger placeholder="Select" />
-						<Form.SelectContent>
-							<Form.SelectItem value="male">Male</Form.SelectItem>
-							<Form.SelectItem value="female">Female</Form.SelectItem>
-							<Form.SelectItem value="nonbinary">None</Form.SelectItem>
-						</Form.SelectContent>
-					</Form.Select>
-					<Form.Description>You can always change this.</Form.Description>
-					<Form.Validation />
-				</Form.Item>
-			</Form.Field>
+				<Form.Button disabled={submitting} class="w-full">
+					{#if submitting}
+						<Loader2 class="mr-2 h-4 w-4 animate-spin" />
+					{/if}
+					Sign Up!</Form.Button
+				>
+			</Form.Root>
 
-			<Form.Button disabled={submitting} class="w-full">
-				{#if submitting}
-					<Loader2 class="mr-2 h-4 w-4 animate-spin" />
-				{/if}
-				Sign Up!</Form.Button
-			>
-		</Form.Root>
-
-		<p class="px-8 text-center text-sm text-muted-foreground">
-			By clicking continue, you agree to our
-			<a href="/terms" class="underline underline-offset-4 hover:text-primary">
-				Terms of Service
-			</a>
-			and
-			<a href="/privacy" class="underline underline-offset-4 hover:text-primary">
-				Privacy Policy
-			</a>
-			.
-		</p>
-
+			<p class="px-8 text-center text-sm text-muted-foreground">
+				By clicking continue, you agree to our
+				<a href="/terms" class="underline underline-offset-4 hover:text-primary">
+					Terms of Service
+				</a>
+				and
+				<a href="/privacy" class="underline underline-offset-4 hover:text-primary">
+					Privacy Policy
+				</a>
+				.
+			</p>
 		{:else}
-
-		<h1 class="text-2xl text-center mx-auto pb-96">Sorry! Registration is currently closed.</h1>
-
+			<h1 class="text-2xl text-center mx-auto pb-96">Sorry! Registration is currently closed.</h1>
 		{/if}
-
 	</div>
 </div>
