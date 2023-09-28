@@ -10,7 +10,7 @@
 	import { onMount } from 'svelte';
 	import { spring } from 'svelte/motion';
 
-	import Warntext from "$src/components/warntext.svelte"
+	import Warntext from '$src/components/warntext.svelte';
 
 	export let data: PageData;
 
@@ -62,15 +62,13 @@
 
 	onMount(() => {
 		if (!document.hidden) {
+			const interval = setInterval(() => {
+				invalidateAll();
+			}, 5000);
 
-		const interval = setInterval(() => {
-			invalidateAll();
-		}, 5000);
-
-		return () => {
-			clearInterval(interval);
-		};
-
+			return () => {
+				clearInterval(interval);
+			};
 		}
 	});
 </script>
@@ -139,8 +137,9 @@
 								<Form.SelectItem value="nonbinary">None</Form.SelectItem>
 							</Form.SelectContent>
 						</Form.Select>
-						<Form.Description>You can always change this.
-							{#if message}<Warntext text={message}/>{/if}
+						<Form.Description
+							>You can always change this.
+							{#if message}<Warntext text={message} />{/if}
 						</Form.Description>
 						<Form.Validation />
 					</Form.Item>

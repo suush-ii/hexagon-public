@@ -1,20 +1,20 @@
 {
-  "version": "5",
-  "dialect": "pg",
-  "entries": [
-    {
-      "idx": 0,
-      "version": "5",
-      "when": 1695695795303,
-      "tag": "0000_sweet_stark_industries",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "5",
-      "when": 1695873715634,
-      "tag": "0001_clever_stephen_strange",
-      "breakpoints": true
-    }
-  ]
+	"version": "5",
+	"dialect": "pg",
+	"entries": [
+		{
+			"idx": 0,
+			"version": "5",
+			"when": 1695695795303,
+			"tag": "0000_sweet_stark_industries",
+			"breakpoints": true
+		},
+		{
+			"idx": 1,
+			"version": "5",
+			"when": 1695873715634,
+			"tag": "0001_clever_stephen_strange",
+			"breakpoints": true
+		}
+	]
 }

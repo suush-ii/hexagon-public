@@ -11,7 +11,7 @@ export const load: PageServerLoad = async (event) => {
 	const config = await db.select().from(configTable).limit(1);
 
 	const session = await event.locals.auth.validate();
-	if (session) throw redirect(301, "/home");
+	if (session) throw redirect(301, '/home');
 
 	return {
 		form: superValidate(formSchema),
@@ -28,45 +28,42 @@ export const actions: Actions = {
 				form
 			});
 		}
-		const { username, password } = form.data
+		const { username, password } = form.data;
 
-		const config = await db
-		.select()
-		.from(configTable)
-		.limit(1);
+		const config = await db.select().from(configTable).limit(1);
 
-		if (config?.[0]?.registrationEnabled === false){
+		if (config?.[0]?.registrationEnabled === false) {
 			return message(form, 'Registration disabled.');
 		}
 
 		try {
 			const nUser = await auth.createUser({
-			  key: {
-				providerId: 'username',
-				providerUserId: username.toLowerCase(),
-				password: password
-			  },
-			  attributes: {
-				username: username,
-				coins: 0,
-				joindate: new Date(),
-				role: "normal"
-			  }
+				key: {
+					providerId: 'username',
+					providerUserId: username.toLowerCase(),
+					password: password
+				},
+				attributes: {
+					username: username,
+					coins: 0,
+					joindate: new Date(),
+					role: 'normal'
+				}
 			});
 
-		    const session = await auth.createSession({
+			const session = await auth.createSession({
 				userId: nUser.userId,
 				attributes: {}
-			  });
+			});
 			event.locals.auth.setSession(session); // set session cookie
 		} catch (e) {
 			//console.log(e)
-			if (e instanceof PostgresError && e.code === "23505") {
-				return setError(form, 'username', "Username taken!");
+			if (e instanceof PostgresError && e.code === '23505') {
+				return setError(form, 'username', 'Username taken!');
 			}
-		
-			return fail(400, form) // wtf happened!!
-		  }
+
+			return fail(400, form); // wtf happened!!
+		}
 
 		throw redirect(301, '/home');
 	}

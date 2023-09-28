@@ -8,21 +8,20 @@ declare global {
 			data?: object;
 		}
 		declare namespace Lucia {
-			type Auth = import("./lib/server/lucia.ts").Auth;
+			type Auth = import('./lib/server/lucia.ts').Auth;
 			type DatabaseUserAttributes = {
-				username: string,
-				userid?: undefined // the database will automatically fill this in
-				email: string,
-				coins: number,
-				joindate: Date,
-				role: "owner" | "admin" | "mod" | "uploader" | "normal"
-	
+				username: string;
+				userid?: undefined; // the database will automatically fill this in
+				email: string;
+				coins: number;
+				joindate: Date;
+				role: 'owner' | 'admin' | 'mod' | 'uploader' | 'normal';
 			};
-			type DatabaseSessionAttributes = {};
+			type DatabaseSessionAttributes = NonNullable<unknown>;
 		}
 		interface Locals {
-			auth: import("lucia").AuthRequest,
-			session: import("lucia").Session,
+			auth: import('lucia').AuthRequest;
+			session: import('lucia').Session;
 		}
 		// interface PageData {}
 		// interface Platform {}
