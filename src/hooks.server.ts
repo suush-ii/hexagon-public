@@ -3,6 +3,7 @@ import { configTable } from '$lib/server/schema/config';
 import { DEBUG } from '$env/static/private';
 import { db } from '$lib/server/db';
 import { migrate } from 'drizzle-orm/postgres-js/migrator';
+import { auth } from "$lib/server/lucia";
 
 const protectedRoutes = ['/account/dashboard'];
 const adminProtectedRoutes = ['/temp/keygen'];
@@ -24,14 +25,14 @@ export const handle: Handle = async ({ event, resolve }) => {
 		}
 	}
 
-	/*event.locals.auth = auth.handleRequest(event);
+	event.locals.auth = auth.handleRequest(event);
 
     const session = await event.locals.auth.validate();
     if (session){
         event.locals.session = session
     }
 
-    if (protectedRoutes.includes(event.url.pathname) === true || protectedRoutes.some(substr => event.url.pathname.toLowerCase().startsWith(substr.toLowerCase())) === true) {
+    /*if (protectedRoutes.includes(event.url.pathname) === true || protectedRoutes.some(substr => event.url.pathname.toLowerCase().startsWith(substr.toLowerCase())) === true) {
 		if (!session) {
 			throw redirect(302, "/auth/login")
 		}

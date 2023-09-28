@@ -1,3 +1,4 @@
+import { stringify } from 'postcss';
 import { z } from 'zod';
 
 function isAlphaNumeric(str: string) {
@@ -33,14 +34,38 @@ function isAlphaNumeric(str: string) {
 	return true;
 }
 
-export const formSchema = z.object({
+async function isTaken(username: string, ctx: z.RefinementCtx){
+	const taken = await fetch('/api/account/exists', { method: 'POST', headers: {"Content-Type": "application/json"}, body: JSON.stringify({username}) });
+	
+	const takenJson = await taken.json();
+	if (takenJson.success === true && takenJson.data.available === false){
+		return ctx.addIssue({
+			code: z.ZodIssueCode.custom,
+			fatal: true,
+			message: "Username not available.",
+		  });
+	}else{
+		return true
+	}
+}
+
+export const usernameSchema = z.object({
 	username: z
-		.string({ required_error: 'Username required.' })
-		.min(3, { message: 'Username must be at least 3 characters!' })
-		.max(20, { message: "Username can't be over 20 characters!" })
-		.refine(
-			(value) => isAlphaNumeric(value),
-			'Only special characters allowed are one underscore.'
+	.string({ required_error: 'Username required.' })
+	.min(3, { message: 'Username must be at least 3 characters!' })
+	.max(20, { message: "Username can't be over 20 characters!" })
+	.refine(
+		(value) => isAlphaNumeric(value),
+		'Only special characters allowed are one underscore.',
+	)
+})
+
+const {shape} = usernameSchema;
+
+export const formSchema = z.object({
+	username: shape.username
+		.superRefine(
+			(value, ctx) => isTaken(value, ctx)
 		),
 	password: z.string({ required_error: 'Password required.' }).min(1).max(100),
 	key: z.string({ required_error: 'Key required.' }).min(1).max(100),

@@ -10,6 +10,8 @@
 	import { onMount } from 'svelte';
 	import { spring } from 'svelte/motion';
 
+	import Warntext from "$src/components/warntext.svelte"
+
 	export let data: PageData;
 
 	let form: SuperValidated<FormSchema>;
@@ -59,6 +61,8 @@
 	}
 
 	onMount(() => {
+		if (!document.hidden) {
+
 		const interval = setInterval(() => {
 			invalidateAll();
 		}, 5000);
@@ -66,6 +70,8 @@
 		return () => {
 			clearInterval(interval);
 		};
+
+		}
 	});
 </script>
 
@@ -97,7 +103,7 @@
 				<p class="text-sm text-muted-foreground">Enter your details below to create your account</p>
 			</div>
 
-			<Form.Root method="POST" {form} schema={formSchema} let:config let:submitting>
+			<Form.Root method="POST" {form} schema={formSchema} let:config let:submitting let:message>
 				<Form.Field {config} name="username">
 					<Form.Item>
 						<Form.Label>Username</Form.Label>
@@ -133,7 +139,9 @@
 								<Form.SelectItem value="nonbinary">None</Form.SelectItem>
 							</Form.SelectContent>
 						</Form.Select>
-						<Form.Description>You can always change this.</Form.Description>
+						<Form.Description>You can always change this.
+							{#if message}<Warntext text={message}/>{/if}
+						</Form.Description>
 						<Form.Validation />
 					</Form.Item>
 				</Form.Field>

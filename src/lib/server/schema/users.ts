@@ -5,7 +5,6 @@ export const usersTable = pgTable('users', {
 	userid: serial('userid').notNull(),
 	id: varchar('id', { length: 128 }).primaryKey(), // used for lucia serials are unable to be used for some reason
 	username: text('username').notNull().unique(),
-	email: text('email').notNull(),
 	coins: bigint('coins', { mode: 'number' }).notNull(),
 	discordid: integer('discordid'),
 	joindate: timestamp('joindate', { mode: 'date' }).notNull(),
