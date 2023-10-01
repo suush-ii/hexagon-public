@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { validateSchema } from '$lib/schemas/signupschema';
 
-const { shape } = validateSchema
+const { shape } = validateSchema;
 
 export const formSchema = z.object({
 	username: shape.username,

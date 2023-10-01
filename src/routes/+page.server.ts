@@ -39,16 +39,16 @@ export const actions: Actions = {
 		}
 
 		const user = await db
-		.select({
-			username: usersTable.username
-		})
-		.from(usersTable)
-		.where(eq(usersTable.username, username))
-		.limit(1);
+			.select({
+				username: usersTable.username
+			})
+			.from(usersTable)
+			.where(eq(usersTable.username, username))
+			.limit(1);
 
-	if (user.length != 0) {
-		return setError(form, 'username', 'Username taken!');
-	}
+		if (user.length != 0) {
+			return setError(form, 'username', 'Username taken!');
+		}
 
 		try {
 			const nUser = await auth.createUser({

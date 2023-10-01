@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Button } from "$src/components/ui/button";
+	import { Button } from '$src/components/ui/button';
 
 	export let loggedIn: boolean;
 	export let signUpButton = false;
@@ -32,7 +32,7 @@
 				Develop
 			</a>
 			{#if signUpButton}
-			<Button href="/" class="absolute right-4" variant="outline">Sign Up</Button>
+				<Button href="/" class="absolute right-4" variant="outline">Sign Up</Button>
 			{/if}
 		</nav>
 	</div>
