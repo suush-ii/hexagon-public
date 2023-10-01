@@ -43,7 +43,7 @@ location / {
     proxy_set_header Host $host;
     proxy_cache_bypass $http_upgrade;
     proxy_set_header X-Forwarded-Proto $scheme; # these are important so the sveltekit server can verify the origin
-    proxy_set_header X-Forwarded-Host  $host;
+    proxy_set_header X-Forwarded-Host $host;
 
 }
 ```
