@@ -62,8 +62,8 @@ export const usernameSchema = z.object({
 
 export const validateSchema = z.object({
 	username: usernameSchema.shape.username,
-	password: z.string({ required_error: 'Password required.' }).min(1).max(100),
-	key: z.string({ required_error: 'Key required.' }).min(1).max(100),
+	password: z.string({ required_error: 'Password required.' }).min(1, { message: "Password required!" }).max(100, { message: "Password can't be over 100 characters!" }),
+	key: z.string({ required_error: 'Key required.' }).min(1, { message: "Key required." }).max(100, { message: "Key can't be over 100 characters!" }),
 	gender: z.enum(['male', 'female', 'nonbinary']).default('nonbinary')
 });
 
