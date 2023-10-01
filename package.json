@@ -13,7 +13,7 @@
 		"generate": "drizzle-kit generate:pg",
 		"push": "drizzle-kit push:pg",
 		"drop": "drizzle-kit drop",
-		"prod": "PORT=9000 HOST=127.0.0.1 bun build/index.js"
+		"prod": "PROTOCOL_HEADER=x-forwarded-proto HOST_HEADER=x-forwarded-host PORT=9000 HOST=127.0.0.1 bun build/index.js"
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "^2.0.0",

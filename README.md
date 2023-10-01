@@ -1,18 +1,8 @@
-# create-svelte
+# Hexagon
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).
+Using bun in production and node for development.
 
-## Creating a project
-
-If you're seeing this, you've probably already done this step. Congrats!
-
-```bash
-# create a new project in the current directory
-npm create svelte@latest
-
-# create a new project in my-app
-npm create svelte@latest my-app
-```
+Setup env using .env.example
 
 ## Developing
 
@@ -29,10 +19,37 @@ npm run dev -- --open
 
 To create a production version of your app:
 
+```
+bun i
+```
+
 ```bash
-npm run build
+bun run build
+```
+
+## Production Setup
+
+This project uses postgres for the database, drizzle for the orm, and lucia for authentication/session handling.
+
+In production setup a NGINX server as a reverse proxy on port 9000. Example config below.
+
+```nginx
+location / {
+
+    proxy_pass http://127.0.0.1:9000;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection 'upgrade';
+    proxy_set_header Host $host;
+    proxy_cache_bypass $http_upgrade;
+    proxy_set_header X-Forwarded-Proto $scheme; # these are important so the sveltekit server can verify the origin
+    proxy_set_header X-Forwarded-Host  $host;
+
+}
+```
+
+```bash
+bun run prod
 ```
 
 You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
