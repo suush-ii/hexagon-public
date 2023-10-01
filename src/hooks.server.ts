@@ -11,6 +11,7 @@ const adminProtectedRoutes = ['/temp/keygen'];
 await migrate(db, { migrationsFolder: './drizzle' });
 
 export const handle: Handle = async ({ event, resolve }) => {
+	console.log(event.request.headers)
 	// Stage 1
 
 	const config = await db.select().from(configTable).limit(1);
