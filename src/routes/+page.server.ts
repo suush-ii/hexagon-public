@@ -5,7 +5,7 @@ import { fail, redirect } from '@sveltejs/kit';
 import { configTable } from '$src/lib/server/schema/config';
 import { db } from '$src/lib/server/db';
 import { auth } from '$src/lib/server/lucia';
-import { PostgresError } from 'postgres';
+import postgres from 'postgres'; // TODO: Check this out later seems to be a workaround for a postgres issue https://github.com/porsager/postgres/issues/684 10/3/2023
 import { usersTable } from '$src/lib/server/schema/users';
 import { eq } from 'drizzle-orm';
 
@@ -72,7 +72,7 @@ export const actions: Actions = {
 			event.locals.auth.setSession(session); // set session cookie
 		} catch (e) {
 			//console.log(e)
-			if (e instanceof PostgresError && e.code === '23505') {
+			if (e instanceof postgres.PostgresError && e.code === '23505') {
 				return setError(form, 'username', 'Username taken!');
 			}
 
