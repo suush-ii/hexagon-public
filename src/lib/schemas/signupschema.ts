@@ -60,13 +60,20 @@ export const usernameSchema = z.object({
 		.refine((value) => isAlphaNumeric(value), 'Only special characters allowed are one underscore.')
 });
 
-const { shape } = usernameSchema;
-
-export const formSchema = z.object({
-	username: shape.username.superRefine((value, ctx) => isTaken(value, ctx)),
+export const validateSchema = z.object({
+	username: usernameSchema.shape.username,
 	password: z.string({ required_error: 'Password required.' }).min(1).max(100),
 	key: z.string({ required_error: 'Key required.' }).min(1).max(100),
 	gender: z.enum(['male', 'female', 'nonbinary']).default('nonbinary')
+});
+
+const { shape } = validateSchema
+
+export const formSchema = z.object({
+	username: shape.username.superRefine((value, ctx) => isTaken(value, ctx)),
+	password: shape.password,
+	key: shape.key,
+	gender: shape.gender
 });
 
 export type FormSchema = typeof formSchema;
