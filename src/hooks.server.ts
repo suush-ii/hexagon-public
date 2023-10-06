@@ -1,17 +1,25 @@
+import {sequence} from '@sveltejs/kit/hooks';
+import * as Sentry from '@sentry/sveltekit';
 import { redirect, type Handle, type HandleServerError } from '@sveltejs/kit';
 import { configTable } from '$lib/server/schema/config';
 import { DEBUG } from '$env/static/private';
 import { db } from '$lib/server/db';
 import { migrate } from 'drizzle-orm/postgres-js/migrator';
 import { auth } from '$lib/server/lucia';
+import { dev } from "$app/environment"
+
+Sentry.init({
+    dsn: "https://4d1e802039697045efc6ed728b2bf873@o4506000665542656.ingest.sentry.io/4506000666591232",
+    tracesSampleRate: 1,
+	environment: dev === true ? "dev" : "production"
+})
 
 const protectedRoutes = ['/account/dashboard'];
 const adminProtectedRoutes = ['/temp/keygen'];
 
 await migrate(db, { migrationsFolder: './drizzle' });
 
-export const handle: Handle = async ({ event, resolve }) => {
-	console.log(event.request.headers)
+export const handle: Handle = sequence(Sentry.sentryHandle(), async ({ event, resolve }) => {
 	// Stage 1
 
 	const config = await db.select().from(configTable).limit(1);
@@ -55,4 +63,5 @@ export const handle: Handle = async ({ event, resolve }) => {
 	// Stage 3
 
 	return response;
-};
+});
+export const handleError = Sentry.handleErrorWithSentry();
