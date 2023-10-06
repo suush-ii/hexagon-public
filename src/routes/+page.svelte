@@ -76,7 +76,7 @@
 	});
 </script>
 
-<div class="flex h-screen">
+<div class="flex m-auto">
 	<Button href="/login" class="absolute right-5 top-5">Log In</Button>
 
 	<div class="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
