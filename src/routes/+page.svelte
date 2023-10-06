@@ -87,7 +87,7 @@
 			exagon
 		</div>
 
-		<div class="mx-auto overflow-hidden flex flex-row gap-1 h-4">
+		<div class="mx-auto overflow-hidden flex flex-row gap-1 h-4 select-none">
 			<p class="mx-auto text-sm text-muted-foreground">Has been clicked</p>
 			<div class="" style="transform: translate(0, {100 * offset}%)">
 				<p class="absolute top-[-100%] mx-auto text-sm text-muted-foreground">
