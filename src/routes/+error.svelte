@@ -6,7 +6,7 @@
 	import { Button } from '$src/components/ui/button';
 </script>
 
-<div class="flex h-screen">
+<div class="m-auto flex">
 	<Card.Root class="w-96 p-4 text-center m-auto">
 		<Card.Header>
 			<Card.Title class="text-3xl font-bold">{$page.status}</Card.Title>

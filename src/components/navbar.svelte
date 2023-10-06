@@ -6,7 +6,7 @@
 </script>
 
 <header
-	class="supports-backdrop-blur:bg-background/60 absolute top-0 z-40 w-full border-b bg-background/95 shadow-sm backdrop-blur"
+	class="supports-backdrop-blur:bg-background/60 fixed top-0 z-40 w-full border-b bg-background/95 shadow-sm backdrop-blur flex"
 >
 	<div class="container flex h-14 items-center">
 		<nav class="flex items-center space-x-4 lg:space-x-6 w-full">
@@ -38,7 +38,7 @@
 	</div>
 	{#if loggedIn}
 		<div
-			class="supports-backdrop-blur:bg-background/60 sticky top-0 z-40 w-full border-b bg-muted-foreground/5 shadow-sm backdrop-blur"
+			class="supports-backdrop-blur:bg-background/60 sticky top-0 z-40 w-full border-b bg-muted-foreground/5 shadow-sm backdrop-blur flex"
 		>
 			<div class="container flex h-10 items-center">
 				<nav class="flex items-center space-x-4 lg:space-x-6">
