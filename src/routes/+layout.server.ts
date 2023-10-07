@@ -4,8 +4,9 @@ import { configTable } from '$src/lib/server/schema/config';
 import { db } from '$lib/server/db';
 const protectedroutes = ['/home', '/catalog', '/develop'];
 
-export const load: LayoutServerLoad = (async ({ url, locals }) => {
+export const load: LayoutServerLoad = (async ({ url, locals, request }) => {
 	//console.log(session)
+	console.log(request.headers)
 
 	const session = locals.session;
 
