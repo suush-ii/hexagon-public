@@ -21,7 +21,7 @@
 <Navbar loggedIn={loggedIn} signUpButton={true} />
 {/if}
 
-<main class="pt-{loggedIn === false ? "14": "24"} flex flex-1">
+<main class="pt-24 {$page.url.pathname != '/' && $page.url.pathname != '/login' ? "" : "!pt-0"} flex flex-1">
 <slot />
 </main>
 

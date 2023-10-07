@@ -31,7 +31,7 @@ export const load: LayoutServerLoad = (async ({ url, locals }) => {
         }
     }
     return {
-        session
+        session: session?.user
     }
 
 }) satisfies LayoutServerLoad;
