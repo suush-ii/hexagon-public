@@ -4,7 +4,9 @@ import type { LayoutServerLoad } from './$types';
 import { configTable } from '$src/lib/server/schema/config';
 import { db } from '$lib/server/db';
 const protectedroutes = [
-	'/home'
+	'/home',
+    '/catalog',
+    '/develop'
 ]
 
 export const load: LayoutServerLoad = (async ({ url, locals }) => {
