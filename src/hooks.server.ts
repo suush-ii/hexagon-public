@@ -14,7 +14,7 @@ Sentry.init({
 	environment: dev === true ? "dev" : "production"
 })
 
-const protectedRoutes = ['/account/dashboard'];
+const protectedRoutes = ['/home'];
 const adminProtectedRoutes = ['/temp/keygen'];
 
 await migrate(db, { migrationsFolder: './drizzle' });
@@ -41,21 +41,21 @@ export const handle: Handle = sequence(Sentry.sentryHandle(), async ({ event, re
 		event.locals.session = session;
 	}
 
-	/*if (protectedRoutes.includes(event.url.pathname) === true || protectedRoutes.some(substr => event.url.pathname.toLowerCase().startsWith(substr.toLowerCase())) === true) {
+	if (protectedRoutes.includes(event.url.pathname) === true || protectedRoutes.some(substr => event.url.pathname.toLowerCase().startsWith(substr.toLowerCase())) === true) {
 		if (!session) {
-			throw redirect(302, "/auth/login")
+			throw redirect(302, "/login")
 		}
 	}
 
     if (adminProtectedRoutes.includes(event.url.pathname) === true || adminProtectedRoutes.some(substr => event.url.pathname.toLowerCase().startsWith(substr.toLowerCase())) === true) {
 		if (!session) {
-			throw redirect(302, "/auth/login")
+			throw redirect(302, "/login")
 		}
 
         if (session.user.role !== "owner" && session.user.role !== "admin" && session.user.role !== "mod") {
-            throw redirect(302, "/auth/login")
+            throw redirect(302, "/login")
         }
-	}*/
+	}
 
 	const response = await resolve(event); // Stage 2
 	//await pool.end();
