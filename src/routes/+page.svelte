@@ -22,8 +22,8 @@
 
 	const displayed_count = spring();
 
-	displayed_count.set(0)
-	
+	displayed_count.set(0);
+
 	$: displayed_count.set(clickerPage);
 
 	$: offset = modulo($displayed_count, 1);

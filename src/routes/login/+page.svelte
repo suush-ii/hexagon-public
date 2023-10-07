@@ -1,7 +1,6 @@
 <script lang="ts">
 	import * as Form from '$src/components/ui/form';
 	import { Loader2 } from 'lucide-svelte';
-	import type { PageData } from './$types';
 	import { formSchema, type FormSchema } from '$lib/schemas/loginschema';
 	import type { SuperValidated } from 'sveltekit-superforms';
 	import Warntext from '$src/components/warntext.svelte';

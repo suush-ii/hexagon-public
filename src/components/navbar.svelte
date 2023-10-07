@@ -11,24 +11,39 @@
 >
 	<div class="container flex h-14 items-center">
 		<nav class="flex items-center space-x-4 lg:space-x-6 w-full">
-			<a href="{loggedIn === false ? "/" : "/home"}"><img alt="H" class="w-12" src="/hexagon128.png" /></a>
-			<a href="/home" class="text-base font-medium {$page.url.pathname === "/home" ? "": "text-muted-foreground"} transition-colors hover:text-primary"> Home </a>
+			<a href={loggedIn === false ? '/' : '/home'}
+				><img alt="H" class="w-12" src="/hexagon128.png" /></a
+			>
+			<a
+				href="/home"
+				class="text-base font-medium {$page.url.pathname === '/home'
+					? ''
+					: 'text-muted-foreground'} transition-colors hover:text-primary"
+			>
+				Home
+			</a>
 
 			<a
 				href="/games"
-				class="text-base font-medium {$page.url.pathname === "/games" ? "": "text-muted-foreground"} transition-colors hover:text-primary"
+				class="text-base font-medium {$page.url.pathname === '/games'
+					? ''
+					: 'text-muted-foreground'} transition-colors hover:text-primary"
 			>
 				Games
 			</a>
 			<a
 				href="/catalog"
-				class="text-base font-medium {$page.url.pathname === "/catalog" ? "": "text-muted-foreground"} transition-colors hover:text-primary"
+				class="text-base font-medium {$page.url.pathname === '/catalog'
+					? ''
+					: 'text-muted-foreground'} transition-colors hover:text-primary"
 			>
 				Catalog
 			</a>
 			<a
 				href="/develop"
-				class="text-base font-medium {$page.url.pathname === "/develop" ? "": "text-muted-foreground"} transition-colors hover:text-primary"
+				class="text-base font-medium {$page.url.pathname === '/develop'
+					? ''
+					: 'text-muted-foreground'} transition-colors hover:text-primary"
 			>
 				Develop
 			</a>
