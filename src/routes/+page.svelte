@@ -14,7 +14,7 @@
 
 	export let data: PageData;
 
-	export let form: SuperValidated<FormSchema>;
+	let form = data.form
 
 	$: clickerPage = data.clicker;
 

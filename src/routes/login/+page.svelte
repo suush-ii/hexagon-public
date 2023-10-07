@@ -5,7 +5,11 @@
 	import type { SuperValidated } from 'sveltekit-superforms';
 	import Warntext from '$src/components/warntext.svelte';
 
-	export let form: SuperValidated<FormSchema>;
+	import type { PageData } from './$types';
+	
+  	export let data: PageData;
+
+	let form = data.form
 </script>
 
 <div class="flex m-auto">
