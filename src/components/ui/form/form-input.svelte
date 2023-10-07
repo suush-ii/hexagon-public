@@ -10,6 +10,7 @@
 </script>
 
 <Input
+	class="data-invalidInput:outline-dashed data-invalidInput:outline-2 data-invalidInput:outline-destructive/70 focus:data-invalidInput:outline-destructive"
 	{...$attrStore}
 	bind:value={$value}
 	{...$$restProps}

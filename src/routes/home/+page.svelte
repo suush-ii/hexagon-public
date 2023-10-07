@@ -13,10 +13,12 @@
 		{data.welcomeMessage}, {data.session.username}...
 	</h1>
 
-	<h1 class="text-3xl pt-24">Friends (0)</h1>
+	<div class="pt-24 flex flex-col gap-y-4">
+
+	<h1 class="text-3xl">Friends (0)</h1>
 
 	<div
-		class="supports-backdrop-blur:bg-background/60 w-full border-b bg-muted-foreground/5 shadow-sm backdrop-blur flex flex-row p-4 gap-x-4 select-none"
+		class="supports-backdrop-blur:bg-background/60 w-full border-b bg-muted-foreground/5 shadow-sm backdrop-blur flex flex-row p-4 gap-x-4 select-none outline-dashed outline-muted-foreground/20"
 	>
 		<div class="mx-auto flex flex-col w-full gap-y-4">
 			<HeartCrack class="w-24 h-24 mx-auto" strokeWidth={1.2} />
@@ -32,4 +34,7 @@
           <p class="truncate">SushiDesigner</p>
         </div>-->
 	</div>
+
+</div>
+
 </div>

@@ -56,6 +56,9 @@ const config = {
 			fontFamily: {
 				sans: [...fontFamily.sans]
 			}
+		},
+		data: {
+			invalidInput: 'invalid="true"'
 		}
 	}
 };
