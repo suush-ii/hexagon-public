@@ -13,10 +13,12 @@
 		"generate": "drizzle-kit generate:pg",
 		"push": "drizzle-kit push:pg",
 		"drop": "drizzle-kit drop",
-		"prod": "PROTOCOL_HEADER=x-forwarded-proto HOST_HEADER=x-forwarded-host PORT=9000 HOST=127.0.0.1 bun build/index.js"
+		"prod": "PROTOCOL_HEADER=x-forwarded-proto HOST_HEADER=x-forwarded-host PORT=9000 HOST=127.0.0.1 bun build/index.js",
+		"prodnode": "PROTOCOL_HEADER=x-forwarded-proto HOST_HEADER=x-forwarded-host PORT=9000 HOST=127.0.0.1 node build"
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "^2.0.0",
+		"@sveltejs/adapter-node": "^1.3.1",
 		"@sveltejs/kit": "^1.20.4",
 		"@typescript-eslint/eslint-plugin": "^6.0.0",
 		"@typescript-eslint/parser": "^6.0.0",
