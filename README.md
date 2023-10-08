@@ -1,6 +1,8 @@
 # Hexagon
 
-Using bun in production and node for development.
+Using ~~bun~~ in production and node for development.
+
+Seems like bun doesn't support everything well right now we will return eventually :3.
 
 Setup env using .env.example
 
@@ -48,7 +50,7 @@ location / {
 ```
 
 ```bash
-bun run prod
+node run prod
 ```
 
 You can preview the production build with `npm run preview`.
