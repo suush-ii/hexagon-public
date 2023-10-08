@@ -15,7 +15,7 @@
 <div class="flex m-auto">
 	<div class="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
 		<div class="relative mx-auto font-bold z-20 flex items-center text-4xl">
-			<img alt="H" class="w-16" src="/hexagon128.png" />
+			<img alt="H" class="w-16" src="/hexagon512.png" />
 			exagon
 		</div>
 		<div class="flex flex-col space-y-2 text-center">
