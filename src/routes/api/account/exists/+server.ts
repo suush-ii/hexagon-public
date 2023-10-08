@@ -4,7 +4,14 @@ import { eq } from 'drizzle-orm';
 import type { RequestHandler } from './$types';
 import { db } from '$src/lib/server/db';
 
-import { usernameSchema } from '$lib/schemas/signupschema';
+import { formSchema as signUpSchema } from '$lib/schemas/signupschema';
+import { z } from 'zod';
+
+const { shape } = signUpSchema;
+
+const usernameSchema = z.object({
+	username: shape.username
+});
 
 export const POST: RequestHandler = async ({ request }) => {
 	let username: string;

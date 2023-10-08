@@ -33,7 +33,7 @@ function isAlphaNumeric(str: string) {
 	return true;
 }
 
-async function isTaken(username: string, ctx: z.RefinementCtx) {
+export async function isTaken(username: string, ctx: z.RefinementCtx) {
 	const taken = await fetch('/api/account/exists', {
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json' },
@@ -42,26 +42,18 @@ async function isTaken(username: string, ctx: z.RefinementCtx) {
 
 	const takenJson = await taken.json();
 	if (takenJson.success === true && takenJson.data.available === false) {
-		return ctx.addIssue({
-			code: z.ZodIssueCode.custom,
-			fatal: true,
-			message: 'Username not available.'
-		});
+		return true
 	} else {
-		return true;
+		return false
 	}
 }
 
-export const usernameSchema = z.object({
+export const formSchema = z.object({
 	username: z
-		.string({ required_error: 'Username required.' })
-		.min(3, { message: 'Username must be at least 3 characters!' })
-		.max(20, { message: "Username can't be over 20 characters!" })
-		.refine((value) => isAlphaNumeric(value), 'Only special characters allowed are one underscore.')
-});
-
-export const validateSchema = z.object({
-	username: usernameSchema.shape.username,
+	.string({ required_error: 'Username required.' })
+	.min(3, { message: 'Username must be at least 3 characters!' })
+	.max(20, { message: "Username can't be over 20 characters!" })
+	.refine((value) => isAlphaNumeric(value), 'Only special characters allowed are one underscore.'),
 	password: z
 		.string({ required_error: 'Password required.' })
 		.min(1, { message: 'Password required!' })
@@ -71,15 +63,6 @@ export const validateSchema = z.object({
 		.min(1, { message: 'Key required.' })
 		.max(100, { message: "Key can't be over 100 characters!" }),
 	gender: z.enum(['male', 'female', 'nonbinary']).default('nonbinary')
-});
-
-const { shape } = validateSchema;
-
-export const formSchema = z.object({
-	username: shape.username.superRefine((value, ctx) => isTaken(value, ctx)),
-	password: shape.password,
-	key: shape.key,
-	gender: shape.gender
 });
 
 export type FormSchema = typeof formSchema;
