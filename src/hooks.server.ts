@@ -13,7 +13,7 @@ Sentry.init({
 	environment: dev === true ? 'dev' : 'production'
 });
 
-const protectedRoutes = ['/home', '/catalog', '/develop'];
+const protectedRoutes = ['/home', '/catalog', '/develop', '/games'];
 const adminProtectedRoutes = ['/temp/keygen'];
 
 await migrate(db, { migrationsFolder: './drizzle' });

@@ -1,4 +1,4 @@
-import type { PageLoad } from './$types';
+import type { PageServerLoad } from './$types';
 const welcomeMessages = [
 	'Welkom',
 	'Mirëseerdhët',
@@ -97,7 +97,7 @@ const welcomeMessages = [
 	'Siyakwamukela'
 ];
 
-export const load: PageLoad = () => {
+export const load: PageServerLoad = () => {
 	return {
 		welcomeMessage: welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)]
 	};
