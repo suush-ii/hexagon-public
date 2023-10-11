@@ -4,6 +4,23 @@
 
 	export let loggedIn: boolean;
 	export let signUpButton = false;
+
+	interface pagePrimitive {
+		pageUrl: string;
+        friendlyName: string;
+	}
+
+	let pages: {
+    notAuthenticated: pagePrimitive[];
+    authenticated: pagePrimitive[];
+} = {notAuthenticated: [{pageUrl: "/home", friendlyName: "Home"},
+ {pageUrl: "/games", friendlyName: "Games"},
+  {pageUrl: "/catalog", friendlyName: "Catalog"},
+   {pageUrl: "/develop", friendlyName: "Develop"}],
+ authenticated: [{pageUrl: "/users/1/profile", friendlyName: "Profile"},
+  {pageUrl: "/friends/requests", friendlyName: "Friends"},
+   {pageUrl: "/avatar", friendlyName: "Customize"},
+    {pageUrl: "/cum", friendlyName: "Cum"}]}
 </script>
 
 <header
@@ -14,39 +31,21 @@
 			<a href={loggedIn === false ? '/' : '/home'}
 				><img alt="H" class="w-12" src="/hexagon128.png" /></a
 			>
+			{#each pages.notAuthenticated as navPage}
 			<a
-				href="/home"
-				class="text-base font-medium {$page.url.pathname === '/home'
+				href={navPage.pageUrl}
+				class="text-base font-medium {$page.url.pathname === navPage.pageUrl
 					? ''
-					: 'text-muted-foreground'} transition-colors hover:text-primary"
+					: 'text-muted-foreground'} transition-colors hover:text-primary group relative"
 			>
-				Home
+				{navPage.friendlyName}
+				{#if $page.url.pathname === navPage.pageUrl}
+				<div class="transition-width delay-0 absolute min-h-[1px] w-full shadow-[inset_0_-2px_0_0_white]"></div>
+				{:else}
+				<div class="transition-width delay-0 absolute min-h-[1px] w-4 group-hover:w-full group-hover:shadow-[inset_0_-2px_0_0_white]"></div>
+				{/if}
 			</a>
-
-			<a
-				href="/games"
-				class="text-base font-medium {$page.url.pathname === '/games'
-					? ''
-					: 'text-muted-foreground'} transition-colors hover:text-primary"
-			>
-				Games
-			</a>
-			<a
-				href="/catalog"
-				class="text-base font-medium {$page.url.pathname === '/catalog'
-					? ''
-					: 'text-muted-foreground'} transition-colors hover:text-primary"
-			>
-				Catalog
-			</a>
-			<a
-				href="/develop"
-				class="text-base font-medium {$page.url.pathname === '/develop'
-					? ''
-					: 'text-muted-foreground'} transition-colors hover:text-primary"
-			>
-				Develop
-			</a>
+			{/each}
 			{#if signUpButton}
 				<Button href="/" class="absolute right-4" variant="outline">Sign Up</Button>
 			{/if}
@@ -58,31 +57,14 @@
 		>
 			<div class="container flex h-10 items-center">
 				<nav class="flex items-center space-x-4 lg:space-x-6">
+					{#each pages.authenticated as navPage}
 					<a
-						href="/users/1/profile"
+						href={navPage.pageUrl}
 						class="text-xs font-medium text-muted-foreground transition-colors hover:text-primary"
 					>
-						Profile
+						{navPage.friendlyName}
 					</a>
-
-					<a
-						href="/friends/requests"
-						class="text-xs font-medium text-muted-foreground transition-colors hover:text-primary"
-					>
-						Friends
-					</a>
-					<a
-						href="/avatar"
-						class="text-xs font-medium text-muted-foreground transition-colors hover:text-primary"
-					>
-						Customize
-					</a>
-					<a
-						href="/cum"
-						class="text-xs font-medium text-muted-foreground transition-colors hover:text-primary"
-					>
-						Cum
-					</a>
+					{/each}
 				</nav>
 			</div>
 		</div>

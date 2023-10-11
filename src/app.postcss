@@ -41,10 +41,13 @@
 	* {
 		@apply border-border;
 	}
-	a {
-		@apply hover:underline;
-	}
 	body {
 		@apply bg-background text-foreground;
+	}
+}
+
+@layer components {
+	.hover-underline {
+		@apply hover:underline hover:underline-offset-4;
 	}
 }

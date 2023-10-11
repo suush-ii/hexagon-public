@@ -21,7 +21,7 @@
 
 	<h1 class="text-3xl">Friends ({friends.length})</h1>
 
-	<a href="/friends"><h1 class="text-xl">See All</h1></a>
+	<a href="/friends"><h1 class="text-xl hover-underline">See All</h1></a>
 
 	</div>
 
