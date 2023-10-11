@@ -6,10 +6,10 @@
 	import Warntext from '$src/components/warntext.svelte';
 
 	import type { PageData } from './$types';
-	
-  	export let data: PageData;
 
-	let form = data.form
+	export let data: PageData;
+
+	let form = data.form;
 </script>
 
 <div class="flex m-auto">

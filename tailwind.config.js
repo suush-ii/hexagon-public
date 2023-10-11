@@ -14,7 +14,7 @@ const config = {
 		},
 		extend: {
 			transitionProperty: {
-				'width': 'width'
+				width: 'width'
 			},
 			colors: {
 				border: 'hsl(var(--border))',
@@ -50,7 +50,7 @@ const config = {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
-				success: "hsl(var(--success))"
+				success: 'hsl(var(--success))'
 			},
 			borderRadius: {
 				lg: 'var(--radius)',

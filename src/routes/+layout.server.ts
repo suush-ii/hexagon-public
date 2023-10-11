@@ -5,7 +5,6 @@ import { db } from '$lib/server/db';
 const protectedroutes = ['/home', '/catalog', '/develop', '/games'];
 
 export const load: LayoutServerLoad = (async ({ url, locals, request }) => {
-
 	const session = locals.session;
 
 	if (

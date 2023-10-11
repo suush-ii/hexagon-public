@@ -42,18 +42,21 @@ export async function isTaken(username: string, ctx: z.RefinementCtx) {
 
 	const takenJson = await taken.json();
 	if (takenJson.success === true && takenJson.data.available === false) {
-		return true
+		return true;
 	} else {
-		return false
+		return false;
 	}
 }
 
 export const formSchema = z.object({
 	username: z
-	.string({ required_error: 'Username required.' })
-	.min(3, { message: 'Username must be at least 3 characters!' })
-	.max(20, { message: "Username can't be over 20 characters!" })
-	.refine((value) => isAlphaNumeric(value), 'Only special characters allowed are one underscore.'),
+		.string({ required_error: 'Username required.' })
+		.min(3, { message: 'Username must be at least 3 characters!' })
+		.max(20, { message: "Username can't be over 20 characters!" })
+		.refine(
+			(value) => isAlphaNumeric(value),
+			'Only special characters allowed are one underscore.'
+		),
 	password: z
 		.string({ required_error: 'Password required.' })
 		.min(1, { message: 'Password required!' })

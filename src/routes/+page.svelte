@@ -14,7 +14,7 @@
 
 	export let data: PageData;
 
-	let form = data.form
+	let form = data.form;
 
 	$: clickerPage = data.clicker;
 
