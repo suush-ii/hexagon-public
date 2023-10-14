@@ -5,14 +5,17 @@
 	import { Wand2 } from 'lucide-svelte'
 	import { Home } from 'lucide-svelte'
 	import { Terminal } from 'lucide-svelte'
+	import type { SvelteComponentTyped } from 'svelte/internal'
+	type Component = $$Generic<typeof SvelteComponentTyped<any, any, any>>
 
 	export let loggedIn: boolean
 	export let signUpButton = false
+	export let userId = 0
 
 	interface pagePrimitive {
 		pageUrl: string
 		friendlyName: string
-		Icon?: any // TODO: HACK!
+		Icon?: Component
 	}
 
 	let pages: {
@@ -26,7 +29,7 @@
 			{ pageUrl: '/develop', friendlyName: 'Develop', Icon: Terminal }
 		],
 		authenticated: [
-			{ pageUrl: '/users/1/profile', friendlyName: 'Profile' },
+			{ pageUrl: `/users/${userId}/profile`, friendlyName: 'Profile' },
 			{ pageUrl: '/friends/requests', friendlyName: 'Friends' },
 			{ pageUrl: '/avatar', friendlyName: 'Customize' },
 			{ pageUrl: '/cum', friendlyName: 'Cum' }
@@ -37,7 +40,7 @@
 <header
 	class="supports-backdrop-blur:bg-background/60 fixed top-0 z-40 w-full border-b bg-background/95 shadow-sm flex"
 >
-	<div class="container flex h-14 items-center">
+	<div class="container flex h-14 items-center select-none">
 		<nav class="flex items-center space-x-4 lg:space-x-6 w-full">
 			<a href={loggedIn === false ? '/' : '/home'}
 				><img alt="H" class="w-12" src="/hexagon128.png" /></a

@@ -11,6 +11,9 @@
 
 	import Warntext from '$src/components/warntext.svelte'
 
+	import { UserSquare2 } from 'lucide-svelte'
+	import { Key } from 'lucide-svelte'
+
 	import { pageName } from '$src/stores'
 	pageName.set('Free Games')
 
@@ -111,7 +114,11 @@
 				<Form.Field {config} name="username">
 					<Form.Item>
 						<Form.Label>Username</Form.Label>
-						<Form.Input disabled={submitting} placeholder="(3-20 Characters, no spaces)" />
+						<Form.Input
+							disabled={submitting}
+							placeholder="(3-20 Characters, no spaces)"
+							icon={UserSquare2}
+						/>
 						<Form.Validation />
 					</Form.Item>
 				</Form.Field>
@@ -119,7 +126,7 @@
 				<Form.Field {config} name="password">
 					<Form.Item>
 						<Form.Label>Password</Form.Label>
-						<Form.Input disabled={submitting} placeholder="(Unique)" type="password" />
+						<Form.Input disabled={submitting} placeholder="(Unique)" type="password" icon={Key} />
 						<Form.Validation />
 					</Form.Item>
 				</Form.Field>
