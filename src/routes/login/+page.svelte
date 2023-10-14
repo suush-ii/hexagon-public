@@ -10,7 +10,7 @@
 	import type { PageData } from './$types'
 
 	import { pageName } from '$src/stores'
-	pageName.set('Home')
+	pageName.set('Login')
 
 	export let data: PageData
 
