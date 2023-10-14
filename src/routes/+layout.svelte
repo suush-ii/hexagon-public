@@ -10,10 +10,12 @@
 	export let data: PageData
 
 	$: loggedIn = data.session ? true : false
+
+	$: newPageName = ($pageName ?? '') + ($pageName ? ' -' : '') // if we do not have a pageName just send Hexagon
 </script>
 
 <svelte:head>
-	<title>{$pageName} - {appName}</title>
+	<title>{newPageName} {appName}</title>
 	<link rel="icon" type="image/png" href="/hexagon128.png" />
 </svelte:head>
 
