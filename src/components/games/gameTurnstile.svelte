@@ -5,7 +5,7 @@
 
 	import { ChevronLeft, ChevronRight } from 'lucide-svelte';
 
-    import EmptyCard from "$src/components/emptyCard.svelte"
+	import EmptyCard from '$src/components/emptyCard.svelte';
 
 	let listElement: any;
 
@@ -35,7 +35,6 @@
 				leftButtonDisabled = true;
 				rightButtonDisabled = false;
 				listElement.scrollTo(0, 0);
-				console.log('a');
 			} else {
 				leftButtonDisabled = false;
 				rightButtonDisabled = false;
@@ -44,17 +43,19 @@
 		}
 	}
 
-    let games: boolean = false
+	let games: boolean = false;
 
-    if (games === false){
-        rightButtonDisabled = true
-    }
+	if (games === false) {
+		rightButtonDisabled = true;
+	}
 </script>
 
 <div class="flex flex-row w-full flex-wrap justify-end">
 	<a href="/games/popular"><h1 class="text-xl hover-underline">See All</h1></a>
 
-	<div class="flex flex-row gap-x-2 w-full outline-dashed outline-muted-foreground/20 rounded-xl outline-offset-4">
+	<div
+		class="flex flex-row gap-x-2 w-full outline-dashed outline-muted-foreground/20 rounded-xl outline-offset-4"
+	>
 		<Button
 			class="h-full"
 			size="icon"
@@ -66,50 +67,50 @@
 		>
 
 		<div class="flex flex-row gap-x-3 w-full overflow-hidden scroll-smooth" bind:this={listElement}>
-            {#if games === true}
-			<GameCard gameId={1} gameName="game game gamasdfassdfdfne" />
-			<GameCard gameId={1} gameName="NEW SHIT TYCOON [🔥]" />
-			<GameCard gameId={1} gameName="NEW SHIT TYCOON [🔥]" />
-			<GameCard gameId={1} gameName="NEW SHIT TYCOON [🔥]" />
-			<GameCard gameId={1} gameName="NEW SHIT TYCOON [🔥]" />
-			<GameCard gameId={1} gameName="NEW SHIT TYCOON [🔥]" />
-			<GameCard gameId={1} gameName="NEW SHIT TYCOON [🔥]" />
-			<GameCard gameId={1} gameName="NEW SHIT TYCOON [🔥]" />
-			<GameCard gameId={1} gameName="NEW SHIT TYCOON [🔥]" />
-			<GameCard gameId={1} gameName="NEW SHIT TYCOON [🔥]" />
-			<GameCard gameId={1} gameName="NEW SHIT TYCOON [🔥]" />
-			<GameCard gameId={1} gameName="NEW SHIT TYCOON [🔥]" />
-			<GameCard gameId={1} gameName="NEW SHIT TYCOON [🔥]" />
-			<GameCard gameId={1} gameName="NEW SHIT TYCOON [🔥]" />
-			<GameCard gameId={1} gameName="NEW SHIT TYCOON [🔥]" />
-			<GameCard gameId={1} gameName="NEW SHIT TYCOON [🔥]" />
-			<GameCard gameId={1} gameName="NEW SHIT TYCOON [🔥]" />
-			<GameCard gameId={1} gameName="NEW SHIT TYCOON [🔥]" />
-			<GameCard gameId={1} gameName="NEW SHIT TYCOON [🔥]" />
-			<GameCard gameId={1} gameName="NEW SHIT TYCOON [🔥]" />
-			<GameCard gameId={1} gameName="NEW SHIT TYCOON [🔥]" />
-			<GameCard gameId={1} gameName="NEW SHIT TYCOON [🔥]" />
-			<GameCard gameId={1} gameName="NEW SHIT TYCOON [🔥]" />
-			<GameCard gameId={1} gameName="NEW SHIT TYCOON [🔥]" />
-			<GameCard gameId={1} gameName="NEW SHIT TYCOON [🔥]" />
-			<GameCard gameId={1} gameName="NEW SHIT TYCOON [🔥]" />
-			<GameCard gameId={1} gameName="NEW SHIT TYCOON [🔥]" />
-			<GameCard gameId={1} gameName="NEW SHIT TYCOON [🔥]" />
-			<GameCard gameId={1} gameName="NEW SHIT TYCOON [🔥]" />
-			<GameCard gameId={1} gameName="NEW SHIT TYCOON [🔥]" />
-			<GameCard gameId={1} gameName="NEW SHIT TYCOON [🔥]" />
-			<GameCard gameId={1} gameName="NEW SHIT TYCOON [🔥]" />
-			<GameCard gameId={1} gameName="NEW SHIT TYCOON [🔥]" />
-			<GameCard gameId={1} gameName="NEW SHIT TYCOON [🔥]" />
-			<GameCard gameId={1} gameName="NEW SHIT TYCOON [🔥]" />
-			<GameCard gameId={1} gameName="NEW SHIT TYCOON [🔥]" />
-			<GameCard gameId={1} gameName="NEW SHIT TYCOON [🔥]" />
-			<GameCard gameId={1} gameName="NEW SHIT TYCOON [🔥]" />
-			<GameCard gameId={1} gameName="NEW SHIT TYCOON [🔥]" />
-			<GameCard gameId={1} gameName="NEW SHIT TYCOON [🔥]" />
-            {:else}
-            <EmptyCard class="p-8 m-auto"/>
-            {/if}
+			{#if games === true}
+				<GameCard gameId={1} gameName="game game gamasdfassdfdfne" />
+				<GameCard gameId={1} gameName="NEW SHIT TYCOON [🔥]" />
+				<GameCard gameId={1} gameName="NEW SHIT TYCOON [🔥]" />
+				<GameCard gameId={1} gameName="NEW SHIT TYCOON [🔥]" />
+				<GameCard gameId={1} gameName="NEW SHIT TYCOON [🔥]" />
+				<GameCard gameId={1} gameName="NEW SHIT TYCOON [🔥]" />
+				<GameCard gameId={1} gameName="NEW SHIT TYCOON [🔥]" />
+				<GameCard gameId={1} gameName="NEW SHIT TYCOON [🔥]" />
+				<GameCard gameId={1} gameName="NEW SHIT TYCOON [🔥]" />
+				<GameCard gameId={1} gameName="NEW SHIT TYCOON [🔥]" />
+				<GameCard gameId={1} gameName="NEW SHIT TYCOON [🔥]" />
+				<GameCard gameId={1} gameName="NEW SHIT TYCOON [🔥]" />
+				<GameCard gameId={1} gameName="NEW SHIT TYCOON [🔥]" />
+				<GameCard gameId={1} gameName="NEW SHIT TYCOON [🔥]" />
+				<GameCard gameId={1} gameName="NEW SHIT TYCOON [🔥]" />
+				<GameCard gameId={1} gameName="NEW SHIT TYCOON [🔥]" />
+				<GameCard gameId={1} gameName="NEW SHIT TYCOON [🔥]" />
+				<GameCard gameId={1} gameName="NEW SHIT TYCOON [🔥]" />
+				<GameCard gameId={1} gameName="NEW SHIT TYCOON [🔥]" />
+				<GameCard gameId={1} gameName="NEW SHIT TYCOON [🔥]" />
+				<GameCard gameId={1} gameName="NEW SHIT TYCOON [🔥]" />
+				<GameCard gameId={1} gameName="NEW SHIT TYCOON [🔥]" />
+				<GameCard gameId={1} gameName="NEW SHIT TYCOON [🔥]" />
+				<GameCard gameId={1} gameName="NEW SHIT TYCOON [🔥]" />
+				<GameCard gameId={1} gameName="NEW SHIT TYCOON [🔥]" />
+				<GameCard gameId={1} gameName="NEW SHIT TYCOON [🔥]" />
+				<GameCard gameId={1} gameName="NEW SHIT TYCOON [🔥]" />
+				<GameCard gameId={1} gameName="NEW SHIT TYCOON [🔥]" />
+				<GameCard gameId={1} gameName="NEW SHIT TYCOON [🔥]" />
+				<GameCard gameId={1} gameName="NEW SHIT TYCOON [🔥]" />
+				<GameCard gameId={1} gameName="NEW SHIT TYCOON [🔥]" />
+				<GameCard gameId={1} gameName="NEW SHIT TYCOON [🔥]" />
+				<GameCard gameId={1} gameName="NEW SHIT TYCOON [🔥]" />
+				<GameCard gameId={1} gameName="NEW SHIT TYCOON [🔥]" />
+				<GameCard gameId={1} gameName="NEW SHIT TYCOON [🔥]" />
+				<GameCard gameId={1} gameName="NEW SHIT TYCOON [🔥]" />
+				<GameCard gameId={1} gameName="NEW SHIT TYCOON [🔥]" />
+				<GameCard gameId={1} gameName="NEW SHIT TYCOON [🔥]" />
+				<GameCard gameId={1} gameName="NEW SHIT TYCOON [🔥]" />
+				<GameCard gameId={1} gameName="NEW SHIT TYCOON [🔥]" />
+			{:else}
+				<EmptyCard class="p-8 m-auto" />
+			{/if}
 		</div>
 
 		<Button

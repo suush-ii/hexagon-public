@@ -12,7 +12,7 @@
 	interface pagePrimitive {
 		pageUrl: string;
 		friendlyName: string;
-		Icon?: any // TODO: HACK!
+		Icon?: any; // TODO: HACK!
 	}
 
 	let pages: {
@@ -20,7 +20,7 @@
 		authenticated: pagePrimitive[];
 	} = {
 		notAuthenticated: [
-			{ pageUrl: '/home', friendlyName: 'Home', Icon: Home},
+			{ pageUrl: '/home', friendlyName: 'Home', Icon: Home },
 			{ pageUrl: '/games', friendlyName: 'Games', Icon: Gamepad2 },
 			{ pageUrl: '/catalog', friendlyName: 'Catalog', Icon: Wand2 },
 			{ pageUrl: '/develop', friendlyName: 'Develop', Icon: Terminal }
@@ -50,8 +50,8 @@
 						: 'text-muted-foreground'} transition-colors hover:text-primary group relative"
 				>
 					<div class="flex flex-row gap-x-2">
-					<svelte:component this={navPage.Icon} />
-					{navPage.friendlyName}
+						<svelte:component this={navPage.Icon} />
+						{navPage.friendlyName}
 					</div>
 					{#if $page.url.pathname === navPage.pageUrl}
 						<div
