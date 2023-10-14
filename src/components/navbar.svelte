@@ -1,6 +1,10 @@
 <script lang="ts">
 	import { Button } from '$src/components/ui/button';
 	import { page } from '$app/stores';
+	import { Gamepad2 } from 'lucide-svelte';
+	import { Wand2 } from 'lucide-svelte';
+	import { Home } from 'lucide-svelte';
+	import { Terminal } from 'lucide-svelte';
 
 	export let loggedIn: boolean;
 	export let signUpButton = false;
@@ -8,6 +12,7 @@
 	interface pagePrimitive {
 		pageUrl: string;
 		friendlyName: string;
+		Icon?: any // TODO: HACK!
 	}
 
 	let pages: {
@@ -15,10 +20,10 @@
 		authenticated: pagePrimitive[];
 	} = {
 		notAuthenticated: [
-			{ pageUrl: '/home', friendlyName: 'Home' },
-			{ pageUrl: '/games', friendlyName: 'Games' },
-			{ pageUrl: '/catalog', friendlyName: 'Catalog' },
-			{ pageUrl: '/develop', friendlyName: 'Develop' }
+			{ pageUrl: '/home', friendlyName: 'Home', Icon: Home},
+			{ pageUrl: '/games', friendlyName: 'Games', Icon: Gamepad2 },
+			{ pageUrl: '/catalog', friendlyName: 'Catalog', Icon: Wand2 },
+			{ pageUrl: '/develop', friendlyName: 'Develop', Icon: Terminal }
 		],
 		authenticated: [
 			{ pageUrl: '/users/1/profile', friendlyName: 'Profile' },
@@ -40,11 +45,14 @@
 			{#each pages.notAuthenticated as navPage}
 				<a
 					href={navPage.pageUrl}
-					class="text-base font-medium {$page.url.pathname === navPage.pageUrl
+					class="text-base font-medium space-y-1 {$page.url.pathname === navPage.pageUrl
 						? ''
 						: 'text-muted-foreground'} transition-colors hover:text-primary group relative"
 				>
+					<div class="flex flex-row gap-x-2">
+					<svelte:component this={navPage.Icon} />
 					{navPage.friendlyName}
+					</div>
 					{#if $page.url.pathname === navPage.pageUrl}
 						<div
 							class="transition-width delay-0 absolute min-h-[1px] w-full shadow-[inset_0_-2px_0_0_white]"

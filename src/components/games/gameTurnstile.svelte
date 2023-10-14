@@ -3,7 +3,7 @@
 
 	import { Button } from '$src/components/ui/button';
 
-	import { ChevronLeft, ChevronRight, HeartCrack } from 'lucide-svelte';
+	import { ChevronLeft, ChevronRight } from 'lucide-svelte';
 
     import EmptyCard from "$src/components/emptyCard.svelte"
 
@@ -45,6 +45,10 @@
 	}
 
     let games: boolean = false
+
+    if (games === false){
+        rightButtonDisabled = true
+    }
 </script>
 
 <div class="flex flex-row w-full flex-wrap justify-end">
