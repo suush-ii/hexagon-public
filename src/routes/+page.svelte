@@ -1,81 +1,81 @@
 <script lang="ts">
-	import { Button } from '$src/components/ui/button';
-	import { Loader2 } from 'lucide-svelte';
+	import { Button } from '$src/components/ui/button'
+	import { Loader2 } from 'lucide-svelte'
 
-	import * as Form from '$src/components/ui/form';
-	import { formSchema } from '$lib/schemas/signupschema';
-	import type { PageData } from './$types';
-	import { invalidateAll } from '$app/navigation';
-	import { onMount } from 'svelte';
-	import { spring } from 'svelte/motion';
+	import * as Form from '$src/components/ui/form'
+	import { formSchema } from '$lib/schemas/signupschema'
+	import type { PageData } from './$types'
+	import { invalidateAll } from '$app/navigation'
+	import { onMount } from 'svelte'
+	import { spring } from 'svelte/motion'
 
-	import Warntext from '$src/components/warntext.svelte';
+	import Warntext from '$src/components/warntext.svelte'
 
-	import { pageName } from '$src/stores';
-	pageName.set('Free Games');
+	import { pageName } from '$src/stores'
+	pageName.set('Free Games')
 
-	export let data: PageData;
+	export let data: PageData
 
-	let form = data.form;
+	let form = data.form
 
-	$: clickerPage = data.clicker;
+	$: clickerPage = data.clicker
 
-	let clicker = clickerPage;
+	let clicker = clickerPage
 
-	const displayed_count = spring();
+	const displayed_count = spring()
 
-	displayed_count.set(0);
+	displayed_count.set(0)
 
-	$: displayed_count.set(clickerPage);
+	$: displayed_count.set(clickerPage)
 
-	$: offset = modulo($displayed_count, 1);
+	$: offset = modulo($displayed_count, 1)
 
 	function modulo(n: number, m: number) {
 		// handle negative numbers
-		return ((n % m) + m) % m;
+		return ((n % m) + m) % m
 	}
 
 	$: if (!clicker) {
-		clicker = clickerPage;
+		clicker = clickerPage
 	}
 
 	$: if (clicker != clickerPage) {
 		// tick up/down
 		const interval = setInterval(() => {
 			if (clicker < clickerPage) {
-				clicker += 1;
+				clicker += 1
 			} else if (clicker > clickerPage) {
-				clicker -= 1;
+				clicker -= 1
 			}
 			if (clicker === clickerPage) {
-				clearInterval(interval);
+				clearInterval(interval)
 			}
-		}, 300);
+		}, 300)
 	}
 
-	let timer: number | undefined;
+	let timer: number | undefined
 
 	async function clickerInc() {
-		clearTimeout(timer);
+		clearTimeout(timer)
 		timer = setTimeout(async () => {
 			//clicker = clicker+1
-			const updated = await fetch('/api/clicker', { method: 'POST' });
-			const updatedJson = await updated.json();
-			clickerPage = updatedJson.data.clicker;
-		}, 200);
+			const updated = await fetch('/api/clicker', { method: 'POST' })
+			const updatedJson = await updated.json()
+			clickerPage = updatedJson.data.clicker
+		}, 200)
 	}
 
 	onMount(() => {
 		if (!document.hidden) {
 			const interval = setInterval(() => {
-				invalidateAll();
-			}, 5000);
+				invalidateAll()
+			}, 5000)
 
 			return () => {
-				clearInterval(interval);
-			};
+				clearInterval(interval)
+			}
 		}
-	});
+	})
 </script>
 
 <div class="flex m-auto">

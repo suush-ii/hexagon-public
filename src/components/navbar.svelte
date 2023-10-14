@@ -1,23 +1,23 @@
 <script lang="ts">
-	import { Button } from '$src/components/ui/button';
-	import { page } from '$app/stores';
-	import { Gamepad2 } from 'lucide-svelte';
-	import { Wand2 } from 'lucide-svelte';
-	import { Home } from 'lucide-svelte';
-	import { Terminal } from 'lucide-svelte';
+	import { Button } from '$src/components/ui/button'
+	import { page } from '$app/stores'
+	import { Gamepad2 } from 'lucide-svelte'
+	import { Wand2 } from 'lucide-svelte'
+	import { Home } from 'lucide-svelte'
+	import { Terminal } from 'lucide-svelte'
 
-	export let loggedIn: boolean;
-	export let signUpButton = false;
+	export let loggedIn: boolean
+	export let signUpButton = false
 
 	interface pagePrimitive {
-		pageUrl: string;
-		friendlyName: string;
-		Icon?: any; // TODO: HACK!
+		pageUrl: string
+		friendlyName: string
+		Icon?: any // TODO: HACK!
 	}
 
 	let pages: {
-		notAuthenticated: pagePrimitive[];
-		authenticated: pagePrimitive[];
+		notAuthenticated: pagePrimitive[]
+		authenticated: pagePrimitive[]
 	} = {
 		notAuthenticated: [
 			{ pageUrl: '/home', friendlyName: 'Home', Icon: Home },
@@ -31,7 +31,7 @@
 			{ pageUrl: '/avatar', friendlyName: 'Customize' },
 			{ pageUrl: '/cum', friendlyName: 'Cum' }
 		]
-	};
+	}
 </script>
 
 <header

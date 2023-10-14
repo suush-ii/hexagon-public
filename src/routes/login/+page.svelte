@@ -1,17 +1,17 @@
 <script lang="ts">
-	import * as Form from '$src/components/ui/form';
-	import { Loader2 } from 'lucide-svelte';
-	import { formSchema } from '$lib/schemas/loginschema';
-	import Warntext from '$src/components/warntext.svelte';
+	import * as Form from '$src/components/ui/form'
+	import { Loader2 } from 'lucide-svelte'
+	import { formSchema } from '$lib/schemas/loginschema'
+	import Warntext from '$src/components/warntext.svelte'
 
-	import type { PageData } from './$types';
+	import type { PageData } from './$types'
 
-	import { pageName } from '$src/stores';
-	pageName.set('Home');
+	import { pageName } from '$src/stores'
+	pageName.set('Home')
 
-	export let data: PageData;
+	export let data: PageData
 
-	let form = data.form;
+	let form = data.form
 </script>
 
 <div class="flex m-auto">

@@ -1,8 +1,8 @@
 <script lang="ts">
-	import GameTurnstile from '$src/components/games/gameTurnstile.svelte';
+	import GameTurnstile from '$src/components/games/gameTurnstile.svelte'
 
-	import { pageName } from '$src/stores';
-	pageName.set('Games');
+	import { pageName } from '$src/stores'
+	pageName.set('Games')
 </script>
 
 <div class="container p-4 flex flex-col gap-y-4">

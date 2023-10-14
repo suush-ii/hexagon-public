@@ -1,18 +1,18 @@
 <script lang="ts">
-	import type { PageData } from './$types';
+	import type { PageData } from './$types'
 
-	export let data: PageData;
+	export let data: PageData
 
-	import FriendAvatar from '$src/components/home/friendAvatar.svelte';
+	import FriendAvatar from '$src/components/home/friendAvatar.svelte'
 
-	import { pageName } from '$src/stores';
-	pageName.set('Home');
+	import { pageName } from '$src/stores'
+	pageName.set('Home')
 
-	import { HeartCrack } from 'lucide-svelte';
+	import { HeartCrack } from 'lucide-svelte'
 
-	import EmptyCard from '$src/components/emptyCard.svelte';
+	import EmptyCard from '$src/components/emptyCard.svelte'
 
-	let friends = [1]; // TODO: Fetch real friends.
+	let friends = [1] // TODO: Fetch real friends.
 </script>
 
 <div class="container p-8 flex flex-col">

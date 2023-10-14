@@ -1,9 +1,9 @@
 <script lang="ts">
-	import * as Avatar from '$src/components/ui/avatar';
+	import * as Avatar from '$src/components/ui/avatar'
 
-	export let gameName: string;
+	export let gameName: string
 
-	export let gameId: number;
+	export let gameId: number
 </script>
 
 <a href="/games/{gameId}"

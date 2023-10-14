@@ -1,21 +1,21 @@
 <script lang="ts">
-	import * as Avatar from '$src/components/ui/avatar';
-	import type { userState } from '$lib/types';
+	import * as Avatar from '$src/components/ui/avatar'
+	import type { userState } from '$lib/types'
 
-	export let username: string;
-	export let state: userState;
-	export let userid: number; // TODO: fetch
+	export let username: string
+	export let state: userState
+	export let userid: number // TODO: fetch
 
-	let css: string;
+	let css: string
 
 	if (state === 'online') {
-		css = 'outline-blue-500';
+		css = 'outline-blue-500'
 	} else if (state === 'game') {
-		css = 'outline-success';
+		css = 'outline-success'
 	} else if (state === 'studio') {
-		css = 'outline-orange-500';
+		css = 'outline-orange-500'
 	} else {
-		css = 'outline-muted-foreground/70';
+		css = 'outline-muted-foreground/70'
 	}
 </script>
 

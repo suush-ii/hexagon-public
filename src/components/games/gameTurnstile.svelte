@@ -1,52 +1,52 @@
 <script lang="ts">
-	import GameCard from '$src/components/games/gameCard.svelte';
+	import GameCard from '$src/components/games/gameCard.svelte'
 
-	import { Button } from '$src/components/ui/button';
+	import { Button } from '$src/components/ui/button'
 
-	import { ChevronLeft, ChevronRight } from 'lucide-svelte';
+	import { ChevronLeft, ChevronRight } from 'lucide-svelte'
 
-	import EmptyCard from '$src/components/emptyCard.svelte';
+	import EmptyCard from '$src/components/emptyCard.svelte'
 
-	let listElement: any;
+	let listElement: any
 
-	let leftButtonDisabled = true;
+	let leftButtonDisabled = true
 
-	let rightButtonDisabled = false;
+	let rightButtonDisabled = false
 
-	let scrollStep = 1000;
+	let scrollStep = 1000
 
 	function scroll(direction: 'left' | 'right') {
 		// ewww svelte doesn't let you bind:scroll so we have to hack it :(
-		let sl = listElement.scrollLeft;
-		let cw = listElement.scrollWidth;
-		let maxScrollLeft = listElement.scrollWidth - listElement.clientWidth;
+		let sl = listElement.scrollLeft
+		let cw = listElement.scrollWidth
+		let maxScrollLeft = listElement.scrollWidth - listElement.clientWidth
 
 		if (direction === 'right') {
 			if (sl + scrollStep >= maxScrollLeft) {
-				rightButtonDisabled = true;
-				listElement.scrollTo(cw, 0);
+				rightButtonDisabled = true
+				listElement.scrollTo(cw, 0)
 			} else {
-				rightButtonDisabled = false;
-				leftButtonDisabled = false;
-				listElement.scrollTo(sl + scrollStep, 0);
+				rightButtonDisabled = false
+				leftButtonDisabled = false
+				listElement.scrollTo(sl + scrollStep, 0)
 			}
 		} else {
 			if (sl - scrollStep <= 0) {
-				leftButtonDisabled = true;
-				rightButtonDisabled = false;
-				listElement.scrollTo(0, 0);
+				leftButtonDisabled = true
+				rightButtonDisabled = false
+				listElement.scrollTo(0, 0)
 			} else {
-				leftButtonDisabled = false;
-				rightButtonDisabled = false;
-				listElement.scrollTo(sl - scrollStep, 0);
+				leftButtonDisabled = false
+				rightButtonDisabled = false
+				listElement.scrollTo(sl - scrollStep, 0)
 			}
 		}
 	}
 
-	let games: boolean = false;
+	let games: boolean = false
 
 	if (games === false) {
-		rightButtonDisabled = true;
+		rightButtonDisabled = true
 	}
 </script>
 
@@ -61,7 +61,7 @@
 			size="icon"
 			variant="outline"
 			on:click={() => {
-				scroll('left');
+				scroll('left')
 			}}
 			disabled={leftButtonDisabled}><ChevronLeft className="h-2 w-2" /></Button
 		>
@@ -118,7 +118,7 @@
 			size="icon"
 			variant="outline"
 			on:click={() => {
-				scroll('right');
+				scroll('right')
 			}}
 			disabled={rightButtonDisabled}><ChevronRight className="h-2 w-2" /></Button
 		>

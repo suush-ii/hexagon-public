@@ -1,6 +1,6 @@
-import { bigint, integer, pgTable, serial, text, timestamp, varchar } from 'drizzle-orm/pg-core';
-import type { userState } from '$lib/types';
-import type { userRole } from '$lib/types';
+import { bigint, integer, pgTable, serial, text, timestamp, varchar } from 'drizzle-orm/pg-core'
+import type { userState } from '$lib/types'
+import type { userRole } from '$lib/types'
 
 //export const genderEnum = pgEnum("gender", ["Male", "Female", "Other"]) nvm :skull:
 export const usersTable = pgTable('users', {
@@ -12,7 +12,7 @@ export const usersTable = pgTable('users', {
 	joindate: timestamp('joindate', { mode: 'date' }).notNull(),
 	role: text('role').$type<userRole>().notNull(),
 	state: text('state').$type<userState>().notNull().default('offline')
-});
+})
 
 export const session = pgTable('user_session', {
 	id: varchar('id', {
@@ -29,7 +29,7 @@ export const session = pgTable('user_session', {
 	idleExpires: bigint('idle_expires', {
 		mode: 'number'
 	}).notNull()
-});
+})
 
 export const key = pgTable('user_key', {
 	id: varchar('id', {
@@ -43,4 +43,4 @@ export const key = pgTable('user_key', {
 	hashedPassword: varchar('hashed_password', {
 		length: 255
 	})
-});
+})

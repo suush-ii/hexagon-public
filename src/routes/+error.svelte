@@ -1,11 +1,11 @@
 <script>
-	import { page } from '$app/stores';
+	import { page } from '$app/stores'
 
-	import * as Card from '$src/components/ui/card';
+	import * as Card from '$src/components/ui/card'
 
-	import { Button } from '$src/components/ui/button';
+	import { Button } from '$src/components/ui/button'
 
-	import { HeartCrack } from 'lucide-svelte';
+	import { HeartCrack } from 'lucide-svelte'
 </script>
 
 <div class="m-auto flex">
@@ -28,7 +28,7 @@
 		<Card.Footer>
 			<Button
 				on:click={() => {
-					history.back();
+					history.back()
 				}}
 				variant="outline"
 				class="w-full">Go back</Button

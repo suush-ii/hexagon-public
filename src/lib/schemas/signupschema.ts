@@ -1,11 +1,11 @@
-import { z } from 'zod';
+import { z } from 'zod'
 
 function isAlphaNumeric(str: string) {
-	let code, i, len;
-	let underscores = 0;
+	let code, i, len
+	let underscores = 0
 
 	for (i = 0, len = str.length; i < len; i++) {
-		code = str.charCodeAt(i);
+		code = str.charCodeAt(i)
 
 		if (
 			!(code > 47 && code < 58) && // numeric (0-9)
@@ -14,23 +14,23 @@ function isAlphaNumeric(str: string) {
 			!(code > 96 && code < 123)
 		) {
 			// lower alpha (a-z)
-			return false;
+			return false
 		}
 	}
 
 	for (i = 0, len = str.length; i < len; i++) {
-		code = str.charCodeAt(i);
+		code = str.charCodeAt(i)
 
 		if (code === 95) {
-			underscores += 1;
+			underscores += 1
 		}
 	}
 
 	if (underscores > 1) {
-		return false;
+		return false
 	}
 
-	return true;
+	return true
 }
 
 export async function isTaken(username: string) {
@@ -38,13 +38,13 @@ export async function isTaken(username: string) {
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json' },
 		body: JSON.stringify({ username })
-	});
+	})
 
-	const takenJson = await taken.json();
+	const takenJson = await taken.json()
 	if (takenJson.success === true && takenJson.data.available === false) {
-		return true;
+		return true
 	} else {
-		return false;
+		return false
 	}
 }
 
@@ -66,6 +66,6 @@ export const formSchema = z.object({
 		.min(1, { message: 'Key required.' })
 		.max(100, { message: "Key can't be over 100 characters!" }),
 	gender: z.enum(['male', 'female', 'nonbinary']).default('nonbinary')
-});
+})
 
-export type FormSchema = typeof formSchema;
+export type FormSchema = typeof formSchema

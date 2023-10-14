@@ -1,15 +1,15 @@
 <script lang="ts">
-	import '../app.postcss';
-	import Navbar from '$src/components/navbar.svelte';
+	import '../app.postcss'
+	import Navbar from '$src/components/navbar.svelte'
 
-	import { page } from '$app/stores';
+	import { page } from '$app/stores'
 
-	import type { PageData } from './$types';
-	import { appName, pageName } from '$src/stores';
+	import type { PageData } from './$types'
+	import { appName, pageName } from '$src/stores'
 
-	export let data: PageData;
+	export let data: PageData
 
-	$: loggedIn = data.session ? true : false;
+	$: loggedIn = data.session ? true : false
 </script>
 
 <svelte:head>

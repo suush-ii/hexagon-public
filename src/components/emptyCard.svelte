@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { HeartCrack } from 'lucide-svelte';
+	import { HeartCrack } from 'lucide-svelte'
 </script>
 
 <div class="mx-auto flex flex-col w-full gap-y-4 select-none" {...$$restProps}>

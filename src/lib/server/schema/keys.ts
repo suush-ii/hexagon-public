@@ -1,4 +1,4 @@
-import { boolean, pgTable, serial, text, timestamp } from 'drizzle-orm/pg-core';
+import { boolean, pgTable, serial, text, timestamp } from 'drizzle-orm/pg-core'
 
 export const keyTable = pgTable('keys', {
 	key: text('key').notNull().primaryKey(),
@@ -7,4 +7,4 @@ export const keyTable = pgTable('keys', {
 	claimedby: text('claimedby'),
 	expires: timestamp('expires', { mode: 'date' }).notNull(),
 	useable: boolean('useable').notNull()
-});
+})
