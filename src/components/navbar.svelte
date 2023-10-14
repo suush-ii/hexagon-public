@@ -43,17 +43,17 @@
 	<div class="container flex h-14 items-center select-none">
 		<nav class="flex items-center space-x-4 lg:space-x-6 w-full">
 			<a href={loggedIn === false ? '/' : '/home'}
-				><img alt="H" class="w-12" src="/hexagon128.png" /></a
+				><img alt="H" class="w-8 sm:w-12 max-w-xs" src="/hexagon128.png" /></a
 			>
 			{#each pages.notAuthenticated as navPage}
 				<a
 					href={navPage.pageUrl}
-					class="text-base font-medium space-y-1 {$page.url.pathname === navPage.pageUrl
+					class="text-sm sm:text-base font-medium space-y-1 {$page.url.pathname === navPage.pageUrl
 						? ''
 						: 'text-muted-foreground'} transition-colors hover:text-primary group relative"
 				>
-					<div class="flex flex-row gap-x-2">
-						<svelte:component this={navPage.Icon} />
+					<div class="flex flex-row sm:gap-x-2">
+						<svelte:component this={navPage.Icon} class="hidden sm:block sm:w-full" />
 						{navPage.friendlyName}
 					</div>
 					{#if $page.url.pathname === navPage.pageUrl}
