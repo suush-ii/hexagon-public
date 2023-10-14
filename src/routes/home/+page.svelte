@@ -10,6 +10,8 @@
 
 	import { HeartCrack } from 'lucide-svelte';
 
+	import EmptyCard from "$src/components/emptyCard.svelte"
+
 	let friends = [1]; // TODO: Fetch real friends.
 </script>
 
@@ -29,10 +31,7 @@
 			class="supports-backdrop-blur:bg-background/60 w-full border-b bg-muted-foreground/5 shadow-sm backdrop-blur flex flex-row overflow-x-auto p-4 gap-x-6 select-none outline-dashed outline-muted-foreground/20 rounded-xl"
 		>
 			{#if friends.length === 0}
-				<div class="mx-auto flex flex-col w-full gap-y-4">
-					<HeartCrack class="w-24 h-24 mx-auto" strokeWidth={1.2} />
-					<h5 class="text-center mx-auto">There seems to be no one here... 😕</h5>
-				</div>
+				<EmptyCard/>
 			{:else}
 				{#each friends as friend}
 					<FriendAvatar state="game" username="Game{friend}" userid={1} />
