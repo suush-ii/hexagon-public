@@ -11,7 +11,7 @@ export const usersTable = pgTable('users', {
 	discordid: integer('discordid'),
 	joindate: timestamp('joindate', { mode: 'date' }).notNull(),
 	role: text('role').$type<userRole>().notNull(),
-	state: text("state").$type<userState>().notNull().default("offline")
+	state: text('state').$type<userState>().notNull().default('offline')
 });
 
 export const session = pgTable('user_session', {

@@ -3,8 +3,7 @@
 	import { Loader2 } from 'lucide-svelte';
 
 	import * as Form from '$src/components/ui/form';
-	import { formSchema, type FormSchema } from '$lib/schemas/signupschema';
-	import type { SuperValidated } from 'sveltekit-superforms';
+	import { formSchema } from '$lib/schemas/signupschema';
 	import type { PageData } from './$types';
 	import { invalidateAll } from '$app/navigation';
 	import { onMount } from 'svelte';

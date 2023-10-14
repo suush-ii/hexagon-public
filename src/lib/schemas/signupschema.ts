@@ -33,7 +33,7 @@ function isAlphaNumeric(str: string) {
 	return true;
 }
 
-export async function isTaken(username: string, ctx: z.RefinementCtx) {
+export async function isTaken(username: string) {
 	const taken = await fetch('/api/account/exists', {
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json' },

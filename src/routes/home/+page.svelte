@@ -3,9 +3,7 @@
 
 	export let data: PageData;
 
-	import * as Avatar from '$src/components/ui/avatar';
-
-	import FriendAvatar from "$src/components/home/friendAvatar.svelte"
+	import FriendAvatar from '$src/components/home/friendAvatar.svelte';
 
 	import { pageName } from '$src/stores';
 	pageName.set('Home');
@@ -37,7 +35,7 @@
 				</div>
 			{:else}
 				{#each friends as friend}
-					<FriendAvatar state="game" username="Game" userid={1}/>
+					<FriendAvatar state="game" username="Game{friend}" userid={1} />
 				{/each}
 			{/if}
 			<!--TODO: FINISH this...-->
