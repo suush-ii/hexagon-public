@@ -12,6 +12,9 @@
 
 	import Warntext from '$src/components/warntext.svelte';
 
+	import { pageName } from '$src/stores';
+	pageName.set('Free Games');
+
 	export let data: PageData;
 
 	let form = data.form;

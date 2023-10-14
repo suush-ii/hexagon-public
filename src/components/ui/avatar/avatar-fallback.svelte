@@ -10,7 +10,7 @@
 
 <AvatarPrimitive.Fallback
 	class={cn(
-		"flex h-full w-full items-center justify-center rounded-full bg-muted animate-pulse",
+		"flex h-full w-full items-center justify-center bg-muted animate-pulse",
 		className
 	)}
 	{...$$restProps}

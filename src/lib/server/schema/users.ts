@@ -1,4 +1,6 @@
 import { bigint, integer, pgTable, serial, text, timestamp, varchar } from 'drizzle-orm/pg-core';
+import type { userState } from '$lib/types';
+import type { userRole } from '$lib/types';
 
 //export const genderEnum = pgEnum("gender", ["Male", "Female", "Other"]) nvm :skull:
 export const usersTable = pgTable('users', {
@@ -8,7 +10,8 @@ export const usersTable = pgTable('users', {
 	coins: bigint('coins', { mode: 'number' }).notNull(),
 	discordid: integer('discordid'),
 	joindate: timestamp('joindate', { mode: 'date' }).notNull(),
-	role: text('role').$type<'owner' | 'admin' | 'mod' | 'uploader' | 'normal'>().notNull()
+	role: text('role').$type<userRole>().notNull(),
+	state: text("state").$type<userState>().notNull().default("offline")
 });
 
 export const session = pgTable('user_session', {

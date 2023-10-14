@@ -7,6 +7,9 @@
 
 	import type { PageData } from './$types';
 
+	import { pageName } from '$src/stores';
+	pageName.set('Home');
+
 	export let data: PageData;
 
 	let form = data.form;

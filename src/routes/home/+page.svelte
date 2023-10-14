@@ -5,6 +5,11 @@
 
 	import * as Avatar from '$src/components/ui/avatar';
 
+	import FriendAvatar from "$src/components/home/friendAvatar.svelte"
+
+	import { pageName } from '$src/stores';
+	pageName.set('Home');
+
 	import { HeartCrack } from 'lucide-svelte';
 
 	let friends = [1]; // TODO: Fetch real friends.
@@ -32,48 +37,7 @@
 				</div>
 			{:else}
 				{#each friends as friend}
-					<div class="flex flex-col gap-y-1">
-						<Avatar.Root class="w-24 h-24 outline-offset-4 outline-success outline-dashed">
-							<Avatar.Image
-								src="https://avaatars.githubusercontent.com/u/54828677?v=4"
-								alt="@sushidesigner"
-							/>
-							<Avatar.Fallback />
-						</Avatar.Root>
-						<p class="truncate w-24 text-center">Game</p>
-					</div>
-					<div class="flex flex-col gap-y-1">
-						<Avatar.Root class="w-24 h-24 outline-offset-4 outline-blue-500 outline-dashed">
-							<Avatar.Image
-								src="https://avaatars.githubusercontent.com/u/54828677?v=4"
-								alt="@sushidesigner"
-							/>
-							<Avatar.Fallback />
-						</Avatar.Root>
-						<p class="truncate w-24 text-center">Online</p>
-					</div>
-					<div class="flex flex-col gap-y-1">
-						<Avatar.Root
-							class="w-24 h-24 outline-offset-4 outline-muted-foreground/70 outline-dashed"
-						>
-							<Avatar.Image
-								src="https://avataars.githubusercontent.com/u/54828677?v=4"
-								alt="@sushidesigner"
-							/>
-							<Avatar.Fallback />
-						</Avatar.Root>
-						<p class="truncate w-24 text-center">Offline</p>
-					</div>
-					<div class="flex flex-col gap-y-1">
-						<Avatar.Root class="w-24 h-24 outline-offset-4 outline-orange-500 outline-dashed">
-							<Avatar.Image
-								src="https://avataars.githubusercontent.com/u/54828677?v=4"
-								alt="@sushidesigner"
-							/>
-							<Avatar.Fallback />
-						</Avatar.Root>
-						<p class="truncate w-24 text-center">Studio</p>
-					</div>
+					<FriendAvatar state="game" username="Game" userid={1}/>
 				{/each}
 			{/if}
 			<!--TODO: FINISH this...-->

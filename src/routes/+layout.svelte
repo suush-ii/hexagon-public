@@ -5,11 +5,17 @@
 	import { page } from '$app/stores';
 
 	import type { PageData } from './$types';
+	import { appName, pageName } from '$src/stores';
 
 	export let data: PageData;
 
 	$: loggedIn = data.session ? true : false;
 </script>
+
+<svelte:head>
+	<title>{$pageName} - {appName}</title>
+	<link rel="icon" type="image/png" href="/hexagon128.png" />
+</svelte:head>
 
 <div class="flex flex-col h-screen">
 	{#if $page.url.pathname != '/' && $page.url.pathname != '/login'}
