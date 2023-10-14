@@ -68,7 +68,9 @@
 				</a>
 			{/each}
 			{#if signUpButton}
-				<Button href="/" class="absolute right-4" variant="outline">Sign Up</Button>
+				<Button href="/" class="absolute right-0 sm:right-2 md:right-4" variant="outline"
+					>Sign Up</Button
+				>
 			{/if}
 		</nav>
 	</div>
