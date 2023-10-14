@@ -10,3 +10,9 @@ export const POST: RequestHandler = async () => {
 
 	return json({ success: true, message: '', data: { clicker: configOld[0].pageClicker + 1 } })
 }
+
+export const GET: RequestHandler = async () => {
+	const config = await db.select().from(configTable).limit(1)
+
+	return json({ success: true, message: '', data: { clicker: config[0].pageClicker } })
+}

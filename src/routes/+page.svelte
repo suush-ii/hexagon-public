@@ -5,7 +5,7 @@
 	import * as Form from '$src/components/ui/form'
 	import { formSchema } from '$lib/schemas/signupschema'
 	import type { PageData } from './$types'
-	import { invalidateAll } from '$app/navigation'
+	import { invalidate } from '$app/navigation'
 	import { onMount } from 'svelte'
 	import { spring } from 'svelte/motion'
 
@@ -70,8 +70,10 @@
 
 	onMount(() => {
 		if (!document.hidden) {
-			const interval = setInterval(() => {
-				invalidateAll()
+			const interval = setInterval(async () => {
+				const updated = await fetch('/api/clicker', { method: 'GET' })
+				const updatedJson = await updated.json()
+				clickerPage = updatedJson.data.clicker
 			}, 5000)
 
 			return () => {
