@@ -77,7 +77,9 @@
 	let biteCount = 0
 
 	function biteInc() {
-		iconClass = 'boop'
+		if (iconClass != 'boop') {
+			iconClass = 'boop'
+		}
 		if (biteCount < 7) {
 			biteCount += 1
 			audio.play()
