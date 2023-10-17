@@ -5,6 +5,6 @@ export const keyTable = pgTable('keys', {
 	keyid: serial('keyid').notNull(),
 	madeby: text('madeby').notNull(),
 	claimedby: text('claimedby'),
-	expires: timestamp('expires', { mode: 'date' }).notNull(),
+	expires: timestamp('expires', { mode: 'date', withTimezone: true }).notNull(),
 	useable: boolean('useable').notNull()
 })

@@ -5,7 +5,6 @@
 	import * as Form from '$src/components/ui/form'
 	import { formSchema } from '$lib/schemas/signupschema'
 	import type { PageData } from './$types'
-	import { invalidate } from '$app/navigation'
 	import { onMount } from 'svelte'
 	import { spring } from 'svelte/motion'
 
@@ -19,11 +18,17 @@
 
 	export let data: PageData
 
+	let audio: HTMLAudioElement
+
+	let completeAudio: HTMLAudioElement
+
 	let form = data.form
 
 	$: clickerPage = data.clicker
 
 	let clicker = clickerPage
+
+	let iconClass = ''
 
 	const displayed_count = spring()
 
@@ -65,7 +70,21 @@
 			const updated = await fetch('/api/clicker', { method: 'POST' })
 			const updatedJson = await updated.json()
 			clickerPage = updatedJson.data.clicker
+			iconClass = ''
 		}, 200)
+	}
+
+	let biteCount = 0
+
+	function biteInc() {
+		iconClass = 'boop'
+		if (biteCount < 7) {
+			biteCount += 1
+			audio.play()
+		} else {
+			biteCount = 0
+			completeAudio.play()
+		}
 	}
 
 	onMount(() => {
@@ -86,11 +105,19 @@
 <div class="flex m-auto">
 	<Button href="/login" class="absolute right-5 top-5">Log In</Button>
 
+	<audio src="/hexabite/3_sndBite1.mp3" bind:this={audio} />
+
+	<audio src="/hexabite/1_sndStart.mp3" bind:this={completeAudio} />
+
 	<div class="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
 		<div class="relative mx-auto font-bold z-20 flex items-center text-4xl">
-			<h1 class="text-2xl pr-4 mt-auto">Project</h1>
-			<button on:click={clickerInc}>
-				<img alt="H" class="w-16" src="/hexagon512.png" />
+			<h1 class="text-2xl pr-4 mt-auto flex flex-row">Project</h1>
+			<button on:click={clickerInc} on:click={biteInc}>
+				<img
+					alt="H"
+					class="w-16 {iconClass}"
+					src={biteCount === 0 ? '/hexagon512.png' : `/hexabite/${biteCount}.png`}
+				/>
 			</button>
 			exagon
 		</div>

@@ -2,6 +2,8 @@ import { bigint, integer, pgTable, serial, text, timestamp, varchar } from 'driz
 import type { userState } from '$lib/types'
 import type { userRole } from '$lib/types'
 
+// with timestamps ALWAYS USE WITHTIMEZONE!!!
+
 //export const genderEnum = pgEnum("gender", ["Male", "Female", "Other"]) nvm :skull:
 export const usersTable = pgTable('users', {
 	userid: serial('userid').notNull(),
@@ -9,9 +11,10 @@ export const usersTable = pgTable('users', {
 	username: text('username').notNull().unique(),
 	coins: bigint('coins', { mode: 'number' }).notNull(),
 	discordid: integer('discordid'),
-	joindate: timestamp('joindate', { mode: 'date' }).notNull(),
+	joindate: timestamp('joindate', { mode: 'date', withTimezone: true }).notNull(),
 	role: text('role').$type<userRole>().notNull(),
-	state: text('state').$type<userState>().notNull().default('offline')
+	state: text('state').$type<userState>().notNull().default('offline'),
+	lastactivetime: timestamp('lastactivetime', {mode: 'date', withTimezone: true}).notNull().defaultNow()
 })
 
 export const session = pgTable('user_session', {

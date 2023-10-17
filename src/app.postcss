@@ -34,6 +34,37 @@
 		--ring: hsl(212.7, 26.8%, 83.9);
 
 		--success: 142.1 70.6% 45.3%;
+
+		--orange: 25, 95%, 53%;
+
+		
+	}
+}
+
+@keyframes boop {
+	0% {
+		transform: rotate(0deg);
+	}
+	20% {
+		transform: rotate(-15deg);
+	}
+	40% {
+		transform: rotate(15deg);
+	}
+	60% {
+		transform: rotate(-7deg);
+	}
+	80% {
+		transform: rotate(7deg);
+	}
+	90% {
+		transform: rotate(-3deg);
+	}
+	95% {
+		transform: rotate(2deg);
+	}
+	100% {
+		transform: rotate(0deg);
 	}
 }
 
@@ -49,5 +80,9 @@
 @layer components {
 	.hover-underline {
 		@apply hover:underline hover:underline-offset-4;
+	}
+	.boop {
+		display: inline-block;
+		animation: 1s boop forwards running;
 	}
 }

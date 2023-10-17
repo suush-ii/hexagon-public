@@ -6,6 +6,8 @@ import { db } from '$lib/server/db'
 import { migrate } from 'drizzle-orm/postgres-js/migrator'
 import { auth } from '$lib/server/lucia'
 import { dev } from '$app/environment'
+import { usersTable } from '$lib/server/schema/users'
+import { eq } from 'drizzle-orm'
 
 Sentry.init({
 	dsn: 'https://4d1e802039697045efc6ed728b2bf873@o4506000665542656.ingest.sentry.io/4506000666591232',
@@ -38,6 +40,14 @@ export const handle: Handle = sequence(Sentry.sentryHandle(), async ({ event, re
 	const session = await event.locals.auth.validate()
 	if (session) {
 		event.locals.session = session
+
+		let currentTime = new Date()
+
+		if((currentTime.valueOf() - session.user.lastactivetime) > 3*60*1000){
+			// they haven't visited in over 3 mins
+			// the reason why we don't update last active on every request is to minimize database requests
+			await db.update(usersTable).set({ lastactivetime: currentTime }).where(eq(usersTable.userid, session.user.userid))
+		}
 	}
 
 	if (

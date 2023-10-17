@@ -16,7 +16,7 @@
 				<Card.Title class="text-3xl font-bold">{$page.status}</Card.Title>
 			</div>
 			<Card.Description>Uh oh an fucky wucky occured!</Card.Description>
-			{#if $page.status != 404}
+			{#if $page.status != 404 && $page.status != 400 && $page.status != 403 && $page.status != 405}
 				<Card.Description
 					>Don't worry your error has been logged and our team is working on it! uwu</Card.Description
 				>

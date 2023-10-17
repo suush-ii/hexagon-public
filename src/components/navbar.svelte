@@ -5,8 +5,8 @@
 	import { Wand2 } from 'lucide-svelte'
 	import { Home } from 'lucide-svelte'
 	import { Terminal } from 'lucide-svelte'
-	import type { SvelteComponentTyped } from 'svelte/internal'
-	type Component = $$Generic<typeof SvelteComponentTyped<any, any, any>>
+	import type { SvelteComponent } from 'svelte'
+	type Component = $$Generic<typeof SvelteComponent<any, any, any>>
 
 	export let loggedIn: boolean
 	export let signUpButton = false
@@ -23,10 +23,10 @@
 		authenticated: pagePrimitive[]
 	} = {
 		notAuthenticated: [
-			{ pageUrl: '/home', friendlyName: 'Home', Icon: Home },
-			{ pageUrl: '/games', friendlyName: 'Games', Icon: Gamepad2 },
-			{ pageUrl: '/catalog', friendlyName: 'Catalog', Icon: Wand2 },
-			{ pageUrl: '/develop', friendlyName: 'Develop', Icon: Terminal }
+			{ pageUrl: '/home', friendlyName: 'Home', Icon: Home as Component },
+			{ pageUrl: '/games', friendlyName: 'Games', Icon: Gamepad2 as Component },
+			{ pageUrl: '/catalog', friendlyName: 'Catalog', Icon: Wand2 as Component },
+			{ pageUrl: '/develop', friendlyName: 'Develop', Icon: Terminal as Component }
 		],
 		authenticated: [
 			{ pageUrl: `/users/${userId}/profile`, friendlyName: 'Profile' },

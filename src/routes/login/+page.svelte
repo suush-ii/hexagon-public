@@ -20,7 +20,7 @@
 <div class="flex m-auto">
 	<div class="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
 		<div class="relative mx-auto font-bold z-20 flex items-center text-4xl">
-			<h1 class="text-2xl pr-4 mt-auto">Project</h1>
+			<h1 class="text-2xl pr-4 mt-auto flex flex-row">Project</h1>
 			<img alt="H" class="w-16" src="/hexagon512.png" />
 			exagon
 		</div>
