@@ -63,6 +63,36 @@
 
 	let timer: number | undefined
 
+	const emoticons = [
+		'( ⚆_⚆)',
+		'(☉_☉ )',
+		'( ◕‿◕)',
+		'(◕‿◕ )',
+		'(⇀‿‿↼)',
+		'(≖‿‿≖)',
+		'(◕‿‿◕)',
+		'(-__-)',
+		'(°▃▃°)',
+		'(⌐■_■)',
+		'(•‿‿•)',
+		'(^‿‿^)',
+		'(ᵔ◡◡ᵔ)',
+		'(☼‿‿☼)',
+		'(≖__≖)',
+		'(✜‿‿✜)',
+		'(ب__ب)',
+		'(╥☁╥ )',
+		"(-_-')",
+		'(♥‿‿♥)',
+		'(☓‿‿☓)',
+		'(#__#)',
+		'(1__0)',
+		'(1__1)',
+		'(0__1)'
+	]
+
+	let emoticon = emoticons[Math.floor(Math.random() * emoticons.length)]
+
 	async function clickerInc() {
 		clearTimeout(timer)
 		timer = setTimeout(async () => {
@@ -76,6 +106,8 @@
 
 	let biteCount = 0
 
+	let freezeEmoticon = false
+
 	function biteInc() {
 		if (iconClass != 'boop') {
 			iconClass = 'boop'
@@ -84,22 +116,27 @@
 			biteCount += 1
 			audio.play()
 		} else {
+			emoticon = '(◕‿‿◕)'
+			freezeEmoticon = true
 			biteCount = 0
 			completeAudio.play()
 		}
 	}
 
 	onMount(() => {
-		if (!document.hidden) {
-			const interval = setInterval(async () => {
+		const interval = setInterval(async () => {
+			if (!freezeEmoticon) {
+				emoticon = emoticons[Math.floor(Math.random() * emoticons.length)]
+			}
+			if (!document.hidden) {
 				const updated = await fetch('/api/clicker', { method: 'GET' })
 				const updatedJson = await updated.json()
 				clickerPage = updatedJson.data.clicker
-			}, 5000)
-
-			return () => {
-				clearInterval(interval)
+				freezeEmoticon = false
 			}
+		}, 5000)
+		return () => {
+			clearInterval(interval)
 		}
 	})
 </script>
@@ -123,6 +160,7 @@
 			</button>
 			exagon
 		</div>
+		<h1 class="text-xs pr-4 mx-auto flex flex-row select-none">{emoticon}</h1>
 
 		<div class="mx-auto overflow-hidden flex flex-row gap-1 h-4 select-none">
 			<p class="mx-auto text-sm text-muted-foreground">Has been clicked</p>
