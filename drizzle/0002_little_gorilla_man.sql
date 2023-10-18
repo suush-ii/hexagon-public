@@ -1,1 +1,0 @@
-ALTER TABLE "users" ADD COLUMN "state" text DEFAULT 'offline' NOT NULL;

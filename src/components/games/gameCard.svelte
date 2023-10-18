@@ -12,6 +12,7 @@
 			<Avatar.Image
 				src="https://avaatars.githubusercontent.com/u/54828677?v=4{gameId}"
 				alt="@sushidesigner"
+				loading="lazy"
 			/>
 			<Avatar.Fallback />
 		</Avatar.Root>

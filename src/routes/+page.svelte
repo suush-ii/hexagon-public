@@ -154,7 +154,7 @@
 			<button on:click={clickerInc} on:click={biteInc}>
 				<img
 					alt="H"
-					class="w-16 {iconClass}"
+					class="w-16 h-16 {iconClass}"
 					src={biteCount === 0 ? '/hexagon512.png' : `/hexabite/${biteCount}.png`}
 				/>
 			</button>

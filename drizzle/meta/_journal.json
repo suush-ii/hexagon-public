@@ -5,36 +5,8 @@
     {
       "idx": 0,
       "version": "5",
-      "when": 1695695795303,
-      "tag": "0000_sweet_stark_industries",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "5",
-      "when": 1695873715634,
-      "tag": "0001_clever_stephen_strange",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "5",
-      "when": 1697241493650,
-      "tag": "0002_little_gorilla_man",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "5",
-      "when": 1697412797001,
-      "tag": "0003_daffy_wallop",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "5",
-      "when": 1697413893911,
-      "tag": "0004_charming_weapon_omega",
+      "when": 1697601966275,
+      "tag": "0000_silly_hedge_knight",
       "breakpoints": true
     }
   ]

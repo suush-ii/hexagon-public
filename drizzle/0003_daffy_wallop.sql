@@ -1,1 +1,0 @@
-ALTER TABLE "users" ADD COLUMN "lastactivetime" timestamp with time zone DEFAULT now() NOT NULL;
