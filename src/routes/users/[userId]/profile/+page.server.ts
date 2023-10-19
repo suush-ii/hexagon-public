@@ -5,6 +5,7 @@ import { usersTable } from '$src/lib/server/schema/users'
 import { eq } from 'drizzle-orm'
 import { z } from 'zod'
 import type { userState } from '$lib/types'
+import { getUserState } from '$lib/server/userState';
 
 export const load: PageServerLoad = async ({ params }) => {
 
@@ -24,15 +25,9 @@ export const load: PageServerLoad = async ({ params }) => {
     .where(eq(usersTable.userid, Number(params.userId)))
     .limit(1)
 
-    let status: userState = "offline"
+    const status: userState = getUserState(user[0].lastactivetime)
 
 	if (user.length != 0) {
-
-        if((new Date().valueOf() - user[0].lastactivetime.valueOf()) < 5*60*1000){
-            // they have visited in over 5 mins
-            status = "online"
-        }
-
 		return {
             username: user[0].username,
             userid: user[0].userid,
