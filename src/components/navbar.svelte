@@ -32,7 +32,7 @@
 			{ pageUrl: `/users/${userId}/profile`, friendlyName: 'Profile' },
 			{ pageUrl: '/friends/requests', friendlyName: 'Friends' },
 			{ pageUrl: '/avatar', friendlyName: 'Customize' },
-			{ pageUrl: '/cum', friendlyName: 'Cum' }
+			{ pageUrl: '/c', friendlyName: 'c' }
 		]
 	}
 </script>

@@ -1,6 +1,8 @@
 import { bigint, bigserial, integer, pgTable, text, timestamp, varchar } from 'drizzle-orm/pg-core'
 import type { userState } from '$lib/types'
 import type { userRole } from '$lib/types'
+import { relations } from 'drizzle-orm';
+import { keyTable } from '$lib/server/schema/keys';
 
 // with timestamps ALWAYS USE WITHTIMEZONE!!!
 
@@ -19,6 +21,17 @@ export const usersTable = pgTable('users', {
 	avatarbody: text("avatarbody"),
 	avatarobj: text("avatarobj"),
 })
+
+export const usersRelations = relations(usersTable, ({ many }) => ({
+	keysCreated: many(keyTable),
+}));
+
+export const keysRelations = relations(keyTable, ({ one }) => ({
+	author: one(usersTable, {
+		fields: [keyTable.madebyuserid],
+		references: [usersTable.userid],
+	}),
+}));
 
 export const session = pgTable('user_session', {
 	id: varchar('id', {
