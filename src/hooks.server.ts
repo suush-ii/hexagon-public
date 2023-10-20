@@ -9,6 +9,8 @@ import { dev } from '$app/environment'
 import { usersTable } from '$lib/server/schema/users'
 import { eq } from 'drizzle-orm'
 
+const configPrepared = db.select().from(configTable).limit(1).prepare("configGrab")
+
 Sentry.init({
 	dsn: 'https://4d1e802039697045efc6ed728b2bf873@o4506000665542656.ingest.sentry.io/4506000666591232',
 	tracesSampleRate: 1,
@@ -23,7 +25,7 @@ await migrate(db, { migrationsFolder: './drizzle' })
 export const handle: Handle = sequence(Sentry.sentryHandle(), async ({ event, resolve }) => {
 	// Stage 1
 
-	const config = await db.select().from(configTable).limit(1)
+	const config = await configPrepared.execute()
 
 	if (config.length === 0) {
 		await db.insert(configTable).values({})
@@ -36,6 +38,8 @@ export const handle: Handle = sequence(Sentry.sentryHandle(), async ({ event, re
 	}
 
 	event.locals.auth = auth.handleRequest(event)
+
+	event.locals.config = config
 
 	const session = await event.locals.auth.validate()
 	if (session) {

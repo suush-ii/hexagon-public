@@ -11,8 +11,5 @@ export default defineConfig({
 			}
 		}),
 		sveltekit()
-	],
-	server: {
-		port: 80
-	}
+	]
 })

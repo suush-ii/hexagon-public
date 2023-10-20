@@ -2,7 +2,6 @@ import type { PageServerLoad, Actions } from './$types'
 import { setError, message, superValidate } from 'sveltekit-superforms/server'
 import { formSchema } from '$lib/schemas/signupschema'
 import { fail, redirect } from '@sveltejs/kit'
-import { configTable } from '$src/lib/server/schema/config'
 import { db } from '$src/lib/server/db'
 import { auth } from '$src/lib/server/lucia'
 import postgres from 'postgres' // TODO: Check this out later seems to be a workaround for a postgres issue https://github.com/porsager/postgres/issues/684 10/3/2023
@@ -10,7 +9,7 @@ import { usersTable } from '$src/lib/server/schema/users'
 import { eq } from 'drizzle-orm'
 
 export const load: PageServerLoad = async (event) => {
-	const config = await db.select().from(configTable).limit(1)
+	const config = event.locals.config
 
 	const session = await event.locals.auth.validate()
 	if (session) throw redirect(302, '/home')
@@ -32,7 +31,7 @@ export const actions: Actions = {
 		}
 		const { username, password } = form.data
 
-		const config = await db.select().from(configTable).limit(1)
+		const config = event.locals.config
 
 		if (config?.[0]?.registrationEnabled === false) {
 			return message(form, 'Registration disabled.')

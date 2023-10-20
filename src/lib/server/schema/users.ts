@@ -2,7 +2,7 @@ import { bigint, bigserial, integer, pgTable, text, timestamp, varchar } from 'd
 import type { userState } from '$lib/types'
 import type { userRole } from '$lib/types'
 import { relations } from 'drizzle-orm';
-import { keyTable } from '$lib/server/schema/keys';
+import { keyTable } from './keys';
 
 // with timestamps ALWAYS USE WITHTIMEZONE!!!
 
