@@ -1,0 +1,17 @@
+import { text, type RequestHandler } from "@sveltejs/kit"
+import { CLIENT_PRIVATE_KEY } from "$env/static/private"
+import script from "../visit/visit.lua?raw"
+import { BASE_URL } from "$env/static/private"
+
+import { createSign } from "node:crypto"
+
+export const GET: RequestHandler = async () => {
+
+    const scriptNew: string = script.replaceAll("www.roblox.com", BASE_URL)
+
+    const sign = createSign('SHA1');
+    sign.update("\r\n" + scriptNew)
+    var signature = sign.sign(CLIENT_PRIVATE_KEY, "base64")
+
+	return text("--rbxsig%"+signature+"%\r\n" +scriptNew)
+}
