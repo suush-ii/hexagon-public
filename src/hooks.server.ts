@@ -24,6 +24,7 @@ await migrate(db, { migrationsFolder: './drizzle' })
 
 export const handle: Handle = sequence(Sentry.sentryHandle(), async ({ event, resolve }) => {
 	// Stage 1
+	console.log(event.url.pathname)
 
 	const config = await configPrepared.execute()
 

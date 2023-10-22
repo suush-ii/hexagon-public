@@ -11,5 +11,9 @@ export default defineConfig({
 			}
 		}),
 		sveltekit()
-	]
+	],
+	server: {
+		port: 9000,
+		strictPort: false
+	}
 })
