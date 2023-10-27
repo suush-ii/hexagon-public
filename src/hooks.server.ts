@@ -8,6 +8,25 @@ import { auth } from '$lib/server/lucia'
 import { dev } from '$app/environment'
 import { usersTable } from '$lib/server/schema/users'
 import { eq } from 'drizzle-orm'
+import { CLOUDFLARE_S3_ACCESS_KEY, CLOUDFLARE_S3_ACCESS_KEY_ID, CLOUDFLARE_S3_ACCOUNT_ID, CLOUDFLARE_TOKEN } from '$env/static/private'
+import {
+	S3Client,
+	ListBucketsCommand,
+	ListObjectsV2Command,
+	GetObjectCommand,
+	PutObjectCommand
+  } from "@aws-sdk/client-s3";
+  import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+  
+  const S3 = new S3Client({
+	region: "auto",
+	endpoint: `https://${CLOUDFLARE_S3_ACCOUNT_ID}.r2.cloudflarestorage.com`,
+	credentials: {
+	  accessKeyId: CLOUDFLARE_S3_ACCESS_KEY_ID,
+	  secretAccessKey: CLOUDFLARE_S3_ACCESS_KEY,
+	},
+  });
+  
 
 const configPrepared = db.select().from(configTable).limit(1).prepare("configGrab")
 

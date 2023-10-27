@@ -44,6 +44,8 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@aws-sdk/client-s3": "^3.433.0",
+		"@aws-sdk/s3-request-presigner": "^3.433.0",
 		"@lucia-auth/adapter-postgresql": "^2.0.1",
 		"@lucia-auth/oauth": "^3.3.1",
 		"@sentry/sveltekit": "^7.73.0",

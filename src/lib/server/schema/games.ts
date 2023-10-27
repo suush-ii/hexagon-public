@@ -8,6 +8,7 @@ export const gamesTable = pgTable('games', {
 	gameid: bigserial('gameid', {mode: "number"}).notNull().primaryKey(),
 	universeid: bigserial('universeid', {mode: "number"}).unique().notNull(),
 	gamename: text('gamename').notNull(),
+	description: text('gamename').notNull(),
 	creatoruserid: bigint('creatoruserid', { mode: 'number' }).notNull(),
     active: bigint('active', { mode: 'number' }).notNull(),
 	visits: bigint('visits', { mode: 'number' }).notNull(),

