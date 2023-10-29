@@ -10,6 +10,7 @@
 	import type { PageData } from './$types'
 
 	import { pageName } from '$src/stores'
+	import { Button } from '$src/components/ui/button'
 	pageName.set('Login')
 
 	export let data: PageData
@@ -57,12 +58,15 @@
 				</Form.Item>
 			</Form.Field>
 
-			<Form.Button disabled={submitting} class="w-full">
-				{#if submitting}
-					<Loader2 class="mr-2 h-4 w-4 animate-spin" />
-				{/if}
-				Log in</Form.Button
-			>
+			<div class="flex flex-row gap-x-2">
+				<Form.Button disabled={submitting} class="w-full">
+					{#if submitting}
+						<Loader2 class="mr-2 h-4 w-4 animate-spin" />
+					{/if}
+					Log in</Form.Button
+				>
+				<Button href="/login" class="block sm:hidden text-center" variant="outline">Log In</Button>
+			</div>
 		</Form.Root>
 
 		<p class="px-8 text-center text-sm text-muted-foreground">

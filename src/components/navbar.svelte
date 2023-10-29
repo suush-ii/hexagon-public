@@ -39,8 +39,8 @@
 <header
 	class="supports-backdrop-blur:bg-background/60 fixed top-0 z-40 w-full border-b bg-background/95 shadow-sm flex"
 >
-	<div class="container flex h-14 items-center select-none">
-		<nav class="flex items-center space-x-4 lg:space-x-6 w-full">
+	<div class="pl-1 sm:container flex h-14 items-center select-none">
+		<nav class="flex items-center space-x-3 sm:space-x-4 lg:space-x-6 w-full">
 			<a href={loggedIn === false ? '/' : '/home'}
 				><img alt="H" class="w-8 sm:w-12 max-w-xs" src="/hexagon128.png" /></a
 			>
@@ -51,8 +51,8 @@
 						? ''
 						: 'text-muted-foreground'} transition-colors hover:text-primary group relative"
 				>
-					<div class="flex flex-row sm:gap-x-2">
-						<svelte:component this={navPage.Icon} class="hidden sm:block sm:w-full" />
+					<div class="flex flex-row gap-x-1 sm:gap-x-2">
+						<svelte:component this={navPage.Icon} class="h-6 sm:h-full" />
 						{navPage.friendlyName}
 					</div>
 					{#if $page.url.pathname === navPage.pageUrl}
@@ -67,7 +67,7 @@
 				</a>
 			{/each}
 			{#if signUpButton}
-				<Button href="/" class="absolute right-0 sm:right-2 md:right-4" variant="outline"
+				<Button href="/" class="absolute right-0 hidden sm:block md:right-4" variant="outline"
 					>Sign Up</Button
 				>
 			{/if}
