@@ -65,7 +65,7 @@
 					{/if}
 					Log in</Form.Button
 				>
-				<Button href="/login" class="block sm:hidden text-center" variant="outline">Log In</Button>
+				<Button href="/" class="block sm:hidden text-center" variant="outline">Sign Up</Button>
 			</div>
 		</Form.Root>
 
