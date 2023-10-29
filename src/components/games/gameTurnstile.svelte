@@ -18,7 +18,7 @@
 	let scrollStep = games.length > 15 ? 1000 : (300 * games.length) / 15
 
 	function scroll(direction: 'left' | 'right') {
-		// ewww svelte doesn't let you bind:scroll so we have to hack it :(
+		// HACK!: ewww svelte doesn't let you bind:scroll so we have to do this :(
 		let sl = listElement.scrollLeft
 		let cw = listElement.scrollWidth
 		let maxScrollLeft = listElement.scrollWidth - listElement.clientWidth

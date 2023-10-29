@@ -2,9 +2,7 @@
 	import { getFormField } from "formsnap";
 	import type { HTMLInputAttributes } from "svelte/elements";
 	import { Input, type InputEvents } from "$src/components/ui/input";
-	import { UserSquare2 } from 'lucide-svelte';
-	import type { SvelteComponentTyped } from "svelte";
-	type Component = $$Generic<typeof SvelteComponentTyped<any, any, any>>;
+	import type { Component } from "$lib/types";
 
 	type $$Props = HTMLInputAttributes;
 	type $$Events = InputEvents;

@@ -16,7 +16,7 @@
 </script>
 
 <div class="container p-8 flex flex-col">
-	<h1 class="text-5xl leading-none tracking-tight">
+	<h1 class="text-5xl leading-none tracking-tight font-semibold">
 		{data.welcomeMessage}, {data.session.username}...
 	</h1>
 

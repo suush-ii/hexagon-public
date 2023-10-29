@@ -141,15 +141,24 @@
 	})
 </script>
 
+<svelte:head>
+	<link rel="preconnect" href="https://fonts.googleapis.com" />
+	<link rel="preconnect" href="https://fonts.gstatic.com" />
+	<link
+		href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&display=swap"
+		rel="stylesheet"
+	/>
+</svelte:head>
+
 <div class="flex m-auto">
-	<Button href="/login" class="absolute right-5 top-5">Log In</Button>
+	<Button href="/login" class="hidden sm:block absolute right-5 top-5">Log In</Button>
 
 	<audio src="/hexabite/3_sndBite1.mp3" bind:this={audio} />
 
 	<audio src="/hexabite/1_sndStart.mp3" bind:this={completeAudio} />
 
 	<div class="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
-		<div class="relative mx-auto font-bold z-20 flex items-center text-4xl">
+		<div class="relative mx-auto z-20 flex items-center text-4xl font-logo">
 			<h1 class="text-2xl pr-4 mt-auto flex flex-row">Project</h1>
 			<button on:click={clickerInc} on:click={biteInc}>
 				<img
@@ -160,7 +169,9 @@
 			</button>
 			exagon
 		</div>
-		<h1 class="text-xs pr-4 mx-auto flex flex-row select-none">{emoticon}</h1>
+		<h1 class="text-sm pr-4 mx-auto flex flex-row select-none font-mono font-semibold">
+			{emoticon}
+		</h1>
 
 		<div class="mx-auto overflow-hidden flex flex-row gap-1 h-4 select-none">
 			<p class="mx-auto text-sm text-muted-foreground">Has been clicked</p>
@@ -227,12 +238,15 @@
 					</Form.Item>
 				</Form.Field>
 
-				<Form.Button disabled={submitting} class="w-full">
-					{#if submitting}
-						<Loader2 class="mr-2 h-4 w-4 animate-spin" />
-					{/if}
-					Sign Up!</Form.Button
-				>
+				<div class="flex flex-row gap-x-2">
+					<Form.Button disabled={submitting} class="w-full">
+						{#if submitting}
+							<Loader2 class="mr-2 h-4 w-4 animate-spin" />
+						{/if}
+						Sign Up!</Form.Button
+					>
+					<Button href="/login" class="block sm:hidden text-center">Log In</Button>
+				</div>
 			</Form.Root>
 
 			<p class="px-8 text-center text-sm text-muted-foreground">

@@ -17,9 +17,18 @@
 	let form = data.form
 </script>
 
+<svelte:head>
+	<link rel="preconnect" href="https://fonts.googleapis.com" />
+	<link rel="preconnect" href="https://fonts.gstatic.com" />
+	<link
+		href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&display=swap"
+		rel="stylesheet"
+	/>
+</svelte:head>
+
 <div class="flex m-auto">
 	<div class="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
-		<div class="relative mx-auto font-bold z-20 flex items-center text-4xl">
+		<div class="relative mx-auto font-logo z-20 flex items-center text-4xl">
 			<h1 class="text-2xl pr-4 mt-auto flex flex-row">Project</h1>
 			<img alt="H" class="w-16" src="/hexagon512.png" />
 			exagon

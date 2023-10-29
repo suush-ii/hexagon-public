@@ -5,8 +5,7 @@
 	import { Wand2 } from 'lucide-svelte'
 	import { Home } from 'lucide-svelte'
 	import { Terminal } from 'lucide-svelte'
-	import type { SvelteComponent } from 'svelte'
-	type Component = $$Generic<typeof SvelteComponent<any, any, any>>
+	import type { Component } from '$lib/types'
 
 	export let loggedIn: boolean
 	export let signUpButton = false
