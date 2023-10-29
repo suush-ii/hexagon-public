@@ -261,7 +261,12 @@
 				.
 			</p>
 		{:else}
-			<h1 class="text-2xl text-center mx-auto pb-96">Sorry! Registration is currently closed.</h1>
+			<h1 class="text-2xl text-center mx-auto pb-96">
+				Sorry! Registration is currently closed. <Button
+					href="/login"
+					class="block sm:hidden text-center max-w-xs mx-auto">Log In</Button
+				>
+			</h1>
 		{/if}
 	</div>
 </div>
