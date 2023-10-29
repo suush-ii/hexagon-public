@@ -6,6 +6,7 @@
 	import { Home } from 'lucide-svelte'
 	import { Terminal } from 'lucide-svelte'
 	import type { Component } from '$lib/types'
+	import { start } from 'repl'
 
 	export let loggedIn: boolean
 	export let signUpButton = false
@@ -25,7 +26,7 @@
 			{ pageUrl: '/home', friendlyName: 'Home', Icon: Home as Component },
 			{ pageUrl: '/games', friendlyName: 'Games', Icon: Gamepad2 as Component },
 			{ pageUrl: '/catalog', friendlyName: 'Catalog', Icon: Wand2 as Component },
-			{ pageUrl: '/develop', friendlyName: 'Develop', Icon: Terminal as Component }
+			{ pageUrl: '/develop/games', friendlyName: 'Develop', Icon: Terminal as Component }
 		],
 		authenticated: [
 			{ pageUrl: `/users/${userId}/profile`, friendlyName: 'Profile' },
@@ -47,7 +48,9 @@
 			{#each pages.notAuthenticated as navPage}
 				<a
 					href={navPage.pageUrl}
-					class="text-sm sm:text-base font-medium space-y-1 {$page.url.pathname === navPage.pageUrl
+					class="text-sm sm:text-base font-medium space-y-1 {$page.url.pathname ===
+						navPage.pageUrl ||
+					(navPage.pageUrl === '/develop/games' && $page.url.pathname.startsWith('/develop'))
 						? ''
 						: 'text-muted-foreground'} transition-colors hover:text-primary group relative"
 				>
@@ -55,7 +58,7 @@
 						<svelte:component this={navPage.Icon} class="h-6 sm:h-full" />
 						{navPage.friendlyName}
 					</div>
-					{#if $page.url.pathname === navPage.pageUrl}
+					{#if $page.url.pathname === navPage.pageUrl || (navPage.pageUrl === '/develop/games' && $page.url.pathname.startsWith('/develop'))}
 						<div
 							class="transition-width delay-0 absolute min-h-[1px] w-full shadow-[inset_0_-2px_0_0_white]"
 						/>
