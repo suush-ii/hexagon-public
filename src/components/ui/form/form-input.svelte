@@ -4,10 +4,14 @@
 	import { Input, type InputEvents } from "$src/components/ui/input";
 	import type { Component } from "$lib/types";
 
-	type $$Props = HTMLInputAttributes;
-	type $$Events = InputEvents;
+	interface _HTMLInputAttributes extends HTMLInputAttributes {
+		icon?: Component;
+	}
 
 	export let icon: Component = undefined
+
+	type $$Props = _HTMLInputAttributes;
+	type $$Events = InputEvents;
 
 	const { attrStore, value } = getFormField();
 </script>
