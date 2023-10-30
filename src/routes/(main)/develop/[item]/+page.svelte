@@ -2,9 +2,9 @@
 	import * as Tabs from '$src/components/ui/tabs'
 	import { Upload } from 'lucide-svelte'
 
-	import type { PageData } from './$types'
+	import type { LayoutData } from './$types'
 
-	export let data: PageData
+	export let data: LayoutData
 
 	import { pageName } from '$src/stores'
 
