@@ -8,27 +8,26 @@ import { auth } from '$lib/server/lucia'
 import { dev } from '$app/environment'
 import { usersTable } from '$lib/server/schema/users'
 import { eq } from 'drizzle-orm'
-import { CLOUDFLARE_S3_ACCESS_KEY, CLOUDFLARE_S3_ACCESS_KEY_ID, CLOUDFLARE_S3_ACCOUNT_ID, CLOUDFLARE_TOKEN } from '$env/static/private'
+/*import {
+	CLOUDFLARE_S3_ACCESS_KEY,
+	CLOUDFLARE_S3_ACCESS_KEY_ID,
+	CLOUDFLARE_S3_ACCOUNT_ID
+} from '$env/static/private'
 import {
-	S3Client,
-	ListBucketsCommand,
-	ListObjectsV2Command,
-	GetObjectCommand,
-	PutObjectCommand
-  } from "@aws-sdk/client-s3";
-  import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-  
-  const S3 = new S3Client({
-	region: "auto",
+	S3Client
+} from '@aws-sdk/client-s3'
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
+
+const S3 = new S3Client({
+	region: 'auto',
 	endpoint: `https://${CLOUDFLARE_S3_ACCOUNT_ID}.r2.cloudflarestorage.com`,
 	credentials: {
-	  accessKeyId: CLOUDFLARE_S3_ACCESS_KEY_ID,
-	  secretAccessKey: CLOUDFLARE_S3_ACCESS_KEY,
-	},
-  });
-  
+		accessKeyId: CLOUDFLARE_S3_ACCESS_KEY_ID,
+		secretAccessKey: CLOUDFLARE_S3_ACCESS_KEY
+	}
+}) EXample */
 
-const configPrepared = db.select().from(configTable).limit(1).prepare("configGrab")
+const configPrepared = db.select().from(configTable).limit(1).prepare('configGrab')
 
 Sentry.init({
 	dsn: 'https://4d1e802039697045efc6ed728b2bf873@o4506000665542656.ingest.sentry.io/4506000666591232',
@@ -65,12 +64,15 @@ export const handle: Handle = sequence(Sentry.sentryHandle(), async ({ event, re
 	if (session) {
 		event.locals.session = session
 
-		let currentTime = new Date()
+		const currentTime = new Date()
 
-		if((currentTime.valueOf() - session.user.lastactivetime) > 3*60*1000){
+		if (currentTime.valueOf() - session.user.lastactivetime > 3 * 60 * 1000) {
 			// they haven't visited in over 3 mins
 			// the reason why we don't update last active on every request is to minimize database requests
-			await db.update(usersTable).set({ lastactivetime: currentTime }).where(eq(usersTable.userid, session.user.userid))
+			await db
+				.update(usersTable)
+				.set({ lastactivetime: currentTime })
+				.where(eq(usersTable.userid, session.user.userid))
 		}
 	}
 

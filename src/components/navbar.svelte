@@ -6,7 +6,6 @@
 	import { Home } from 'lucide-svelte'
 	import { Terminal } from 'lucide-svelte'
 	import type { Component } from '$lib/types'
-	import { start } from 'repl'
 
 	export let loggedIn: boolean
 	export let signUpButton = false

@@ -21,12 +21,12 @@ declare global {
 		}
 		interface Locals {
 			auth: import('lucia').AuthRequest
-			session: import('lucia').Session,
+			session: import('lucia').Session
 			config: {
-				maintenanceEnabled: boolean;
-				registrationEnabled: boolean;
-				keysEnabled: boolean;
-				pageClicker: number;
+				maintenanceEnabled: boolean
+				registrationEnabled: boolean
+				keysEnabled: boolean
+				pageClicker: number
 			}[]
 		}
 		// interface PageData {}

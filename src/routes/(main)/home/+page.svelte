@@ -8,8 +8,6 @@
 	import { pageName } from '$src/stores'
 	pageName.set('Home')
 
-	import { HeartCrack } from 'lucide-svelte'
-
 	import EmptyCard from '$src/components/emptyCard.svelte'
 
 	let friends = [1] // TODO: Fetch real friends.

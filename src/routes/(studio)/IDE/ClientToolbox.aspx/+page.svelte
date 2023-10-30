@@ -1,7 +1,5 @@
 <script lang="ts">
 	import './toolbox.postcss'
-
-	import * as Select from '$src/components/ui/select'
 </script>
 
 <svelte:head>

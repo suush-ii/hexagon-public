@@ -1,14 +1,14 @@
 import { bigint, bigserial, integer, pgTable, text, timestamp, varchar } from 'drizzle-orm/pg-core'
 import type { userState } from '$lib/types'
 import type { userRole } from '$lib/types'
-import { relations } from 'drizzle-orm';
-import { keyTable } from './keys';
+import { relations } from 'drizzle-orm'
+import { keyTable } from './keys'
 
 // with timestamps ALWAYS USE WITHTIMEZONE!!!
 
 //export const genderEnum = pgEnum("gender", ["Male", "Female", "Other"]) nvm :skull:
 export const usersTable = pgTable('users', {
-	userid: bigserial('userid', {mode: "number"}).notNull(),
+	userid: bigserial('userid', { mode: 'number' }).notNull(),
 	id: varchar('id', { length: 128 }).primaryKey(), // used for lucia serials are unable to be used for some reason
 	username: text('username').notNull().unique(),
 	coins: bigint('coins', { mode: 'number' }).notNull(),
@@ -16,22 +16,24 @@ export const usersTable = pgTable('users', {
 	joindate: timestamp('joindate', { mode: 'date', withTimezone: true }).notNull(),
 	role: text('role').$type<userRole>().notNull(),
 	state: text('state').$type<userState>().notNull().default('offline'),
-	lastactivetime: timestamp('lastactivetime', {mode: 'date', withTimezone: true}).notNull().defaultNow(),
-	avatarheadshot: text("avatarheadshot"),
-	avatarbody: text("avatarbody"),
-	avatarobj: text("avatarobj"),
+	lastactivetime: timestamp('lastactivetime', { mode: 'date', withTimezone: true })
+		.notNull()
+		.defaultNow(),
+	avatarheadshot: text('avatarheadshot'),
+	avatarbody: text('avatarbody'),
+	avatarobj: text('avatarobj')
 })
 
 export const usersRelations = relations(usersTable, ({ many }) => ({
-	keysCreated: many(keyTable),
-}));
+	keysCreated: many(keyTable)
+}))
 
 export const keysRelations = relations(keyTable, ({ one }) => ({
 	author: one(usersTable, {
 		fields: [keyTable.madebyuserid],
-		references: [usersTable.userid],
-	}),
-}));
+		references: [usersTable.userid]
+	})
+}))
 
 export const session = pgTable('user_session', {
 	id: varchar('id', {

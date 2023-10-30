@@ -1,10 +1,9 @@
 import type { PageServerLoad } from './$types'
 
-import page from './upload.html?raw';
+import page from './upload.html?raw'
 
-
-export const load: PageServerLoad = async ({ locals }) => {
-    return {
-        page
-    }
+export const load: PageServerLoad = async ({}) => {
+	return {
+		page
+	}
 }

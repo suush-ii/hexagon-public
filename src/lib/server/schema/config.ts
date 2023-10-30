@@ -5,5 +5,5 @@ export const configTable = pgTable('config', {
 	maintenanceEnabled: boolean('maintenanceenabled').notNull().default(false).primaryKey(),
 	registrationEnabled: boolean('registrationenabled').notNull().default(true),
 	keysEnabled: boolean('keysenabled').notNull().default(false),
-	pageClicker: bigint('pageclicker', {mode:"number"}).notNull().default(0)
+	pageClicker: bigint('pageclicker', { mode: 'number' }).notNull().default(0)
 })

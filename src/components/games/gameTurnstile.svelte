@@ -13,7 +13,7 @@
 
 	let rightButtonDisabled = false
 
-	let games: array = [1]
+	let games = [1]
 
 	let scrollStep = games.length > 15 ? 1000 : (300 * games.length) / 15
 
