@@ -5,6 +5,7 @@
 
 	import type { PageData } from './$types'
 	import type { FormTextareaEvent } from '$src/components/ui/textarea'
+	import * as Avatar from '$src/components/ui/avatar'
 	import { BookText } from 'lucide-svelte'
 
 	export let data: PageData
@@ -50,7 +51,16 @@
 			</Form.Item>
 		</Form.Field>
 
-		<Form.Button disabled={submitting}>Submit</Form.Button>
+		<Form.Field {config} name="game">
+			<Form.Item>
+				<Form.Label>Game</Form.Label>
+				<Form.Input class="w-fit" disabled={submitting} type={'file'} />
+				<Form.Description>.RBXL Format</Form.Description>
+				<Form.Validation />
+			</Form.Item>
+		</Form.Field>
+
+		<Form.Button disabled={submitting}>Upload</Form.Button>
 	</Form.Root>
 
 	<!-- TODO: Form fields don't support file uploads will have to figure out a way to hack this...-->

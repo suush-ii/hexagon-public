@@ -5,7 +5,7 @@
 	import type { Component } from "$lib/types";
 
 	interface _HTMLInputAttributes extends HTMLInputAttributes {
-		icon?: Component;
+		icon?: Component
 	}
 
 	export let icon: Component = undefined

@@ -6,12 +6,13 @@
 	import { Home } from 'lucide-svelte'
 	import { Terminal } from 'lucide-svelte'
 	import type { Component } from '$lib/types'
+	import type { HTMLAnchorAttributes } from 'svelte/elements'
 
 	export let loggedIn: boolean
 	export let signUpButton = false
 	export let userId = 0
 
-	interface pagePrimitive {
+	interface pagePrimitive extends HTMLAnchorAttributes {
 		pageUrl: string
 		friendlyName: string
 		Icon?: Component
@@ -22,10 +23,10 @@
 		authenticated: pagePrimitive[]
 	} = {
 		notAuthenticated: [
-			{ pageUrl: '/home', friendlyName: 'Home', Icon: Home as Component },
-			{ pageUrl: '/games', friendlyName: 'Games', Icon: Gamepad2 as Component },
-			{ pageUrl: '/catalog', friendlyName: 'Catalog', Icon: Wand2 as Component },
-			{ pageUrl: '/develop/games', friendlyName: 'Develop', Icon: Terminal as Component }
+			{ pageUrl: '/home', friendlyName: 'Home', Icon: Home },
+			{ pageUrl: '/games', friendlyName: 'Games', Icon: Gamepad2 },
+			{ pageUrl: '/catalog', friendlyName: 'Catalog', Icon: Wand2 },
+			{ pageUrl: '/develop/games', friendlyName: 'Develop', Icon: Terminal }
 		],
 		authenticated: [
 			{ pageUrl: `/users/${userId}/profile`, friendlyName: 'Profile' },
