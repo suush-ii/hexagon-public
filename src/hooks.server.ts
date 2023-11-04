@@ -8,15 +8,17 @@ import { auth } from '$lib/server/lucia'
 import { dev } from '$app/environment'
 import { usersTable } from '$lib/server/schema/users'
 import { eq } from 'drizzle-orm'
-/*import {
+import { appName } from '$src/stores'
+import {
 	CLOUDFLARE_S3_ACCESS_KEY,
 	CLOUDFLARE_S3_ACCESS_KEY_ID,
 	CLOUDFLARE_S3_ACCOUNT_ID
 } from '$env/static/private'
 import {
+	CreateBucketCommand,
+	HeadBucketCommand,
 	S3Client
 } from '@aws-sdk/client-s3'
-import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 
 const S3 = new S3Client({
 	region: 'auto',
@@ -25,7 +27,17 @@ const S3 = new S3Client({
 		accessKeyId: CLOUDFLARE_S3_ACCESS_KEY_ID,
 		secretAccessKey: CLOUDFLARE_S3_ACCESS_KEY
 	}
-}) EXample */
+})
+const command = new HeadBucketCommand({Bucket: appName.toLowerCase()});
+try {
+await S3.send(command);
+} catch (error) {
+	// bucket doesn't exist
+	const createBucketCommand = new CreateBucketCommand({
+		Bucket: appName.toLocaleLowerCase(),
+	  });
+	await S3.send(createBucketCommand);
+}
 
 const configPrepared = db.select().from(configTable).limit(1).prepare('configGrab')
 

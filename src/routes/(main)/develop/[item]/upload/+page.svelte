@@ -53,9 +53,16 @@
 
 		<Form.Field {config} name="game">
 			<Form.Item>
-				<Form.Label>Game</Form.Label>
-				<Form.Input class="w-fit" disabled={submitting} type={'file'} />
-				<Form.Description>.RBXL Format</Form.Description>
+				<Form.Label>{data.friendlyName}</Form.Label>
+				<Form.Input
+					class="w-fit"
+					disabled={submitting}
+					accept={data.fileTypes.toString()}
+					type={'file'}
+				/>
+				<Form.Description
+					>{#each data.fileTypes as fileType}{fileType.toUpperCase()} {' '}{/each} Format</Form.Description
+				>
 				<Form.Validation />
 			</Form.Item>
 		</Form.Field>

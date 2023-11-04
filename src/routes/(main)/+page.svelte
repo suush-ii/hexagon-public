@@ -61,7 +61,7 @@
 		}, 300)
 	}
 
-	let timer: number | undefined
+	let timer: string | number | NodeJS.Timeout | undefined
 
 	const emoticons = [
 		'( ⚆_⚆)',
@@ -139,6 +139,10 @@
 			clearInterval(interval)
 		}
 	})
+
+	function submit() {
+		emoticon = '(⇀‿‿↼)'
+	}
 </script>
 
 <svelte:head>
@@ -151,7 +155,17 @@
 </svelte:head>
 
 <div class="flex m-auto">
-	<Button href="/login" class="hidden sm:block absolute right-5 top-5">Log In</Button>
+	<Button
+		href="/login"
+		on:mouseenter={() => {
+			emoticon = '( ⚆_⚆) ! ! ! !'
+		}}
+		on:mouseleave={() => {
+			emoticon = '(♥‿‿♥) ! ! ! !'
+			freezeEmoticon = true
+		}}
+		class="hidden sm:block absolute right-5 top-5">Log In</Button
+	>
 
 	<audio src="/hexabite/3_sndBite1.mp3" bind:this={audio} />
 
@@ -190,7 +204,15 @@
 				<p class="text-sm text-muted-foreground">Enter your details below to create your account</p>
 			</div>
 
-			<Form.Root method="POST" {form} schema={formSchema} let:config let:submitting let:message>
+			<Form.Root
+				method="POST"
+				on:submit={submit}
+				{form}
+				schema={formSchema}
+				let:config
+				let:submitting
+				let:message
+			>
 				<Form.Field {config} name="username">
 					<Form.Item>
 						<Form.Label>Username</Form.Label>
