@@ -3,8 +3,8 @@ import type { LayoutLoad } from './$types'
 import { error } from '@sveltejs/kit'
 
 interface assetPrimitive {
-	friendlyName: string,
-	fileTypes: string[],
+	friendlyName: string
+	fileTypes: string[]
 	mimeTypes: string[]
 }
 
@@ -12,9 +12,15 @@ interface assets {
 	[key: string]: assetPrimitive
 }
 
-export let _uploadableAssets: assets = {'games':{friendlyName: "Game", fileTypes: [".rbxl"], mimeTypes: ["application/octet-stream"]},
-'audio':{friendlyName: "Audio", fileTypes: [".mp3"], mimeTypes: ["audio/mp3"]},
-'decals':{friendlyName: "Decal", fileTypes: ['.png','.jpg','.jpeg'], mimeTypes: ["image/png","image/jpeg", "image/jpg"]}}
+export let _uploadableAssets: assets = {
+	games: { friendlyName: 'Game', fileTypes: ['.rbxl'], mimeTypes: ['application/octet-stream'] },
+	audio: { friendlyName: 'Audio', fileTypes: ['.mp3'], mimeTypes: ['audio/mp3'] },
+	decals: {
+		friendlyName: 'Decal',
+		fileTypes: ['.png', '.jpg', '.jpeg'],
+		mimeTypes: ['image/png', 'image/jpeg', 'image/jpg']
+	}
+}
 
 export const load: LayoutLoad = async ({ params }) => {
 	const result = await z.enum(['games', 'audio', 'decals']).safeParseAsync(params.item)

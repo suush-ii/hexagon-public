@@ -14,11 +14,7 @@ import {
 	CLOUDFLARE_S3_ACCESS_KEY_ID,
 	CLOUDFLARE_S3_ACCOUNT_ID
 } from '$env/static/private'
-import {
-	CreateBucketCommand,
-	HeadBucketCommand,
-	S3Client
-} from '@aws-sdk/client-s3'
+import { CreateBucketCommand, HeadBucketCommand, S3Client } from '@aws-sdk/client-s3'
 
 const S3 = new S3Client({
 	region: 'auto',
@@ -28,15 +24,15 @@ const S3 = new S3Client({
 		secretAccessKey: CLOUDFLARE_S3_ACCESS_KEY
 	}
 })
-const command = new HeadBucketCommand({Bucket: appName.toLowerCase()});
+const command = new HeadBucketCommand({ Bucket: appName.toLowerCase() })
 try {
-await S3.send(command);
+	await S3.send(command)
 } catch (error) {
 	// bucket doesn't exist
 	const createBucketCommand = new CreateBucketCommand({
-		Bucket: appName.toLocaleLowerCase(),
-	  });
-	await S3.send(createBucketCommand);
+		Bucket: appName.toLocaleLowerCase()
+	})
+	await S3.send(createBucketCommand)
 }
 
 const configPrepared = db.select().from(configTable).limit(1).prepare('configGrab')
