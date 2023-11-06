@@ -4,7 +4,7 @@ import { relations } from 'drizzle-orm'
 import { bigint, bigserial, integer, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core'
 
 export const gamesTable = pgTable('games', {
-	gameid: bigserial('gameid', { mode: 'number' }).notNull().primaryKey(),
+	gameid: bigint('gameid', { mode: 'number' }).notNull().primaryKey(),
 	universeid: bigserial('universeid', { mode: 'number' }).unique().notNull(),
 	gamename: text('gamename').notNull(),
 	description: text('gamename').notNull(),
@@ -12,7 +12,6 @@ export const gamesTable = pgTable('games', {
 	active: bigint('active', { mode: 'number' }).notNull(),
 	visits: bigint('visits', { mode: 'number' }).notNull(),
 	serversize: integer('serversize'),
-	created: timestamp('created', { mode: 'date', withTimezone: true }).notNull(),
 	updated: timestamp('updated', { mode: 'date', withTimezone: true }).notNull(),
 	genre: text('genre').$type<gameGenre>().notNull()
 })
@@ -23,7 +22,7 @@ export const gamesRelations = relations(gamesTable, ({ many }) => ({
 
 export const placesTable = pgTable('places', {
 	placeid: bigserial('gameid', { mode: 'number' }).notNull().primaryKey(),
-	universeid: bigserial('universeid', { mode: 'number' }).notNull(),
+	universeid: bigint('universeid', { mode: 'number' }).notNull(),
 	created: timestamp('created', { mode: 'date', withTimezone: true }).notNull(),
 	updated: timestamp('updated', { mode: 'date', withTimezone: true }).notNull(),
 	placeurl: text('placeurl')

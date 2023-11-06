@@ -14,7 +14,6 @@
 	import { Key } from 'lucide-svelte'
 
 	import { pageName } from '$src/stores'
-	pageName.set('Free Games')
 
 	export let data: PageData
 
@@ -92,6 +91,8 @@
 	]
 
 	let emoticon = emoticons[Math.floor(Math.random() * emoticons.length)]
+
+	$: pageName.set('Free Games ' + emoticon)
 
 	async function clickerInc() {
 		clearTimeout(timer)

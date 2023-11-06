@@ -1,6 +1,7 @@
 import { z } from 'zod'
 import type { LayoutLoad } from './$types'
 import { error } from '@sveltejs/kit'
+export const _assetSchema = z.enum(['games', 'audio', 'decals', 'shirts', 'pants'])
 
 interface assetPrimitive {
 	friendlyName: string
@@ -8,8 +9,15 @@ interface assetPrimitive {
 	mimeTypes: string[]
 }
 
+interface imagePrimitive extends Omit<assetPrimitive, 'friendlyName'> {}
+
 interface assets {
 	[key: string]: assetPrimitive
+}
+
+const imagePrimitive: imagePrimitive = {
+	fileTypes: ['.png', '.jpg', '.jpeg'],
+	mimeTypes: ['image/png', 'image/jpeg', 'image/jpg']
 }
 
 export let _uploadableAssets: assets = {
@@ -17,13 +25,20 @@ export let _uploadableAssets: assets = {
 	audio: { friendlyName: 'Audio', fileTypes: ['.mp3'], mimeTypes: ['audio/mp3'] },
 	decals: {
 		friendlyName: 'Decal',
-		fileTypes: ['.png', '.jpg', '.jpeg'],
-		mimeTypes: ['image/png', 'image/jpeg', 'image/jpg']
+		...imagePrimitive
+	},
+	shirts: {
+		friendlyName: 'Shirt',
+		...imagePrimitive
+	},
+	pants: {
+		friendlyName: 'Pants',
+		...imagePrimitive
 	}
 }
 
 export const load: LayoutLoad = async ({ params }) => {
-	const result = await z.enum(['games', 'audio', 'decals']).safeParseAsync(params.item)
+	const result = await _assetSchema.safeParseAsync(params.item)
 
 	if (result.success === false) {
 		throw error(404, { success: false, message: 'Not found.' })

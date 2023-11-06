@@ -17,7 +17,12 @@ export type gameGenre =
 	| 'Sports'
 	| 'Fighting'
 	| 'Western'
+
+export type assetTypes = 'games' | 'audio' | 'decals'
+
 export type clientVersions = '2016' | '2013'
+
+export type assetStates = 'pending' | 'approved' | 'rejected' | 'deleted'
 
 import type { SvelteComponent } from 'svelte'
 export type Component = $$Generic<typeof SvelteComponent<any, any, any>>

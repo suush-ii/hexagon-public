@@ -25,6 +25,12 @@
 			<a href="/develop/decals" class="w-full"
 				><Tabs.Trigger class="w-full pointer-events-none" value="decals">Decals</Tabs.Trigger></a
 			>
+			<a href="/develop/shirts" class="w-full"
+				><Tabs.Trigger class="w-full pointer-events-none" value="shirts">Shirts</Tabs.Trigger></a
+			>
+			<a href="/develop/pants" class="w-full"
+				><Tabs.Trigger class="w-full pointer-events-none" value="pants">Pants</Tabs.Trigger></a
+			>
 		</Tabs.List>
 		<Tabs.Content value={data.item}>
 			<a href="/develop/{data.item}/upload">

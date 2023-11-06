@@ -1,11 +1,10 @@
 <script lang="ts">
 	import * as Form from '$src/components/ui/form'
 
-	import { formSchema } from '$lib/schemas/gameschema'
+	import { formSchema as gameFormSchema } from '$lib/schemas/gameschema'
 
 	import type { PageData } from './$types'
 	import type { FormTextareaEvent } from '$src/components/ui/textarea'
-	import * as Avatar from '$src/components/ui/avatar'
 	import { BookText } from 'lucide-svelte'
 
 	export let data: PageData
@@ -23,7 +22,14 @@
 	<h1 class="text-4xl leading-none tracking-tight font-semibold">Upload {data.friendlyName}</h1>
 	<!-- TODO: FORM-->
 
-	<Form.Root class="max-w-4xl" method="POST" {form} schema={formSchema} let:config let:submitting>
+	<Form.Root
+		class="max-w-4xl"
+		method="POST"
+		{form}
+		schema={gameFormSchema}
+		let:config
+		let:submitting
+	>
 		<Form.Field {config} name="gamename">
 			<Form.Item>
 				<Form.Label>Name</Form.Label>

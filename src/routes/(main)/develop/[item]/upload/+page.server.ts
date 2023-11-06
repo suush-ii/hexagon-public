@@ -11,7 +11,7 @@ import {
 	CLOUDFLARE_S3_ACCOUNT_ID
 } from '$env/static/private'
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3'
-import { z } from 'zod'
+import { _assetSchema } from '../+layout'
 
 const S3 = new S3Client({
 	region: 'auto',
@@ -33,7 +33,7 @@ export const actions: Actions = {
 		const formData = await request.formData()
 		const form = await superValidate(formData, formSchema)
 
-		const result = await z.enum(['games', 'audio', 'decals']).safeParseAsync(params.item)
+		const result = await _assetSchema.safeParseAsync(params.item)
 
 		if (result.success === false) {
 			return fail(400, {
