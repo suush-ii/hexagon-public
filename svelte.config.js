@@ -1,5 +1,6 @@
 import adapter from '@sveltejs/adapter-node'
 import { vitePreprocess } from '@sveltejs/kit/vite'
+import 'dotenv/config'
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
@@ -16,7 +17,7 @@ const config = {
 			$src: './src/'
 		},
 		csrf: {
-			checkOrigin: false
+			checkOrigin: process.env.DEBUG === "true" ? false : true
 		}
 	}
 }
