@@ -9,18 +9,12 @@ interface assetPrimitive {
 	mimeTypes: string[]
 }
 
-interface imagePrimitive extends Omit<assetPrimitive, 'friendlyName'> {}
-
-interface assets {
-	[key: string]: assetPrimitive
-}
-
-const imagePrimitive: imagePrimitive = {
+const imagePrimitive = {
 	fileTypes: ['.png', '.jpg', '.jpeg'],
 	mimeTypes: ['image/png', 'image/jpeg', 'image/jpg']
 }
 
-export let _uploadableAssets: assets = {
+export let _uploadableAssets: Record<string, assetPrimitive> = {
 	games: { friendlyName: 'Game', fileTypes: ['.rbxl'], mimeTypes: ['application/octet-stream'] },
 	audio: { friendlyName: 'Audio', fileTypes: ['.mp3'], mimeTypes: ['audio/mp3'] },
 	decals: {

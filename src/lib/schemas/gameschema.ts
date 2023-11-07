@@ -1,7 +1,7 @@
 import { z } from 'zod'
 
 export const formSchema = z.object({
-	gamename: z
+	name: z
 		.string({ required_error: 'Game name required.' })
 		.min(1, { message: 'Game name required.' })
 		.max(50, { message: "Game name can't be over 20 characters!" }),
@@ -10,10 +10,13 @@ export const formSchema = z.object({
 		.number()
 		.int({ message: 'Whole number please!' })
 		.min(1, { message: 'Minimum of 1 player!' })
-		.max(50, { message: 'Maximum of 50 players!' }),
+		.max(50, { message: 'Maximum of 50 players!' })
+		.default(30),
 	/*thumbnail: z.any(),
 	icon: z.any(),*/
-	game: z.any()
+	game: z.any(),
+	clothing: z.never(),
+	asset: z.never()
 })
 
 export type FormSchema = typeof formSchema

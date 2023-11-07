@@ -8,7 +8,7 @@ import { auth } from '$lib/server/lucia'
 import { dev } from '$app/environment'
 import { usersTable } from '$lib/server/schema/users'
 import { eq } from 'drizzle-orm'
-import { appName } from '$src/stores'
+import { s3BucketName } from '$src/stores'
 import {
 	CLOUDFLARE_S3_ACCESS_KEY,
 	CLOUDFLARE_S3_ACCESS_KEY_ID,
@@ -24,13 +24,13 @@ const S3 = new S3Client({
 		secretAccessKey: CLOUDFLARE_S3_ACCESS_KEY
 	}
 })
-const command = new HeadBucketCommand({ Bucket: appName.toLowerCase() })
+const command = new HeadBucketCommand({ Bucket: s3BucketName })
 try {
 	await S3.send(command)
 } catch (error) {
 	// bucket doesn't exist
 	const createBucketCommand = new CreateBucketCommand({
-		Bucket: appName.toLocaleLowerCase()
+		Bucket: s3BucketName
 	})
 	await S3.send(createBucketCommand)
 }

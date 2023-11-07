@@ -4,7 +4,7 @@ import { formSchema } from '$src/lib/schemas/gameschema'
 import { createHash } from 'node:crypto'
 import { fail } from '@sveltejs/kit'
 import { _uploadableAssets } from '../+layout'
-import { appName } from '$src/stores'
+import { s3BucketName } from '$src/stores'
 import {
 	CLOUDFLARE_S3_ACCESS_KEY,
 	CLOUDFLARE_S3_ACCESS_KEY_ID,
@@ -70,7 +70,7 @@ export const actions: Actions = {
 				}
 
 				const command = new PutObjectCommand({
-					Bucket: appName,
+					Bucket: s3BucketName,
 					Key: params.item + '/' + fileName,
 					Body: fileBuffer,
 					ContentType: file.type
