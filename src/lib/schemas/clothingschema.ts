@@ -7,11 +7,8 @@ export const formSchema = z.object({
 	name: shape.name,
 	description: shape.description,
 	price: shape.price,
-	clothing: z.any(),
-	type: z.enum(['Shirts', 'Pants']),
-	game: shape.game,
-	serversize: shape.serversize,
-	asset: z.never()
+	asset: shape.asset,
+	serversize: shape.serversize
 })
 
 export type FormSchema = typeof formSchema

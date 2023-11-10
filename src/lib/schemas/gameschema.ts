@@ -14,9 +14,8 @@ export const formSchema = z.object({
 		.default(30),
 	/*thumbnail: z.any(),
 	icon: z.any(),*/
-	game: z.any(),
-	clothing: z.never(),
-	asset: z.never()
+	asset: z.any(),
+	price: z.undefined()
 })
 
 export type FormSchema = typeof formSchema

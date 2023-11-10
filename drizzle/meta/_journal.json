@@ -1,20 +1,27 @@
 {
-	"version": "5",
-	"dialect": "pg",
-	"entries": [
-		{
-			"idx": 0,
-			"version": "5",
-			"when": 1697601966275,
-			"tag": "0000_silly_hedge_knight",
-			"breakpoints": true
-		},
-		{
-			"idx": 1,
-			"version": "5",
-			"when": 1697770773214,
-			"tag": "0001_quiet_deathstrike",
-			"breakpoints": true
-		}
-	]
+  "version": "5",
+  "dialect": "pg",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1697601966275,
+      "tag": "0000_silly_hedge_knight",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1697770773214,
+      "tag": "0001_quiet_deathstrike",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1699594299416,
+      "tag": "0002_supreme_jamie_braddock",
+      "breakpoints": true
+    }
+  ]
 }

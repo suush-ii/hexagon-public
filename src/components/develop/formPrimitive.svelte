@@ -16,6 +16,7 @@
 
 	import type { FormTextareaEvent } from '$src/components/ui/textarea'
 	import { BookText } from 'lucide-svelte'
+	import { currencyNamePlural } from '$src/stores'
 
 	export let friendlyName: string
 
@@ -28,7 +29,15 @@
 	}
 </script>
 
-<Form.Root class="max-w-4xl" method="POST" {form} schema={formSchema} let:config let:submitting>
+<Form.Root
+	class="max-w-4xl"
+	method="POST"
+	{form}
+	schema={formSchema}
+	debug={true}
+	let:config
+	let:submitting
+>
 	<Form.Field {config} name="name">
 		<Form.Item>
 			<Form.Label>{friendlyName} Name</Form.Label>
@@ -47,6 +56,17 @@
 		</Form.Item>
 	</Form.Field>
 
+	{#if item === 'decals' || item === 'audio' || item === 'shirts' || item === 'pants'}
+		<Form.Field {config} name="price">
+			<Form.Item>
+				<Form.Label>Price</Form.Label>
+				<Form.Input disabled={submitting} type={'number'} min={1} max={999999999} />
+				<Form.Description>Up to 999999999 {currencyNamePlural}.</Form.Description>
+				<Form.Validation />
+			</Form.Item>
+		</Form.Field>
+	{/if}
+
 	{#if item === 'games'}
 		<Form.Field {config} name="serversize">
 			<Form.Item>
@@ -58,16 +78,7 @@
 		</Form.Field>
 	{/if}
 
-	<Form.Field
-		{config}
-		name={item === 'games'
-			? 'game'
-			: item === 'audio' || item === 'decals'
-			? 'asset'
-			: item === 'shirts' || item === 'pants'
-			? 'clothing'
-			: 'clothing'}
-	>
+	<Form.Field {config} name="asset">
 		<Form.Item>
 			<Form.Label>{friendlyName}</Form.Label>
 			<Form.Input class="w-fit" disabled={submitting} accept={fileTypes.toString()} type={'file'} />

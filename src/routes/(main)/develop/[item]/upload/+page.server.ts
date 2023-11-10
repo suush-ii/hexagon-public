@@ -48,7 +48,7 @@ export const actions: Actions = {
 		}
 		let mimeTypes = _uploadableAssets[params.item].mimeTypes
 
-		const file = formData.get('game')
+		const file = formData.get('asset')
 		if (file instanceof File) {
 			console.log(file.name)
 
@@ -76,7 +76,8 @@ export const actions: Actions = {
 					ContentType: file.type
 				})
 				const result = await S3.send(command)
-				//console.log('File uploaded successfully:', result);
+				console.log('File uploaded successfully:', fileName)
+				console.log(params.item)
 			} catch (err) {
 				return fail(500, {
 					form
