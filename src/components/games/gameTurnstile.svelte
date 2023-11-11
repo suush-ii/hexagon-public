@@ -13,7 +13,7 @@
 
 	let rightButtonDisabled = false
 
-	let games = [1]
+	export let games: any[]
 
 	let scrollStep = games.length > 15 ? 1000 : (300 * games.length) / 15
 
@@ -69,7 +69,12 @@
 		<div class="flex flex-row gap-x-3 w-full overflow-hidden scroll-smooth" bind:this={listElement}>
 			{#if games}
 				{#each games as game}
-					<GameCard gameId={1} gameName="game game gamasdfassdfdfne" />
+					<GameCard
+						gameId={game.gameid}
+						gameName={game.gamename}
+						playerCount={game.active}
+						iconUrl={game.iconurl}
+					/>
 				{/each}
 			{:else}
 				<EmptyCard class="p-8 m-auto" />

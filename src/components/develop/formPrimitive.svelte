@@ -8,6 +8,8 @@
 
 	import type { FormSchema as AssetSchema } from '$lib/schemas/assetschema'
 
+	import { gameGenreZod } from '$lib'
+
 	export let formSchema: GameSchema | ClothingSchema | AssetSchema
 
 	export let form: SuperValidated<typeof formSchema>
@@ -78,13 +80,34 @@
 		</Form.Field>
 	{/if}
 
+	{#if item === 'games'}
+		<Form.Field {config} name="genre">
+			<Form.Item>
+				<Form.Label>Genre</Form.Label>
+				<Form.Select>
+					<Form.SelectTrigger placeholder="All" />
+					<Form.SelectContent>
+						{#each gameGenreZod as genre}
+							<Form.SelectItem value={genre}>{genre}</Form.SelectItem>
+						{/each}
+					</Form.SelectContent>
+				</Form.Select>
+				<Form.Description
+					>Try to find the best fit it will help people find your game!</Form.Description
+				>
+				<Form.Validation />
+			</Form.Item>
+		</Form.Field>
+	{/if}
+
 	<Form.Field {config} name="asset">
 		<Form.Item>
 			<Form.Label>{friendlyName}</Form.Label>
 			<Form.Input class="w-fit" disabled={submitting} accept={fileTypes.toString()} type={'file'} />
 			<Form.Description
-				>{#each fileTypes as fileType}{fileType.toUpperCase()} {' '}{/each} Format</Form.Description
-			>
+				>{#each fileTypes as fileType}{fileType.toUpperCase()} {' '}{/each} Format
+				{#if item === 'games'}10MB Max{/if}
+			</Form.Description>
 			<Form.Validation />
 		</Form.Item>
 	</Form.Field>

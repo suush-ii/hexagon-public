@@ -45,6 +45,7 @@ location / {
     proxy_cache_bypass $http_upgrade;
     proxy_set_header X-Forwarded-Proto $scheme; # these are important so the sveltekit server can verify the origin
     proxy_set_header X-Forwarded-Host $host;
+    client_max_body_size 100M;
 
 }
 ```

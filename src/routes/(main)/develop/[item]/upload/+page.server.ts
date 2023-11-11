@@ -1,8 +1,8 @@
 import type { PageServerLoad, Actions } from './$types'
-import { superValidate } from 'sveltekit-superforms/server'
+import { setError, superValidate } from 'sveltekit-superforms/server'
 import { formSchema } from '$src/lib/schemas/gameschema'
 import { createHash } from 'node:crypto'
-import { fail } from '@sveltejs/kit'
+import { fail, redirect } from '@sveltejs/kit'
 import { _uploadableAssets } from '../+layout'
 import { s3BucketName } from '$src/stores'
 import {
@@ -12,6 +12,9 @@ import {
 } from '$env/static/private'
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3'
 import { _assetSchema } from '../+layout'
+import { db } from '$lib/server/db'
+import { assetTable } from '$lib/server/schema/assets'
+import { gamesTable, placesTable } from '$lib/server/schema/games'
 
 const S3 = new S3Client({
 	region: 'auto',
@@ -29,7 +32,7 @@ export const load: PageServerLoad = async () => {
 }
 
 export const actions: Actions = {
-	default: async ({ request, params }) => {
+	default: async ({ request, params, locals }) => {
 		const formData = await request.formData()
 		const form = await superValidate(formData, formSchema)
 
@@ -50,7 +53,10 @@ export const actions: Actions = {
 
 		const file = formData.get('asset')
 		if (file instanceof File) {
-			console.log(file.name)
+			if (file.size / Math.pow(1024, 2) > 10) {
+				// 10mb
+				return setError(form, 'asset', 'File is too large!')
+			}
 
 			try {
 				const fileBuffer = Buffer.from(await file.arrayBuffer())
@@ -58,10 +64,6 @@ export const actions: Actions = {
 				const fileName = Buffer.from(
 					createHash('sha512').update(fileBuffer).digest('hex')
 				).toString()
-
-				//console.log(mimeTypes.some(e => e === file.type))
-
-				//console.log(mimeTypes, file.type)
 
 				if (mimeTypes.some((e) => e === file.type) === false) {
 					return fail(400, {
@@ -76,9 +78,49 @@ export const actions: Actions = {
 					ContentType: file.type
 				})
 				const result = await S3.send(command)
-				console.log('File uploaded successfully:', fileName)
-				console.log(params.item)
+				//console.log('File uploaded successfully:', fileName)
+				//console.log(params.item)
+
+				if (params.item === 'games') {
+					await db.transaction(async (tx) => {
+						try {
+							let [assetResponse] = await tx
+								.insert(assetTable)
+								.values({
+									assetname: form.data.name,
+									assetType: 'games',
+									creatoruserid: locals.session.user.userid,
+									moderationstate: 'approved'
+								})
+								.returning({ assetid: assetTable.assetid })
+
+							let [gameResponse] = await tx
+								.insert(gamesTable)
+								.values({
+									gameid: assetResponse.assetid,
+									gamename: form.data.name,
+									description: form.data.description,
+									creatoruserid: locals.session.user.userid,
+									genre: form.data.genre
+								})
+								.returning({ universeid: gamesTable.universeid })
+
+							await tx.insert(placesTable).values({
+								universeid: gameResponse.universeid,
+								placeurl: fileName
+							})
+						} catch {
+							tx.rollback()
+							return fail(500, {
+								form
+							})
+						}
+					})
+
+					throw redirect(302, '/develop/games')
+				}
 			} catch (err) {
+				console.log(err)
 				return fail(500, {
 					form
 				})

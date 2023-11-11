@@ -8,7 +8,8 @@ export const formSchema = z.object({
 	description: shape.description,
 	price: shape.price,
 	asset: shape.asset,
-	serversize: shape.serversize
+	serversize: shape.serversize,
+	genre: shape.genre
 })
 
 export type FormSchema = typeof formSchema

@@ -22,6 +22,27 @@
       "when": 1699594299416,
       "tag": "0002_supreme_jamie_braddock",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1699677192252,
+      "tag": "0003_useful_vermin",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1699677708911,
+      "tag": "0004_conscious_skreet",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "5",
+      "when": 1699679929418,
+      "tag": "0005_third_legion",
+      "breakpoints": true
     }
   ]
 }

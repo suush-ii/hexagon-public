@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { gameGenreZod } from '$lib'
 
 export const formSchema = z.object({
 	name: z
@@ -15,7 +16,8 @@ export const formSchema = z.object({
 	/*thumbnail: z.any(),
 	icon: z.any(),*/
 	asset: z.any(),
-	price: z.undefined()
+	price: z.any().optional(),
+	genre: z.enum(gameGenreZod).default('All')
 })
 
 export type FormSchema = typeof formSchema

@@ -13,7 +13,8 @@ export const formSchema = z.object({
 		.min(5, { message: 'Price must be at least 5!' })
 		.max(999999999, { message: 'The maximum price for this is 999999999!' }),
 	asset: z.any(),
-	serversize: z.any() // kind of a hack so typescript doesn't complain we don't actually use this value for anything
+	serversize: z.any(), // kind of a hack so typescript doesn't complain we don't actually use this value for anything
+	genre: z.any()
 })
 
 export type FormSchema = typeof formSchema

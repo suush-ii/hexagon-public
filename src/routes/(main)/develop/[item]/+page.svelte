@@ -7,6 +7,7 @@
 	export let data: LayoutData
 
 	import { pageName } from '$src/stores'
+	import EmptyCard from '$src/components/emptyCard.svelte'
 
 	pageName.set('Develop')
 </script>
@@ -41,6 +42,7 @@
 					<h1 class="mx-auto mb-auto font-semibold text-xl">Upload Here</h1>
 				</div></a
 			>
+			<EmptyCard class="p-8 m-auto" />
 		</Tabs.Content>
 	</Tabs.Root>
 </div>
