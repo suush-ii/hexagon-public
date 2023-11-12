@@ -113,7 +113,7 @@
 		if (iconClass != 'boop') {
 			iconClass = 'boop'
 		}
-		if (biteCount < 7) {
+		if (biteCount < 3) {
 			biteCount += 1
 			audio.play()
 		} else {
