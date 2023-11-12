@@ -21,7 +21,6 @@
 
 <div class="flex flex-col h-screen">
 	{#if $page.url.pathname != '/' && $page.url.pathname != '/login'}
-		<!--TODO: if authorized-->
 		<Navbar {loggedIn} userId={data.session?.userid} />
 	{:else if $page.url.pathname === '/login'}
 		<Navbar {loggedIn} signUpButton={true} />

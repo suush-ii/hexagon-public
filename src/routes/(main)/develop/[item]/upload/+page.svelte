@@ -13,7 +13,6 @@
 
 <div class="container p-8 flex flex-col gap-y-8">
 	<h1 class="text-4xl leading-none tracking-tight font-semibold">Upload {data.friendlyName}</h1>
-	<!-- TODO: FORM-->
 
 	{#if data.item === 'games'}
 		<FormPrimitive
@@ -40,6 +39,4 @@
 			item={data.item}
 		/>
 	{/if}
-
-	<!-- TODO: Form fields don't support file uploads will have to figure out a way to hack this...-->
 </div>
