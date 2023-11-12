@@ -62,7 +62,7 @@
 		<Form.Field {config} name="price">
 			<Form.Item>
 				<Form.Label>Price</Form.Label>
-				<Form.Input disabled={submitting} type={'number'} min={1} max={999999999} />
+				<Form.Input disabled={submitting} type={'number'} min={0} max={999999999} />
 				<Form.Description>Up to 999999999 {currencyNamePlural}.</Form.Description>
 				<Form.Validation />
 			</Form.Item>

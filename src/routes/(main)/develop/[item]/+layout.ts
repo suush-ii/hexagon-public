@@ -16,7 +16,7 @@ const imagePrimitive = {
 
 export let _uploadableAssets: Record<string, assetPrimitive> = {
 	games: { friendlyName: 'Game', fileTypes: ['.rbxl'], mimeTypes: ['application/octet-stream'] },
-	audio: { friendlyName: 'Audio', fileTypes: ['.mp3'], mimeTypes: ['audio/mp3'] },
+	audio: { friendlyName: 'Audio', fileTypes: ['.mp3'], mimeTypes: ['audio/mpeg'] },
 	decals: {
 		friendlyName: 'Decal',
 		...imagePrimitive

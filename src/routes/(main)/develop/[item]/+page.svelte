@@ -1,10 +1,11 @@
 <script lang="ts">
 	import * as Tabs from '$src/components/ui/tabs'
+	import * as Avatar from '$src/components/ui/avatar'
 	import { Upload } from 'lucide-svelte'
 
-	import type { LayoutData } from './$types'
+	import type { PageData } from './$types'
 
-	export let data: LayoutData
+	export let data: PageData
 
 	import { pageName } from '$src/stores'
 	import EmptyCard from '$src/components/emptyCard.svelte'
@@ -42,7 +43,34 @@
 					<h1 class="mx-auto mb-auto font-semibold text-xl">Upload Here</h1>
 				</div></a
 			>
-			<EmptyCard class="p-8 m-auto" />
+			{#if data.creations.length === 0}
+				<EmptyCard class="p-8 m-auto" />
+			{/if}
 		</Tabs.Content>
 	</Tabs.Root>
+	{#if data.creations.length > 0}
+		<div class="flex flex-col gap-y-4">
+			{#each data.creations as creation}
+				<div class="flex flex-row gap-x-2">
+					<Avatar.Root class="w-24 h-24 rounded-xl">
+						<Avatar.Image
+							src={creation.iconUrl ? creation.iconUrl : '/Images/iconplaceholder.png'}
+							alt={creation.assetName}
+							loading="lazy"
+						/>
+						<Avatar.Fallback />
+					</Avatar.Root>
+
+					<div>
+						<h1 class="text-xl">{creation.assetName}</h1>
+
+						<div class="flex flex-row space-x-2">
+							<p class="text-sm text-muted-foreground flex">Updated:</p>
+							<p class="text-sm">{creation.updated}</p>
+						</div>
+					</div>
+				</div>
+			{/each}
+		</div>
+	{/if}
 </div>

@@ -119,6 +119,16 @@ export const actions: Actions = {
 
 					throw redirect(302, '/develop/games')
 				}
+
+				if (params.item === 'audio' || params.item === 'decals') {
+					await db.insert(assetTable).values({
+						assetname: form.data.name,
+						assetType: params.item,
+						creatoruserid: locals.session.user.userid,
+						simpleasseturl: fileName,
+						moderationstate: 'pending'
+					})
+				}
 			} catch (err) {
 				console.log(err)
 				return fail(500, {

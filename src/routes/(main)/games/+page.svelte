@@ -6,7 +6,6 @@
 	pageName.set('Games')
 
 	export let data: PageData
-	console.log(data)
 </script>
 
 <div class="container p-4 flex flex-col gap-y-4">
@@ -14,5 +13,5 @@
 
 	<h1 class="text-2xl leading-none tracking-tight font-semibold">Popular</h1>
 
-	<GameTurnstile games={data.games} />
+	<GameTurnstile games={data.popular} />
 </div>

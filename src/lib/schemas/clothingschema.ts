@@ -6,7 +6,12 @@ const { shape } = assetSchema
 export const formSchema = z.object({
 	name: shape.name,
 	description: shape.description,
-	price: shape.price,
+	price: z.coerce
+		.number()
+		.int()
+		.positive({ message: 'Price must be a positive number!' })
+		.min(5, { message: 'Price must be at least 5!' })
+		.max(999999999, { message: 'The maximum price for this is 999999999!' }),
 	asset: shape.asset,
 	serversize: shape.serversize,
 	genre: shape.genre
