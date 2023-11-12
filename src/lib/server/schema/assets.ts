@@ -10,7 +10,8 @@ export const assetTable = pgTable('assets', {
 	created: timestamp('created', { mode: 'date', withTimezone: true }).notNull().defaultNow(),
 	creatoruserid: bigint('creatoruserid', { mode: 'number' }).notNull(),
 	moderationstate: text('moderationstate').$type<assetStates>().notNull(),
-	simpleasseturl: text('simpleasseturl') // simple assets like images/decals or whatever use this
+	simpleasseturl: text('simpleasseturl'), // simple assets like images/decals or whatever use this
+	sales: bigint('sales', { mode: 'number' }).notNull().default(0)
 })
 
 export const assetRelations = relations(assetTable, ({ one }) => ({

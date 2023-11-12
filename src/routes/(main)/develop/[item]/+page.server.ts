@@ -25,8 +25,11 @@ export const load: PageServerLoad = async ({ params, parent }) => {
 	let creations: {
 		assetName: string
 		assetid: number
+		assetType: string
 		updated: string
 		iconUrl: string | null
+		totalStat: number
+		last7DaysStat: number
 	}[] = []
 
 	if (params.item === 'games') {
@@ -40,7 +43,10 @@ export const load: PageServerLoad = async ({ params, parent }) => {
 			assetName: game.gamename,
 			assetid: game.gameid,
 			iconUrl: game.iconurl,
-			updated: formatDate(game.updated)
+			updated: formatDate(game.updated),
+			assetType: params.item,
+			totalStat: game.visits,
+			last7DaysStat: 0
 		}))
 	}
 
@@ -57,7 +63,10 @@ export const load: PageServerLoad = async ({ params, parent }) => {
 			assetName: asset.assetname,
 			assetid: asset.assetid,
 			iconUrl: null, //TODO: make an audio/decal default icon
-			updated: formatDate(asset.created)
+			updated: formatDate(asset.created),
+			assetType: params.item,
+			totalStat: asset.sales,
+			last7DaysStat: 0
 		}))
 	}
 

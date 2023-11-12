@@ -1,6 +1,7 @@
 <script lang="ts">
 	import * as Tabs from '$src/components/ui/tabs'
 	import * as Avatar from '$src/components/ui/avatar'
+	import { Button } from '$src/components/ui/button'
 	import { Upload } from 'lucide-svelte'
 
 	import type { PageData } from './$types'
@@ -51,7 +52,7 @@
 	{#if data.creations.length > 0}
 		<div class="flex flex-col gap-y-4">
 			{#each data.creations as creation}
-				<div class="flex flex-row gap-x-2">
+				<div class="flex flex-row gap-x-2 w-full justify-center">
 					<Avatar.Root class="w-24 h-24 rounded-xl">
 						<Avatar.Image
 							src={creation.iconUrl ? creation.iconUrl : '/Images/iconplaceholder.png'}
@@ -61,12 +62,32 @@
 						<Avatar.Fallback />
 					</Avatar.Root>
 
-					<div>
-						<h1 class="text-xl">{creation.assetName}</h1>
-
-						<div class="flex flex-row space-x-2">
-							<p class="text-sm text-muted-foreground flex">Updated:</p>
-							<p class="text-sm">{creation.updated}</p>
+					<div class="flex flex-row gap-x-12 w-full max-w-6xl">
+						<table class="table-auto w-full">
+							<tbody>
+								<tr>
+									<td class="text-xl">{creation.assetName}</td>
+									<td />
+									<td class="text-sm text-muted-foreground text-right"
+										>Total
+										{#if creation.assetType === 'games'}
+											Visitors:
+										{:else}
+											Sales:
+										{/if}
+									</td>
+									<td class="text-sm">{creation.totalStat}</td>
+								</tr>
+								<tr class="align-text-top">
+									<td class="text-sm text-muted-foreground w-0">Updated:</td>
+									<td class="text-sm">{creation.updated}</td>
+									<td class="text-sm text-muted-foreground text-right">Last 7 days:</td>
+									<td class="text-sm w-0">{creation.last7DaysStat}</td>
+								</tr>
+							</tbody>
+						</table>
+						<div class="flex mr-auto pt-4 mb-auto">
+							<Button>Edit</Button>
 						</div>
 					</div>
 				</div>

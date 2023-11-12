@@ -1,0 +1,1 @@
+ALTER TABLE "assets" ADD COLUMN "sales" bigint DEFAULT 0 NOT NULL;
