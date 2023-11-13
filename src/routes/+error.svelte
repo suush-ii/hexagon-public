@@ -11,9 +11,9 @@
 
 	import Navbar from '$src/components/navbar.svelte'
 
-	import type { PageData } from './$types'
+	import type { LayoutData } from './$types'
 
-	export let data: PageData
+	export let data: LayoutData
 
 	$: loggedIn = data.session ? true : false
 </script>
