@@ -62,7 +62,7 @@
 						<Avatar.Fallback />
 					</Avatar.Root>
 
-					<div class="flex flex-row gap-x-12 w-full max-w-6xl">
+					<div class="flex flex-row gap-x-4 w-full max-w-6xl">
 						<table class="table-auto w-full">
 							<tbody>
 								<tr>
@@ -86,8 +86,8 @@
 								</tr>
 							</tbody>
 						</table>
-						<div class="flex mr-auto pt-4 mb-auto">
-							<Button>Edit</Button>
+						<div class="flex m-auto">
+							<Button href="/develop/{data.item}/{creation.assetid}/edit">Edit</Button>
 						</div>
 					</div>
 				</div>

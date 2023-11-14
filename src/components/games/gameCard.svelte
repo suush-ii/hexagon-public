@@ -10,7 +10,7 @@
 	export let iconUrl: string
 </script>
 
-<a href="/games/{gameId}"
+<a href="/games/{gameId}/{gameName}"
 	><div class="flex flex-col w-32">
 		<Avatar.Root class="w-32 h-32 rounded-xl">
 			<Avatar.Image

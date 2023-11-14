@@ -35,5 +35,5 @@ export const load: LayoutServerLoad = async ({ params }) => {
 		throw redirect(302, '/games/' + Number(params.gameid) + '/' + game[0].gamename)
 	}
 
-	return { game }
+	return { game: game[0] }
 }
