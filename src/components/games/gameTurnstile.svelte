@@ -67,10 +67,10 @@
 		>
 
 		<div class="flex flex-row gap-x-3 w-full overflow-hidden scroll-smooth" bind:this={listElement}>
-			{#if games}
+			{#if games.length > 0}
 				{#each games as game}
 					<GameCard
-						gameId={game.gameid}
+						gameId={game.places[0].placeid}
 						gameName={game.gamename}
 						playerCount={game.active}
 						iconUrl={game.iconurl}

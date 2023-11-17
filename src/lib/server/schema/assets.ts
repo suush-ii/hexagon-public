@@ -1,6 +1,6 @@
 import { relations } from 'drizzle-orm'
 import { bigint, bigserial, pgTable, text, timestamp } from 'drizzle-orm/pg-core'
-import { gamesTable } from './games'
+import { placesTable } from './games'
 import type { assetStates } from '$lib/types'
 
 export const assetTable = pgTable('assets', {
@@ -15,8 +15,8 @@ export const assetTable = pgTable('assets', {
 })
 
 export const assetRelations = relations(assetTable, ({ one }) => ({
-	game: one(gamesTable, {
+	place: one(placesTable, {
 		fields: [assetTable.assetid],
-		references: [gamesTable.gameid]
+		references: [placesTable.placeid]
 	})
 }))

@@ -16,17 +16,27 @@
 		>
 			<Avatar.Root class="h-[360px] w-full max-w-[640px] rounded-xl aspect-video">
 				<Avatar.Image
-					src={data.game.thumbnailurl ? data.game.thumbnailurl : '/Images/thumbnailplaceholder.png'}
-					alt={data.game.gamename}
+					src={data.place.associatedgame.thumbnailurl
+						? data.place.associatedgame.thumbnailurl
+						: '/Images/thumbnailplaceholder.png'}
+					alt={data.place.associatedgame.gamename}
 					loading="lazy"
 				/>
 				<Avatar.Fallback />
 			</Avatar.Root>
 
 			<div>
-				<h1 class="text-5xl leading-none tracking-tight font-semibold">{data.game.gamename}</h1>
+				<h1 class="text-5xl leading-none tracking-tight font-semibold">
+					{data.place.associatedgame.gamename}
+				</h1>
 
-				<h1 class="text-2xl text-muted-foreground">By ...</h1>
+				<h1 class="text-2xl text-muted-foreground">
+					By <a
+						class="text-primary hover:underline"
+						href="/users/{data.place.associatedgame.creatoruserid}/profile"
+						>{data.place.associatedgame.author.username}</a
+					>
+				</h1>
 			</div>
 		</div>
 

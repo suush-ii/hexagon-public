@@ -1,11 +1,20 @@
 import type { assetStates, gameGenre } from '$lib/types'
 import type { clientVersions } from '$lib/types'
 import { relations } from 'drizzle-orm'
-import { bigint, bigserial, integer, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core'
+import {
+	bigint,
+	bigserial,
+	integer,
+	pgTable,
+	text,
+	timestamp,
+	uuid,
+	boolean
+} from 'drizzle-orm/pg-core'
+import { usersTable } from './users'
 
 export const gamesTable = pgTable('games', {
-	gameid: bigint('gameid', { mode: 'number' }).notNull().primaryKey(),
-	universeid: bigserial('universeid', { mode: 'number' }).unique().notNull(),
+	universeid: bigserial('universeid', { mode: 'number' }).unique().notNull().primaryKey(),
 	gamename: text('gamename').notNull(),
 	description: text('description').notNull(),
 	creatoruserid: bigint('creatoruserid', { mode: 'number' }).notNull(),
@@ -21,12 +30,17 @@ export const gamesTable = pgTable('games', {
 	thumbnailstatus: text('thumbnailstatus').$type<assetStates>()
 })
 
-export const gamesRelations = relations(gamesTable, ({ many }) => ({
-	places: many(placesTable)
+export const gamesRelations = relations(gamesTable, ({ one, many }) => ({
+	places: many(placesTable),
+	author: one(usersTable, {
+		fields: [gamesTable.creatoruserid],
+		references: [usersTable.userid]
+	})
 }))
 
 export const placesTable = pgTable('places', {
-	placeid: bigserial('placeid', { mode: 'number' }).notNull().primaryKey(),
+	placeid: bigint('placeid', { mode: 'number' }).notNull().primaryKey(),
+	startplace: boolean('startplace').notNull().default(false), // we should never allow this to be changed https://devforum.roblox.com/t/changes-to-place-management/140039
 	universeid: bigint('universeid', { mode: 'number' }).notNull(),
 	created: timestamp('created', { mode: 'date', withTimezone: true }).notNull().defaultNow(),
 	updated: timestamp('updated', { mode: 'date', withTimezone: true }).notNull().defaultNow(),
@@ -34,7 +48,7 @@ export const placesTable = pgTable('places', {
 })
 
 export const placesRelations = relations(placesTable, ({ one, many }) => ({
-	author: one(gamesTable, {
+	associatedgame: one(gamesTable, {
 		fields: [placesTable.universeid],
 		references: [gamesTable.universeid]
 	}),
@@ -51,7 +65,7 @@ export const jobsTable = pgTable('jobs', {
 })
 
 export const jobsRelations = relations(jobsTable, ({ one }) => ({
-	author: one(placesTable, {
+	associatedplace: one(placesTable, {
 		fields: [jobsTable.universeid],
 		references: [placesTable.universeid]
 	})

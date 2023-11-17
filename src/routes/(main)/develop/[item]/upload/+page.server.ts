@@ -84,6 +84,16 @@ export const actions: Actions = {
 				if (params.item === 'games') {
 					await db.transaction(async (tx) => {
 						try {
+							let [gameResponse] = await tx
+								.insert(gamesTable)
+								.values({
+									gamename: form.data.name,
+									description: form.data.description,
+									creatoruserid: locals.session.user.userid,
+									genre: form.data.genre
+								})
+								.returning({ universeid: gamesTable.universeid })
+
 							let [assetResponse] = await tx
 								.insert(assetTable)
 								.values({
@@ -94,20 +104,11 @@ export const actions: Actions = {
 								})
 								.returning({ assetid: assetTable.assetid })
 
-							let [gameResponse] = await tx
-								.insert(gamesTable)
-								.values({
-									gameid: assetResponse.assetid,
-									gamename: form.data.name,
-									description: form.data.description,
-									creatoruserid: locals.session.user.userid,
-									genre: form.data.genre
-								})
-								.returning({ universeid: gamesTable.universeid })
-
 							await tx.insert(placesTable).values({
+								placeid: assetResponse.assetid,
 								universeid: gameResponse.universeid,
-								placeurl: fileName
+								placeurl: fileName,
+								startplace: true
 							})
 						} catch {
 							tx.rollback()

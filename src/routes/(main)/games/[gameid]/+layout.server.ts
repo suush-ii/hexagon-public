@@ -1,5 +1,5 @@
 import type { LayoutServerLoad } from './$types'
-import { gamesTable } from '$lib/server/schema/games'
+import { placesTable } from '$lib/server/schema/games'
 import { db } from '$lib/server/db'
 import { eq } from 'drizzle-orm'
 import { error, redirect } from '@sveltejs/kit'
@@ -12,28 +12,38 @@ export const load: LayoutServerLoad = async ({ params }) => {
 		throw error(400, { success: false, message: 'Malformed input.' })
 	}
 
-	const game = await db
-		.select({
-			gamename: gamesTable.gamename,
-			active: gamesTable.active,
-			visits: gamesTable.visits,
-			serversize: gamesTable.serversize,
-			updated: gamesTable.updated,
-			creatoruserid: gamesTable.creatoruserid,
-			description: gamesTable.description,
-			thumbnailurl: gamesTable.thumbnailurl
-		})
-		.from(gamesTable)
-		.where(eq(gamesTable.gameid, Number(params.gameid)))
-		.limit(1)
+	const place = await db.query.placesTable.findFirst({
+		where: eq(placesTable.placeid, Number(params.gameid)),
+		with: {
+			associatedgame: {
+				columns: {
+					gamename: true,
+					active: true,
+					visits: true,
+					serversize: true,
+					updated: true,
+					creatoruserid: true,
+					description: true,
+					thumbnailurl: true
+				},
+				with: {
+					author: {
+						columns: {
+							username: true
+						}
+					}
+				}
+			}
+		}
+	})
 
-	if (!game[0]) {
+	if (!place) {
 		throw error(404, { success: false, message: 'Game not found.', data: {} })
 	}
 
-	if (params?.game !== game[0].gamename) {
-		throw redirect(302, '/games/' + Number(params.gameid) + '/' + game[0].gamename)
+	if (params?.game !== place.associatedgame.gamename) {
+		throw redirect(302, '/games/' + Number(params.gameid) + '/' + place.associatedgame.gamename)
 	}
 
-	return { game: game[0] }
+	return { place: place }
 }
