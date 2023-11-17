@@ -17,8 +17,8 @@ export const load: PageServerLoad = async ({}) => {
 				columns: {
 					placeid: true
 				},
-				limit: 1,
-				where: eq(placesTable.startplace, true)
+				where: eq(placesTable.startplace, true),
+				limit: 1
 			}
 		}
 	})
