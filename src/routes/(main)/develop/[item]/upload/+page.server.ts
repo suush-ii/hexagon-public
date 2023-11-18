@@ -90,7 +90,8 @@ export const actions: Actions = {
 									gamename: form.data.name,
 									description: form.data.description,
 									creatoruserid: locals.session.user.userid,
-									genre: form.data.genre
+									genre: form.data.genre,
+									serversize: form.data.serversize
 								})
 								.returning({ universeid: gamesTable.universeid })
 

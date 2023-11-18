@@ -4,7 +4,7 @@ import { gamesTable, placesTable } from '$lib/server/schema/games'
 import { desc, eq } from 'drizzle-orm'
 
 export const load: PageServerLoad = async ({}) => {
-	const populargames = await db.query.gamesTable.findMany({
+	const popularGames = await db.query.gamesTable.findMany({
 		columns: {
 			gamename: true,
 			active: true,
@@ -23,5 +23,24 @@ export const load: PageServerLoad = async ({}) => {
 		}
 	})
 
-	return { popular: populargames }
+	const newestGames = await db.query.gamesTable.findMany({
+		columns: {
+			gamename: true,
+			active: true,
+			iconurl: true
+		},
+		orderBy: [desc(gamesTable.updated)],
+		limit: 40,
+		with: {
+			places: {
+				columns: {
+					placeid: true
+				},
+				where: eq(placesTable.startplace, true),
+				limit: 1
+			}
+		}
+	})
+
+	return { popular: popularGames, newest: newestGames }
 }

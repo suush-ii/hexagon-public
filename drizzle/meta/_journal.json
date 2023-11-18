@@ -57,6 +57,20 @@
       "when": 1700199571456,
       "tag": "0007_petite_thunderbird",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "5",
+      "when": 1700278394445,
+      "tag": "0008_mean_starfox",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "5",
+      "when": 1700284325278,
+      "tag": "0009_hesitant_leper_queen",
+      "breakpoints": true
     }
   ]
 }

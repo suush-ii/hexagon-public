@@ -6,14 +6,6 @@ import { assetTable } from '$lib/server/schema/assets'
 import { eq } from 'drizzle-orm'
 import { error } from '@sveltejs/kit'
 
-function formatDate(date: Date): string {
-	const day = date.getDate()
-	const month = date.getMonth() + 1 // Months are 0-based in JavaScript
-	const year = date.getFullYear()
-
-	return `${day}/${month}/${year}`
-}
-
 export const load: PageServerLoad = async ({ params, parent }) => {
 	const result = await _assetSchema.safeParseAsync(params.item)
 	const session = await (await parent()).session
@@ -26,7 +18,7 @@ export const load: PageServerLoad = async ({ params, parent }) => {
 		assetName: string
 		assetid: number
 		assetType: string
-		updated: string
+		updated: Date
 		iconUrl: string | null
 		totalStat: number
 		last7DaysStat: number
@@ -41,9 +33,9 @@ export const load: PageServerLoad = async ({ params, parent }) => {
 
 		creations = gamecreations.map((game) => ({
 			assetName: game.gamename,
-			assetid: game.gameid,
+			assetid: game.universeid,
 			iconUrl: game.iconurl,
-			updated: formatDate(game.updated),
+			updated: game.updated,
 			assetType: params.item,
 			totalStat: game.visits,
 			last7DaysStat: 0
@@ -63,7 +55,7 @@ export const load: PageServerLoad = async ({ params, parent }) => {
 			assetName: asset.assetname,
 			assetid: asset.assetid,
 			iconUrl: null, //TODO: make an audio/decal default icon
-			updated: formatDate(asset.created),
+			updated: asset.created,
 			assetType: params.item,
 			totalStat: asset.sales,
 			last7DaysStat: 0

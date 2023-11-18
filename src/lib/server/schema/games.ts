@@ -12,6 +12,7 @@ import {
 	boolean
 } from 'drizzle-orm/pg-core'
 import { usersTable } from './users'
+import { assetTable } from './assets'
 
 export const gamesTable = pgTable('games', {
 	universeid: bigserial('universeid', { mode: 'number' }).unique().notNull().primaryKey(),
@@ -20,7 +21,7 @@ export const gamesTable = pgTable('games', {
 	creatoruserid: bigint('creatoruserid', { mode: 'number' }).notNull(),
 	active: bigint('active', { mode: 'number' }).notNull().default(0),
 	visits: bigint('visits', { mode: 'number' }).notNull().default(0),
-	serversize: integer('serversize').default(0),
+	serversize: integer('serversize'),
 	updated: timestamp('updated', { mode: 'date', withTimezone: true }).notNull().defaultNow(),
 	genre: text('genre').$type<gameGenre>().notNull(),
 	// below is image sttufz
@@ -58,7 +59,7 @@ export const placesRelations = relations(placesTable, ({ one, many }) => ({
 export const jobsTable = pgTable('jobs', {
 	jobid: uuid('jobid').notNull().primaryKey(),
 	placeid: bigint('placeid', { mode: 'number' }),
-	universeid: bigint('universeid', { mode: 'number' }),
+	associatedid: bigint('associatedid', { mode: 'number' }),
 	type: text('type').$type<'game' | 'render' | 'renderobj'>().notNull(),
 	clientversion: text('clientversion').$type<clientVersions>().notNull(),
 	created: timestamp('created', { mode: 'date', withTimezone: true }).notNull().defaultNow()
@@ -66,7 +67,18 @@ export const jobsTable = pgTable('jobs', {
 
 export const jobsRelations = relations(jobsTable, ({ one }) => ({
 	associatedplace: one(placesTable, {
-		fields: [jobsTable.universeid],
+		// games
+		fields: [jobsTable.associatedid],
 		references: [placesTable.universeid]
+	}),
+	associateditem: one(assetTable, {
+		// item renders etc
+		fields: [jobsTable.associatedid],
+		references: [assetTable.assetid]
+	}),
+	associateduser: one(usersTable, {
+		// user renders
+		fields: [jobsTable.associatedid],
+		references: [usersTable.userid]
 	})
 }))

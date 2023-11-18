@@ -13,5 +13,9 @@
 
 	<h1 class="text-2xl leading-none tracking-tight font-semibold">Popular</h1>
 
-	<GameTurnstile games={data.popular} />
+	<GameTurnstile games={data.popular} type="popular" />
+
+	<h1 class="text-2xl leading-none tracking-tight font-semibold">Newest</h1>
+
+	<GameTurnstile games={data.newest} type="newest" />
 </div>

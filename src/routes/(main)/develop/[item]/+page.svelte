@@ -80,7 +80,7 @@
 								</tr>
 								<tr class="align-text-top">
 									<td class="text-sm text-muted-foreground w-0">Updated:</td>
-									<td class="text-sm">{creation.updated}</td>
+									<td class="text-sm">{creation.updated.toLocaleDateString('en-US')}</td>
 									<td class="text-sm text-muted-foreground text-right">Last 7 days:</td>
 									<td class="text-sm w-0">{creation.last7DaysStat}</td>
 								</tr>

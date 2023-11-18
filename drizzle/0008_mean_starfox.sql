@@ -1,0 +1,1 @@
+ALTER TABLE "jobs" RENAME COLUMN "universeid" TO "associatedid";

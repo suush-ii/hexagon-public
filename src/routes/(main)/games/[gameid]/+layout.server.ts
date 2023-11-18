@@ -24,7 +24,8 @@ export const load: LayoutServerLoad = async ({ params }) => {
 					updated: true,
 					creatoruserid: true,
 					description: true,
-					thumbnailurl: true
+					thumbnailurl: true,
+					genre: true
 				},
 				with: {
 					author: {

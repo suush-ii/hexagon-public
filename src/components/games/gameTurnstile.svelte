@@ -15,6 +15,8 @@
 
 	export let games: any[]
 
+	export let type: string
+
 	let scrollStep = games.length > 15 ? 1000 : (300 * games.length) / 15
 
 	function scroll(direction: 'left' | 'right') {
@@ -51,7 +53,7 @@
 </script>
 
 <div class="flex flex-row w-full flex-wrap justify-end">
-	<a href="/games/popular"><h1 class="text-xl hover-underline">See All</h1></a>
+	<a href="/games/{type}"><h1 class="text-xl hover-underline">See All</h1></a>
 
 	<div
 		class="flex flex-row gap-x-2 w-full outline-dashed outline-muted-foreground/20 rounded-xl outline-offset-4"
