@@ -28,7 +28,9 @@ export const gamesTable = pgTable('games', {
 	iconurl: text('iconurl'),
 	thumbnailurl: text('thumbnailurl'),
 	iconstatus: text('iconstatus').$type<assetStates>(),
-	thumbnailstatus: text('thumbnailstatus').$type<assetStates>()
+	thumbnailstatus: text('thumbnailstatus').$type<assetStates>(),
+	likes: bigint('likes', { mode: 'number' }).notNull().default(0),
+	dislikes: bigint('dislikes', { mode: 'number' }).notNull().default(0)
 })
 
 export const gamesRelations = relations(gamesTable, ({ one, many }) => ({

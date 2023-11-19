@@ -71,6 +71,20 @@
       "when": 1700284325278,
       "tag": "0009_hesitant_leper_queen",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "5",
+      "when": 1700347263464,
+      "tag": "0010_flawless_king_cobra",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "5",
+      "when": 1700360292689,
+      "tag": "0011_modern_vin_gonzales",
+      "breakpoints": true
     }
   ]
 }

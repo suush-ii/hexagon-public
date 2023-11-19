@@ -6,16 +6,62 @@
 
 	import { Button } from '$src/components/ui/button'
 
-	import { Play, ThumbsUp, ThumbsDown } from 'lucide-svelte'
+	import { Play, ThumbsUp, ThumbsDown, Loader2 } from 'lucide-svelte'
 
 	import { page } from '$app/stores'
+
+	import { invalidate } from '$app/navigation'
 
 	import type { PageData } from './$types'
 
 	export let data: PageData
 
-	function myGradient(gradientStart: string, gradientEnd: string) {
-		return 'bg-gradient-to-b rofm-[' + gradientStart + '] to-[' + gradientEnd + ']'
+	let submitting = false
+
+	function calculatePercent(likes: number, dislikes: number) {
+		return Math.round((likes / (likes + dislikes)) * 100)
+	}
+
+	async function vote(type: 'like' | 'dislike') {
+		// preview next action already
+
+		if (data.alreadyVoted.voted && data.alreadyVoted.voteType === type) {
+			// they unvoted
+
+			data.place.associatedgame[type === 'like' ? 'likes' : 'dislikes'] -= 1
+		} else if (data.alreadyVoted.voted && data.alreadyVoted.voteType !== type) {
+			// they swapped they vote
+
+			data.place.associatedgame[type === 'like' ? 'likes' : 'dislikes'] += 1
+
+			data.place.associatedgame[type === 'like' ? 'dislikes' : 'likes'] -= 1
+		} else if (data.alreadyVoted.voteType !== type) {
+			// new vote
+
+			data.place.associatedgame[type === 'like' ? 'likes' : 'dislikes'] += 1
+		}
+
+		data.likespercentage = calculatePercent(
+			data.place.associatedgame.likes,
+			data.place.associatedgame.dislikes
+		)
+
+		data.alreadyVoted.voted = true
+		data.alreadyVoted.voteType = type
+
+		submitting = true
+
+		const updated = await fetch('/api/vote', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ type, gameid: data.place.universeid })
+		})
+
+		await updated.json()
+
+		await invalidate('app:game')
+
+		submitting = false
 	}
 </script>
 
@@ -62,20 +108,62 @@
 
 					<div class="flex flex-row pt-4 px-4">
 						<div class="text-success flex flex-row">
-							<ThumbsUp />
+							<Button
+								variant="minimalcurrent"
+								size="icon"
+								on:click={() => {
+									vote('like')
+								}}
+								disabled={submitting}
+							>
+								<ThumbsUp
+									class="hover:fill-success {data.alreadyVoted.voted === true &&
+									data.alreadyVoted?.voteType === 'like'
+										? 'fill-success'
+										: ''}"
+								/>
+							</Button>
 						</div>
 						<div class="w-full mx-4 flex flex-col">
 							<div
-								class="w-full h-3 bg-gradient-to-r from-success from-10% to-destructive to-0% rounded-xl"
-							/>
+								class="w-full h-3 {isNaN(data.likespercentage) ? '' : 'bg-destructive'} rounded-xl"
+							>
+								<div
+									class="h-3 {isNaN(data.likespercentage)
+										? 'bg-muted-foreground/25'
+										: 'bg-success'} rounded-xl"
+									style="width: {data.likespercentage}%;"
+								/>
+							</div>
 
 							<div class="flex flex-row justify-between">
-								<h1 class="text-success mx-4">0</h1>
-								<h1 class="text-destructive mx-4">0</h1>
+								<h1 class="text-success mx-4">{data.place.associatedgame.likes}</h1>
+								{#if submitting}
+									<Loader2 class="h-6 w-6 animate-spin" />
+								{/if}
+
+								{#if !isNaN(data.likespercentage) && !submitting}
+									<h1 class="">{data.likespercentage}%</h1>
+								{/if}
+								<h1 class="text-destructive mx-4">{data.place.associatedgame.dislikes}</h1>
 							</div>
 						</div>
 						<div class="text-destructive flex flex-row">
-							<ThumbsDown />
+							<Button
+								variant="minimalcurrent"
+								size="icon"
+								on:click={() => {
+									vote('dislike')
+								}}
+								disabled={submitting}
+							>
+								<ThumbsDown
+									class="hover:fill-destructive {data.alreadyVoted.voted === true &&
+									data.alreadyVoted?.voteType === 'dislike'
+										? 'fill-destructive'
+										: ''}"
+								/>
+							</Button>
 						</div>
 					</div>
 				</div>
@@ -104,7 +192,7 @@
 								{data.place.associatedgame.description}
 							</h1>
 
-							<div class="w-full flex flex-row justify-around text-center">
+							<div class="w-full flex flex-row flex-wrap justify-around text-center">
 								<div>
 									<p class="font-bold text-muted-foreground">Visits</p>
 									<p>{data.place.associatedgame.visits}</p>
