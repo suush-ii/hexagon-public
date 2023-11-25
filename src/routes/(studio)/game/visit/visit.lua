@@ -17,6 +17,7 @@ local message = Instance.new("Message")
 message.Parent = workspace
 message.archivable = false
 
+---@diagnostic disable-next-line: invalid-class-name
 game:GetService("ScriptInformationProvider"):SetAssetUrl("https://www.roblox.com/Asset/")
 game:GetService("ContentProvider"):SetThreadPool(16)
 pcall(function() game:GetService("InsertService"):SetFreeModelUrl("https://www.roblox.com/Game/Tools/InsertAsset.ashx?type=fm&q=%s&pg=%d&rs=%d") end) -- Used for free model search (insert tool)
@@ -115,7 +116,9 @@ function doVisit()
 	
 	message.Text = "Setting GUI"
 	player:SetSuperSafeChat(true)
+---@diagnostic disable-next-line: undefined-global
 	pcall(function() player:SetUnder13(True) end)
+---@diagnostic disable-next-line: undefined-global
 	pcall(function() player:SetMembershipType(None) end)
 	pcall(function() player:SetAccountAge(0) end)
 	

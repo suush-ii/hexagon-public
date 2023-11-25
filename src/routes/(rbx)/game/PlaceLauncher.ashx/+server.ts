@@ -16,14 +16,10 @@ export const fallback: RequestHandler = async ({ url, locals, fetch }) => {
 	let placeid = url.searchParams.get('placeid')
 	let authBearer = url.searchParams.get('auth') ?? ''
 
-	let session
-
 	try {
 		const sessionVal = await auth.validateSession(authBearer)
 
-		if (sessionVal) {
-			session = sessionVal.user
-		} else {
+		if (!sessionVal) {
 			return json({
 				success: false,
 				message: 'Invalid session.',

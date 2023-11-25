@@ -68,11 +68,7 @@ export const fallback: RequestHandler = async ({ url, locals }) => {
 	}
 
 	const instance = await db.query.jobsTable.findFirst({
-		where: and(
-			eq(jobsTable.jobid, jobid),
-			eq(jobsTable.type, 'game')
-			//lt(jobsTable.active, place.associatedgame.serversize) // we only want jobs that aren't full
-		)
+		where: and(eq(jobsTable.jobid, jobid), eq(jobsTable.type, 'game'))
 	})
 
 	if (!instance) {
@@ -88,17 +84,7 @@ export const fallback: RequestHandler = async ({ url, locals }) => {
 		with: {
 			associatedgame: {
 				columns: {
-					gamename: true,
-					active: true,
-					visits: true,
 					serversize: true,
-					updated: true,
-					creatoruserid: true,
-					description: true,
-					thumbnailurl: true,
-					genre: true,
-					likes: true,
-					dislikes: true,
 					universeid: true
 				},
 				with: {
@@ -196,7 +182,7 @@ export const fallback: RequestHandler = async ({ url, locals }) => {
 		joinJson.GameId = Number(place.associatedgame.universeid)
 		joinJson.PlaceId = Number(place.placeid)
 
-		joinJson.CreatorId = place.associatedgame.creatoruserid
+		joinJson.CreatorId = place.associatedgame.author.userid
 		joinJson.SessionId = `${authBearer}`
 		joinJson.UniverseId = Number(place.associatedgame.universeid)
 
