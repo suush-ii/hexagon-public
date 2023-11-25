@@ -1,12 +1,15 @@
 <script lang="ts">
 	import * as Avatar from '$src/components/ui/avatar'
 	import * as Tabs from '$src/components/ui/tabs'
+	import * as HoverCard from '$src/components/ui/hover-card'
 
 	import UserImage from '$src/components/userimage.svelte'
 
 	import { Button } from '$src/components/ui/button'
 
 	import { Play, ThumbsUp, ThumbsDown, Loader2 } from 'lucide-svelte'
+
+	import { pageName } from '$src/stores'
 
 	import { page } from '$app/stores'
 
@@ -15,6 +18,8 @@
 	import type { PageData } from './$types'
 
 	export let data: PageData
+
+	pageName.set(data.place.associatedgame.gamename)
 
 	let submitting = false
 
@@ -96,16 +101,39 @@
 							>{data.place.associatedgame.author.username}</a
 						>
 					</h1>
+					<HoverCard.Root>
+						<HoverCard.Trigger
+							class="w-full mx-auto mt-4 xl:mt-auto bg-success shadow-md hover:shadow-white rounded-xl"
+						>
+							<Button
+								on:click={() => {
+									document.location = `hexagonlaunch://${data.place.placeid}[${
+										data.ticket
+									}[${2016}[player`
+								}}
+								variant="minimal"
+								size="lg"
+								class="w-full bg-success flex gap-x-4"
+							>
+								<HoverCard.Content class="w-80">
+									<div class="flex space-x-4">
+										<Avatar.Root>
+											<Avatar.Image src="/hexagon128.png" />
+										</Avatar.Root>
+										<div class="space-y-1">
+											<h4 class="text-sm font-semibold">Hexagon</h4>
+											<a href="/download" class="hover:underline"
+												><p class="text-sm">Download launcher now!</p></a
+											>
+										</div>
+									</div>
+								</HoverCard.Content>
 
-					<Button
-						variant="minimal"
-						size="lg"
-						class="w-full mx-auto mt-4 xl:mt-auto bg-success shadow-md hover:shadow-white flex gap-x-4"
-					>
-						<h1 class="text-xl">Play</h1>
-						<Play className="h-4 w-full" />
-					</Button>
-
+								<h1 class="text-xl">Play</h1>
+								<Play className="h-4 w-full" />
+							</Button>
+						</HoverCard.Trigger>
+					</HoverCard.Root>
 					<div class="flex flex-row pt-4 px-4">
 						<div class="text-success flex flex-row">
 							<Button

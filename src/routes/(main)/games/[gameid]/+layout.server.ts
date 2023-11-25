@@ -6,7 +6,7 @@ import { error, redirect } from '@sveltejs/kit'
 import { z } from 'zod'
 import { votesTable } from '$lib/server/schema/gamevotes'
 
-export const load: LayoutServerLoad = async ({ params, locals, depends }) => {
+export const load: LayoutServerLoad = async ({ params, locals, depends, cookies }) => {
 	const result = await z.number().safeParseAsync(Number(params.gameid))
 
 	if (result.success === false) {
@@ -28,7 +28,8 @@ export const load: LayoutServerLoad = async ({ params, locals, depends }) => {
 					thumbnailurl: true,
 					genre: true,
 					likes: true,
-					dislikes: true
+					dislikes: true,
+					universeid: true
 				},
 				with: {
 					author: {
@@ -53,7 +54,7 @@ export const load: LayoutServerLoad = async ({ params, locals, depends }) => {
 		.select()
 		.from(votesTable)
 		.where(eq(votesTable.userid, locals.session.user.userid))
-		.where(eq(votesTable.gameid, Number(params.gameid)))
+		.where(eq(votesTable.gameid, Number(place.associatedgame.universeid)))
 		.limit(1)
 
 	depends('app:game')
@@ -67,6 +68,7 @@ export const load: LayoutServerLoad = async ({ params, locals, depends }) => {
 		alreadyVoted: {
 			voted: alreadyVoted.length > 0,
 			voteType: alreadyVoted.length > 0 ? alreadyVoted[0].type : null
-		}
+		},
+		ticket: cookies.get('auth_session')
 	}
 }

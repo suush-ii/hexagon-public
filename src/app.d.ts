@@ -27,6 +27,8 @@ declare global {
 				registrationEnabled: boolean
 				keysEnabled: boolean
 				pageClicker: number
+				gamesEnabled: boolean
+				developEnabled: boolean
 			}[]
 		}
 		// interface PageData {}

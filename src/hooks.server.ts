@@ -9,6 +9,8 @@ import { dev } from '$app/environment'
 import { usersTable } from '$lib/server/schema/users'
 import { eq } from 'drizzle-orm'
 import { s3BucketName } from '$src/stores'
+import { rccAuth } from './routes/(rcc)/updatejob/auth.server'
+
 import {
 	CLOUDFLARE_S3_ACCESS_KEY,
 	CLOUDFLARE_S3_ACCESS_KEY_ID,
@@ -48,77 +50,80 @@ const adminProtectedRoutes = ['/temp/keygen']
 
 await migrate(db, { migrationsFolder: './drizzle' })
 
-export const handle: Handle = sequence(Sentry.sentryHandle(), async ({ event, resolve }) => {
-	// Stage 1
-	console.log(event.url.pathname)
+export const handle: Handle = sequence(
+	Sentry.sentryHandle(),
+	rccAuth,
+	async ({ event, resolve }) => {
+		// Stage 1
+		console.log(event.url.pathname)
 
-	const config = await configPrepared.execute()
+		const config = await configPrepared.execute()
 
-	if (config.length === 0) {
-		await db.insert(configTable).values({})
-	}
-
-	if (config?.[0]?.maintenanceEnabled === true) {
-		if (event.url.pathname != '/maintenance') {
-			throw redirect(302, '/maintenance')
+		if (config.length === 0) {
+			await db.insert(configTable).values({})
 		}
-	}
 
-	event.locals.auth = auth.handleRequest(event)
-
-	event.locals.config = config
-
-	const session = await event.locals.auth.validate()
-	if (session) {
-		event.locals.session = session
-
-		const currentTime = new Date()
-
-		if (currentTime.valueOf() - session.user.lastactivetime > 3 * 60 * 1000) {
-			// they haven't visited in over 3 mins
-			// the reason why we don't update last active on every request is to minimize database requests
-			await db
-				.update(usersTable)
-				.set({ lastactivetime: currentTime })
-				.where(eq(usersTable.userid, session.user.userid))
+		if (config?.[0]?.maintenanceEnabled === true) {
+			if (event.url.pathname != '/maintenance') {
+				throw redirect(302, '/maintenance')
+			}
 		}
-	}
 
-	if (
-		protectedRoutes.includes(event.url.pathname) === true ||
-		protectedRoutes.some((substr) =>
-			event.url.pathname.toLowerCase().startsWith(substr.toLowerCase())
-		) === true
-	) {
-		if (!session) {
-			throw redirect(302, '/login')
-		}
-	}
+		event.locals.auth = auth.handleRequest(event)
 
-	if (
-		adminProtectedRoutes.includes(event.url.pathname) === true ||
-		adminProtectedRoutes.some((substr) =>
-			event.url.pathname.toLowerCase().startsWith(substr.toLowerCase())
-		) === true
-	) {
-		if (!session) {
-			throw redirect(302, '/login')
+		event.locals.config = config
+
+		const session = await event.locals.auth.validate()
+		if (session) {
+			event.locals.session = session
+
+			const currentTime = new Date()
+
+			if (currentTime.valueOf() - session.user.lastactivetime > 3 * 60 * 1000) {
+				// they haven't visited in over 3 mins
+				// the reason why we don't update last active on every request is to minimize database requests
+				await db
+					.update(usersTable)
+					.set({ lastactivetime: currentTime })
+					.where(eq(usersTable.userid, session.user.userid))
+			}
 		}
 
 		if (
-			session.user.role !== 'owner' &&
-			session.user.role !== 'admin' &&
-			session.user.role !== 'mod'
+			protectedRoutes.includes(event.url.pathname) === true ||
+			protectedRoutes.some((substr) =>
+				event.url.pathname.toLowerCase().startsWith(substr.toLowerCase())
+			) === true
 		) {
-			throw redirect(302, '/login')
+			if (!session) {
+				throw redirect(302, '/login')
+			}
 		}
+
+		if (
+			adminProtectedRoutes.includes(event.url.pathname) === true ||
+			adminProtectedRoutes.some((substr) =>
+				event.url.pathname.toLowerCase().startsWith(substr.toLowerCase())
+			) === true
+		) {
+			if (!session) {
+				throw redirect(302, '/login')
+			}
+
+			if (
+				session.user.role !== 'owner' &&
+				session.user.role !== 'admin' &&
+				session.user.role !== 'mod'
+			) {
+				throw redirect(302, '/login')
+			}
+		}
+
+		const response = await resolve(event) // Stage 2
+
+		// Stage 3
+
+		return response
 	}
-
-	const response = await resolve(event) // Stage 2
-	//await pool.end();
-
-	// Stage 3
-
-	return response
-})
+)
 export const handleError = Sentry.handleErrorWithSentry()

@@ -1,0 +1,158 @@
+import { json } from '@sveltejs/kit'
+import type { RequestHandler } from './$types'
+import { jobsTable, placesTable } from '$lib/server/schema'
+import { db } from '$lib/server/db'
+import { eq, and, lt } from 'drizzle-orm'
+import { GAMESERVER_IP } from '$env/static/private'
+import { auth } from '$lib/server/lucia'
+import { LuciaError } from 'lucia'
+import { BASE_URL } from '$env/static/private'
+
+const joinScriptUrl = `http://${BASE_URL}/game/Join.ashx`
+const authenticationUrl = `http://${BASE_URL}/Login/Negotiate.ashx`
+
+export const fallback: RequestHandler = async ({ url, locals, fetch }) => {
+	// capture get/post
+	let placeid = url.searchParams.get('placeid')
+	let authBearer = url.searchParams.get('auth') ?? ''
+
+	let session
+
+	try {
+		const sessionVal = await auth.validateSession(authBearer)
+
+		if (sessionVal) {
+			session = sessionVal.user
+		} else {
+			return json({
+				success: false,
+				message: 'Invalid session.',
+				data: {}
+			})
+		}
+	} catch (e) {
+		if (e instanceof LuciaError && e.message === `AUTH_INVALID_SESSION_ID`) {
+			// invalid session
+			return json({
+				success: false,
+				message: 'Invalid session.',
+				data: {}
+			})
+		}
+	}
+
+	let placeLauncherJson = {
+		jobId: '',
+		status: 2,
+		joinScriptUrl,
+		authenticationUrl,
+		authenticationTicket: 'ticket',
+		message: ''
+	}
+
+	let enabled = locals.config[0].gamesEnabled
+
+	if (!enabled) {
+		return json({
+			success: false,
+			message: 'Games are disabled.',
+			data: {}
+		})
+	}
+
+	if (!placeid) {
+		return json({
+			success: false,
+			message: 'Missing parameters.',
+			data: {}
+		})
+	}
+
+	const place = await db.query.placesTable.findFirst({
+		where: eq(placesTable.placeid, Number(placeid)),
+		columns: {},
+		with: {
+			associatedgame: {
+				columns: {
+					serversize: true,
+					universeid: true
+				}
+			}
+		}
+	})
+
+	if (!place) {
+		throw json({ success: false, message: 'Game not found.', data: {} })
+	}
+
+	const instance = await db.query.jobsTable.findFirst({
+		where: and(
+			eq(placesTable.placeid, Number(placeid)),
+			eq(jobsTable.type, 'game'),
+			lt(jobsTable.active, place.associatedgame.serversize) // we only want jobs that aren't full
+		)
+	})
+
+	if (instance && instance.port && (instance.status === 1 || instance.status === 2)) {
+		// an instance is already available or is loading...
+
+		if (
+			(instance.active ?? 0) <= 0 &&
+			instance.status === 1 &&
+			new Date().valueOf() - instance.created.valueOf() > 5 * 60 * 1000
+		) {
+			// 5 mins has passed and the instance shows no life?
+			// its probably dead also this should probalby not be possible unless the gameserver goes down because windows updates or something LOL
+			await db.delete(jobsTable).where(eq(jobsTable.jobid, instance.jobid))
+		} else {
+			placeLauncherJson.status = instance.status
+			placeLauncherJson.jobId = instance.jobid
+			placeLauncherJson.joinScriptUrl += '?auth=' + authBearer + '&jobid=' + instance.jobid
+
+			return json(placeLauncherJson)
+		}
+	}
+
+	if (instance && !instance.port) {
+		// 2 users at the same time are trying to start a job just send 1
+		placeLauncherJson.status = 1
+		placeLauncherJson.joinScriptUrl += '?auth=' + authBearer + '&jobid='
+
+		return json(placeLauncherJson)
+	}
+
+	// create a new instance
+
+	const [instanceNew] = await db
+		.insert(jobsTable)
+		.values({
+			placeid: Number(placeid),
+			associatedid: place.associatedgame.universeid,
+			type: 'game',
+			clientversion: '2016'
+		})
+		.returning({ jobid: jobsTable.jobid })
+
+	placeLauncherJson.joinScriptUrl += '?auth=' + authBearer + '&jobid=' + instanceNew.jobid
+	placeLauncherJson.jobId = instanceNew.jobid
+	placeLauncherJson.status = 1
+
+	const response = await fetch(
+		`http://${GAMESERVER_IP}:8000/opengame2016/${instanceNew.jobid}/${Number(placeid)}`
+	)
+	const gameresponse = await response.json()
+
+	if (gameresponse.success === false) {
+		// error maybe retry or something but for now just kill the instance
+		await db.delete(jobsTable).where(eq(jobsTable.jobid, instanceNew.jobid))
+
+		throw json({ success: false, message: 'Error.', data: {} })
+	}
+
+	await db
+		.update(jobsTable)
+		.set({ port: gameresponse.port })
+		.where(eq(jobsTable.jobid, instanceNew.jobid))
+
+	return json(placeLauncherJson)
+}

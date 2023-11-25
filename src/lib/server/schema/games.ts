@@ -21,7 +21,7 @@ export const gamesTable = pgTable('games', {
 	creatoruserid: bigint('creatoruserid', { mode: 'number' }).notNull(),
 	active: bigint('active', { mode: 'number' }).notNull().default(0),
 	visits: bigint('visits', { mode: 'number' }).notNull().default(0),
-	serversize: integer('serversize'),
+	serversize: integer('serversize').notNull(),
 	updated: timestamp('updated', { mode: 'date', withTimezone: true }).notNull().defaultNow(),
 	genre: text('genre').$type<gameGenre>().notNull(),
 	// below is image sttufz
@@ -59,12 +59,15 @@ export const placesRelations = relations(placesTable, ({ one, many }) => ({
 }))
 
 export const jobsTable = pgTable('jobs', {
-	jobid: uuid('jobid').notNull().primaryKey(),
+	jobid: uuid('jobid').notNull().primaryKey().defaultRandom(),
 	placeid: bigint('placeid', { mode: 'number' }),
 	associatedid: bigint('associatedid', { mode: 'number' }),
 	type: text('type').$type<'game' | 'render' | 'renderobj'>().notNull(),
 	clientversion: text('clientversion').$type<clientVersions>().notNull(),
-	created: timestamp('created', { mode: 'date', withTimezone: true }).notNull().defaultNow()
+	created: timestamp('created', { mode: 'date', withTimezone: true }).notNull().defaultNow(),
+	active: integer('active').default(0), // how mnay people are in the instance used for games only
+	status: integer('status').default(1), // 2 is done loading and 1 is loading
+	port: integer('port').default(0)
 })
 
 export const jobsRelations = relations(jobsTable, ({ one }) => ({

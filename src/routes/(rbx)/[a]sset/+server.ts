@@ -14,16 +14,33 @@ export const GET: RequestHandler = async ({ url }) => {
 		throw error(400, { success: false, message: 'Malformed ID.', data: {} })
 	}
 
-	const existingAsset = await db
-		.select({ assetUrl: assetTable.simpleasseturl, assetType: assetTable.assetType })
-		.from(assetTable)
-		.where(eq(assetTable.assetid, Number(url.searchParams.get('id'))))
-		.limit(1)
+	const existingAsset = await db.query.assetTable.findFirst({
+		where: eq(assetTable.assetid, Number(url.searchParams.get('id'))),
+		columns: {
+			assetType: true,
+			simpleasseturl: true
+		},
+		with: {
+			place: {
+				columns: {
+					placeurl: true
+				}
+			}
+		}
+	})
 
-	if (existingAsset?.[0].assetType === 'audio' || existingAsset?.[0].assetType === 'decals') {
+	if (existingAsset?.assetType === 'audio' || existingAsset?.assetType === 'decals') {
 		throw redirect(
 			302,
-			`https://${s3Url}/${existingAsset?.[0].assetType}/` + existingAsset?.[0].assetUrl
+			`https://${s3Url}/${existingAsset.assetType}/` + existingAsset?.simpleasseturl
+		)
+	}
+
+	if (existingAsset?.assetType === 'games') {
+		// authenticate this
+		throw redirect(
+			302,
+			`https://${s3Url}/${existingAsset?.assetType}/` + existingAsset?.place.placeurl
 		)
 	}
 	// TODO: setup authentication for games

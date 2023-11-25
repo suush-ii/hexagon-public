@@ -24,6 +24,7 @@ export const load: LayoutServerLoad = (async ({ url, locals }) => {
 			throw redirect(302, '/maintenance')
 		}
 	}
+
 	return {
 		session: session?.user
 	}
