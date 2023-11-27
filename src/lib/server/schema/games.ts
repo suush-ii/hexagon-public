@@ -9,7 +9,9 @@ import {
 	text,
 	timestamp,
 	uuid,
-	boolean
+	boolean,
+	jsonb,
+	PgArray
 } from 'drizzle-orm/pg-core'
 import { usersTable } from './users'
 import { assetTable } from './assets'
@@ -67,10 +69,11 @@ export const jobsTable = pgTable('jobs', {
 	created: timestamp('created', { mode: 'date', withTimezone: true }).notNull().defaultNow(),
 	active: integer('active').default(0), // how mnay people are in the instance used for games only
 	status: integer('status').default(1), // 2 is done loading and 1 is loading
-	port: integer('port').default(0)
+	port: integer('port').default(0),
+	players: bigint('players', { mode: 'number' }).array().$type<number[]>().default([])
 })
 
-export const jobsRelations = relations(jobsTable, ({ one }) => ({
+export const jobsRelations = relations(jobsTable, ({ one, many }) => ({
 	associatedplace: one(placesTable, {
 		// games
 		fields: [jobsTable.associatedid],
@@ -85,5 +88,6 @@ export const jobsRelations = relations(jobsTable, ({ one }) => ({
 		// user renders
 		fields: [jobsTable.associatedid],
 		references: [usersTable.userid]
-	})
+	}),
+	activeusers: many(usersTable) // so we can fetch all the users in a job
 }))

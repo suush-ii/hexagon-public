@@ -4,6 +4,7 @@
 
 	export let state: userState
 	export let userid: number // TODO: fetch
+	export let size = 28
 
 	let css: string
 
@@ -19,7 +20,7 @@
 </script>
 
 <div class="flex flex-col gap-y-1">
-	<Avatar.Root class="w-28 h-28 outline-offset-4 {css} outline-dashed rounded-full">
+	<Avatar.Root class="w-{size} h-{size} outline-offset-4 {css} outline-dashed rounded-full">
 		<Avatar.Image
 			src="https://avaatars.githubusercontent.com/u/54828677?v=4{userid}"
 			alt="@sushidesigner"

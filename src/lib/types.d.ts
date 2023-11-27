@@ -13,3 +13,7 @@ export type assetStates = 'pending' | 'approved' | 'rejected' | 'deleted'
 
 import type { SvelteComponent } from 'svelte'
 export type Component = $$Generic<typeof SvelteComponent<any, any, any>>
+
+import { jobsTable } from '$lib/server/schema/games'
+
+type instances = Pick<typeof jobsTable.$inferSelect, 'jobid' | 'active' | 'players'>[]

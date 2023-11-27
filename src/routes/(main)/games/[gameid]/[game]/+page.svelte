@@ -5,6 +5,8 @@
 
 	import UserImage from '$src/components/userimage.svelte'
 
+	import GameServers from '$src/components/games/gameServers.svelte'
+
 	import { Button } from '$src/components/ui/button'
 
 	import { Play, ThumbsUp, ThumbsDown, Loader2 } from 'lucide-svelte'
@@ -247,6 +249,11 @@
 								</div>
 							</div>
 						</div>
+					</Tabs.Content>
+
+					<Tabs.Content value="servers" class="flex flex-col gap-y-4">
+						<h1 class="text-2xl font-semibold">Servers</h1>
+						<GameServers servers={data.servers} serverSize={data.place.associatedgame.serversize} />
 					</Tabs.Content>
 				</Tabs.Root>
 			</div>

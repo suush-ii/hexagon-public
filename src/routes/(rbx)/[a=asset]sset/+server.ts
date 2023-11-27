@@ -1,13 +1,15 @@
-import { type RequestHandler, error, redirect } from '@sveltejs/kit'
+import { type RequestHandler, error, redirect, json } from '@sveltejs/kit'
 import { z } from 'zod'
 import { db } from '$lib/server/db'
 import { assetTable } from '$lib/server/schema/assets'
 import { eq } from 'drizzle-orm'
 import { s3Url } from '$src/stores'
+import { RCC_ACCESS_KEY } from '$env/static/private'
+export const trailingSlash = 'ignore'
 
 const assetSchema = z.number().int().positive()
 
-export const GET: RequestHandler = async ({ url }) => {
+export const GET: RequestHandler = async ({ url, request }) => {
 	const result = await assetSchema.safeParseAsync(Number(url.searchParams.get('id')))
 
 	if (!result.success) {
@@ -38,6 +40,16 @@ export const GET: RequestHandler = async ({ url }) => {
 
 	if (existingAsset?.assetType === 'games') {
 		// authenticate this
+		const accessKey = request.headers.get('accesskey')
+
+		if (!accessKey || RCC_ACCESS_KEY != accessKey) {
+			return json({
+				success: false,
+				message: "You don't have permission to access this asset.",
+				data: {}
+			})
+		}
+
 		throw redirect(
 			302,
 			`https://${s3Url}/${existingAsset?.assetType}/` + existingAsset?.place.placeurl

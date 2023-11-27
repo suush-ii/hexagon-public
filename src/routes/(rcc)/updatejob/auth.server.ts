@@ -2,7 +2,11 @@ import { json, type Handle } from '@sveltejs/kit'
 import { RCC_ACCESS_KEY } from '$env/static/private'
 
 export const rccAuth = (async ({ event, resolve }) => {
-	if (event.url.pathname.startsWith('/updatejob')) {
+	if (
+		event.url.pathname.startsWith('/updatejob') ||
+		event.url.pathname === '/GetAllowedMD5Hashes' ||
+		event.url.pathname === '/GetAllowedSecurityVersions'
+	) {
 		const accessKey = event.request.headers.get('accesskey')
 
 		if (!accessKey || RCC_ACCESS_KEY != accessKey) {

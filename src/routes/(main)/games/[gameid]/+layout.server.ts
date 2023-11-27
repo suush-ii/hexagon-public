@@ -5,8 +5,10 @@ import { eq } from 'drizzle-orm'
 import { error, redirect } from '@sveltejs/kit'
 import { z } from 'zod'
 import { votesTable } from '$lib/server/schema/gamevotes'
+import { jobsTable } from '$lib/server/schema/games'
+type jobs = typeof jobsTable.$inferSelect
 
-export const load: LayoutServerLoad = async ({ params, locals, depends, cookies }) => {
+export const load: LayoutServerLoad = async ({ params, locals, depends, cookies, url }) => {
 	const result = await z.number().safeParseAsync(Number(params.gameid))
 
 	if (result.success === false) {
@@ -59,6 +61,16 @@ export const load: LayoutServerLoad = async ({ params, locals, depends, cookies 
 
 	depends('app:game')
 
+	let servers: Pick<jobs, 'jobid' | 'active' | 'players'>[] = []
+
+	if (url.searchParams.get('page') === 'servers') {
+		servers = await db
+			.select({ jobid: jobsTable.jobid, active: jobsTable.active, players: jobsTable.players })
+			.from(jobsTable)
+			.where(eq(jobsTable.associatedid, place.associatedgame.universeid))
+			.limit(40) // TODO: ADD PAGINATION
+	}
+
 	return {
 		place: place,
 		likespercentage: Math.round(
@@ -69,6 +81,7 @@ export const load: LayoutServerLoad = async ({ params, locals, depends, cookies 
 			voted: alreadyVoted.length > 0,
 			voteType: alreadyVoted.length > 0 ? alreadyVoted[0].type : null
 		},
-		ticket: cookies.get('auth_session')
+		ticket: cookies.get('auth_session'),
+		servers
 	}
 }

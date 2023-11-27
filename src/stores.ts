@@ -13,6 +13,6 @@ console.log(
 		s3BucketName +
 		'\u001b[0m'
 )
-export const currencyName: string = 'Triangle'
-export const currencyNamePlural: string = 'Triangles'
+export const currencyName: string = 'Moon'
+export const currencyNamePlural: string = 'Moons'
 export const pageName = writable()

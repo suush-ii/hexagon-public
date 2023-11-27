@@ -3,7 +3,7 @@ import type { userState } from '$lib/types'
 import type { userRole } from '$lib/types'
 import { relations } from 'drizzle-orm'
 import { keyTable } from './keys'
-import { gamesTable } from './games'
+import { gamesTable, jobsTable } from './games'
 
 // with timestamps ALWAYS USE WITHTIMEZONE!!!
 
@@ -25,9 +25,13 @@ export const usersTable = pgTable('users', {
 	avatarobj: text('avatarobj')
 })
 
-export const usersRelations = relations(usersTable, ({ many }) => ({
+export const usersRelations = relations(usersTable, ({ many, one }) => ({
 	keysCreated: many(keyTable),
-	games: many(gamesTable)
+	games: many(gamesTable),
+	activegame: one(jobsTable, {
+		fields: [usersTable.userid],
+		references: [jobsTable.players]
+	})
 }))
 
 export const keysRelations = relations(keyTable, ({ one }) => ({

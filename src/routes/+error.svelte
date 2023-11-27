@@ -19,7 +19,7 @@
 </script>
 
 <div class="flex flex-col h-screen">
-	<Navbar {loggedIn} userId={data.session?.userid} />
+	<Navbar {loggedIn} userId={data.session?.userid} coins={data.session?.coins} />
 	<div class="m-auto flex">
 		<Card.Root class="w-96 p-4 text-center m-auto">
 			<Card.Header class="flex flex-col gap-y-2">
