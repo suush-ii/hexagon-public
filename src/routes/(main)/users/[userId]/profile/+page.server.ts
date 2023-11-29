@@ -18,7 +18,8 @@ export const load: PageServerLoad = async ({ params }) => {
 		.select({
 			username: usersTable.username,
 			userid: usersTable.userid,
-			lastactivetime: usersTable.lastactivetime
+			lastactivetime: usersTable.lastactivetime,
+			joindate: usersTable.joindate
 		})
 		.from(usersTable)
 		.where(eq(usersTable.userid, Number(params.userId)))
@@ -31,6 +32,7 @@ export const load: PageServerLoad = async ({ params }) => {
 			username: user[0].username,
 			userid: user[0].userid,
 			lastactivetime: user[0].lastactivetime,
+			joindate: user[0].joindate,
 			status
 		}
 	}

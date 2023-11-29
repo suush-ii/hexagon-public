@@ -20,7 +20,11 @@
 </script>
 
 <div class="flex flex-col gap-y-1">
-	<Avatar.Root class="w-{size} h-{size} outline-offset-4 {css} outline-dashed rounded-full">
+	<Avatar.Root
+		class="{size === 28
+			? 'w-28 h-28'
+			: `w-${size} h-${size}`} outline-offset-4 {css} outline-dashed rounded-full"
+	>
 		<Avatar.Image
 			src="https://avaatars.githubusercontent.com/u/54828677?v=4{userid}"
 			alt="@sushidesigner"
