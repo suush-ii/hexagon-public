@@ -251,10 +251,15 @@
 						</div>
 					</Tabs.Content>
 
-					<Tabs.Content value="servers" class="flex flex-col gap-y-4">
-						<h1 class="text-2xl font-semibold">Servers</h1>
-						<GameServers servers={data.servers} serverSize={data.place.associatedgame.serversize} />
-					</Tabs.Content>
+					{#if $page.url.searchParams.get('page') === 'servers'}
+						<Tabs.Content value="servers" class="flex flex-col gap-y-4">
+							<h1 class="text-2xl font-semibold">Servers</h1>
+							<GameServers
+								servers={data.servers}
+								serverSize={data.place.associatedgame.serversize}
+							/>
+						</Tabs.Content>
+					{/if}
 				</Tabs.Root>
 			</div>
 		</div>

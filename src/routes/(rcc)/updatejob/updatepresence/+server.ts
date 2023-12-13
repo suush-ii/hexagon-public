@@ -24,10 +24,15 @@ export const POST: RequestHandler = async ({ request }) => {
 
 	let active = instance?.associatedplace?.associatedgame.active ?? 0
 
+	let playerCountUniverse = (
+		await db.select({ active: gamesTable.active }).from(gamesTable).limit(1)
+	)[0].active
+
 	if (action === 'joining') {
 		instance?.players?.push(player)
 
 		active += 1
+		playerCountUniverse += 1
 	}
 
 	if (action === 'leaving') {
@@ -38,13 +43,17 @@ export const POST: RequestHandler = async ({ request }) => {
 		}
 
 		active -= 1
+		playerCountUniverse -= 1
 	}
 
-	await db.update(jobsTable).set({ players: instance?.players }).where(eq(jobsTable.jobid, jobid))
+	await db
+		.update(jobsTable)
+		.set({ players: instance?.players, active })
+		.where(eq(jobsTable.jobid, jobid))
 
 	await db
 		.update(gamesTable)
-		.set({ active })
+		.set({ active: playerCountUniverse })
 		.where(eq(gamesTable.universeid, Number(instance?.associatedid)))
 
 	return json({
