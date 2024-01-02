@@ -154,142 +154,135 @@
 		rel="stylesheet"
 	/>
 </svelte:head>
+<div class="flex flex-col w-full flex-wrap">
+	<div class="w-full flex p-4">
+		<Button
+			href="/login"
+			on:mouseenter={() => {
+				emoticon = '( ⚆_⚆) ! ! ! !'
+			}}
+			class="ml-auto">Log In</Button
+		>
+	</div>
 
-<div class="flex m-auto">
-	<Button
-		href="/login"
-		on:mouseenter={() => {
-			emoticon = '( ⚆_⚆) ! ! ! !'
-		}}
-		on:mouseleave={() => {
-			emoticon = '(♥‿‿♥) ! ! ! !'
-			freezeEmoticon = true
-		}}
-		class="hidden sm:block absolute right-5 top-5">Log In</Button
-	>
+	<div class="flex m-auto">
+		<audio src="/hexabite/3_sndBite1.mp3" bind:this={audio} />
 
-	<audio src="/hexabite/3_sndBite1.mp3" bind:this={audio} />
+		<audio src="/hexabite/1_sndStart.mp3" bind:this={completeAudio} />
 
-	<audio src="/hexabite/1_sndStart.mp3" bind:this={completeAudio} />
-
-	<div class="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
-		<div class="relative mx-auto z-20 flex items-center text-4xl font-logo">
-			<h1 class="text-2xl pr-4 mt-auto flex flex-row">Project</h1>
-			<button on:click={clickerInc} on:click={biteInc}>
-				<img
-					alt="H"
-					class="w-16 h-16 {iconClass}"
-					src={biteCount === 0 ? '/hexagon512.png' : `/hexabite/${biteCount}.png`}
-				/>
-			</button>
-			exagon
-		</div>
-		<h1 class="text-sm pr-4 mx-auto flex flex-row select-none font-mono font-semibold">
-			{emoticon}
-		</h1>
-
-		<div class="mx-auto overflow-hidden flex flex-row gap-1 h-4 select-none">
-			<p class="mx-auto text-sm text-muted-foreground">Has been clicked</p>
-			<div class="" style="transform: translate(0, {100 * offset}%)">
-				<p class="absolute top-[-100%] mx-auto text-sm text-muted-foreground">
-					{Math.floor($displayed_count + 1)}
-				</p>
-				<p class="mx-auto text-sm text-muted-foreground">{Math.floor($displayed_count)}</p>
+		<div class="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
+			<div class="relative mx-auto z-20 flex items-center text-4xl font-logo">
+				<h1 class="text-2xl pr-4 mt-auto flex flex-row">Project</h1>
+				<button on:click={clickerInc} on:click={biteInc}>
+					<img
+						alt="H"
+						class="w-16 h-16 {iconClass}"
+						src={biteCount === 0 ? '/hexagon512.png' : `/hexabite/${biteCount}.png`}
+					/>
+				</button>
+				exagon
 			</div>
-			<p class="mx-auto text-sm text-muted-foreground">times.</p>
-		</div>
+			<h1 class="text-sm pr-4 mx-auto flex flex-row select-none font-mono font-semibold">
+				{emoticon}
+			</h1>
 
-		{#if data.registration}
-			<div class="flex flex-col space-y-2 text-center">
-				<h1 class="text-2xl font-semibold tracking-tight">Create an account</h1>
-				<p class="text-sm text-muted-foreground">Enter your details below to create your account</p>
+			<div class="mx-auto overflow-hidden flex flex-row gap-1 h-4 select-none">
+				<p class="mx-auto text-sm text-muted-foreground">Has been clicked</p>
+				<div class="" style="transform: translate(0, {100 * offset}%)">
+					<p class="absolute top-[-100%] mx-auto text-sm text-muted-foreground">
+						{Math.floor($displayed_count + 1)}
+					</p>
+					<p class="mx-auto text-sm text-muted-foreground">{Math.floor($displayed_count)}</p>
+				</div>
+				<p class="mx-auto text-sm text-muted-foreground">times.</p>
 			</div>
 
-			<Form.Root
-				method="POST"
-				on:submit={submit}
-				{form}
-				schema={formSchema}
-				let:config
-				let:submitting
-				let:message
-			>
-				<Form.Field {config} name="username">
-					<Form.Item>
-						<Form.Label>Username</Form.Label>
-						<Form.Input
-							disabled={submitting}
-							placeholder="(3-20 Characters, no spaces)"
-							icon={UserSquare2}
-						/>
-						<Form.Validation />
-					</Form.Item>
-				</Form.Field>
+			{#if data.registration}
+				<div class="flex flex-col space-y-2 text-center">
+					<h1 class="text-2xl font-semibold tracking-tight">Create an account</h1>
+					<p class="text-sm text-muted-foreground">
+						Enter your details below to create your account
+					</p>
+				</div>
 
-				<Form.Field {config} name="password">
-					<Form.Item>
-						<Form.Label>Password</Form.Label>
-						<Form.Input disabled={submitting} placeholder="(Unique)" type="password" icon={Key} />
-						<Form.Validation />
-					</Form.Item>
-				</Form.Field>
+				<Form.Root
+					method="POST"
+					on:submit={submit}
+					{form}
+					schema={formSchema}
+					let:config
+					let:submitting
+					let:message
+				>
+					<Form.Field {config} name="username">
+						<Form.Item>
+							<Form.Label>Username</Form.Label>
+							<Form.Input
+								disabled={submitting}
+								placeholder="(3-20 Characters, no spaces)"
+								icon={UserSquare2}
+							/>
+							<Form.Validation />
+						</Form.Item>
+					</Form.Field>
 
-				<Form.Field {config} name="key">
-					<Form.Item>
-						<Form.Label>Invite Key</Form.Label>
-						<Form.Input disabled={submitting} placeholder="(Unique)" />
-						<Form.Validation />
-					</Form.Item>
-				</Form.Field>
+					<Form.Field {config} name="password">
+						<Form.Item>
+							<Form.Label>Password</Form.Label>
+							<Form.Input disabled={submitting} placeholder="(Unique)" type="password" icon={Key} />
+							<Form.Validation />
+						</Form.Item>
+					</Form.Field>
 
-				<Form.Field {config} name="gender">
-					<Form.Item>
-						<Form.Label>Gender</Form.Label>
-						<Form.Select disabled={submitting}>
-							<Form.SelectTrigger placeholder="Select" />
-							<Form.SelectContent>
-								<Form.SelectItem value="male">Male</Form.SelectItem>
-								<Form.SelectItem value="female">Female</Form.SelectItem>
-								<Form.SelectItem value="nonbinary">None</Form.SelectItem>
-							</Form.SelectContent>
-						</Form.Select>
-						<Form.Description
-							>You can always change this.
-							{#if message}<Warntext text={message} />{/if}
-						</Form.Description>
-						<Form.Validation />
-					</Form.Item>
-				</Form.Field>
+					<Form.Field {config} name="key">
+						<Form.Item>
+							<Form.Label>Invite Key</Form.Label>
+							<Form.Input disabled={submitting} placeholder="(Unique)" />
+							<Form.Validation />
+						</Form.Item>
+					</Form.Field>
 
-				<div class="flex flex-row gap-x-2">
+					<Form.Field {config} name="gender">
+						<Form.Item>
+							<Form.Label>Gender</Form.Label>
+							<Form.Select disabled={submitting}>
+								<Form.SelectTrigger placeholder="Select" />
+								<Form.SelectContent>
+									<Form.SelectItem value="male">Male</Form.SelectItem>
+									<Form.SelectItem value="female">Female</Form.SelectItem>
+									<Form.SelectItem value="nonbinary">None</Form.SelectItem>
+								</Form.SelectContent>
+							</Form.Select>
+							<Form.Description
+								>You can always change this.
+								{#if message}<Warntext text={message} />{/if}
+							</Form.Description>
+							<Form.Validation />
+						</Form.Item>
+					</Form.Field>
+
 					<Form.Button disabled={submitting} class="w-full">
 						{#if submitting}
 							<Loader2 class="mr-2 h-4 w-4 animate-spin" />
 						{/if}
 						Sign Up!</Form.Button
 					>
-					<Button href="/login" class="block sm:hidden text-center">Log In</Button>
-				</div>
-			</Form.Root>
+				</Form.Root>
 
-			<p class="px-8 text-center text-sm text-muted-foreground">
-				By clicking Sign Up, you agree to our
-				<a href="/terms" class="underline underline-offset-4 hover:text-primary">
-					Terms of Service
-				</a>
-				and
-				<a href="/privacy" class="underline underline-offset-4 hover:text-primary">
-					Privacy Policy
-				</a>
-				.
-			</p>
-		{:else}
-			<h1 class="text-2xl text-center mx-auto pb-96">
-				Sorry! Registration is currently closed. <Button
-					href="/login"
-					class="block sm:hidden text-center max-w-xs mx-auto">Log In</Button
-				>
-			</h1>
-		{/if}
+				<p class="px-8 text-center text-sm text-muted-foreground">
+					By clicking Sign Up, you agree to our
+					<a href="/terms" class="underline underline-offset-4 hover:text-primary">
+						Terms of Service
+					</a>
+					and
+					<a href="/privacy" class="underline underline-offset-4 hover:text-primary">
+						Privacy Policy
+					</a>
+					.
+				</p>
+			{:else}
+				<h1 class="text-2xl text-center mx-auto pb-96">Sorry! Registration is currently closed.</h1>
+			{/if}
+		</div>
 	</div>
 </div>

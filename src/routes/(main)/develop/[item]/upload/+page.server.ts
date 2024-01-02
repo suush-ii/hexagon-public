@@ -27,7 +27,7 @@ const S3 = new S3Client({
 
 export const load: PageServerLoad = async () => {
 	return {
-		form: superValidate(formSchema)
+		form: await superValidate(formSchema)
 	}
 }
 

@@ -15,7 +15,7 @@ export const load: PageServerLoad = async (event) => {
 	if (session) throw redirect(302, '/home')
 
 	return {
-		form: superValidate(formSchema),
+		form: await superValidate(formSchema),
 		clicker: config?.[0]?.pageClicker ?? 0,
 		registration: config?.[0]?.registrationEnabled ?? true
 	}

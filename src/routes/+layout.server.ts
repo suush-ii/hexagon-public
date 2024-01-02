@@ -1,7 +1,6 @@
 import { redirect } from '@sveltejs/kit'
 import type { LayoutServerLoad } from './/$types'
 const protectedroutes = ['/home', '/catalog', '/develop', '/games']
-export const trailingSlash = 'ignore'
 
 export const load: LayoutServerLoad = (async ({ url, locals }) => {
 	const session = locals.session

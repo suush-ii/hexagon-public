@@ -29,7 +29,7 @@
 	<main
 		class="pt-24 {$page.url.pathname != '/' && $page.url.pathname != '/login'
 			? ''
-			: '!pt-0'} flex flex-1"
+			: '!pt-0'} flex flex-1 flex-wrap"
 	>
 		<slot />
 	</main>

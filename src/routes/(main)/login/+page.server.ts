@@ -10,7 +10,7 @@ export const load: PageServerLoad = async (event) => {
 	if (session) throw redirect(302, '/home')
 
 	return {
-		form: superValidate(formSchema)
+		form: await superValidate(formSchema)
 	}
 }
 

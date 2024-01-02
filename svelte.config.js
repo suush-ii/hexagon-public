@@ -17,7 +17,7 @@ const config = {
 			$src: './src/'
 		},
 		csrf: {
-			checkOrigin: process.env.DEBUG === 'true' ? false : true
+			checkOrigin: process.env.CSRF === 'false' ? false : true
 		}
 	}
 }
