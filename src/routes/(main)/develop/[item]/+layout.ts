@@ -35,7 +35,7 @@ export const load: LayoutLoad = async ({ params }) => {
 	const result = await _assetSchema.safeParseAsync(params.item)
 
 	if (result.success === false) {
-		throw error(404, { success: false, message: 'Not found.' })
+		error(404, { success: false, message: 'Not found.' });
 	}
 
 	return {

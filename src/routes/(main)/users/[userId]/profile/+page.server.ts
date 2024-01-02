@@ -11,7 +11,7 @@ export const load: PageServerLoad = async ({ params }) => {
 	const result = await z.number().safeParseAsync(Number(params.userId))
 
 	if (result.success === false) {
-		throw error(400, { success: false, message: 'Malformed input.' })
+		error(400, { success: false, message: 'Malformed input.' });
 	}
 
 	const user = await db
@@ -37,5 +37,5 @@ export const load: PageServerLoad = async ({ params }) => {
 		}
 	}
 
-	throw error(404, { success: false, message: 'User not found!' })
+	error(404, { success: false, message: 'User not found!' });
 }

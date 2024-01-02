@@ -12,7 +12,7 @@ export const load: PageServerLoad = async (event) => {
 	const config = event.locals.config
 
 	const session = await event.locals.auth.validate()
-	if (session) throw redirect(302, '/home')
+	if (session) redirect(302, '/home');
 
 	return {
 		form: await superValidate(formSchema),
@@ -78,6 +78,6 @@ export const actions: Actions = {
 			return fail(400, form) // wtf happened!!
 		}
 
-		throw redirect(301, '/home')
+		redirect(301, '/home');
 	}
 }

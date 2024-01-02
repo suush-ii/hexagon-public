@@ -119,7 +119,7 @@ export const actions: Actions = {
 						}
 					})
 
-					throw redirect(302, '/develop/games')
+					redirect(302, '/develop/games');
 				}
 
 				if (params.item === 'audio' || params.item === 'decals') {

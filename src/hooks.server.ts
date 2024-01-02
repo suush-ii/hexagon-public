@@ -55,7 +55,7 @@ export const handle: Handle = sequence(rccAuth, async ({ event, resolve }) => {
 
 	if (config?.[0]?.maintenanceEnabled === true) {
 		if (event.url.pathname != '/maintenance') {
-			throw redirect(302, '/maintenance')
+			redirect(302, '/maintenance');
 		}
 	}
 
@@ -86,7 +86,7 @@ export const handle: Handle = sequence(rccAuth, async ({ event, resolve }) => {
 		) === true
 	) {
 		if (!session) {
-			throw redirect(302, '/login')
+			redirect(302, '/login');
 		}
 	}
 
@@ -97,7 +97,7 @@ export const handle: Handle = sequence(rccAuth, async ({ event, resolve }) => {
 		) === true
 	) {
 		if (!session) {
-			throw redirect(302, '/login')
+			redirect(302, '/login');
 		}
 
 		if (
@@ -105,7 +105,7 @@ export const handle: Handle = sequence(rccAuth, async ({ event, resolve }) => {
 			session.user.role !== 'admin' &&
 			session.user.role !== 'mod'
 		) {
-			throw redirect(302, '/login')
+			redirect(302, '/login');
 		}
 	}
 

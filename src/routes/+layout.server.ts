@@ -12,7 +12,7 @@ export const load: LayoutServerLoad = (async ({ url, locals }) => {
 		) === true
 	) {
 		if (!session) {
-			throw redirect(302, '/auth/login')
+			redirect(302, '/auth/login');
 		}
 	}
 
@@ -20,7 +20,7 @@ export const load: LayoutServerLoad = (async ({ url, locals }) => {
 
 	if (config?.[0]?.maintenanceEnabled === true) {
 		if (url.pathname != '/maintenance') {
-			throw redirect(302, '/maintenance')
+			redirect(302, '/maintenance');
 		}
 	}
 

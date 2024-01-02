@@ -21,12 +21,12 @@ export const POST: RequestHandler = async ({ request }) => {
 		result = await usernameSchema.safeParseAsync({ username })
 	} catch (e) {
 		console.log(e)
-		throw error(400, { success: false, message: 'Malformed JSON.', data: {} })
+		error(400, { success: false, message: 'Malformed JSON.', data: {} });
 	}
 
 	if (!result.success) {
 		const errors = result.error.issues.map((issue) => issue.message) // get us only the error msgs
-		throw error(400, { success: false, message: 'Malformed JSON.', data: { errors } })
+		error(400, { success: false, message: 'Malformed JSON.', data: { errors } });
 	}
 
 	const user = await db

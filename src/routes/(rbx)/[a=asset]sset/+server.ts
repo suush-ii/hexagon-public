@@ -13,7 +13,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
 	const result = await assetSchema.safeParseAsync(Number(url.searchParams.get('id')))
 
 	if (!result.success) {
-		throw error(400, { success: false, message: 'Malformed ID.', data: {} })
+		error(400, { success: false, message: 'Malformed ID.', data: {} });
 	}
 
 	const existingAsset = await db.query.assetTable.findFirst({
@@ -32,10 +32,10 @@ export const GET: RequestHandler = async ({ url, request }) => {
 	})
 
 	if (existingAsset?.assetType === 'audio' || existingAsset?.assetType === 'decals') {
-		throw redirect(
-			302,
-			`https://${s3Url}/${existingAsset.assetType}/` + existingAsset?.simpleasseturl
-		)
+		redirect(
+        			302,
+        			`https://${s3Url}/${existingAsset.assetType}/` + existingAsset?.simpleasseturl
+		);
 	}
 
 	if (existingAsset?.assetType === 'games') {
@@ -50,16 +50,16 @@ export const GET: RequestHandler = async ({ url, request }) => {
 			})
 		}
 
-		throw redirect(
-			302,
-			`https://${s3Url}/${existingAsset?.assetType}/` + existingAsset?.place.placeurl
-		)
+		redirect(
+        			302,
+        			`https://${s3Url}/${existingAsset?.assetType}/` + existingAsset?.place.placeurl
+		);
 	}
 	// TODO: setup authentication for games
 	// TODO: setup moderation steps for assets
 
-	throw redirect(
-		302,
-		'https://assetdelivery.roblox.com/v1/asset/?id=' + Number(url.searchParams.get('id'))
-	)
+	redirect(
+    		302,
+    		'https://assetdelivery.roblox.com/v1/asset/?id=' + Number(url.searchParams.get('id'))
+    	);
 }

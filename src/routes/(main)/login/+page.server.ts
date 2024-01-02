@@ -7,7 +7,7 @@ import { LuciaError } from 'lucia'
 
 export const load: PageServerLoad = async (event) => {
 	const session = await event.locals.auth.validate()
-	if (session) throw redirect(302, '/home')
+	if (session) redirect(302, '/home');
 
 	return {
 		form: await superValidate(formSchema)
@@ -46,6 +46,6 @@ export const actions: Actions = {
 			return message(form, 'Unknown error!') // wtf happened!!
 		}
 
-		throw redirect(302, '/home') // success!
+		redirect(302, '/home'); // success!
 	}
 }

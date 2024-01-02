@@ -11,7 +11,7 @@ export const load: PageServerLoad = async ({ params, parent }) => {
 	const session = await (await parent()).session
 
 	if (result.success === false) {
-		throw error(404, { success: false, message: 'Not found.' })
+		error(404, { success: false, message: 'Not found.' });
 	}
 
 	let creations: {
