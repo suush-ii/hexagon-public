@@ -42,8 +42,14 @@ export const POST: RequestHandler = async ({ request }) => {
 			instance?.players?.splice(index, 1) // 2nd parameter means remove one item only
 		}
 
-		active -= 1
-		playerCountUniverse -= 1
+		if (active > 0){
+			active -= 1
+		}
+
+		if (playerCountUniverse > 0){
+			playerCountUniverse -= 1
+		}
+
 	}
 
 	await db

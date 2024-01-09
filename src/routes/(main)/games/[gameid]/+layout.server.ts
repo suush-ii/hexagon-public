@@ -12,7 +12,7 @@ export const load: LayoutServerLoad = async ({ params, locals, depends, cookies,
 	const result = await z.number().safeParseAsync(Number(params.gameid))
 
 	if (result.success === false) {
-		error(400, { success: false, message: 'Malformed input.' });
+		error(400, { success: false, message: 'Malformed input.' })
 	}
 
 	const place = await db.query.placesTable.findFirst({
@@ -45,11 +45,11 @@ export const load: LayoutServerLoad = async ({ params, locals, depends, cookies,
 	})
 
 	if (!place) {
-		error(404, { success: false, message: 'Game not found.', data: {} });
+		error(404, { success: false, message: 'Game not found.', data: {} })
 	}
 
 	if (params?.game !== place.associatedgame.gamename) {
-		redirect(302, '/games/' + Number(params.gameid) + '/' + place.associatedgame.gamename);
+		redirect(302, '/games/' + Number(params.gameid) + '/' + place.associatedgame.gamename)
 	}
 
 	const alreadyVoted = await db
@@ -81,7 +81,7 @@ export const load: LayoutServerLoad = async ({ params, locals, depends, cookies,
 			voted: alreadyVoted.length > 0,
 			voteType: alreadyVoted.length > 0 ? alreadyVoted[0].type : null
 		},
-		ticket: cookies.get('auth_session'),
+		ticket: cookies.get('auth_session') ?? '',
 		servers
 	}
 }

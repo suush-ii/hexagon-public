@@ -20,3 +20,8 @@ export const assetRelations = relations(assetTable, ({ one }) => ({
 		references: [placesTable.placeid]
 	})
 }))
+
+export const assetCacheTable = pgTable('assetcache', {
+	assetid: bigint('assetid', { mode: 'number' }).notNull().primaryKey(),
+	filehash: text('filehash')
+})

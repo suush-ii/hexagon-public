@@ -10,6 +10,10 @@
 	export let servers: instances
 
 	export let serverSize: number
+
+	export let placeid: number
+
+	export let ticket: string
 </script>
 
 {#each servers as server}
@@ -19,14 +23,21 @@
 		<div class="w-1/4">
 			<h5>{server.active} of {serverSize} people max</h5>
 
-			<Button variant="secondary" size="sm" class="w-full">Join</Button>
+			<Button
+				on:click={() => {
+					document.location = `hexagonlaunch://${placeid}[${ticket}[${2016}[player[${server.jobid}`
+				}}
+				variant="secondary"
+				size="sm"
+				class="w-full">Join</Button
+			>
 		</div>
 
 		<Separator orientation="vertical" />
 
 		<div class="flex-row flex-wrap">
 			{#each server.players ?? [] as player}
-				<Avatar state={'game'} userid={player} size={10} />
+				<Avatar state={'game'} userid={player} css="h-10 w-10" />
 			{/each}
 		</div>
 	</div>

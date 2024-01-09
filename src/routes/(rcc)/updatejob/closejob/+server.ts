@@ -8,7 +8,10 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 	const jobid = (await request.json()).jobid
 
 	const instance = await db.query.jobsTable.findFirst({
-		where: and(eq(jobsTable.jobid, jobid), eq(jobsTable.type, 'game'))
+		where: and(eq(jobsTable.jobid, jobid), eq(jobsTable.type, 'game')),
+		columns: {
+			placeid: true
+		}
 	})
 
 	if (!instance) {

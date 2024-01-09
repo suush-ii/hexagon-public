@@ -257,6 +257,8 @@
 							<GameServers
 								servers={data.servers}
 								serverSize={data.place.associatedgame.serversize}
+								placeid={data.place.placeid}
+								ticket={data.ticket}
 							/>
 						</Tabs.Content>
 					{/if}

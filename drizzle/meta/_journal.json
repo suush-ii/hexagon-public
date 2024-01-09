@@ -113,6 +113,13 @@
       "when": 1700978474665,
       "tag": "0015_lowly_angel",
       "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "5",
+      "when": 1704770452150,
+      "tag": "0016_naive_golden_guardian",
+      "breakpoints": true
     }
   ]
 }

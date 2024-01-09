@@ -39,7 +39,7 @@
 					state={data.status}
 					userid={data.userid}
 					username={data.username}
-					size={80}
+					css={'xl:h-80 h-fit w-full max-w-80 aspect-square'}
 					type="avatar"
 				/>
 
