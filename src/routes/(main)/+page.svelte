@@ -153,7 +153,17 @@
 		href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&display=swap"
 		rel="stylesheet"
 	/>
+	<style>
+		body{
+			background-color: black;
+		}
+	</style>
 </svelte:head>
+		<!-- svelte-ignore a11y-media-has-caption -->
+<video class="pointer-events-none absolute h-full w-full box-border -z-10 opacity-60 top-0 bottom-0 object-cover blur-sm" loop autoplay muted>
+	<source src="/Final-1.webm" class="min-h-full min-w-full w-auto h-auto absolute " type="video/webm">
+  </video>
+
 <div class="flex flex-col w-full flex-wrap">
 	<div class="w-full flex p-4">
 		<Button
@@ -165,7 +175,7 @@
 		>
 	</div>
 
-	<div class="flex m-auto">
+	<div class="flex m-auto supports-backdrop-blur:bg-background/60 border-b bg-background/60 p-16 shadow-sm rounded-xl">
 		<audio src="/hexabite/3_sndBite1.mp3" bind:this={audio} />
 
 		<audio src="/hexabite/1_sndStart.mp3" bind:this={completeAudio} />
