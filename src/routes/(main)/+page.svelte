@@ -115,11 +115,14 @@
 		}
 		if (biteCount < 3) {
 			biteCount += 1
+
+			audio = audio.cloneNode(true) as HTMLAudioElement
 			audio.play()
 		} else {
 			emoticon = '(◕‿‿◕)'
 			freezeEmoticon = true
 			biteCount = 0
+			completeAudio = completeAudio.cloneNode(true) as HTMLAudioElement
 			completeAudio.play()
 		}
 	}
