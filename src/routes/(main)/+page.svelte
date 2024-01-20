@@ -178,7 +178,7 @@
 		>
 	</div>
 
-	<div class="flex m-auto supports-backdrop-blur:bg-background/60 border-b bg-background/60 p-16 shadow-sm rounded-xl">
+	<div class="flex m-auto supports-backdrop-blur:bg-background/60 border-b bg-background/60 p-4 sm:p-16 shadow-sm rounded-xl">
 		<audio src="/hexabite/3_sndBite1.mp3" bind:this={audio} />
 
 		<audio src="/hexabite/1_sndStart.mp3" bind:this={completeAudio} />
