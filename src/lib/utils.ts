@@ -54,3 +54,29 @@ export const flyAndScale = (
 		easing: cubicOut
 	}
 }
+
+export function slugify(text: String) {
+	return text
+		.toString()
+		.normalize('NFD') // split an accented letter in the base letter and the acent
+		.replace(/[\u0300-\u036f]/g, '') // remove all previously split accents
+		.trim()
+		.replace(/\s+/g, '-')
+		.replace(/[^\w\-]+/g, '')
+		.replace(/\-\-+/g, '-')
+}
+// https://gist.github.com/codeguy/6684588?permalink_comment_id=3332719#gistcomment-3332719
+
+export const stateOutlineMap = {
+	online: 'outline-blue-500',
+	game: 'outline-success',
+	studio: 'outline-orange',
+	offline: 'outline-muted-foreground/70'
+}
+
+export const stateTextMap = {
+	online: 'text-blue-500',
+	game: 'text-success',
+	studio: 'text-orange',
+	offline: 'text-muted-foreground/70'
+}

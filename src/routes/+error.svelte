@@ -13,10 +13,17 @@
 
 	import type { LayoutData } from './$types'
 
+	import { appName } from '$src/stores'
+
 	export let data: LayoutData
 
 	$: loggedIn = data.session ? true : false
 </script>
+
+<svelte:head>
+	<title>{appName}</title>
+	<link rel="icon" type="image/png" href="/hexagon128.png" />
+</svelte:head>
 
 <div class="flex flex-col h-screen">
 	<Navbar {loggedIn} userId={data.session?.userid} coins={data.session?.coins} />

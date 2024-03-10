@@ -1,6 +1,8 @@
 <script lang="ts">
 	import * as Avatar from '$src/components/ui/avatar'
 
+	import { slugify } from '$lib/utils'
+
 	export let gameName: string
 
 	export let gameId: number
@@ -10,7 +12,7 @@
 	export let iconUrl: string
 </script>
 
-<a href="/games/{gameId}/{gameName}"
+<a href="/games/{gameId}/{slugify(gameName)}"
 	><div class="flex flex-col w-32">
 		<Avatar.Root class="w-32 h-32 rounded-xl">
 			<Avatar.Image

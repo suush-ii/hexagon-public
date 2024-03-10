@@ -3,7 +3,7 @@ import { _assetSchema } from './+layout'
 import { db } from '$lib/server/db'
 import { gamesTable } from '$lib/server/schema/games'
 import { assetTable } from '$lib/server/schema/assets'
-import { eq } from 'drizzle-orm'
+import { eq, and } from 'drizzle-orm'
 import { error } from '@sveltejs/kit'
 
 export const load: PageServerLoad = async ({ params, parent }) => {
@@ -11,7 +11,7 @@ export const load: PageServerLoad = async ({ params, parent }) => {
 	const session = await (await parent()).session
 
 	if (result.success === false) {
-		error(404, { success: false, message: 'Not found.' });
+		error(404, { success: false, message: 'Not found.' })
 	}
 
 	let creations: {
@@ -47,8 +47,9 @@ export const load: PageServerLoad = async ({ params, parent }) => {
 		const assetcreations = await db
 			.select()
 			.from(assetTable)
-			.where(eq(assetTable.creatoruserid, session.userid))
-			.where(eq(assetTable.assetType, params.item))
+			.where(
+				and(eq(assetTable.creatoruserid, session.userid), eq(assetTable.assetType, params.item))
+			)
 			.limit(20)
 
 		creations = assetcreations.map((asset) => ({

@@ -1,11 +1,17 @@
 <script lang="ts">
 	import Avatar from '$src/components/users/avatar.svelte'
 
+	import { page } from '$app/stores'
+	
+	import { stateTextMap } from '$lib/utils'
+
 	import * as Avatar2 from '$src/components/ui/avatar'
 
 	import type { PageData } from './$types'
 
 	export let data: PageData
+
+	const textColor = stateTextMap[data.status]
 </script>
 
 <div class="container p-4 flex flex-col gap-y-4 pt-8">
@@ -27,7 +33,18 @@
 			<div
 				class="bg-muted-foreground/5 outline-dashed outline-muted-foreground/20 rounded-xl p-6 gap-y-4 flex flex-col"
 			>
-				<h1 class="text-lg text-blue-500 mx-auto">[ Online: Website ]</h1>
+			<div class="mx-auto flex flex-col">
+			{#if data.status == 'online'}
+				<h1 class="text-lg {textColor} mx-auto">[ Online: Website ]</h1>
+				{:else if data.status == 'offline'}
+				<h1 class="text-lg {textColor} mx-auto">[ Offline ]</h1>
+				{:else if data.status == 'game'}
+				<h1 class="text-lg {textColor} mx-auto hover:underline">[ Online: <a href="/games/1">sdf</a> ]</h1>
+				{:else if data.status == 'studio'}
+				<h1 class="text-lg {textColor} mx-auto">[ Online: Studio ]</h1>
+			{/if}
+			<h1 class="text-lg {textColor} mx-auto hover:underline"><a href={$page.url.toString()}>{$page.url}</a></h1>
+		</div>
 				<!--<Avatar2.Root class="w-80 h-80 mx-auto">
 				<Avatar2.Image
 					src="https://tr.rbxcdn.com/30DAY-Avatar-1AA774E499A132625B5A5CCA287E57BB-Png/352/352/Avatar/Png/noFilter"

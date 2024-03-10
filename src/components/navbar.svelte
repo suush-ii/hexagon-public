@@ -85,18 +85,17 @@
 			{/if}
 
 			{#if loggedIn}
-				<div class="flex items-center gap-x-3">
-					<div class="flex items-center">
-						<MoonStar class="h-full" />
-
 						<DropdownMenu.Root>
 							<DropdownMenu.Trigger asChild let:builder
 								><Button builders={[builder]} variant="minimal" class="text-lg" size="icon">
+									<div class="flex items-center gap-x-3">
+									<MoonStar class="h-full" />
 									<h5 class="font-bold">{coins}</h5>
+									</div>
 								</Button>
 							</DropdownMenu.Trigger>
 							<DropdownMenu.Content>
-								<DropdownMenu.Label>My Account</DropdownMenu.Label>
+								<DropdownMenu.Label class="select-none">My Account </DropdownMenu.Label>
 								<DropdownMenu.Separator />
 								<a href="/transactions"><DropdownMenu.Item>My Transactions</DropdownMenu.Item></a>
 								<DropdownMenu.Item
@@ -106,7 +105,6 @@
 								</DropdownMenu.Item>
 							</DropdownMenu.Content>
 						</DropdownMenu.Root>
-					</div>
 
 					<DropdownMenu.Root>
 						<DropdownMenu.Trigger asChild let:builder
@@ -115,13 +113,12 @@
 							</Button>
 						</DropdownMenu.Trigger>
 						<DropdownMenu.Content>
-							<DropdownMenu.Label>My Account</DropdownMenu.Label>
+							<DropdownMenu.Label class="select-none">My Account</DropdownMenu.Label>
 							<DropdownMenu.Separator />
 							<a href="/settings"><DropdownMenu.Item>Settings</DropdownMenu.Item></a>
 							<a href="/logout"><DropdownMenu.Item>Logout</DropdownMenu.Item></a>
 						</DropdownMenu.Content>
 					</DropdownMenu.Root>
-				</div>
 			{/if}
 		</nav>
 	</div>

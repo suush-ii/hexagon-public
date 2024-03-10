@@ -164,7 +164,7 @@
 </svelte:head>
 		<!-- svelte-ignore a11y-media-has-caption -->
 <video class="pointer-events-none absolute h-full w-full box-border -z-10 opacity-60 top-0 bottom-0 object-cover blur-sm" loop autoplay muted>
-	<source src="/Final-1.webm" class="min-h-full min-w-full w-auto h-auto absolute " type="video/webm">
+	<source src="/Finalnew-1.webm" class="min-h-full min-w-full w-auto h-auto absolute " type="video/webm">
   </video>
 
 <div class="flex flex-col w-full flex-wrap">

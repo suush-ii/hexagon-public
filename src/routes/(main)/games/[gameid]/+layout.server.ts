@@ -1,11 +1,12 @@
 import type { LayoutServerLoad } from './$types'
 import { placesTable } from '$lib/server/schema/games'
 import { db } from '$lib/server/db'
-import { eq } from 'drizzle-orm'
+import { eq, and } from 'drizzle-orm'
 import { error, redirect } from '@sveltejs/kit'
 import { z } from 'zod'
 import { votesTable } from '$lib/server/schema/gamevotes'
 import { jobsTable } from '$lib/server/schema/games'
+import { slugify } from '$lib/utils'
 type jobs = typeof jobsTable.$inferSelect
 
 export const load: LayoutServerLoad = async ({ params, locals, depends, cookies, url }) => {
@@ -48,15 +49,21 @@ export const load: LayoutServerLoad = async ({ params, locals, depends, cookies,
 		error(404, { success: false, message: 'Game not found.', data: {} })
 	}
 
-	if (params?.game !== place.associatedgame.gamename) {
-		redirect(302, '/games/' + Number(params.gameid) + '/' + place.associatedgame.gamename)
+	const slugGameName = slugify(place.associatedgame.gamename)
+
+	if (params?.game !== slugGameName) {
+		redirect(302, '/games/' + Number(params.gameid) + '/' + slugGameName)
 	}
 
 	const alreadyVoted = await db
 		.select()
 		.from(votesTable)
-		.where(eq(votesTable.userid, locals.session.user.userid))
-		.where(eq(votesTable.gameid, Number(place.associatedgame.universeid)))
+		.where(
+			and(
+				eq(votesTable.userid, locals.session.user.userid),
+				eq(votesTable.gameid, Number(place.associatedgame.universeid))
+			)
+		)
 		.limit(1)
 
 	depends('app:game')
