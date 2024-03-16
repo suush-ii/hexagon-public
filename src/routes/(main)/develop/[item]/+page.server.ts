@@ -5,6 +5,7 @@ import { gamesTable } from '$lib/server/schema/games'
 import { assetTable } from '$lib/server/schema/assets'
 import { eq, and } from 'drizzle-orm'
 import { error } from '@sveltejs/kit'
+import { s3Url } from '$src/stores'
 
 export const load: PageServerLoad = async ({ params, parent }) => {
 	const result = await _assetSchema.safeParseAsync(params.item)
@@ -55,7 +56,7 @@ export const load: PageServerLoad = async ({ params, parent }) => {
 		creations = assetcreations.map((asset) => ({
 			assetName: asset.assetname,
 			assetid: asset.assetid,
-			iconUrl: null, //TODO: make an audio/decal default icon
+			iconUrl: asset.assetType === "decals" && asset.moderationstate === "approved" ? `https://${s3Url}/${asset.assetType}/` + asset?.simpleasseturl : null, //TODO: make an audio default icon
 			updated: asset.created,
 			assetType: params.item,
 			totalStat: asset.sales,

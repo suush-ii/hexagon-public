@@ -36,7 +36,7 @@
 	method="POST"
 	{form}
 	schema={formSchema}
-	debug={true}
+	debug={false}
 	let:config
 	let:submitting
 >
