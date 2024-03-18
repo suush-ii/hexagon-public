@@ -22,6 +22,7 @@
 	{...$attrStore}
 	bind:value={$value}
 	{...$$restProps}
+	formPadding={icon ? true : false}
 	on:blur
 	on:change
 	on:click
