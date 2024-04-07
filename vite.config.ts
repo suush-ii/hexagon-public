@@ -12,6 +12,16 @@ export default defineConfig({
 		}),
 		sveltekit()
 	],
+	build: {
+		target: 'esnext',
+		sourcemap: false,
+		minify: 'terser',
+		rollupOptions: {
+			output: {
+				sourcemap: 'hidden' // hide inline source maps
+			}
+		}
+	},
 	server: {
 		port: 9000,
 		strictPort: false
