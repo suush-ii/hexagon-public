@@ -15,7 +15,7 @@ export default defineConfig({
 	build: {
 		target: 'esnext',
 		sourcemap: false,
-		minify: 'terser',
+		minify: 'esbuild',
 		rollupOptions: {
 			output: {
 				sourcemap: 'hidden' // hide inline source maps
