@@ -5,7 +5,7 @@ import { assetTable, assetCacheTable } from '$lib/server/schema/assets'
 import { eq } from 'drizzle-orm'
 import { s3Url } from '$src/stores'
 import { CLIENT_PRIVATE_KEY, RCC_ACCESS_KEY } from '$env/static/private'
-import parse from './meshconvert/index'
+//import parse from './meshconvert/index'
 import { createSign } from 'node:crypto'
 export const trailingSlash = 'ignore'
 let luas = formatPath(
@@ -145,14 +145,14 @@ export const GET: RequestHandler = async ({ url, request }) => {
 				const url = data.locations[0].location
 				const filehash = url.substring(22)
 
-				if (data.assetTypeId === meshAssetId) {
+				/*if (data.assetTypeId === meshAssetId) {
 					const assetResponse = await fetch(url, {
 						headers: { 'User-Agent': 'Roblox/WinInet' }
 					})
 					const assetData = await assetResponse.arrayBuffer()
 
 					return new Response(
-						parse(Buffer.from(assetData)) ?? assetData /* parse returns nothing if mesh is old */,
+						parse(Buffer.from(assetData)) ?? assetData /* parse returns nothing if mesh is old ,
 						{
 							status: 200,
 							headers: {
@@ -160,9 +160,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
 								'Content-Disposition': `attachment; filename*=UTF-8''${filehash}`
 							}
 						}
-					)
-				}
-
+					)*/
 				if (cachedAsset.length === 0) {
 					await db.insert(assetCacheTable).values({
 						assetid: assetId,
