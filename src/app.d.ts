@@ -15,7 +15,8 @@ declare global {
 				email: string
 				coins: number
 				joindate: Date
-				role: 'owner' | 'admin' | 'mod' | 'uploader' | 'normal'
+				gender: import('./lib/types.ts').userGenders
+				role: import('./lib/types.ts').userRole
 			}
 			type DatabaseSessionAttributes = NonNullable<unknown>
 		}

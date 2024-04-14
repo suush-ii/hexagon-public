@@ -1,5 +1,8 @@
 import { z } from 'zod'
 import { gameGenreZod } from '$lib'
+import { formSchema as assetSchema } from '$lib/schemas/assetschema'
+
+const { shape } = assetSchema
 
 export const formSchema = z.object({
 	name: z
@@ -15,8 +18,7 @@ export const formSchema = z.object({
 		.default(30),
 	/*thumbnail: z.any(),
 	icon: z.any(),*/
-	asset: z.any(),
-	price: z.any().optional(),
+	asset: shape.asset,
 	genre: z.enum(gameGenreZod).default('All')
 })
 

@@ -2,12 +2,14 @@ import { json, type Handle } from '@sveltejs/kit'
 import { RCC_ACCESS_KEY } from '$env/static/private'
 
 export const rccAuth = (async ({ event, resolve }) => {
+	const pathname = event.url.pathname
 	if (
-		event.url.pathname.startsWith('/updatejob') ||
-		event.url.pathname === '/GetAllowedMD5Hashes' ||
-		event.url.pathname === '/GetAllowedSecurityVersions'
+		pathname.startsWith('/updatejob') ||
+		pathname === '/GetAllowedMD5Hashes' ||
+		pathname === '/GetAllowedSecurityVersions' /*||
+		pathname === '/game/gameserver.ashx'*/
 	) {
-		const accessKey = event.request.headers.get('accesskey')
+		const accessKey = event.url.searchParams.get('accessKey')
 
 		if (!accessKey || RCC_ACCESS_KEY != accessKey) {
 			return json({

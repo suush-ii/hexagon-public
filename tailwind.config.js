@@ -64,7 +64,7 @@ const config = {
 			}
 		},
 		data: {
-			invalidInput: 'invalid="true"'
+			invalidInput: 'fs-error'
 		}
 	}
 }

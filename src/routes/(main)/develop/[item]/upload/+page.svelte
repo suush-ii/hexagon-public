@@ -1,42 +1,35 @@
 <script lang="ts">
 	import type { PageData } from './$types'
 
-	import FormPrimitive from '$src/components/develop/formPrimitive.svelte'
-	import { formSchema as gameSchema } from '$lib/schemas/gameschema'
-	import { formSchema as clothingSchema } from '$lib/schemas/clothingschema'
-	import { formSchema as assetSchema } from '$lib/schemas/assetschema'
+	import GameFormPrimitive from '$src/components/develop/gameFormPrimitive.svelte'
+
+	import ClothingFormPrimitive from '$src/components/develop/clothingFormPrimitive.svelte'
+
+	import AssetFormPrimitive from '$src/components/develop/assetFormPrimitive.svelte'
 
 	export let data: PageData
-
-	let form = data.form
 </script>
 
 <div class="container p-8 flex flex-col gap-y-8">
 	<h1 class="text-4xl leading-none tracking-tight font-semibold">Upload {data.friendlyName}</h1>
 
 	{#if data.item === 'games'}
-		<FormPrimitive
+		<GameFormPrimitive
 			fileTypes={data.fileTypes}
-			{form}
+			data={data.gameForm}
 			friendlyName={data.friendlyName}
-			formSchema={gameSchema}
-			item={data.item}
 		/>
 	{:else if data.item === 'shirts' || data.item === 'pants'}
-		<FormPrimitive
+		<ClothingFormPrimitive
 			fileTypes={data.fileTypes}
-			{form}
+			data={data.clothingForm}
 			friendlyName={data.friendlyName}
-			formSchema={clothingSchema}
-			item={data.item}
 		/>
 	{:else if data.item === 'audio' || data.item === 'decals'}
-		<FormPrimitive
+		<AssetFormPrimitive
 			fileTypes={data.fileTypes}
-			{form}
+			data={data.assetForm}
 			friendlyName={data.friendlyName}
-			formSchema={assetSchema}
-			item={data.item}
 		/>
 	{/if}
 </div>

@@ -11,6 +11,14 @@
 
 	$: loggedIn = data.session ? true : false
 
+	$: admin =
+		data?.session?.role === 'owner' ||
+		data?.session?.role === 'admin' ||
+		data?.session?.role === 'mod' ||
+		data?.session?.role === 'uploader'
+			? true
+			: false
+
 	$: newPageName = ($pageName ?? '') + ($pageName ? ' -' : '') // if we do not have a pageName just send Hexagon
 </script>
 
@@ -21,9 +29,9 @@
 
 <div class="flex flex-col h-screen">
 	{#if $page.url.pathname != '/' && $page.url.pathname != '/login'}
-		<Navbar {loggedIn} userId={data.session?.userid} coins={data?.session?.coins} />
+		<Navbar {loggedIn} userId={data?.session?.userid} coins={data?.session?.coins} {admin} />
 	{:else if $page.url.pathname === '/login'}
-		<Navbar {loggedIn} signUpButton={true} coins={data?.session?.coins} />
+		<Navbar {loggedIn} signUpButton={true} coins={data?.session?.coins} {admin} />
 	{/if}
 
 	<main

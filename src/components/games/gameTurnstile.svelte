@@ -7,6 +7,8 @@
 
 	import EmptyCard from '$src/components/emptyCard.svelte'
 
+	import SeeAll from '$src/components/seeAll.svelte'
+
 	let listElement: any
 
 	let leftButtonDisabled = true
@@ -52,8 +54,8 @@
 	}
 </script>
 
-<div class="flex flex-row w-full flex-wrap justify-end">
-	<a href="/games/{type}"><h1 class="text-xl hover-underline">See All</h1></a>
+<div class="flex flex-row gap-2 w-full flex-wrap justify-end">
+	<SeeAll href="/games/{type}" />
 
 	<div
 		class="flex flex-row gap-x-2 w-full outline-dashed outline-muted-foreground/20 rounded-xl outline-offset-4"

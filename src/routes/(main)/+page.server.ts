@@ -7,15 +7,16 @@ import { auth } from '$src/lib/server/lucia'
 import postgres from 'postgres' // TODO: Check this out later seems to be a workaround for a postgres issue https://github.com/porsager/postgres/issues/684 10/3/2023
 import { usersTable } from '$src/lib/server/schema/users'
 import { eq } from 'drizzle-orm'
+import { zod } from 'sveltekit-superforms/adapters'
 
 export const load: PageServerLoad = async (event) => {
 	const config = event.locals.config
 
 	const session = await event.locals.auth.validate()
-	if (session) redirect(302, '/home');
+	if (session) redirect(302, '/home')
 
 	return {
-		form: await superValidate(formSchema),
+		form: await superValidate(zod(formSchema)),
 		clicker: config?.[0]?.pageClicker ?? 0,
 		registration: config?.[0]?.registrationEnabled ?? true
 	}
@@ -23,13 +24,13 @@ export const load: PageServerLoad = async (event) => {
 
 export const actions: Actions = {
 	default: async (event) => {
-		const form = await superValidate(event, formSchema)
+		const form = await superValidate(event, zod(formSchema))
 		if (!form.valid) {
 			return fail(400, {
 				form
 			})
 		}
-		const { username, password } = form.data
+		const { username, password, gender, key } = form.data
 
 		const config = event.locals.config
 
@@ -60,7 +61,8 @@ export const actions: Actions = {
 					username: username,
 					coins: 0,
 					joindate: new Date(),
-					role: 'normal'
+					role: 'normal',
+					gender: gender
 				}
 			})
 
@@ -78,6 +80,6 @@ export const actions: Actions = {
 			return fail(400, form) // wtf happened!!
 		}
 
-		redirect(301, '/home');
+		redirect(301, '/home')
 	}
 }

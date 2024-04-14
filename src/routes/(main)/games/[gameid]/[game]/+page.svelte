@@ -1,7 +1,7 @@
 <script lang="ts">
 	import * as Avatar from '$src/components/ui/avatar'
 	import * as Tabs from '$src/components/ui/tabs'
-	import * as HoverCard from '$src/components/ui/hover-card'
+	import ReportButton from '$src/components/reportButton.svelte'
 
 	import UserImage from '$src/components/userimage.svelte'
 
@@ -9,7 +9,9 @@
 
 	import { Button } from '$src/components/ui/button'
 
-	import { Play, ThumbsUp, ThumbsDown, Loader2 } from 'lucide-svelte'
+	import { Play, ThumbsUp, ThumbsDown, Loader2, BadgeAlert, Star } from 'lucide-svelte'
+
+	import { Separator } from '$src/components/ui/separator'
 
 	import { pageName } from '$src/stores'
 
@@ -103,97 +105,85 @@
 							>{data.place.associatedgame.author.username}</a
 						>
 					</h1>
-					<HoverCard.Root>
-						<HoverCard.Trigger
-							class="w-full mx-auto mt-4 xl:mt-auto bg-success shadow-md hover:shadow-white rounded-xl"
-						>
-							<Button
-								on:click={() => {
-									document.location = `hexagonlaunch://${data.place.placeid}[${
-										data.ticket
-									}[${2016}[player`
-								}}
-								variant="minimal"
-								size="lg"
-								class="w-full bg-success flex gap-x-4"
-							>
-								<HoverCard.Content class="w-80">
-									<div class="flex space-x-4">
-										<Avatar.Root>
-											<Avatar.Image src="/hexagon128.png" />
-										</Avatar.Root>
-										<div class="space-y-1">
-											<h4 class="text-sm font-semibold">Hexagon</h4>
-											<a href="/download" class="hover:underline"
-												><p class="text-sm">Download launcher now!</p></a
-											>
-										</div>
-									</div>
-								</HoverCard.Content>
-
-								<h1 class="text-xl">Play</h1>
-								<Play className="h-4 w-full" />
-							</Button>
-						</HoverCard.Trigger>
-					</HoverCard.Root>
-					<div class="flex flex-row pt-4 px-4">
-						<div class="text-success flex flex-row">
-							<Button
-								variant="minimalcurrent"
-								size="icon"
-								on:click={() => {
-									vote('like')
-								}}
-								disabled={submitting}
-							>
-								<ThumbsUp
-									class="hover:fill-success {data.alreadyVoted.voted === true &&
-									data.alreadyVoted?.voteType === 'like'
-										? 'fill-success'
-										: ''}"
-								/>
-							</Button>
-						</div>
-						<div class="w-full mx-4 flex flex-col">
-							<div
-								class="w-full h-3 {isNaN(data.likespercentage) ? '' : 'bg-destructive'} rounded-xl"
-							>
+					<Separator class="mt-2" />
+					<Button
+						on:click={() => {
+							document.location = `hexagonlaunch://${data.place.placeid}[${data.ticket}[${2016}[player`
+						}}
+						variant="minimal"
+						size="lg"
+						class="w-full h-16 mt-4 xl:mt-auto hover:shadow-md hover:shadow-white bg-success flex gap-x-4 rounded-xl"
+					>
+						<Play class="w-full h-10 fill-white" />
+					</Button>
+					<Separator class="mt-2" />
+					<div class="flex flex-row gap-x-4">
+						<h1 class="text-lg font-semibold flex align-middle my-auto gap-x-1 text-yellow-400">
+							<Star class="hover:fill-yellow-400" size={28} /> 0
+						</h1>
+						<div class="flex flex-col w-full px-4">
+							<div class="flex flex-row justify-around w-full">
+								<div class="text-success flex flex-row">
+									<Button
+										variant="minimalcurrent"
+										size="icon"
+										on:click={() => {
+											vote('like')
+										}}
+										disabled={submitting}
+									>
+										<ThumbsUp
+											class="hover:fill-success {data.alreadyVoted.voted === true &&
+											data.alreadyVoted?.voteType === 'like'
+												? 'fill-success'
+												: ''}"
+										/>
+									</Button>
+								</div>
+								<div class="text-destructive flex flex-row">
+									<Button
+										variant="minimalcurrent"
+										size="icon"
+										on:click={() => {
+											vote('dislike')
+										}}
+										disabled={submitting}
+									>
+										<ThumbsDown
+											class="hover:fill-destructive {data.alreadyVoted.voted === true &&
+											data.alreadyVoted?.voteType === 'dislike'
+												? 'fill-destructive'
+												: ''}"
+										/>
+									</Button>
+								</div>
+							</div>
+							<div class="w-full flex flex-col">
 								<div
-									class="h-3 {isNaN(data.likespercentage)
-										? 'bg-muted-foreground/25'
-										: 'bg-success'} rounded-xl"
-									style="width: {data.likespercentage}%;"
-								/>
-							</div>
+									class="w-full h-2 {isNaN(data.likespercentage)
+										? ''
+										: 'bg-destructive'} rounded-xl"
+								>
+									<div
+										class="h-2 {isNaN(data.likespercentage)
+											? 'bg-muted-foreground/25'
+											: 'bg-success'} rounded-xl"
+										style="width: {data.likespercentage}%;"
+									/>
+								</div>
 
-							<div class="flex flex-row justify-between">
-								<h1 class="text-success mx-4">{data.place.associatedgame.likes}</h1>
-								{#if submitting}
-									<Loader2 class="h-6 w-6 animate-spin" />
-								{/if}
+								<div class="flex flex-row justify-between">
+									<h1 class="text-success mx-8">{data.place.associatedgame.likes}</h1>
+									{#if submitting}
+										<Loader2 class="h-6 w-6 animate-spin" />
+									{/if}
 
-								{#if !isNaN(data.likespercentage) && !submitting}
-									<h1 class="">{data.likespercentage}%</h1>
-								{/if}
-								<h1 class="text-destructive mx-4">{data.place.associatedgame.dislikes}</h1>
+									{#if !isNaN(data.likespercentage) && !submitting}
+										<h1 class="">{data.likespercentage}%</h1>
+									{/if}
+									<h1 class="text-destructive mx-8">{data.place.associatedgame.dislikes}</h1>
+								</div>
 							</div>
-						</div>
-						<div class="text-destructive flex flex-row">
-							<Button
-								variant="minimalcurrent"
-								size="icon"
-								on:click={() => {
-									vote('dislike')
-								}}
-								disabled={submitting}
-							>
-								<ThumbsDown
-									class="hover:fill-destructive {data.alreadyVoted.voted === true &&
-									data.alreadyVoted?.voteType === 'dislike'
-										? 'fill-destructive'
-										: ''}"
-								/>
-							</Button>
 						</div>
 					</div>
 				</div>
@@ -217,10 +207,11 @@
 					</Tabs.List>
 					<Tabs.Content value="about">
 						<h1 class="text-2xl font-semibold">Description</h1>
-						<div class="p-4">
+						<div class="p-4 space-y-4">
 							<h1 class="break-words text-xl whitespace-pre-line">
 								{data.place.associatedgame.description}
 							</h1>
+							<Separator class="mt-2" />
 
 							<div class="w-full flex flex-row flex-wrap justify-around text-center">
 								<div>
@@ -248,8 +239,10 @@
 									<p>{data.place.associatedgame.genre}</p>
 								</div>
 							</div>
+							<Separator class="mt-2" />
 						</div>
 					</Tabs.Content>
+					<ReportButton class="justify-end" />
 
 					{#if $page.url.searchParams.get('page') === 'servers'}
 						<Tabs.Content value="servers" class="flex flex-col gap-y-4">

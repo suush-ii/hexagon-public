@@ -1,5 +1,5 @@
 import { relations } from 'drizzle-orm'
-import { bigint, bigserial, pgTable, text, timestamp } from 'drizzle-orm/pg-core'
+import { bigint, integer, bigserial, pgTable, text, timestamp } from 'drizzle-orm/pg-core'
 import { placesTable } from './games'
 import type { assetStates } from '$lib/types'
 
@@ -23,5 +23,6 @@ export const assetRelations = relations(assetTable, ({ one }) => ({
 
 export const assetCacheTable = pgTable('assetcache', {
 	assetid: bigint('assetid', { mode: 'number' }).notNull().primaryKey(),
+	assettypeid: integer('assettypeid').notNull().default(0),
 	filehash: text('filehash')
 })

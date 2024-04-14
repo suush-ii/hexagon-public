@@ -120,6 +120,20 @@
       "when": 1704770452150,
       "tag": "0016_naive_golden_guardian",
       "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "5",
+      "when": 1711070443146,
+      "tag": "0017_lively_steve_rogers",
+      "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "5",
+      "when": 1713038291079,
+      "tag": "0018_lovely_kinsey_walden",
+      "breakpoints": true
     }
   ]
 }

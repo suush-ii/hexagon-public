@@ -15,13 +15,35 @@
 
 	import { pageName } from '$src/stores'
 
+	import { type SuperValidated, type Infer, superForm } from 'sveltekit-superforms'
+	import { zodClient } from 'sveltekit-superforms/adapters'
+	import { Input } from '$src/components/ui/input'
+	import * as Select from '$src/components/ui/select'
+
 	export let data: PageData
 
 	let audio: HTMLAudioElement
 
 	let completeAudio: HTMLAudioElement
 
-	let form = data.form
+	const form = superForm(data.form, {
+		validators: zodClient(formSchema)
+	})
+
+	const { form: formData, enhance, submitting, message } = form
+
+	const genders = {
+		male: 'Male',
+		female: 'Female',
+		nonbinary: 'None'
+	}
+
+	$: selectedGender = $formData.gender
+		? {
+				label: genders[$formData.gender],
+				value: $formData.gender
+			}
+		: undefined
 
 	$: clickerPage = data.clicker
 
@@ -157,15 +179,24 @@
 		rel="stylesheet"
 	/>
 	<style>
-		body{
+		body {
 			background-color: black;
 		}
 	</style>
 </svelte:head>
-		<!-- svelte-ignore a11y-media-has-caption -->
-<video class="pointer-events-none absolute h-full w-full box-border -z-10 opacity-60 top-0 bottom-0 object-cover blur-sm" loop autoplay muted>
-	<source src="/Finalnew-1.webm" class="min-h-full min-w-full w-auto h-auto absolute " type="video/webm">
-  </video>
+<!-- svelte-ignore a11y-media-has-caption -->
+<video
+	class="pointer-events-none absolute h-full w-full box-border -z-10 opacity-60 top-0 bottom-0 object-cover blur-sm"
+	loop
+	autoplay
+	muted
+>
+	<source
+		src="/Finalnew-1.webm"
+		class="min-h-full min-w-full w-auto h-auto absolute"
+		type="video/webm"
+	/>
+</video>
 
 <div class="flex flex-col w-full flex-wrap">
 	<div class="w-full flex p-4">
@@ -178,7 +209,9 @@
 		>
 	</div>
 
-	<div class="flex m-auto supports-backdrop-blur:bg-background/60 border-b bg-background/60 p-4 sm:p-16 shadow-sm rounded-xl">
+	<div
+		class="flex m-auto supports-backdrop-blur:bg-background/60 border-b bg-background/60 p-4 sm:p-16 shadow-sm rounded-xl"
+	>
 		<audio src="/hexabite/3_sndBite1.mp3" bind:this={audio} />
 
 		<audio src="/hexabite/1_sndStart.mp3" bind:this={completeAudio} />
@@ -218,69 +251,86 @@
 					</p>
 				</div>
 
-				<Form.Root
-					method="POST"
-					on:submit={submit}
-					{form}
-					schema={formSchema}
-					let:config
-					let:submitting
-					let:message
-				>
-					<Form.Field {config} name="username">
-						<Form.Item>
+				<form method="POST" use:enhance>
+					<Form.Field {form} name="username">
+						<Form.Control let:attrs>
 							<Form.Label>Username</Form.Label>
-							<Form.Input
-								disabled={submitting}
+							<Input
+								disabled={$submitting}
 								placeholder="(3-20 Characters, no spaces)"
 								icon={UserSquare2}
+								direction="r"
+								{...attrs}
+								bind:value={$formData.username}
 							/>
-							<Form.Validation />
-						</Form.Item>
+						</Form.Control>
+						<Form.FieldErrors />
 					</Form.Field>
 
-					<Form.Field {config} name="password">
-						<Form.Item>
+					<Form.Field {form} name="password">
+						<Form.Control let:attrs>
 							<Form.Label>Password</Form.Label>
-							<Form.Input disabled={submitting} placeholder="(Unique)" type="password" icon={Key} />
-							<Form.Validation />
-						</Form.Item>
+							<Input
+								disabled={$submitting}
+								placeholder="(Unique)"
+								type="password"
+								icon={Key}
+								direction="r"
+								{...attrs}
+								bind:value={$formData.password}
+							/>
+						</Form.Control>
+						<Form.FieldErrors />
 					</Form.Field>
 
-					<Form.Field {config} name="key">
-						<Form.Item>
+					<Form.Field {form} name="key">
+						<Form.Control let:attrs>
 							<Form.Label>Invite Key</Form.Label>
-							<Form.Input disabled={submitting} placeholder="(Unique)" />
-							<Form.Validation />
-						</Form.Item>
+							<Input
+								disabled={$submitting}
+								placeholder="(Unique)"
+								{...attrs}
+								bind:value={$formData.key}
+							/>
+						</Form.Control>
+						<Form.FieldErrors />
 					</Form.Field>
 
-					<Form.Field {config} name="gender">
-						<Form.Item>
+					<Form.Field {form} name="gender">
+						<Form.Control let:attrs>
 							<Form.Label>Gender</Form.Label>
-							<Form.Select disabled={submitting}>
-								<Form.SelectTrigger placeholder="Select" />
-								<Form.SelectContent>
-									<Form.SelectItem value="male">Male</Form.SelectItem>
-									<Form.SelectItem value="female">Female</Form.SelectItem>
-									<Form.SelectItem value="nonbinary">None</Form.SelectItem>
-								</Form.SelectContent>
-							</Form.Select>
-							<Form.Description
-								>You can always change this.
-								{#if message}<Warntext text={message} />{/if}
-							</Form.Description>
-							<Form.Validation />
-						</Form.Item>
+							<Select.Root
+								selected={selectedGender}
+								onSelectedChange={(v) => {
+									v && ($formData.gender = v.value)
+								}}
+								disabled={$submitting}
+							>
+								<Select.Trigger {...attrs}>
+									<Select.Value placeholder="Gender" />
+								</Select.Trigger>
+								<Select.Content>
+									{#each Object.entries(genders) as [value, label]}
+										<Select.Item {value} {label} />
+									{/each}
+								</Select.Content>
+							</Select.Root>
+							<input hidden bind:value={$formData.gender} name={attrs.name} />
+						</Form.Control>
+						<Form.Description
+							>You can always change this.
+							{#if $message}<Warntext text={$message} />{/if}
+						</Form.Description>
+						<Form.FieldErrors />
 					</Form.Field>
 
-					<Form.Button disabled={submitting} class="w-full">
-						{#if submitting}
+					<Form.Button disabled={$submitting} class="w-full">
+						{#if $submitting}
 							<Loader2 class="mr-2 h-4 w-4 animate-spin" />
 						{/if}
-						Sign Up!</Form.Button
-					>
-				</Form.Root>
+						Sign Up!
+					</Form.Button>
+				</form>
 
 				<p class="px-8 text-center text-sm text-muted-foreground">
 					By clicking Sign Up, you agree to our

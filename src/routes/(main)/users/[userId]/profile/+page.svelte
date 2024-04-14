@@ -2,10 +2,12 @@
 	import Avatar from '$src/components/users/avatar.svelte'
 
 	import { page } from '$app/stores'
-	
+
 	import { stateTextMap } from '$lib/utils'
 
 	import * as Avatar2 from '$src/components/ui/avatar'
+
+	import { Separator } from '$src/components/ui/separator'
 
 	import type { PageData } from './$types'
 
@@ -22,29 +24,29 @@
 		<h1 class="font-semibold text-5xl">{data.username}</h1>
 	</div>
 
-	<div class="flex flex-row flex-wrap">
-		<h1 class="text-3xl font-semibold tracking-tight w-1/2">About {data.username}</h1>
-
-		<h1 class="text-3xl font-semibold tracking-tight w-1/2">Active Places</h1>
-	</div>
-
-	<div class="flex flex-row gap-x-4">
-		<div class="w-1/2 flex flex-col gap-y-4">
+	<div class="flex flex-row h-full">
+		<div class="w-1/2 flex flex-col gap-y-4 h-full">
+			<Separator class="w-full" />
+			<h1 class="text-3xl font-semibold tracking-tight w-1/2">About {data.username}</h1>
 			<div
 				class="bg-muted-foreground/5 outline-dashed outline-muted-foreground/20 rounded-xl p-6 gap-y-4 flex flex-col"
 			>
-			<div class="mx-auto flex flex-col">
-			{#if data.status == 'online'}
-				<h1 class="text-lg {textColor} mx-auto">[ Online: Website ]</h1>
-				{:else if data.status == 'offline'}
-				<h1 class="text-lg {textColor} mx-auto">[ Offline ]</h1>
-				{:else if data.status == 'game'}
-				<h1 class="text-lg {textColor} mx-auto hover:underline">[ Online: <a href="/games/1">sdf</a> ]</h1>
-				{:else if data.status == 'studio'}
-				<h1 class="text-lg {textColor} mx-auto">[ Online: Studio ]</h1>
-			{/if}
-			<h1 class="text-lg {textColor} mx-auto hover:underline"><a href={$page.url.toString()}>{$page.url}</a></h1>
-		</div>
+				<div class="mx-auto flex flex-col">
+					{#if data.status == 'online'}
+						<h1 class="text-lg {textColor} mx-auto">[ Online: Website ]</h1>
+					{:else if data.status == 'offline'}
+						<h1 class="text-lg {textColor} mx-auto">[ Offline ]</h1>
+					{:else if data.status == 'game'}
+						<h1 class="text-lg {textColor} mx-auto hover:underline">
+							[ Online: <a href="/games/1">sdf</a> ]
+						</h1>
+					{:else if data.status == 'studio'}
+						<h1 class="text-lg {textColor} mx-auto">[ Online: Studio ]</h1>
+					{/if}
+					<h1 class="text-lg {textColor} mx-auto hover:underline">
+						<a href={$page.url.toString()}>{$page.url}</a>
+					</h1>
+				</div>
 				<!--<Avatar2.Root class="w-80 h-80 mx-auto">
 				<Avatar2.Image
 					src="https://tr.rbxcdn.com/30DAY-Avatar-1AA774E499A132625B5A5CCA287E57BB-Png/352/352/Avatar/Png/noFilter"
@@ -62,6 +64,8 @@
 
 				<p class="mx-auto line-clamp-6 break-words">Hi!</p>
 
+				<Separator class="mt-2" />
+
 				<div class="w-full flex flex-row flex-wrap justify-around text-center">
 					<div>
 						<p class="font-bold text-muted-foreground">Join Date</p>
@@ -73,14 +77,19 @@
 						<p>{data.lastactivetime.toLocaleString('en-US')}</p>
 					</div>
 				</div>
+
+				<Separator class="mt-2" />
 			</div>
 
-			<h1 class="text-3xl font-semibold tracking-tight w-1/2">Hexagon Badges!</h1>
-
+			<Separator class="w-full" />
 			<div />
 		</div>
 
-		<div class="w-1/2 flex flex-col gap-y-4">
+		<Separator orientation="vertical" class="h-full mx-4" />
+
+		<div class="w-1/2 flex flex-col gap-y-4 h-full">
+			<Separator class="w-full" />
+			<h1 class="text-3xl font-semibold tracking-tight w-1/2">Active Places</h1>
 			<div
 				class="h-full bg-muted-foreground/5 outline-dashed outline-muted-foreground/20 rounded-xl"
 			/>
@@ -90,6 +99,8 @@
 			<div
 				class="h-full bg-muted-foreground/5 outline-dashed outline-muted-foreground/20 rounded-xl"
 			/>
+
+			<Separator class="w-full" />
 		</div>
 	</div>
 </div>

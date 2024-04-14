@@ -1,13 +1,11 @@
 import { bigint, bigserial, integer, pgTable, text, timestamp, varchar } from 'drizzle-orm/pg-core'
-import type { userState } from '$lib/types'
-import type { userRole } from '$lib/types'
+import type { userState, userRole, userGenders } from '$lib/types'
 import { relations } from 'drizzle-orm'
 import { keyTable } from './keys'
 import { gamesTable, jobsTable } from './games'
 
 // with timestamps ALWAYS USE WITHTIMEZONE!!!
 
-//export const genderEnum = pgEnum("gender", ["Male", "Female", "Other"]) nvm :skull:
 export const usersTable = pgTable('users', {
 	userid: bigserial('userid', { mode: 'number' }).notNull(),
 	id: varchar('id', { length: 128 }).primaryKey(), // used for lucia serials are unable to be used for some reason
@@ -17,6 +15,7 @@ export const usersTable = pgTable('users', {
 	joindate: timestamp('joindate', { mode: 'date', withTimezone: true }).notNull(),
 	role: text('role').$type<userRole>().notNull(),
 	state: text('state').$type<userState>().notNull().default('offline'),
+	gender: text('gender').$type<userGenders>().notNull().default('nonbinary'),
 	lastactivetime: timestamp('lastactivetime', { mode: 'date', withTimezone: true })
 		.notNull()
 		.defaultNow(),

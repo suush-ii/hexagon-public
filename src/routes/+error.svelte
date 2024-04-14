@@ -18,6 +18,14 @@
 	export let data: LayoutData
 
 	$: loggedIn = data.session ? true : false
+
+	$: admin =
+		data?.session?.role === 'owner' ||
+		data?.session?.role === 'admin' ||
+		data?.session?.role === 'mod' ||
+		data?.session?.role === 'uploader'
+			? true
+			: false
 </script>
 
 <svelte:head>
@@ -26,7 +34,7 @@
 </svelte:head>
 
 <div class="flex flex-col h-screen">
-	<Navbar {loggedIn} userId={data.session?.userid} coins={data.session?.coins} />
+	<Navbar {loggedIn} userId={data.session?.userid} coins={data.session?.coins} {admin} />
 	<div class="m-auto flex">
 		<Card.Root class="w-96 p-4 text-center m-auto">
 			<Card.Header class="flex flex-col gap-y-2">

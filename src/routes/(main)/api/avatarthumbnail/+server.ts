@@ -40,8 +40,7 @@ export const POST: RequestHandler = async ({ request }) => {
 	if (type === 'avatar') {
 		if (!user[0].avatarbody) {
 			// we need to generate it
-			console.log('ltr')
-			
+			console.log('ltr') //TODO: WTF??
 		} else {
 			// it does exist return cdn url!
 			return json({ success: true, message: '', data: { url: user[0].avatarbody } })
@@ -51,7 +50,6 @@ export const POST: RequestHandler = async ({ request }) => {
 	if (type === 'headshot') {
 		if (!user[0].avatarheadshot) {
 			// we need to generate it
-			
 		} else {
 			// it does exist return cdn url!
 			return json({ success: true, message: '', data: { url: user[0].avatarheadshot } })

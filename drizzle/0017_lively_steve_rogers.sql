@@ -1,0 +1,1 @@
+ALTER TABLE "assetcache" ADD COLUMN "assettypeid" integer DEFAULT 0 NOT NULL;

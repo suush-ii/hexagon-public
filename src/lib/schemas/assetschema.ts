@@ -12,9 +12,9 @@ export const formSchema = z.object({
 		.min(0, { message: 'Price must be at least 0!' })
 		.max(999999999, { message: 'The maximum price for this is 999999999!' })
 		.default(0),
-	asset: z.any(),
-	serversize: z.any(), // kind of a hack so typescript doesn't complain we don't actually use this value for anything
-	genre: z.any()
+	asset: z
+		.instanceof(File, { message: 'Please upload a file.' })
+		.refine((f: { size: number }) => f.size / Math.pow(1024, 2) < 10, 'Max 10 MB upload size.')
 })
 
 export type FormSchema = typeof formSchema

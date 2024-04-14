@@ -17,11 +17,13 @@
 	export let coins: number
 	export let signUpButton = false
 	export let userId = 0
+	export let admin = false
 
 	interface pagePrimitive extends HTMLAnchorAttributes {
 		pageUrl: string
 		friendlyName: string
 		Icon?: Component
+		protected?: boolean
 	}
 
 	let pages: {
@@ -38,7 +40,7 @@
 			{ pageUrl: `/users/${userId}/profile`, friendlyName: 'Profile' },
 			{ pageUrl: '/friends/requests', friendlyName: 'Friends' },
 			{ pageUrl: '/avatar', friendlyName: 'Customize' },
-			{ pageUrl: '/admin', friendlyName: 'Admin' }
+			{ pageUrl: '/admin', friendlyName: 'Admin', protected: true }
 		]
 	}
 </script>
@@ -129,12 +131,14 @@
 			<div class="container flex h-10 items-center">
 				<nav class="flex items-center space-x-4 lg:space-x-6">
 					{#each pages.authenticated as navPage}
-						<a
-							href={navPage.pageUrl}
-							class="text-xs font-medium text-muted-foreground transition-colors hover:text-primary"
-						>
-							{navPage.friendlyName}
-						</a>
+						{#if (navPage?.protected === true && admin === true) || !navPage?.protected}
+							<a
+								href={navPage.pageUrl}
+								class="text-xs font-medium text-muted-foreground transition-colors hover:text-primary"
+							>
+								{navPage.friendlyName}
+							</a>
+						{/if}
 					{/each}
 				</nav>
 			</div>

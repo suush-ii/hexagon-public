@@ -4,19 +4,20 @@ import { message, superValidate } from 'sveltekit-superforms/server'
 import { formSchema } from '$src/lib/schemas/loginschema'
 import { auth } from '$src/lib/server/lucia'
 import { LuciaError } from 'lucia'
+import { zod } from 'sveltekit-superforms/adapters'
 
 export const load: PageServerLoad = async (event) => {
 	const session = await event.locals.auth.validate()
-	if (session) redirect(302, '/home');
+	if (session) redirect(302, '/home')
 
 	return {
-		form: await superValidate(formSchema)
+		form: await superValidate(zod(formSchema))
 	}
 }
 
 export const actions: Actions = {
 	default: async (event) => {
-		const form = await superValidate(event, formSchema)
+		const form = await superValidate(event, zod(formSchema))
 		if (!form.valid) {
 			return fail(400, {
 				form
@@ -46,6 +47,6 @@ export const actions: Actions = {
 			return message(form, 'Unknown error!') // wtf happened!!
 		}
 
-		redirect(302, '/home'); // success!
+		redirect(302, '/home') // success!
 	}
 }

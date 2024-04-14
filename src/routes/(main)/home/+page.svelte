@@ -9,6 +9,7 @@
 	pageName.set('Home')
 
 	import EmptyCard from '$src/components/emptyCard.svelte'
+	import SeeAll from '$src/components/seeAll.svelte'
 
 	let friends = [1] // TODO: Fetch real friends.
 </script>
@@ -22,7 +23,7 @@
 		<div class="flex flex-row justify-between px-4">
 			<h1 class="text-3xl">Friends ({friends.length})</h1>
 
-			<a href="/friends"><h1 class="text-xl hover-underline">See All</h1></a>
+			<SeeAll href="/friends" />
 		</div>
 
 		<div

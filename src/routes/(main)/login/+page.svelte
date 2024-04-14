@@ -13,9 +13,17 @@
 	import { Button } from '$src/components/ui/button'
 	pageName.set('Login')
 
+	import { type SuperValidated, type Infer, superForm } from 'sveltekit-superforms'
+	import { zodClient } from 'sveltekit-superforms/adapters'
+	import { Input } from '$src/components/ui/input'
+
 	export let data: PageData
 
-	let form = data.form
+	const form = superForm(data.form, {
+		validators: zodClient(formSchema)
+	})
+
+	const { form: formData, enhance, submitting, message } = form
 </script>
 
 <svelte:head>
@@ -38,36 +46,50 @@
 			<h1 class="text-2xl font-semibold tracking-tight">Login to Hexagon</h1>
 		</div>
 
-		<Form.Root method="POST" {form} schema={formSchema} let:config let:submitting let:message>
-			<Form.Field {config} name="username">
-				<Form.Item>
+		<form method="POST" use:enhance>
+			<Form.Field {form} name="username">
+				<Form.Control let:attrs>
 					<Form.Label>Username</Form.Label>
-					<Form.Input disabled={submitting} placeholder="(Username)" icon={UserSquare2} />
-					<Form.Validation />
-				</Form.Item>
+					<Input
+						disabled={$submitting}
+						placeholder="(Username)"
+						direction="r"
+						icon={UserSquare2}
+						{...attrs}
+						bind:value={$formData.username}
+					/>
+				</Form.Control>
+				<Form.FieldErrors />
 			</Form.Field>
-
-			<Form.Field {config} name="password">
-				<Form.Item>
+			<Form.Field {form} name="password">
+				<Form.Control let:attrs>
 					<Form.Label>Password</Form.Label>
-					<Form.Input disabled={submitting} placeholder="(Password)" type="password" icon={Key} />
-					<Form.Validation />
+					<Input
+						disabled={$submitting}
+						placeholder="(Password)"
+						type="password"
+						direction="r"
+						icon={Key}
+						{...attrs}
+						bind:value={$formData.password}
+					/>
 					<Form.Description>
-						{#if message}<Warntext text={message} />{/if}
+						{#if $message}<Warntext text={$message} />{/if}
 					</Form.Description>
-				</Form.Item>
+					<Form.FieldErrors />
+				</Form.Control>
 			</Form.Field>
 
 			<div class="flex flex-row gap-x-2">
-				<Form.Button disabled={submitting} class="w-full">
-					{#if submitting}
+				<Form.Button disabled={$submitting} class="w-full">
+					{#if $submitting}
 						<Loader2 class="mr-2 h-4 w-4 animate-spin" />
 					{/if}
 					Log in</Form.Button
 				>
 				<Button href="/" class="block sm:hidden text-center" variant="outline">Sign Up</Button>
 			</div>
-		</Form.Root>
+		</form>
 
 		<p class="px-8 text-center text-sm text-muted-foreground">
 			By clicking Log In, you agree to our

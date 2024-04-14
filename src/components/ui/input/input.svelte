@@ -3,6 +3,7 @@
 	import { cn } from "$lib/utils";
 	import type { InputEvents } from ".";
 	import type { Component } from "$lib/types";
+	import { defaultClass } from "."
 
 	interface _HTMLInputAttributes extends HTMLInputAttributes {
 		icon?: Component,
@@ -17,9 +18,9 @@
 
 	if (icon){
 		if (direction === "l"){
-			padding = "pl-10 pr-3"
+			padding = "pl-12 pr-3"
 		}else{
-			padding = "pr-10 pl-3"
+			padding = "pr-12 pl-3"
 		}
 	} else {
 		padding = "px-3"
@@ -39,7 +40,8 @@
 <div class="flex h-10 w-full flex-row relative ">
 <input
 	class={cn(
-		"flex h-10 w-full rounded-xl border border-input bg-transparent py-2 text-sm ring-offset-background file:border-0  file:bg-transparent file:text-foreground file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+		"data-invalidInput:outline-dashed data-invalidInput:outline-2 data-invalidInput:outline-destructive/70 focus:data-invalidInput:outline-destructive peer",
+		defaultClass,
 		className,
 		padding
 	)}
@@ -60,9 +62,11 @@
 />
 {#if icon}
 {#if direction === "r"}
-<svelte:component class="absolute mt-2 right-2 pl-2 w-8 pointer-events-none" this={icon} />
+<div class="h-6 bg-transparent mt-2 border-muted-foreground/20 peer-data-invalidInput:border-destructive/70 peer-focus:peer-data-invalidInput:border-destructive border-dashed border-x absolute right-10 pointer-events-none"/> 
+<svelte:component class="absolute mt-2 right-2 w-8 pointer-events-none peer-data-invalidInput:stroke-destructive/70 peer-focus:peer-data-invalidInput:stroke-destructive" this={icon} />
 {:else}
-<svelte:component class="absolute mt-2 left-2 pr-2 w-8 pointer-events-none" this={icon} />
+<div class="h-6 bg-transparent mt-2 border-muted-foreground/20 peer-data-invalidInput:border-destructive/70 peer-focus:peer-data-invalidInput:border-destructive border-dashed border-x absolute left-10 pointer-events-none"/> 
+<svelte:component class="absolute mt-2 left-2 w-8 pointer-events-none peer-data-invalidInput:stroke-destructive/70 peer-focus:peer-data-invalidInput:stroke-destructive" this={icon} />
 {/if}
 
 {/if}

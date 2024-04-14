@@ -39,7 +39,7 @@ try {
 const configPrepared = db.select().from(configTable).limit(1).prepare('configGrab')
 
 const protectedRoutes = ['/home', '/catalog', '/develop', '/games']
-const adminProtectedRoutes = ['/temp/keygen']
+const adminProtectedRoutes = ['/admin']
 
 await migrate(db, { migrationsFolder: './drizzle' })
 
@@ -55,7 +55,7 @@ export const handle: Handle = sequence(rccAuth, async ({ event, resolve }) => {
 
 	if (config?.[0]?.maintenanceEnabled === true) {
 		if (event.url.pathname != '/maintenance') {
-			redirect(302, '/maintenance');
+			redirect(302, '/maintenance')
 		}
 	}
 
@@ -86,7 +86,7 @@ export const handle: Handle = sequence(rccAuth, async ({ event, resolve }) => {
 		) === true
 	) {
 		if (!session) {
-			redirect(302, '/login');
+			redirect(302, '/login')
 		}
 	}
 
@@ -97,7 +97,7 @@ export const handle: Handle = sequence(rccAuth, async ({ event, resolve }) => {
 		) === true
 	) {
 		if (!session) {
-			redirect(302, '/login');
+			redirect(302, '/login')
 		}
 
 		if (
@@ -105,7 +105,7 @@ export const handle: Handle = sequence(rccAuth, async ({ event, resolve }) => {
 			session.user.role !== 'admin' &&
 			session.user.role !== 'mod'
 		) {
-			redirect(302, '/login');
+			redirect(302, '/login')
 		}
 	}
 

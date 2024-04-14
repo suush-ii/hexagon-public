@@ -20,7 +20,8 @@ export const auth = lucia({
 			coins: data.coins,
 			role: data.role,
 			joindate: data.joindate,
-			lastactivetime: data.lastactivetime
+			lastactivetime: data.lastactivetime,
+			gender: data.gender
 		}
 	}
 })
