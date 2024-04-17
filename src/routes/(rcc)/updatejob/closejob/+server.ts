@@ -1,4 +1,4 @@
-import { json, type RequestHandler } from '@sveltejs/kit'
+import { error, json, type RequestHandler } from '@sveltejs/kit'
 import { db } from '$lib/server/db'
 import { jobsTable } from '$lib/server/schema'
 import { and, eq } from 'drizzle-orm'
@@ -15,7 +15,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 	})
 
 	if (!instance) {
-		return json({
+		return error(400, {
 			success: false,
 			message: 'Invalid Jobid',
 			data: {}

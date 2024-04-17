@@ -6,6 +6,8 @@ import { assetTable } from '$lib/server/schema/assets'
 import { eq, and } from 'drizzle-orm'
 import { error } from '@sveltejs/kit'
 import { s3Url } from '$src/stores'
+import pending from '$lib/icons/iconpending.png'
+import audio from '$lib/icons/audio.png'
 
 export const load: PageServerLoad = async ({ params, parent }) => {
 	const result = await _assetSchema.safeParseAsync(params.item)
@@ -43,7 +45,12 @@ export const load: PageServerLoad = async ({ params, parent }) => {
 		}))
 	}
 
-	if (params.item === 'audio' || params.item === 'decals') {
+	if (
+		params.item === 'audio' ||
+		params.item === 'decals' ||
+		params.item === 'shirts' ||
+		params.item === 'pants'
+	) {
 		// default asset
 		const assetcreations = await db
 			.select()
@@ -56,7 +63,14 @@ export const load: PageServerLoad = async ({ params, parent }) => {
 		creations = assetcreations.map((asset) => ({
 			assetName: asset.assetname,
 			assetid: asset.assetid,
-			iconUrl: asset.assetType === "decals" && asset.moderationstate === "approved" ? `https://${s3Url}/${asset.assetType}/` + asset?.simpleasseturl : null, //TODO: make an audio default icon
+			iconUrl:
+				asset.assetType === 'decals' && asset.moderationstate === 'approved'
+					? `https://${s3Url}/${asset.assetType}/` + asset?.simpleasseturl
+					: asset.moderationstate === 'pending'
+						? pending
+						: asset.assetType === 'audio' && asset.moderationstate === 'approved'
+							? audio
+							: null, //TODO: make an audio default icon
 			updated: asset.created,
 			assetType: params.item,
 			totalStat: asset.sales,

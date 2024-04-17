@@ -8,14 +8,14 @@
 
 	export let itemId: number
 
-	export let cost: number
+	export let cost: number | null
 </script>
 
-<a href="/catalog/{itemId}/{slugify(itemName)}"
-	><div
-		class="flex flex-col w-32 group hover:outline-dashed outline-muted-foreground/20 outline-offset-8"
-	>
-		<Avatar.Root class="w-32 h-32 rounded-xl">
+<div
+	class="flex flex-col w-32 group hover:outline-dashed outline-muted-foreground/20 outline-offset-8"
+>
+	<a href="/catalog/{itemId}/{slugify(itemName)}">
+		<Avatar.Root class="w-32 h-32 rounded-xl aspect-square">
 			<Avatar.Image src={'/Images/iconplaceholder.png'} alt={itemName} loading="lazy" />
 			<Avatar.Fallback />
 		</Avatar.Root>
@@ -23,13 +23,15 @@
 		<h1 class="tracking-tighter truncate text-sm flex flex-row">
 			<MoonStar class="h-5" />{cost}
 		</h1>
-		<div class="hidden group-hover:flex text-xs pt-2 flex-col gap-y-1">
-			<h5>
-				Creator: <a href="/users/1/profile">Sushi</a>
-			</h5>
-			<h5>Updated: 2 days ago</h5>
-			<h5>Sales: 0</h5>
-			<h5>Favorited: 1 time</h5>
-		</div>
-	</div></a
->
+	</a>
+	<div class="invisible group-hover:visible flex text-xs pt-2 flex-col gap-y-1">
+		<h5 class="text-muted-foreground">
+			Creator: <a class="text-foreground hover:underline" href="/users/1/profile">Sushi</a>
+		</h5>
+		<h5 class="text-muted-foreground">
+			Updated: <span class="text-foreground">2 days ago</span>
+		</h5>
+		<h5 class="text-muted-foreground">Sales: <span class="text-foreground">0</span></h5>
+		<h5 class="text-muted-foreground">Favorited: <span class="text-foreground">1 time</span></h5>
+	</div>
+</div>

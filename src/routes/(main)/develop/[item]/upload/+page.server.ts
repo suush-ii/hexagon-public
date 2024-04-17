@@ -19,6 +19,8 @@ import { db } from '$lib/server/db'
 import { assetTable } from '$lib/server/schema/assets'
 import { gamesTable, placesTable } from '$lib/server/schema/games'
 import { zod } from 'sveltekit-superforms/adapters'
+import { eq } from 'drizzle-orm'
+import type { assetStates } from '$lib/types'
 
 const S3 = new S3Client({
 	region: 'auto',
@@ -59,15 +61,32 @@ async function uploadAsset(
 
 		const fileName = Buffer.from(createHash('sha512').update(fileBuffer).digest('hex')).toString()
 
+		const alreadyModerated = await db
+			.select({ moderationState: assetTable.moderationstate })
+			.from(assetTable)
+			.where(eq(assetTable.simpleasseturl, fileName))
+
+		let moderationState: assetStates = 'pending'
+
+		if (alreadyModerated.length > 0) {
+			moderationState = alreadyModerated[0].moderationState // auto deny or approve the same hashes
+		}
+
 		if (mimeTypes.some((e) => e === file.type) === false) {
 			return fail(400, {
 				form
 			})
 		}
 
+		let Key = item
+
+		if (Key === 'shirts' || Key === 'pants') {
+			Key = 'images'
+		}
+
 		const command = new PutObjectCommand({
 			Bucket: s3BucketName,
-			Key: item + '/' + fileName,
+			Key: Key + '/' + fileName,
 			Body: fileBuffer,
 			ContentType: file.type
 		})
@@ -120,9 +139,45 @@ async function uploadAsset(
 				assetType: item,
 				creatoruserid: userid,
 				simpleasseturl: fileName,
-				moderationstate: 'pending'
+				moderationstate: moderationState,
+				price: form.data.price,
+				description: form.data.description
 			})
 		}
+
+		if (item === 'shirts' || item === 'pants') {
+			await db.transaction(async (tx) => {
+				try {
+					let [imageResponse] = await tx
+						.insert(assetTable)
+						.values({
+							assetname: form.data.name,
+							assetType: 'images',
+							creatoruserid: userid,
+							simpleasseturl: fileName,
+							moderationstate: moderationState
+						})
+						.returning({ assetid: assetTable.assetid })
+
+					await tx.insert(assetTable).values({
+						assetname: form.data.name,
+						assetType: item,
+						creatoruserid: userid,
+						moderationstate: moderationState,
+						associatedimageid: imageResponse.assetid,
+						price: form.data.price,
+						description: form.data.description
+					})
+				} catch {
+					tx.rollback()
+					return fail(500, {
+						form
+					})
+				}
+			})
+		}
+
+		// TODO: shirts and pantssss
 	} catch (err) {
 		console.log(err)
 		return fail(500, {

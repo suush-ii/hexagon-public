@@ -72,7 +72,7 @@
 				{...attrs}
 				disabled={$submitting}
 				type="number"
-				min={0}
+				min={5}
 				max={999999999}
 				bind:value={$formData.price}
 			/>

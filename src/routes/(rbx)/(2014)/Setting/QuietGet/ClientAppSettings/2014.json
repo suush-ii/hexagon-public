@@ -578,5 +578,6 @@
 	"FFlagFastLPSolver": "True",
 	"FFlagKKTChecks": "False",
 	"DFFlagUseApiProxyThrottling": "True",
-	"FFlagNewLoadingScreen": "True"
+	"FFlagNewLoadingScreen": "True",
+	"FFlagDebugLocalRccServerConnection": "True"
 }

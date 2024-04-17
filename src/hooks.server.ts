@@ -39,7 +39,23 @@ try {
 const configPrepared = db.select().from(configTable).limit(1).prepare('configGrab')
 
 const protectedRoutes = ['/home', '/catalog', '/develop', '/games']
-const adminProtectedRoutes = ['/admin']
+const adminProtectedRoutes = ['/admin', '/api/admin']
+
+const permissionLevels = [
+	{ name: 'owner', level: 1 },
+	{ name: 'admin', level: 2 },
+	{ name: 'mod', level: 3 },
+	{ name: 'uploader', level: 4 },
+	{ name: 'normal', level: 5 }
+]
+
+const adminPanelPermissions = [
+	{ path: '/admin/sitealert', requiredLevel: 1 },
+	{ path: '/admin/configuration', requiredLevel: 1 },
+	{ path: '/admin/users', requiredLevel: 3 },
+	{ path: '/admin/catalog', requiredLevel: 4 },
+	{ path: '/admin/logs', requiredLevel: 4 }
+]
 
 await migrate(db, { migrationsFolder: './drizzle' })
 
@@ -103,9 +119,25 @@ export const handle: Handle = sequence(rccAuth, async ({ event, resolve }) => {
 		if (
 			session.user.role !== 'owner' &&
 			session.user.role !== 'admin' &&
-			session.user.role !== 'mod'
+			session.user.role !== 'mod' &&
+			session.user.role !== 'uploader'
 		) {
 			redirect(302, '/login')
+		} else {
+			const permissionRequired = adminPanelPermissions.find(
+				(permissionRequired) =>
+					event.url.pathname.toLowerCase().startsWith(permissionRequired.path.toLowerCase()) ===
+					true
+			)
+
+			const currentPermissionLevel =
+				permissionLevels.find((level) => level.name === session.user.role)?.level ?? 0
+
+			if (permissionRequired) {
+				if (currentPermissionLevel > permissionRequired.requiredLevel) {
+					redirect(302, '/admin?error=permission')
+				}
+			}
 		}
 	}
 

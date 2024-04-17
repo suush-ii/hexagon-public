@@ -4,9 +4,11 @@ import { db } from '$lib/server/db'
 import { assetTable, assetCacheTable } from '$lib/server/schema/assets'
 import { eq } from 'drizzle-orm'
 import { s3Url } from '$src/stores'
-import { CLIENT_PRIVATE_KEY, RCC_ACCESS_KEY } from '$env/static/private'
+import { CLIENT_PRIVATE_KEY, RCC_ACCESS_KEY, BASE_URL } from '$env/static/private'
 //import parse from './meshconvert/index'
 import { createSign } from 'node:crypto'
+import pantsTemplate from './templates/pantsTemplate.xml?raw'
+import shirtTemplate from './templates/shirtTemplate.xml?raw'
 export const trailingSlash = 'ignore'
 let luas = formatPath(
 	import.meta.glob(['./common/*.lua', './common/2014L/*.lua'], {
@@ -93,7 +95,9 @@ export const GET: RequestHandler = async ({ url, request }) => {
 		where: eq(assetTable.assetid, assetId),
 		columns: {
 			assetType: true,
-			simpleasseturl: true
+			simpleasseturl: true,
+			moderationstate: true,
+			associatedimageid: true
 		},
 		with: {
 			place: {
@@ -104,8 +108,38 @@ export const GET: RequestHandler = async ({ url, request }) => {
 		}
 	})
 
-	if (existingAsset?.assetType === 'audio' || existingAsset?.assetType === 'decals') {
+	if (existingAsset && existingAsset?.moderationstate !== 'approved') {
+		return error(400, {
+			success: false,
+			message: 'This asset is not approved.',
+			data: {}
+		})
+	}
+
+	if (
+		existingAsset?.assetType === 'audio' ||
+		existingAsset?.assetType === 'decals' ||
+		existingAsset?.assetType === 'images'
+	) {
 		redirect(302, `https://${s3Url}/${existingAsset.assetType}/` + existingAsset?.simpleasseturl)
+	}
+
+	if (existingAsset?.assetType === 'shirts') {
+		return text(
+			shirtTemplate.replace(
+				'{1}',
+				'http://' + BASE_URL + '/asset?id=' + existingAsset.associatedimageid
+			)
+		)
+	}
+
+	if (existingAsset?.assetType === 'pants') {
+		return text(
+			pantsTemplate.replace(
+				'{1}',
+				'http://' + BASE_URL + '/asset?id=' + existingAsset.associatedimageid
+			)
+		)
 	}
 
 	if (existingAsset?.assetType === 'games') {
@@ -113,7 +147,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
 		const accessKey = url.searchParams.get('accessKey')
 
 		if (!accessKey || RCC_ACCESS_KEY != accessKey) {
-			return json({
+			return error(400, {
 				success: false,
 				message: "You don't have permission to access this asset.",
 				data: {}
@@ -122,7 +156,6 @@ export const GET: RequestHandler = async ({ url, request }) => {
 
 		redirect(302, `https://${s3Url}/${existingAsset?.assetType}/` + existingAsset?.place.placeurl)
 	}
-	// TODO: setup moderation steps for assets
 
 	const cachedAsset = await db
 		.select({ filehash: assetCacheTable.filehash, assettypeid: assetCacheTable.assettypeid })

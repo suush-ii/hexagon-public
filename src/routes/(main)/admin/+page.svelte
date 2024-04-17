@@ -7,6 +7,10 @@
 
 	import type { PageData } from './$types'
 
+	import { page } from '$app/stores'
+
+	$: error = $page.url.searchParams.get('error')
+
 	export let data: PageData
 </script>
 
@@ -15,5 +19,9 @@
 </div>
 
 <div class="p-8 flex flex-col space-y-4">
-	<h1 class="text-xl">You only have access to what you need</h1>
+	<h1 class="text-xl">We empty as HELL</h1>
+
+	{#if error === 'permission'}
+		<h1 class="text-xl">Sorry u don't have access to that :/</h1>
+	{/if}
 </div>

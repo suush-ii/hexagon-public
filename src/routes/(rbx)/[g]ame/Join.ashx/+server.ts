@@ -1,4 +1,4 @@
-import { json, text } from '@sveltejs/kit'
+import { json, text, error } from '@sveltejs/kit'
 import type { RequestHandler } from './$types'
 import { jobsTable, placesTable } from '$lib/server/schema'
 import { db } from '$lib/server/db'
@@ -21,7 +21,7 @@ export const fallback: RequestHandler = async ({ url, locals }) => {
 
 	if (!result.success) {
 		const errors = result.error.issues.map((issue) => issue.message) // get us only the error msgs
-		throw json({ success: false, message: 'Malformed Job.', data: { errors } })
+		return error(400, { success: false, message: 'Malformed Job.', data: { errors } })
 	}
 
 	let session
@@ -32,7 +32,7 @@ export const fallback: RequestHandler = async ({ url, locals }) => {
 		if (sessionVal) {
 			session = sessionVal.user
 		} else {
-			return json({
+			return error(403, {
 				success: false,
 				message: 'Invalid session.',
 				data: {}
@@ -41,7 +41,7 @@ export const fallback: RequestHandler = async ({ url, locals }) => {
 	} catch (e) {
 		if (e instanceof LuciaError && e.message === `AUTH_INVALID_SESSION_ID`) {
 			// invalid session
-			return json({
+			return error(403, {
 				success: false,
 				message: 'Invalid session.',
 				data: {}
@@ -52,7 +52,7 @@ export const fallback: RequestHandler = async ({ url, locals }) => {
 	let enabled = locals.config[0].gamesEnabled
 
 	if (!enabled) {
-		return json({
+		return error(403, {
 			success: false,
 			message: 'Games are disabled.',
 			data: {}
@@ -60,7 +60,7 @@ export const fallback: RequestHandler = async ({ url, locals }) => {
 	}
 
 	if (!jobid) {
-		return json({
+		return error(400, {
 			success: false,
 			message: 'Missing parameters.',
 			data: {}

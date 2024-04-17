@@ -38,6 +38,7 @@ export const actions: Actions = {
 				joindate: usersTable.joindate
 			})
 			.from(usersTable)
+			.limit(10)
 			.where(ilike(usersTable.username, `%${username}%`))
 
 		return {
@@ -63,6 +64,7 @@ export const actions: Actions = {
 				joindate: usersTable.joindate
 			})
 			.from(usersTable)
+			.limit(10)
 			.where(eq(usersTable.userid, userid))
 
 		return {

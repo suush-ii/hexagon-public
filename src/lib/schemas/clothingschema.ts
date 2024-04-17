@@ -11,7 +11,8 @@ export const formSchema = z.object({
 		.int()
 		.positive({ message: 'Price must be a positive number!' })
 		.min(5, { message: 'Price must be at least 5!' })
-		.max(999999999, { message: 'The maximum price for this is 999999999!' }),
+		.max(999999999, { message: 'The maximum price for this is 999999999!' })
+		.default(5),
 	asset: shape.asset
 })
 

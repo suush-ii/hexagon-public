@@ -1,0 +1,1 @@
+ALTER TABLE "assets" ADD COLUMN "updated" timestamp with time zone DEFAULT now() NOT NULL;

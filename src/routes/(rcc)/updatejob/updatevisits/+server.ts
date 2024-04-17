@@ -1,4 +1,4 @@
-import { json, type RequestHandler } from '@sveltejs/kit'
+import { error, json, type RequestHandler } from '@sveltejs/kit'
 import { db } from '$lib/server/db'
 import { gamesTable, jobsTable } from '$lib/server/schema'
 import { and, eq } from 'drizzle-orm'
@@ -18,7 +18,7 @@ export const POST: RequestHandler = async ({ request }) => {
 	})
 
 	if (!instance) {
-		return json({
+		return error(404, {
 			success: false,
 			message: 'Job not found',
 			data: {}

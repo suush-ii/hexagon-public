@@ -1,11 +1,70 @@
 <script lang="ts">
 	import SidePanel from '$src/components/admin/sidepanel.svelte'
+	import { invalidate } from '$app/navigation'
+	import { Button } from '$src/components/ui/button'
+
+	import QueueCard from '$src/components/admin/queuecard.svelte'
+
+	import { pageName } from '$src/stores'
+
+	pageName.set('Admin')
 
 	import type { PageData } from './$types'
 
 	export let data: PageData
+
+	async function submitAsssets() {
+		const assetsToSend = data.assets
+			.filter((asset) => asset.moderationState !== 'pending')
+			.map((asset) => ({
+				assetId: asset.assetId,
+				moderationState: asset.moderationState
+			}))
+
+		const response = await fetch('/api/admin/approveAssets', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(assetsToSend)
+		})
+
+		invalidate('app:assetqueue')
+	}
 </script>
 
-<div class="p-4 flex flex-col gap-y-4">
-	<SidePanel role={data.session.role} />
+<svelte:window
+	on:keyup={(event) => {
+		if (event.key === 'Enter') {
+			submitAsssets()
+		}
+	}}
+/>
+
+<div class="w-full flex flex-row">
+	<div class="p-4 flex-shrink-0">
+		<SidePanel role={data.session.role} />
+	</div>
+
+	<div class="p-8 flex flex-col space-y-4 grow">
+		<h1 class="text-xl">Queue: {data.assetCount}</h1>
+		<h1 class="text-xl">You can press enter instead of submit</h1>
+
+		<div class="flex flex-row">
+			<div class="flex flex-row flex-wrap grow gap-x-8">
+				{#each data.assets as asset}
+					<QueueCard
+						bind:moderationState={asset.moderationState}
+						assetType={asset.assetType}
+						assetId={asset.assetId}
+						assetName={asset.assetName}
+						assetUrl={asset.assetUrl}
+						creatorUserId={asset.creatorUserId}
+					/>
+				{/each}
+			</div>
+
+			<Button on:click={submitAsssets} variant="outline" class="grow max-w-60">Submit</Button>
+		</div>
+	</div>
 </div>

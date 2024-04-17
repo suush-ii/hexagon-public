@@ -1,4 +1,4 @@
-import { json, type RequestHandler } from '@sveltejs/kit'
+import { error, json, type RequestHandler } from '@sveltejs/kit'
 import { db } from '$lib/server/db'
 import { gamesTable, jobsTable } from '$lib/server/schema'
 import { eq } from 'drizzle-orm'
@@ -15,7 +15,7 @@ export const POST: RequestHandler = async ({ request }) => {
 	})
 
 	if (!instance) {
-		return json({
+		return error(404, {
 			success: false,
 			message: 'Job not found',
 			data: {}
@@ -42,14 +42,13 @@ export const POST: RequestHandler = async ({ request }) => {
 			instance?.players?.splice(index, 1) // 2nd parameter means remove one item only
 		}
 
-		if (active > 0){
+		if (active > 0) {
 			active -= 1
 		}
 
-		if (playerCountUniverse > 0){
+		if (playerCountUniverse > 0) {
 			playerCountUniverse -= 1
 		}
-
 	}
 
 	await db

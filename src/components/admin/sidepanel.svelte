@@ -56,7 +56,7 @@
 	</h1>
 
 	<ul class="list-disc list-inside relative text-xl overflow-y-auto">
-		<li class="path">Admin Panel</li>
+		<li class="path"><a href="/admin">Admin Panel</a></li>
 
 		<li class="path2 ml-4 relative"><a href="/admin/configuration">Configuration</a></li>
 

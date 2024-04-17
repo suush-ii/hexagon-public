@@ -4,7 +4,7 @@ export const formSchema = z.object({
 	name: z
 		.string({ required_error: 'Name required.' })
 		.min(1, { message: 'Name required.' })
-		.max(20, { message: "Name can't be over 20 characters!" }),
+		.max(50, { message: "Name can't be over 50 characters!" }),
 	description: z.string().max(1000, { message: "Description can't be over 1000 characters!" }),
 	price: z.coerce
 		.number()

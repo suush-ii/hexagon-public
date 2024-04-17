@@ -10,78 +10,29 @@
 	import { Search } from 'lucide-svelte'
 	import CatalogCard from '$src/components/catalog/catalogCard.svelte'
 
+	import { categories } from './'
+
 	import { goto } from '$app/navigation'
 
 	import { page } from '$app/stores'
+
+	import type { PageData } from './$types'
+
+	export let data: PageData
+
+	console.log(data)
 
 	pageName.set('Catalog')
 
 	let searchQuery = $page.url.searchParams.get('search')
 
-	const categories = [
-		{ value: 'all', label: 'All Categories' },
-		{
-			value: 'featured',
-			label: 'Featured',
-			types: [
-				{ value: 'featured', label: 'All Featured Items' },
-				{ value: 'featuredhats', label: 'Featured Hats' },
-				{ value: 'featuredgear', label: 'Featured Gear' },
-				{ value: 'featuredfaces', label: 'Featured Faces' },
-				{ value: 'featuredpackages', label: 'Featured Packages' }
-			]
-		},
-		{
-			value: 'collectibles',
-			label: 'Collectibles',
-			types: [
-				{ value: 'collectibles', label: 'All Collectibles' },
-				{ value: 'collectibleface', label: 'Collectible Faces' },
-				{ value: 'collectiblehats', label: 'Collectibles Hats' },
-				{ value: 'collectiblegear', label: 'Collectibles Gear' }
-			]
-		},
-		{
-			value: 'clothing',
-			label: 'Clothing',
-			types: [
-				{ value: 'clothing', label: 'All Clothing' },
-				{ value: 'hats', label: 'Hats' },
-				{ value: 'shirts', label: 'Shirts' },
-				{ value: 'tshirts', label: 'T-Shirts' },
-				{ value: 'pants', label: 'Pants' },
-				{ value: 'packages', label: 'Packages' }
-			]
-		},
-		{
-			value: 'bodyparts',
-			label: 'Body Parts',
-			types: [
-				{ value: 'bodyparts', label: 'All Body Parts' },
-				{ value: 'heads', label: 'Heads' },
-				{ value: 'faces', label: 'Faces' },
-				{ value: 'packages', label: 'Packages' }
-			]
-		},
-		{
-			value: 'gear',
-			label: 'Gear',
-			types: [
-				{ value: 'gear', label: 'All Gear' },
-				{ value: 'meleeweapon', label: 'Melee Weapon' },
-				{ value: 'rangedweapon', label: 'Ranged Weapon' },
-				{ value: 'explosive', label: 'Explosive' },
-				{ value: 'navigationenhancer', label: 'Navigation Enhancer' },
-				{ value: 'musicalinstrument', label: 'Musical Instrument' },
-				{ value: 'socialitem', label: 'Social Item' },
-				{ value: 'buildingtool', label: 'Building Tool' },
-				{ value: 'personaltransport', label: 'Personal Transport' }
-			]
-		}
-	]
-
 	let selected =
-		categories.find((o) => o.value === $page.url.searchParams.get('category')) ?? categories[0]
+		categories.find((o) => o.value === $page.url.searchParams.get('category')) ??
+		categories
+			.map((category) => category.types)
+			.flat()
+			.find((product) => product?.value === $page.url.searchParams.get('category')) ??
+		categories[0]
 
 	function search() {
 		let query = new URLSearchParams($page.url.searchParams.toString())
@@ -216,10 +167,12 @@
 
 		<div class="flex flex-col gap-y-4 w-full">
 			<h1 class="text-4xl leading-none tracking-tight">Featured Items on Hexagon</h1>
-			<div class="flex flex-row flex-wrap gap-4">
-				{#each { length: 1 } as a}
-					<CatalogCard itemName={'buh'} cost={200} itemId={1} />
-				{/each}
+			<div class="flex flex-row flex-wrap gap-8">
+				{#if data.items}
+					{#each data.items as item}
+						<CatalogCard itemName={item.itemName} cost={item.itemPrice} itemId={item.itemId} />
+					{/each}
+				{/if}
 			</div>
 		</div>
 	</div>
