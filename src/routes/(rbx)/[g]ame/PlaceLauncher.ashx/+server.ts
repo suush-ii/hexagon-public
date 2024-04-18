@@ -125,7 +125,7 @@ export const fallback: RequestHandler = async ({ url, locals, fetch }) => {
 			placeid: Number(placeid),
 			associatedid: place.associatedgame.universeid,
 			type: 'game',
-			clientversion: '2016'
+			clientversion: '2014'
 		})
 		.returning({ jobid: jobsTable.jobid })
 

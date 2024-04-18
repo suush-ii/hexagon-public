@@ -16,7 +16,7 @@
 
 <div class="container p-8 flex flex-col">
 	<h1 class="text-5xl leading-none tracking-tight font-semibold">
-		{data.welcomeMessage}, {data.session.username}...
+		{data.welcomeMessage}, {data.user.username}...
 	</h1>
 
 	<div class="pt-24 flex flex-col gap-y-4">

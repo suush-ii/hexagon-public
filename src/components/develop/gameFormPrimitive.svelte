@@ -12,10 +12,10 @@
 
 	import type { FormTextareaEvent } from '$src/components/ui/textarea'
 	import { BookText } from 'lucide-svelte'
-	import { currencyNamePlural } from '$src/stores'
 	import { Input, defaultClass } from '$src/components/ui/input'
 	import { Textarea } from '$src/components/ui/textarea'
 	import { zodClient } from 'sveltekit-superforms/adapters'
+	import SuperDebug from 'sveltekit-superforms'
 
 	export let data: SuperValidated<Infer<GameSchema>>
 
@@ -106,8 +106,8 @@
 					<Select.Value />
 				</Select.Trigger>
 				<Select.Content>
-					{#each Object.entries(genres) as [value, label]}
-						<Select.Item {value} {label} />
+					{#each genres as value}
+						<Select.Item {value} label={value} />
 					{/each}
 				</Select.Content>
 			</Select.Root>

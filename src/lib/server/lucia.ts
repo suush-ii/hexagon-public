@@ -21,6 +21,7 @@ export const auth = lucia({
 			role: data.role,
 			joindate: data.joindate,
 			lastactivetime: data.lastactivetime,
+			laststipend: data.laststipend,
 			gender: data.gender
 		}
 	}

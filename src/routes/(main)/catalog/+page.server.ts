@@ -16,14 +16,24 @@ export const load: PageServerLoad = async ({ url }) => {
 	let items
 
 	if (category.value === 'all') {
-		items = await db
-			.select({
-				itemName: assetTable.assetname,
-				itemPrice: assetTable.price,
-				itemId: assetTable.assetid
-			})
-			.from(assetTable)
-			.where(or(eq(assetTable.assetType, 'shirts'), eq(assetTable.assetType, 'pants')))
+		items = await db.query.assetTable.findMany({
+			where: or(eq(assetTable.assetType, 'shirts'), eq(assetTable.assetType, 'pants')),
+			columns: {
+				assetname: true,
+				price: true,
+				assetid: true,
+				creatoruserid: true,
+				updated: true,
+				sales: true
+			},
+			with: {
+				author: {
+					columns: {
+						username: true
+					}
+				}
+			}
+		})
 	}
 
 	return { items }

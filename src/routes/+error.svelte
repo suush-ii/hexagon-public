@@ -17,13 +17,13 @@
 
 	export let data: LayoutData
 
-	$: loggedIn = data.session ? true : false
+	$: loggedIn = data.user ? true : false
 
 	$: admin =
-		data?.session?.role === 'owner' ||
-		data?.session?.role === 'admin' ||
-		data?.session?.role === 'mod' ||
-		data?.session?.role === 'uploader'
+		data?.user?.role === 'owner' ||
+		data?.user?.role === 'admin' ||
+		data?.user?.role === 'mod' ||
+		data?.user?.role === 'uploader'
 			? true
 			: false
 </script>
@@ -34,7 +34,7 @@
 </svelte:head>
 
 <div class="flex flex-col h-screen">
-	<Navbar {loggedIn} userId={data.session?.userid} coins={data.session?.coins} {admin} />
+	<Navbar {loggedIn} userId={data.user?.userid} coins={data.user?.coins} {admin} />
 	<div class="m-auto flex">
 		<Card.Root class="w-96 p-4 text-center m-auto">
 			<Card.Header class="flex flex-col gap-y-2">

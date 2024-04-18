@@ -1,15 +1,13 @@
 import type { LayoutServerLoad } from './$types'
-import { placesTable } from '$lib/server/schema/games'
 import { db } from '$lib/server/db'
-import { eq, and } from 'drizzle-orm'
+import { ne, and, eq } from 'drizzle-orm'
 import { error, redirect } from '@sveltejs/kit'
 import { z } from 'zod'
 import { assetTable } from '$lib/server/schema/assets'
-import { jobsTable } from '$lib/server/schema/games'
+import { inventoryTable } from '$lib/server/schema/users'
 import { slugify } from '$lib/utils'
-type jobs = typeof jobsTable.$inferSelect
 
-export const load: LayoutServerLoad = async ({ params, locals, depends, cookies, url }) => {
+export const load: LayoutServerLoad = async ({ params, locals }) => {
 	const result = await z.number().safeParseAsync(Number(params.itemid))
 
 	if (result.success === false) {
@@ -17,7 +15,7 @@ export const load: LayoutServerLoad = async ({ params, locals, depends, cookies,
 	}
 
 	const item = await db.query.assetTable.findFirst({
-		where: eq(assetTable.assetid, Number(params.itemid)),
+		where: and(eq(assetTable.assetid, Number(params.itemid)), ne(assetTable.assetType, 'games')),
 		columns: {
 			assetname: true,
 			price: true,
@@ -38,6 +36,12 @@ export const load: LayoutServerLoad = async ({ params, locals, depends, cookies,
 		}
 	})
 
+	const alreadyOwned = await db
+		.select()
+		.from(inventoryTable)
+		.where(eq(inventoryTable.userid, locals.user.userid))
+		.limit(1)
+
 	if (!item) {
 		error(404, { success: false, message: 'Item not found.', data: {} })
 	}
@@ -49,6 +53,7 @@ export const load: LayoutServerLoad = async ({ params, locals, depends, cookies,
 	}
 
 	return {
-		item: item
+		item: item,
+		alreadyOwned: alreadyOwned.length > 0
 	}
 }

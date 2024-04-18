@@ -1,4 +1,13 @@
-import { bigint, bigserial, integer, pgTable, text, timestamp, varchar } from 'drizzle-orm/pg-core'
+import {
+	bigint,
+	bigserial,
+	integer,
+	pgTable,
+	text,
+	timestamp,
+	varchar,
+	boolean
+} from 'drizzle-orm/pg-core'
 import type { userState, userRole, userGenders } from '$lib/types'
 import { relations } from 'drizzle-orm'
 import { keyTable } from './keys'
@@ -19,9 +28,32 @@ export const usersTable = pgTable('users', {
 	lastactivetime: timestamp('lastactivetime', { mode: 'date', withTimezone: true })
 		.notNull()
 		.defaultNow(),
+	laststipend: timestamp('laststipend', { mode: 'date', withTimezone: true })
+		.notNull()
+		.defaultNow(),
 	avatarheadshot: text('avatarheadshot'),
 	avatarbody: text('avatarbody'),
 	avatarobj: text('avatarobj')
+})
+
+export const inventoryTable = pgTable('inventory', {
+	inventoryid: bigserial('inventoryid', { mode: 'number' }).notNull().primaryKey(),
+	userid: bigint('userid', { mode: 'number' }).notNull(),
+	itemid: bigint('itemid', { mode: 'number' }).notNull(),
+	wearing: boolean('wearing').notNull(),
+	obatineddate: timestamp('obatineddate', { mode: 'date', withTimezone: true })
+		.notNull()
+		.defaultNow()
+})
+
+export const transactionsTable = pgTable('transactions', {
+	transactionid: bigserial('transactionid', { mode: 'number' }).notNull().primaryKey(),
+	userid: bigint('userid', { mode: 'number' }).notNull(),
+	itemid: bigint('itemid', { mode: 'number' }),
+	time: timestamp('time', { mode: 'date', withTimezone: true }).notNull().defaultNow(),
+	type: text('type').$type<'stipend' | 'purchase' | 'sales' | 'adjustment'>().notNull(),
+	amount: bigint('amount', { mode: 'number' }).notNull(),
+	sourceuserid: bigint('sourceuserid', { mode: 'number' })
 })
 
 export const usersRelations = relations(usersTable, ({ many, one }) => ({

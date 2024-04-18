@@ -43,7 +43,7 @@
 
 <div class="w-full flex flex-row">
 	<div class="p-4 flex-shrink-0">
-		<SidePanel role={data.session.role} />
+		<SidePanel role={data.user.role} />
 	</div>
 
 	<div class="p-8 flex flex-col space-y-4 grow">

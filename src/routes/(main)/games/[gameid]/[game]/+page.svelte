@@ -9,7 +9,9 @@
 
 	import { Button } from '$src/components/ui/button'
 
-	import { Play, ThumbsUp, ThumbsDown, Loader2, BadgeAlert, Star } from 'lucide-svelte'
+	import { Play, ThumbsUp, ThumbsDown, Loader2, Star } from 'lucide-svelte'
+
+	import { formatCompactNumber } from '$lib/utils'
 
 	import { Separator } from '$src/components/ui/separator'
 
@@ -173,7 +175,9 @@
 								</div>
 
 								<div class="flex flex-row justify-between">
-									<h1 class="text-success mx-8">{data.place.associatedgame.likes}</h1>
+									<h1 class="text-success mx-8">
+										{formatCompactNumber(data.place.associatedgame.likes)}
+									</h1>
 									{#if submitting}
 										<Loader2 class="h-6 w-6 animate-spin" />
 									{/if}
@@ -181,7 +185,9 @@
 									{#if !isNaN(data.likespercentage) && !submitting}
 										<h1 class="">{data.likespercentage}%</h1>
 									{/if}
-									<h1 class="text-destructive mx-8">{data.place.associatedgame.dislikes}</h1>
+									<h1 class="text-destructive mx-8">
+										{formatCompactNumber(data.place.associatedgame.dislikes)}
+									</h1>
 								</div>
 							</div>
 						</div>
@@ -216,7 +222,7 @@
 							<div class="w-full flex flex-row flex-wrap justify-around text-center">
 								<div>
 									<p class="font-bold text-muted-foreground">Visits</p>
-									<p>{data.place.associatedgame.visits}</p>
+									<p>{formatCompactNumber(data.place.associatedgame.visits)}</p>
 								</div>
 
 								<div>

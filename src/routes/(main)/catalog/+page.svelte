@@ -9,6 +9,7 @@
 	import { ChevronDown } from 'lucide-svelte'
 	import { Search } from 'lucide-svelte'
 	import CatalogCard from '$src/components/catalog/catalogCard.svelte'
+	import EmptyCard from '$src/components/emptyCard.svelte'
 
 	import { categories } from './'
 
@@ -19,8 +20,6 @@
 	import type { PageData } from './$types'
 
 	export let data: PageData
-
-	console.log(data)
 
 	pageName.set('Catalog')
 
@@ -166,14 +165,26 @@
 		<Separator orientation="horizontal" class="block md:hidden" />
 
 		<div class="flex flex-col gap-y-4 w-full">
-			<h1 class="text-4xl leading-none tracking-tight">Featured Items on Hexagon</h1>
-			<div class="flex flex-row flex-wrap gap-8">
-				{#if data.items}
-					{#each data.items as item}
-						<CatalogCard itemName={item.itemName} cost={item.itemPrice} itemId={item.itemId} />
-					{/each}
-				{/if}
-			</div>
+			{#if data.items?.length !== 0}
+				<h1 class="text-4xl leading-none tracking-tight">Featured Items on Hexagon</h1>
+				<div class="flex flex-row flex-wrap gap-8">
+					{#if data.items}
+						{#each data.items as item}
+							<CatalogCard
+								itemName={item.assetname}
+								creator={item.author.username}
+								creatorUserId={item.creatoruserid}
+								cost={item.price}
+								itemId={item.assetid}
+								sales={item.sales}
+								updated={item.updated}
+							/>
+						{/each}
+					{/if}
+				</div>
+			{:else}
+				<EmptyCard />
+			{/if}
 		</div>
 	</div>
 </div>

@@ -6,6 +6,8 @@
 	import { Separator } from '$src/components/ui/separator'
 	import * as Card from '$src/components/ui/card'
 	import ReportButton from '$src/components/reportButton.svelte'
+	import * as AlertDialog from '$src/components/ui/alert-dialog'
+	import { formatCompactNumber } from '$lib/utils'
 
 	import RelativeTime from '@yaireo/relative-time'
 
@@ -14,6 +16,22 @@
 	import type { PageData } from './$types'
 
 	export let data: PageData
+
+	let purchasing = false
+
+	async function purchase() {
+		purchasing = true
+
+		const response = await fetch(`/api/purchase`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				itemid: data.item.assetid
+			})
+		})
+	}
 
 	const itemName = data.item.assetType.charAt(0).toUpperCase() + data.item.assetType.slice(1)
 </script>
@@ -68,12 +86,14 @@
 			<h1 class="text-sm flex items-center gap-x-1">
 				<Box />All
 			</h1>
-			<h1 class="text-sm text-muted-foreground">Gear Attributes:</h1>
-			<!--TODO: do a better way to configure icons for these probably a json and associate htem with icons ez-->
-			<!--Important to list these for gears only-->
-			<h1 class="text-sm flex items-center gap-x-1">
-				<Webhook />Social Item
-			</h1>
+			{#if data.item.assetType === 'gear'}
+				<h1 class="text-sm text-muted-foreground">Gear Attributes:</h1>
+				<!--TODO: do a better way to configure icons for these probably a json and associate htem with icons ez-->
+				<!--Important to list these for gears only-->
+				<h1 class="text-sm flex items-center gap-x-1">
+					<Webhook />Social Item
+				</h1>
+			{/if}
 		</div>
 
 		<div class="flex w-1/3 flex-col gap-y-4">
@@ -86,8 +106,50 @@
 					>
 				</Card.Header>
 				<Card.Content>
-					<Button class="w-full font-semibold text-lg">Buy with <MoonStar class="h-4 " /></Button>
-					<Card.Description class="text-lg pt-4">({data.item.sales} Sold)</Card.Description>
+					<AlertDialog.Root closeOnOutsideClick={true}>
+						<AlertDialog.Trigger asChild let:builder>
+							{#if !data.alreadyOwned}
+								<Button builders={[builder]} class="w-full font-semibold text-lg"
+									>Buy with <MoonStar class="h-4 " /></Button
+								>
+							{:else}
+								<Button builders={[builder]} class="w-full font-semibold text-lg" disabled
+									>Already Owned</Button
+								>
+							{/if}
+						</AlertDialog.Trigger>
+						<AlertDialog.Content>
+							<AlertDialog.Header>
+								<AlertDialog.Title class="text-xl font-semibold"
+									>Buy Item
+									<Separator />
+								</AlertDialog.Title>
+								<AlertDialog.Description class="text-lg flex flex-col gap-y-4">
+									<div class="flex flex-row line-clamp-2 break-all">
+										Would you like to buy the Asset "{data.item.assetname}" for
+										<span class="text-primary flex flex-row align-middle"
+											><MoonStar class="h-4 my-auto " />
+											{data.item.price}</span
+										>?
+									</div>
+									<img
+										src={'/Images/iconplaceholder.png'}
+										alt={data.item.assetname}
+										class="mx-auto aspect-square w-40 rounded-xl"
+									/>
+								</AlertDialog.Description>
+							</AlertDialog.Header>
+							<AlertDialog.Footer class="mx-auto">
+								<AlertDialog.Action disabled={purchasing} on:click={purchase}
+									>Buy Now</AlertDialog.Action
+								>
+								<AlertDialog.Cancel>Cancel</AlertDialog.Cancel>
+							</AlertDialog.Footer>
+						</AlertDialog.Content>
+					</AlertDialog.Root>
+					<Card.Description class="text-lg pt-4"
+						>({formatCompactNumber(data.item.sales)} Sold)</Card.Description
+					>
 				</Card.Content>
 			</Card.Root>
 			<h1 class="text-lg font-semibold flex align-middle mx-auto gap-x-1 text-yellow-400">

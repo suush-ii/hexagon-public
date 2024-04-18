@@ -9,6 +9,8 @@ import { CLIENT_PRIVATE_KEY, RCC_ACCESS_KEY, BASE_URL } from '$env/static/privat
 import { createSign } from 'node:crypto'
 import pantsTemplate from './templates/pantsTemplate.xml?raw'
 import shirtTemplate from './templates/shirtTemplate.xml?raw'
+import decalTemplate from './templates/decalTemplate.xml?raw'
+
 export const trailingSlash = 'ignore'
 let luas = formatPath(
 	import.meta.glob(['./common/*.lua', './common/2014L/*.lua'], {
@@ -116,11 +118,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
 		})
 	}
 
-	if (
-		existingAsset?.assetType === 'audio' ||
-		existingAsset?.assetType === 'decals' ||
-		existingAsset?.assetType === 'images'
-	) {
+	if (existingAsset?.assetType === 'audio' || existingAsset?.assetType === 'images') {
 		redirect(302, `https://${s3Url}/${existingAsset.assetType}/` + existingAsset?.simpleasseturl)
 	}
 
@@ -136,6 +134,15 @@ export const GET: RequestHandler = async ({ url, request }) => {
 	if (existingAsset?.assetType === 'pants') {
 		return text(
 			pantsTemplate.replace(
+				'{1}',
+				'http://' + BASE_URL + '/asset?id=' + existingAsset.associatedimageid
+			)
+		)
+	}
+
+	if (existingAsset?.assetType === 'decals') {
+		return text(
+			decalTemplate.replace(
 				'{1}',
 				'http://' + BASE_URL + '/asset?id=' + existingAsset.associatedimageid
 			)

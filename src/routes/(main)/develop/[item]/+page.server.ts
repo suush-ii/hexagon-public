@@ -11,7 +11,7 @@ import audio from '$lib/icons/audio.png'
 
 export const load: PageServerLoad = async ({ params, parent }) => {
 	const result = await _assetSchema.safeParseAsync(params.item)
-	const session = await (await parent()).session
+	const session = await (await parent()).user
 
 	if (result.success === false) {
 		error(404, { success: false, message: 'Not found.' })
@@ -52,20 +52,27 @@ export const load: PageServerLoad = async ({ params, parent }) => {
 		params.item === 'pants'
 	) {
 		// default asset
-		const assetcreations = await db
-			.select()
-			.from(assetTable)
-			.where(
-				and(eq(assetTable.creatoruserid, session.userid), eq(assetTable.assetType, params.item))
-			)
-			.limit(20)
+		const assetcreations = await db.query.assetTable.findMany({
+			limit: 20,
+			where: and(
+				eq(assetTable.creatoruserid, session.userid),
+				eq(assetTable.assetType, params.item)
+			),
+			with: {
+				associatedImage: {
+					columns: {
+						simpleasseturl: true
+					}
+				}
+			}
+		}) // TODO: Pagination here
 
 		creations = assetcreations.map((asset) => ({
 			assetName: asset.assetname,
 			assetid: asset.assetid,
 			iconUrl:
 				asset.assetType === 'decals' && asset.moderationstate === 'approved'
-					? `https://${s3Url}/${asset.assetType}/` + asset?.simpleasseturl
+					? `https://${s3Url}/images/` + asset?.associatedImage?.simpleasseturl
 					: asset.moderationstate === 'pending'
 						? pending
 						: asset.assetType === 'audio' && asset.moderationstate === 'approved'

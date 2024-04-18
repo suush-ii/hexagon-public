@@ -3,7 +3,7 @@ import type { LayoutServerLoad } from './/$types'
 const protectedroutes = ['/home', '/catalog', '/develop', '/games']
 
 export const load: LayoutServerLoad = (async ({ url, locals }) => {
-	const session = locals.session
+	const user = locals.user
 
 	if (
 		protectedroutes.includes(url.pathname) === true ||
@@ -11,7 +11,7 @@ export const load: LayoutServerLoad = (async ({ url, locals }) => {
 			url.pathname.toLowerCase().startsWith(substr.toLowerCase())
 		) === true
 	) {
-		if (!session) {
+		if (!user) {
 			redirect(302, '/auth/login')
 		}
 	}
@@ -25,6 +25,6 @@ export const load: LayoutServerLoad = (async ({ url, locals }) => {
 	}
 
 	return {
-		session: session?.user
+		user
 	}
 }) satisfies LayoutServerLoad

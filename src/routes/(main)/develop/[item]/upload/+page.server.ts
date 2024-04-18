@@ -8,12 +8,7 @@ import { createHash } from 'node:crypto'
 import { redirect } from '@sveltejs/kit'
 import { _uploadableAssets } from '../+layout'
 import { s3BucketName } from '$src/stores'
-import {
-	CLOUDFLARE_S3_ACCESS_KEY,
-	CLOUDFLARE_S3_ACCESS_KEY_ID,
-	CLOUDFLARE_S3_ACCOUNT_ID
-} from '$env/static/private'
-import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3'
+import { PutObjectCommand } from '@aws-sdk/client-s3'
 import { _assetSchema } from '../+layout'
 import { db } from '$lib/server/db'
 import { assetTable } from '$lib/server/schema/assets'
@@ -21,15 +16,7 @@ import { gamesTable, placesTable } from '$lib/server/schema/games'
 import { zod } from 'sveltekit-superforms/adapters'
 import { eq } from 'drizzle-orm'
 import type { assetStates } from '$lib/types'
-
-const S3 = new S3Client({
-	region: 'auto',
-	endpoint: `https://${CLOUDFLARE_S3_ACCOUNT_ID}.r2.cloudflarestorage.com`,
-	credentials: {
-		accessKeyId: CLOUDFLARE_S3_ACCESS_KEY_ID,
-		secretAccessKey: CLOUDFLARE_S3_ACCESS_KEY
-	}
-})
+import { S3 } from '$lib/server/s3'
 
 export const load: PageServerLoad = async () => {
 	const gameForm = await superValidate(zod(gameSchema))
@@ -61,6 +48,12 @@ async function uploadAsset(
 
 		const fileName = Buffer.from(createHash('sha512').update(fileBuffer).digest('hex')).toString()
 
+		if (mimeTypes.some((e) => e === file.type) === false) {
+			return fail(400, {
+				form
+			})
+		}
+
 		const alreadyModerated = await db
 			.select({ moderationState: assetTable.moderationstate })
 			.from(assetTable)
@@ -72,27 +65,30 @@ async function uploadAsset(
 			moderationState = alreadyModerated[0].moderationState // auto deny or approve the same hashes
 		}
 
-		if (mimeTypes.some((e) => e === file.type) === false) {
-			return fail(400, {
-				form
-			})
-		}
-
 		let Key = item
 
-		if (Key === 'shirts' || Key === 'pants') {
+		if (Key === 'shirts' || Key === 'pants' || Key === 'decals') {
 			Key = 'images'
 		}
 
-		const command = new PutObjectCommand({
-			Bucket: s3BucketName,
-			Key: Key + '/' + fileName,
-			Body: fileBuffer,
-			ContentType: file.type
-		})
-		const result = await S3.send(command)
-		//console.log('File uploaded successfully:', fileName)
-		//console.log(params.item)
+		if (moderationState !== 'rejected') {
+			// do not upload if it was previously rejected
+			const command = new PutObjectCommand({
+				Bucket: s3BucketName,
+				Key: Key + '/' + fileName,
+				Body: fileBuffer,
+				ContentType: file.type
+			})
+			try {
+				await S3.send(command)
+			} catch (err) {
+				console.log(err)
+
+				return fail(500, {
+					form
+				})
+			}
+		}
 
 		if (item === 'games') {
 			await db.transaction(async (tx) => {
@@ -133,7 +129,7 @@ async function uploadAsset(
 			})
 		}
 
-		if (item === 'audio' || item === 'decals') {
+		if (item === 'audio') {
 			await db.insert(assetTable).values({
 				assetname: form.data.name,
 				assetType: item,
@@ -145,7 +141,8 @@ async function uploadAsset(
 			})
 		}
 
-		if (item === 'shirts' || item === 'pants') {
+		if (item === 'shirts' || item === 'pants' || item === 'decals') {
+			// these are all handled the same which is through image and xml
 			await db.transaction(async (tx) => {
 				try {
 					let [imageResponse] = await tx
@@ -155,7 +152,8 @@ async function uploadAsset(
 							assetType: 'images',
 							creatoruserid: userid,
 							simpleasseturl: fileName,
-							moderationstate: moderationState
+							moderationstate: moderationState,
+							price: 0
 						})
 						.returning({ assetid: assetTable.assetid })
 
@@ -206,7 +204,7 @@ export const actions: Actions = {
 		}
 
 		const file = form.data.asset
-		uploadAsset(file, params.item, form, locals.session.user.userid)
+		uploadAsset(file, params.item, form, locals.user.userid)
 		return redirect(302, '/develop/' + params.item)
 	},
 	clothing: async ({ request, params, locals }) => {
@@ -228,7 +226,7 @@ export const actions: Actions = {
 		}
 
 		const file = form.data.asset
-		uploadAsset(file, params.item, form, locals.session.user.userid)
+		uploadAsset(file, params.item, form, locals.user.userid)
 		return redirect(302, '/develop/' + params.item)
 	},
 	asset: async ({ request, params, locals }) => {
@@ -250,7 +248,7 @@ export const actions: Actions = {
 		}
 
 		const file = form.data.asset
-		uploadAsset(file, params.item, form, locals.session.user.userid)
+		uploadAsset(file, params.item, form, locals.user.userid)
 
 		return redirect(302, '/develop/' + params.item)
 	}

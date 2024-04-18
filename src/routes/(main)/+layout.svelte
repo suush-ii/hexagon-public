@@ -9,13 +9,13 @@
 
 	export let data: PageData
 
-	$: loggedIn = data.session ? true : false
+	$: loggedIn = data.user ? true : false
 
 	$: admin =
-		data?.session?.role === 'owner' ||
-		data?.session?.role === 'admin' ||
-		data?.session?.role === 'mod' ||
-		data?.session?.role === 'uploader'
+		data?.user?.role === 'owner' ||
+		data?.user?.role === 'admin' ||
+		data?.user?.role === 'mod' ||
+		data?.user?.role === 'uploader'
 			? true
 			: false
 
@@ -29,9 +29,9 @@
 
 <div class="flex flex-col h-screen">
 	{#if $page.url.pathname != '/' && $page.url.pathname != '/login'}
-		<Navbar {loggedIn} userId={data?.session?.userid} coins={data?.session?.coins} {admin} />
+		<Navbar {loggedIn} userId={data?.user?.userid} coins={data?.user?.coins} {admin} />
 	{:else if $page.url.pathname === '/login'}
-		<Navbar {loggedIn} signUpButton={true} coins={data?.session?.coins} {admin} />
+		<Navbar {loggedIn} signUpButton={true} coins={data?.user?.coins} {admin} />
 	{/if}
 
 	<main

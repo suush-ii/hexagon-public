@@ -5,6 +5,9 @@ import { assetTable } from '$src/lib/server/schema/assets'
 import { inArray, eq } from 'drizzle-orm'
 import { z } from 'zod'
 import type { assetStates } from '$src/lib/types'
+import { S3 } from '$lib/server/s3'
+import { DeleteObjectCommand } from '@aws-sdk/client-s3'
+import { s3BucketName } from '$src/stores'
 
 const approveAssetsSchema = z.object({
 	moderationState: z.enum(['pending', 'approved', 'rejected', 'deleted']),
@@ -41,7 +44,8 @@ export const POST: RequestHandler = async ({ request }) => {
 		.select({
 			assetId: assetTable.assetid,
 			moderationState: assetTable.moderationstate,
-			assetType: assetTable.assetType
+			assetType: assetTable.assetType,
+			simpleAssetUrl: assetTable.simpleasseturl
 		})
 		.from(assetTable)
 		.where(inArray(assetTable.assetid, assetIds))
@@ -60,11 +64,27 @@ export const POST: RequestHandler = async ({ request }) => {
 				.set({ moderationstate: newModerationState })
 				.where(eq(assetTable.assetid, asset.assetId))
 
+			if (newModerationState === 'rejected') {
+				const Key = asset.assetType
+
+				const fileName = asset.simpleAssetUrl
+
+				const command = new DeleteObjectCommand({
+					Bucket: s3BucketName,
+					Key: Key + '/' + fileName
+				})
+				try {
+					await S3.send(command)
+				} catch (err) {
+					console.log(err)
+				}
+			}
+
 			if (asset.assetType === 'images') {
 				await db
 					.update(assetTable)
 					.set({ moderationstate: newModerationState })
-					.where(eq(assetTable.associatedimageid, asset.assetId)) // update the associated clothing as well
+					.where(eq(assetTable.associatedimageid, asset.assetId)) // update the associated asset as well
 			}
 		}
 	}

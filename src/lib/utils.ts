@@ -7,6 +7,10 @@ export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs))
 }
 
+export function formatCompactNumber(number: number) {
+	return Intl.NumberFormat('en', { notation: 'compact' }).format(number)
+}
+
 type FlyAndScaleParams = {
 	y?: number
 	x?: number

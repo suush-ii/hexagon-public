@@ -5,7 +5,7 @@ import { db } from '$lib/server/db'
 import { migrate } from 'drizzle-orm/postgres-js/migrator'
 import { auth } from '$lib/server/lucia'
 import { dev } from '$app/environment'
-import { usersTable } from '$lib/server/schema/users'
+import { usersTable, transactionsTable } from '$lib/server/schema/users'
 import { eq } from 'drizzle-orm'
 import { s3BucketName } from '$src/stores'
 import { rccAuth } from './routes/(rcc)/updatejob/auth.server'
@@ -80,18 +80,45 @@ export const handle: Handle = sequence(rccAuth, async ({ event, resolve }) => {
 	event.locals.config = config
 
 	const session = await event.locals.auth.validate()
+
+	const user = session?.user
+
 	if (session) {
-		event.locals.session = session
+		if (user) {
+			event.locals.user = user
+		}
 
 		const currentTime = new Date()
 
-		if (currentTime.valueOf() - session.user.lastactivetime > 3 * 60 * 1000) {
+		if (currentTime.valueOf() - user.lastactivetime > 3 * 60 * 1000) {
 			// they haven't visited in over 3 mins
 			// the reason why we don't update last active on every request is to minimize database requests
 			await db
 				.update(usersTable)
 				.set({ lastactivetime: currentTime })
-				.where(eq(usersTable.userid, session.user.userid))
+				.where(eq(usersTable.userid, user.userid))
+		}
+
+		if (currentTime.valueOf() - user.laststipend > 24 * 60 * 60 * 1000) {
+			// 24 hours
+			await db.transaction(async (tx) => {
+				try {
+					await tx
+						.update(usersTable)
+						.set({ laststipend: currentTime, coins: user.coins + 25 })
+						.where(eq(usersTable.userid, user.userid))
+
+					await tx.insert(transactionsTable).values({
+						userid: user.userid,
+						type: 'stipend',
+						amount: 25
+					})
+				} catch (e) {
+					console.log(e)
+					tx.rollback()
+					return
+				}
+			})
 		}
 	}
 
@@ -101,7 +128,7 @@ export const handle: Handle = sequence(rccAuth, async ({ event, resolve }) => {
 			event.url.pathname.toLowerCase().startsWith(substr.toLowerCase())
 		) === true
 	) {
-		if (!session) {
+		if (!user) {
 			redirect(302, '/login')
 		}
 	}
@@ -112,15 +139,15 @@ export const handle: Handle = sequence(rccAuth, async ({ event, resolve }) => {
 			event.url.pathname.toLowerCase().startsWith(substr.toLowerCase())
 		) === true
 	) {
-		if (!session) {
+		if (!user) {
 			redirect(302, '/login')
 		}
 
 		if (
-			session.user.role !== 'owner' &&
-			session.user.role !== 'admin' &&
-			session.user.role !== 'mod' &&
-			session.user.role !== 'uploader'
+			user.role !== 'owner' &&
+			user.role !== 'admin' &&
+			user.role !== 'mod' &&
+			user.role !== 'uploader'
 		) {
 			redirect(302, '/login')
 		} else {
@@ -131,7 +158,7 @@ export const handle: Handle = sequence(rccAuth, async ({ event, resolve }) => {
 			)
 
 			const currentPermissionLevel =
-				permissionLevels.find((level) => level.name === session.user.role)?.level ?? 0
+				permissionLevels.find((level) => level.name === user.role)?.level ?? 0
 
 			if (permissionRequired) {
 				if (currentPermissionLevel > permissionRequired.requiredLevel) {

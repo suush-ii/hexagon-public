@@ -12,10 +12,10 @@ const voteSchema = z.object({
 })
 
 export const POST: RequestHandler = async ({ locals, request }) => {
-	const session = locals.session
+	const user = locals.user
 
-	if (!session) {
-		error(401, { success: false, message: 'No session.', data: {} });
+	if (!user) {
+		error(401, { success: false, message: 'No session.', data: {} })
 	}
 
 	let gameid: number
@@ -26,12 +26,12 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 		result = await voteSchema.safeParseAsync({ type, gameid })
 	} catch (e) {
 		console.log(e)
-		error(400, { success: false, message: 'Malformed JSON.', data: {} });
+		error(400, { success: false, message: 'Malformed JSON.', data: {} })
 	}
 
 	if (!result.success) {
 		const errors = result.error.issues.map((issue) => issue.message) // get us only the error msgs
-		error(400, { success: false, message: 'Malformed JSON.', data: { errors } });
+		error(400, { success: false, message: 'Malformed JSON.', data: { errors } })
 	}
 
 	const game = await db
@@ -51,7 +51,7 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 	const existingVote = await db
 		.select()
 		.from(votesTable)
-		.where(and(eq(votesTable.userid, session.user.userid), eq(votesTable.gameid, gameid)))
+		.where(and(eq(votesTable.userid, user.userid), eq(votesTable.gameid, gameid)))
 		.limit(1)
 
 	if (existingVote.length !== 0) {
@@ -68,7 +68,7 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 
 			await db
 				.delete(votesTable)
-				.where(and(eq(votesTable.userid, session.user.userid), eq(votesTable.gameid, gameid)))
+				.where(and(eq(votesTable.userid, user.userid), eq(votesTable.gameid, gameid)))
 		} else {
 			// they want to change their vote
 
@@ -83,13 +83,13 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 			await db
 				.update(votesTable)
 				.set({ type })
-				.where(and(eq(votesTable.userid, session.user.userid), eq(votesTable.gameid, gameid)))
+				.where(and(eq(votesTable.userid, user.userid), eq(votesTable.gameid, gameid)))
 		}
 
 		return json({ success: true, message: '', data: {} })
 	}
 
-	await db.insert(votesTable).values({ userid: session.user.userid, type, gameid })
+	await db.insert(votesTable).values({ userid: user.userid, type, gameid })
 
 	await db
 		.update(gamesTable)

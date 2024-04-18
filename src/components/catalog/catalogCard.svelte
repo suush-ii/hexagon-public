@@ -1,10 +1,22 @@
 <script lang="ts">
 	import * as Avatar from '$src/components/ui/avatar'
 	import { MoonStar } from 'lucide-svelte'
+	import RelativeTime from '@yaireo/relative-time'
+	import { formatCompactNumber } from '$lib/utils'
+
+	const relativeTime = new RelativeTime()
 
 	import { slugify } from '$lib/utils'
 
 	export let itemName: string
+
+	export let creator: string
+
+	export let creatorUserId: number
+
+	export let updated: Date
+
+	export let sales: number
 
 	export let itemId: number
 
@@ -25,13 +37,17 @@
 		</h1>
 	</a>
 	<div class="invisible group-hover:visible flex text-xs pt-2 flex-col gap-y-1">
-		<h5 class="text-muted-foreground">
-			Creator: <a class="text-foreground hover:underline" href="/users/1/profile">Sushi</a>
+		<h5 class="text-muted-foreground line-clamp-2 break-all">
+			Creator: <a class="text-foreground hover:underline" href="/users/{creatorUserId}/profile"
+				>{creator}</a
+			>
 		</h5>
 		<h5 class="text-muted-foreground">
-			Updated: <span class="text-foreground">2 days ago</span>
+			Updated: <span class="text-foreground">{relativeTime.from(updated)}</span>
 		</h5>
-		<h5 class="text-muted-foreground">Sales: <span class="text-foreground">0</span></h5>
+		<h5 class="text-muted-foreground">
+			Sales: <span class="text-foreground">{formatCompactNumber(sales)}</span>
+		</h5>
 		<h5 class="text-muted-foreground">Favorited: <span class="text-foreground">1 time</span></h5>
 	</div>
 </div>

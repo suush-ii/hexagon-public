@@ -11,7 +11,7 @@ declare global {
 			type Auth = import('./lib/server/lucia.ts').Auth
 			type DatabaseUserAttributes = {
 				username: string
-				userid?: undefined // the database will automatically fill this in
+				userid: number // the database will automatically fill this in
 				email: string
 				coins: number
 				joindate: Date
@@ -22,7 +22,7 @@ declare global {
 		}
 		interface Locals {
 			auth: import('lucia').AuthRequest
-			session: import('lucia').Session
+			user: Lucia.DatabaseUserAttributes
 			config: {
 				maintenanceEnabled: boolean
 				registrationEnabled: boolean

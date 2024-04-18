@@ -1,6 +1,8 @@
 <script lang="ts">
 	import * as Avatar from '$src/components/ui/avatar'
 
+	import { formatCompactNumber } from '$lib/utils'
+
 	import { slugify } from '$lib/utils'
 
 	export let gameName: string
@@ -23,6 +25,6 @@
 			<Avatar.Fallback />
 		</Avatar.Root>
 		<h1 class="line-clamp-2 tracking-tighter break-words text-xl">{gameName}</h1>
-		<h1 class="tracking-tighter truncate text-xs">{playerCount} Playing</h1>
+		<h1 class="tracking-tighter truncate text-xs">{formatCompactNumber(playerCount)} Playing</h1>
 	</div></a
 >

@@ -60,7 +60,7 @@ export const load: LayoutServerLoad = async ({ params, locals, depends, cookies,
 		.from(votesTable)
 		.where(
 			and(
-				eq(votesTable.userid, locals.session.user.userid),
+				eq(votesTable.userid, locals.user.userid),
 				eq(votesTable.gameid, Number(place.associatedgame.universeid))
 			)
 		)

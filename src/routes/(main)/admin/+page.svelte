@@ -15,7 +15,7 @@
 </script>
 
 <div class="p-4">
-	<SidePanel role={data.session.role} />
+	<SidePanel role={data.user.role} />
 </div>
 
 <div class="p-8 flex flex-col space-y-4">

@@ -4,6 +4,13 @@ import { eq, count, ne, and } from 'drizzle-orm'
 import { assetTable } from '$lib/server/schema/assets'
 
 export const load: PageServerLoad = async ({ url, depends }) => {
+	const filter = and(
+		eq(assetTable.moderationstate, 'pending'),
+		ne(assetTable.assetType, 'shirts'),
+		ne(assetTable.assetType, 'pants'),
+		ne(assetTable.assetType, 'decals')
+	)
+
 	const assets = await db
 		.select({
 			assetId: assetTable.assetid,
@@ -15,24 +22,9 @@ export const load: PageServerLoad = async ({ url, depends }) => {
 		})
 		.from(assetTable)
 		.limit(20)
-		.where(
-			and(
-				eq(assetTable.moderationstate, 'pending'),
-				ne(assetTable.assetType, 'shirts'),
-				ne(assetTable.assetType, 'pants')
-			)
-		)
+		.where(filter)
 
-	const assetCount = await db
-		.select({ count: count() })
-		.from(assetTable)
-		.where(
-			and(
-				eq(assetTable.moderationstate, 'pending'),
-				ne(assetTable.assetType, 'shirts'),
-				ne(assetTable.assetType, 'pants')
-			)
-		) // images are moderated not the clothes themselves
+	const assetCount = await db.select({ count: count() }).from(assetTable).where(filter) // images are moderated not the clothes themselves
 
 	depends('app:assetqueue')
 
