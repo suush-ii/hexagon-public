@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/sveltekit'
 import { sequence } from '@sveltejs/kit/hooks'
 import { redirect, type Handle } from '@sveltejs/kit'
 import { configTable } from '$lib/server/schema/config'
@@ -16,6 +17,11 @@ import {
 	CLOUDFLARE_S3_ACCOUNT_ID
 } from '$env/static/private'
 import { CreateBucketCommand, HeadBucketCommand, S3Client } from '@aws-sdk/client-s3'
+
+Sentry.init({
+	dsn: 'https://c9543d19a6acc39bb47247c97d9fca37@o4506000665542656.ingest.us.sentry.io/4507127264509952',
+	tracesSampleRate: 1
+})
 
 const S3 = new S3Client({
 	region: 'auto',
@@ -60,118 +66,122 @@ const adminPanelPermissions = [
 
 await migrate(db, { migrationsFolder: './drizzle' })
 
-export const handle: Handle = sequence(rccAuth, async ({ event, resolve }) => {
-	// Stage 1
-	console.log(event.url.pathname)
+export const handle: Handle = sequence(
+	Sentry.sentryHandle(),
+	sequence(rccAuth, async ({ event, resolve }) => {
+		// Stage 1
+		console.log(event.url.pathname)
 
-	const config = await configPrepared.execute()
+		const config = await configPrepared.execute()
 
-	if (config.length === 0) {
-		await db.insert(configTable).values({})
-	}
-
-	if (config?.[0]?.maintenanceEnabled === true) {
-		if (event.url.pathname != '/maintenance') {
-			redirect(302, '/maintenance')
-		}
-	}
-
-	event.locals.auth = auth.handleRequest(event)
-
-	event.locals.config = config
-
-	const session = await event.locals.auth.validate()
-
-	const user = session?.user
-
-	if (session) {
-		if (user) {
-			event.locals.user = user
+		if (config.length === 0) {
+			await db.insert(configTable).values({})
 		}
 
-		const currentTime = new Date()
-
-		if (currentTime.valueOf() - user.lastactivetime > 3 * 60 * 1000) {
-			// they haven't visited in over 3 mins
-			// the reason why we don't update last active on every request is to minimize database requests
-			await db
-				.update(usersTable)
-				.set({ lastactivetime: currentTime })
-				.where(eq(usersTable.userid, user.userid))
+		if (config?.[0]?.maintenanceEnabled === true) {
+			if (event.url.pathname != '/maintenance') {
+				redirect(302, '/maintenance')
+			}
 		}
 
-		if (currentTime.valueOf() - user.laststipend > 24 * 60 * 60 * 1000) {
-			// 24 hours
-			await db.transaction(async (tx) => {
-				try {
-					await tx
-						.update(usersTable)
-						.set({ laststipend: currentTime, coins: Number(event.locals.user.coins) + 25 })
-						.where(eq(usersTable.userid, user.userid))
+		event.locals.auth = auth.handleRequest(event)
 
-					await tx.insert(transactionsTable).values({
-						userid: user.userid,
-						type: 'stipend',
-						amount: 25
-					})
-				} catch (e) {
-					console.log(e)
-					tx.rollback()
-					return
-				}
-			})
-		}
-	}
+		event.locals.config = config
 
-	if (
-		protectedRoutes.includes(event.url.pathname) === true ||
-		protectedRoutes.some((substr) =>
-			event.url.pathname.toLowerCase().startsWith(substr.toLowerCase())
-		) === true
-	) {
-		if (!user) {
-			redirect(302, '/login')
-		}
-	}
+		const session = await event.locals.auth.validate()
 
-	if (
-		adminProtectedRoutes.includes(event.url.pathname) === true ||
-		adminProtectedRoutes.some((substr) =>
-			event.url.pathname.toLowerCase().startsWith(substr.toLowerCase())
-		) === true
-	) {
-		if (!user) {
-			redirect(302, '/login')
+		const user = session?.user
+
+		if (session) {
+			if (user) {
+				event.locals.user = user
+			}
+
+			const currentTime = new Date()
+
+			if (currentTime.valueOf() - user.lastactivetime > 3 * 60 * 1000) {
+				// they haven't visited in over 3 mins
+				// the reason why we don't update last active on every request is to minimize database requests
+				await db
+					.update(usersTable)
+					.set({ lastactivetime: currentTime })
+					.where(eq(usersTable.userid, user.userid))
+			}
+
+			if (currentTime.valueOf() - user.laststipend > 24 * 60 * 60 * 1000) {
+				// 24 hours
+				await db.transaction(async (tx) => {
+					try {
+						await tx
+							.update(usersTable)
+							.set({ laststipend: currentTime, coins: Number(event.locals.user.coins) + 25 })
+							.where(eq(usersTable.userid, user.userid))
+
+						await tx.insert(transactionsTable).values({
+							userid: user.userid,
+							type: 'stipend',
+							amount: 25
+						})
+					} catch (e) {
+						console.log(e)
+						tx.rollback()
+						return
+					}
+				})
+			}
 		}
 
 		if (
-			user.role !== 'owner' &&
-			user.role !== 'admin' &&
-			user.role !== 'mod' &&
-			user.role !== 'uploader'
+			protectedRoutes.includes(event.url.pathname) === true ||
+			protectedRoutes.some((substr) =>
+				event.url.pathname.toLowerCase().startsWith(substr.toLowerCase())
+			) === true
 		) {
-			redirect(302, '/login')
-		} else {
-			const permissionRequired = adminPanelPermissions.find(
-				(permissionRequired) =>
-					event.url.pathname.toLowerCase().startsWith(permissionRequired.path.toLowerCase()) ===
-					true
-			)
+			if (!user) {
+				redirect(302, '/login')
+			}
+		}
 
-			const currentPermissionLevel =
-				permissionLevels.find((level) => level.name === user.role)?.level ?? 0
+		if (
+			adminProtectedRoutes.includes(event.url.pathname) === true ||
+			adminProtectedRoutes.some((substr) =>
+				event.url.pathname.toLowerCase().startsWith(substr.toLowerCase())
+			) === true
+		) {
+			if (!user) {
+				redirect(302, '/login')
+			}
 
-			if (permissionRequired) {
-				if (currentPermissionLevel > permissionRequired.requiredLevel) {
-					redirect(302, '/admin?error=permission')
+			if (
+				user.role !== 'owner' &&
+				user.role !== 'admin' &&
+				user.role !== 'mod' &&
+				user.role !== 'uploader'
+			) {
+				redirect(302, '/login')
+			} else {
+				const permissionRequired = adminPanelPermissions.find(
+					(permissionRequired) =>
+						event.url.pathname.toLowerCase().startsWith(permissionRequired.path.toLowerCase()) ===
+						true
+				)
+
+				const currentPermissionLevel =
+					permissionLevels.find((level) => level.name === user.role)?.level ?? 0
+
+				if (permissionRequired) {
+					if (currentPermissionLevel > permissionRequired.requiredLevel) {
+						redirect(302, '/admin?error=permission')
+					}
 				}
 			}
 		}
-	}
 
-	const response = await resolve(event) // Stage 2
+		const response = await resolve(event) // Stage 2
 
-	// Stage 3
+		// Stage 3
 
-	return response
-})
+		return response
+	})
+)
+export const handleError = Sentry.handleErrorWithSentry()

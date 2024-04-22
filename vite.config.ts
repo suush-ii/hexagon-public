@@ -1,17 +1,14 @@
-import { sentrySvelteKit } from '@sentry/sveltekit'
+import { sentrySvelteKit } from "@sentry/sveltekit";
 import { sveltekit } from '@sveltejs/kit/vite'
 import { defineConfig } from 'vite'
 
 export default defineConfig({
-	plugins: [
-		sentrySvelteKit({
-			sourceMapsUploadOptions: {
-				org: 'sushi',
-				project: 'javascript-sveltekit'
-			}
-		}),
-		sveltekit()
-	],
+	plugins: [sentrySvelteKit({
+        sourceMapsUploadOptions: {
+            org: "sushi",
+            project: "hexagon-new"
+        }
+    }), sveltekit()],
 	build: {
 		target: 'esnext',
 		sourcemap: false,

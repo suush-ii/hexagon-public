@@ -35,7 +35,7 @@ export const usersTable = pgTable('users', {
 		.defaultNow(),
 	avatarheadshot: text('avatarheadshot'),
 	avatarbody: text('avatarbody'),
-	avatarobj: text('avatarobj')
+	_3dmanifest: text('3dmanifest')
 })
 
 export const inventoryTable = pgTable('inventory', {

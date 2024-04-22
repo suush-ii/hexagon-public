@@ -11,3 +11,5 @@ vite.config.ts.timestamp-*
 
 # Sentry Auth Token
 .sentryclirc
+# Sentry Config File
+.sentryclirc

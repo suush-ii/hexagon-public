@@ -176,6 +176,20 @@
       "when": 1713643399960,
       "tag": "0024_useful_magik",
       "breakpoints": true
+    },
+    {
+      "idx": 25,
+      "version": "5",
+      "when": 1713745524327,
+      "tag": "0025_cooing_stepford_cuckoos",
+      "breakpoints": true
+    },
+    {
+      "idx": 26,
+      "version": "5",
+      "when": 1713745702022,
+      "tag": "0026_known_tusk",
+      "breakpoints": true
     }
   ]
 }

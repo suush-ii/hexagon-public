@@ -50,7 +50,7 @@
 		"@aws-sdk/s3-request-presigner": "^3.485.0",
 		"@lucia-auth/adapter-postgresql": "^2.0.2",
 		"@lucia-auth/oauth": "^3.5.1",
-		"@sentry/sveltekit": "^7.92.0",
+		"@sentry/sveltekit": "^7.111.0",
 		"@yaireo/relative-time": "^1.0.4",
 		"bits-ui": "^0.21.4",
 		"clsx": "^2.1.0",
