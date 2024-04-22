@@ -4,6 +4,7 @@
 	import { Button } from '$src/components/ui/button'
 
 	import QueueCard from '$src/components/admin/queuecard.svelte'
+	import EmptyCard from '$src/components/emptyCard.svelte'
 
 	import { pageName } from '$src/stores'
 
@@ -62,6 +63,8 @@
 						creatorUserId={asset.creatorUserId}
 					/>
 				{/each}
+				{#if data?.assets?.length === 0}
+					<EmptyCard />{/if}
 			</div>
 
 			<Button on:click={submitAsssets} variant="outline" class="grow max-w-60">Submit</Button>

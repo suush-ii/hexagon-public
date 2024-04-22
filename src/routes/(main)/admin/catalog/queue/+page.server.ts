@@ -3,7 +3,7 @@ import { db } from '$lib/server/db'
 import { eq, count, ne, and } from 'drizzle-orm'
 import { assetTable } from '$lib/server/schema/assets'
 
-export const load: PageServerLoad = async ({ url, depends }) => {
+export const load: PageServerLoad = async ({ depends }) => {
 	const filter = and(
 		eq(assetTable.moderationstate, 'pending'),
 		ne(assetTable.assetType, 'shirts'),
@@ -32,8 +32,4 @@ export const load: PageServerLoad = async ({ url, depends }) => {
 		assets,
 		assetCount: assetCount[0].count
 	}
-}
-
-export const actions: Actions = {
-	default: async (event) => {}
 }

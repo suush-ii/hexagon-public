@@ -36,20 +36,22 @@ export const load: LayoutServerLoad = async ({ params, locals }) => {
 		}
 	})
 
-	const alreadyOwned = await db
-		.select()
-		.from(inventoryTable)
-		.where(eq(inventoryTable.userid, locals.user.userid))
-		.limit(1)
-
 	if (!item) {
 		error(404, { success: false, message: 'Item not found.', data: {} })
 	}
 
-	const slugGameName = slugify(item.assetname)
+	const alreadyOwned = await db
+		.select()
+		.from(inventoryTable)
+		.where(
+			and(eq(inventoryTable.userid, locals.user.userid), eq(inventoryTable.itemid, item.assetid))
+		)
+		.limit(1)
 
-	if (params?.item !== slugGameName) {
-		redirect(302, '/catalog/' + Number(params.itemid) + '/' + slugGameName)
+	const slugItemName = slugify(item.assetname)
+
+	if (params?.item !== slugItemName && slugItemName !== '') {
+		redirect(302, '/catalog/' + Number(params.itemid) + '/' + slugItemName)
 	}
 
 	return {

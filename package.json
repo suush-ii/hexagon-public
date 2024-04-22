@@ -58,9 +58,11 @@
 		"drizzle-orm": "^0.29.3",
 		"jose": "^5.2.4",
 		"lucia": "^2.7.7",
-		"lucide-svelte": "^0.307.0",
+		"lucide-svelte": "^0.372.0",
+		"mode-watcher": "^0.3.0",
 		"postgres": "^3.4.3",
 		"svelte-adapter-bun": "^0.5.1",
+		"svelte-sonner": "^0.3.22",
 		"tailwind-merge": "^2.2.0",
 		"tailwind-variants": "^0.1.20"
 	}

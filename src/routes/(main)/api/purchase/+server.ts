@@ -68,7 +68,7 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 	const alreadyOwned = await db
 		.select()
 		.from(inventoryTable)
-		.where(eq(inventoryTable.userid, locals.user.userid))
+		.where(and(eq(inventoryTable.userid, locals.user.userid), eq(inventoryTable.itemid, itemid)))
 		.limit(1)
 
 	if (alreadyOwned.length > 0) {
@@ -90,15 +90,17 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 	await db.transaction(async (tx) => {
 		try {
 			if (item.price !== null) {
-				const [newUser] = await tx // take away they mooners
-					.update(usersTable)
-					.set({ coins: user.coins - item.price })
-					.where(eq(usersTable.userid, user.userid))
-					.returning({ coins: usersTable.coins })
+				if (item.author.userid !== Number(user.userid)) {
+					const [newUser] = await tx // take away they mooners
+						.update(usersTable)
+						.set({ coins: user.coins - item.price })
+						.where(eq(usersTable.userid, user.userid))
+						.returning({ coins: usersTable.coins })
 
-				if (newUser.coins < 0) {
-					tx.rollback()
-					return
+					if (newUser.coins < 0) {
+						tx.rollback()
+						return
+					}
 				}
 
 				await tx.insert(inventoryTable).values({ itemid, userid: user.userid, wearing: false })
@@ -111,21 +113,25 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 					sourceuserid: item.author.userid
 				})
 
-				await tx
-					.update(usersTable)
-					.set({ coins: item.author.coins + item.price })
-					.where(eq(usersTable.userid, item.author.userid)) // pay the owner of shirt/asset
+				if (item.author.userid !== Number(user.userid)) {
+					await tx
+						.update(usersTable)
+						.set({ coins: item.author.coins + item.price })
+						.where(eq(usersTable.userid, item.author.userid)) // pay the owner of shirt/asset
+				}
+
+				await tx.insert(transactionsTable).values({
+					userid: item.author.userid,
+					itemid,
+					type: 'sales',
+					amount: item.price,
+					sourceuserid: user.userid
+				})
 
 				await tx
 					.update(assetTable)
 					.set({ sales: item.sales + 1 })
 					.where(eq(assetTable.assetid, itemid))
-
-				return json({
-					success: true,
-					message: 'Item purchased!',
-					data: {}
-				})
 			}
 		} catch (e) {
 			tx.rollback()
@@ -133,9 +139,9 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 		}
 	})
 
-	return error(400, {
-		success: false,
-		message: 'Not enough moons!',
+	return json({
+		success: true,
+		message: 'Item purchased!',
 		data: {}
 	})
 }

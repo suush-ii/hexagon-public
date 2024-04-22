@@ -8,13 +8,14 @@ import type { assetStates } from '$src/lib/types'
 import { S3 } from '$lib/server/s3'
 import { DeleteObjectCommand } from '@aws-sdk/client-s3'
 import { s3BucketName } from '$src/stores'
+import { adminLogsTable } from '$src/lib/server/schema'
 
 const approveAssetsSchema = z.object({
 	moderationState: z.enum(['pending', 'approved', 'rejected', 'deleted']),
 	assetId: z.coerce.number().int()
 })
 
-export const POST: RequestHandler = async ({ request }) => {
+export const POST: RequestHandler = async ({ request, locals }) => {
 	let assets: {
 		assetId: number
 		moderationState: assetStates
@@ -80,11 +81,28 @@ export const POST: RequestHandler = async ({ request }) => {
 				}
 			}
 
+			const action = newModerationState === 'approved' ? 'approvedasset' : 'rejectedasset'
+
 			if (asset.assetType === 'images') {
-				await db
+				const associatedAsset = await db
 					.update(assetTable)
 					.set({ moderationstate: newModerationState })
 					.where(eq(assetTable.associatedimageid, asset.assetId)) // update the associated asset as well
+					.returning({ assetId: assetTable.assetid })
+
+				await db.insert(adminLogsTable).values({
+					userid: locals.user.userid,
+					associatedid: associatedAsset[0].assetId,
+					associatedidtype: 'item',
+					action
+				})
+			} else {
+				await db.insert(adminLogsTable).values({
+					userid: locals.user.userid,
+					associatedid: asset.assetId,
+					associatedidtype: 'item',
+					action
+				})
 			}
 		}
 	}

@@ -109,9 +109,6 @@
 			>
 				<Slider
 					bind:value={grah}
-					on:click={() => {
-						console.log('test')
-					}}
 					max={duration}
 					step={0.01}
 					onValueChange={movePosition}

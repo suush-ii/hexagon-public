@@ -9,11 +9,14 @@
 	import * as AlertDialog from '$src/components/ui/alert-dialog'
 	import { formatCompactNumber } from '$lib/utils'
 
+	import { toast } from 'svelte-sonner'
+
 	import RelativeTime from '@yaireo/relative-time'
 
 	const relativeTime = new RelativeTime()
 
 	import type { PageData } from './$types'
+	import { invalidateAll } from '$app/navigation'
 
 	export let data: PageData
 
@@ -31,6 +34,17 @@
 				itemid: data.item.assetid
 			})
 		})
+
+		const json = await response.json()
+
+		if (json.success === false) {
+			toast.error(json.message)
+		} else {
+			toast.success('Item purchased successfully!')
+			invalidateAll()
+		}
+
+		purchasing = false
 	}
 
 	const itemName = data.item.assetType.charAt(0).toUpperCase() + data.item.assetType.slice(1)
@@ -86,7 +100,7 @@
 			<h1 class="text-sm flex items-center gap-x-1">
 				<Box />All
 			</h1>
-			{#if data.item.assetType === 'gear'}
+			{#if data.item.assetType === 'gears'}
 				<h1 class="text-sm text-muted-foreground">Gear Attributes:</h1>
 				<!--TODO: do a better way to configure icons for these probably a json and associate htem with icons ez-->
 				<!--Important to list these for gears only-->
@@ -108,13 +122,17 @@
 				<Card.Content>
 					<AlertDialog.Root closeOnOutsideClick={true}>
 						<AlertDialog.Trigger asChild let:builder>
-							{#if !data.alreadyOwned}
+							{#if !data.alreadyOwned && data.user.coins >= (data.item.price ?? 0)}
 								<Button builders={[builder]} class="w-full font-semibold text-lg"
 									>Buy with <MoonStar class="h-4 " /></Button
 								>
-							{:else}
+							{:else if data.alreadyOwned}
 								<Button builders={[builder]} class="w-full font-semibold text-lg" disabled
 									>Already Owned</Button
+								>
+							{:else if data.item.price ?? 0 > data.user.coins}
+								<Button builders={[builder]} class="w-full font-semibold text-lg" disabled
+									>Not Enough <MoonStar class="h-4 " /></Button
 								>
 							{/if}
 						</AlertDialog.Trigger>

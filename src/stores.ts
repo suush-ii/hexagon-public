@@ -11,6 +11,7 @@ console.log(
 		appName +
 		'\nUsing s3 bucket... ' +
 		s3BucketName +
+		"\nYou probably shouldn't paste here... (◕‿◕)" +
 		'\u001b[0m'
 )
 export const currencyName: string = 'Moon'

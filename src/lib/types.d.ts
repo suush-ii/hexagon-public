@@ -6,12 +6,13 @@ export type userGenders = 'male' | 'female' | 'nonbinary'
 
 export type gameGenre = (typeof gameGenreZod)[number]
 
-export type assetTypes = 'games' | 'audio' | 'decals'
+export type assetTypes = 'games' | 'audio' | 'decals' | 'shirts' | 'pants' | 'gears' | 'images'
+
+export type renderStatus = 'pending' | 'completed'
 
 export type clientVersions = '2014' | '2013'
 
-export type assetStates = 'pending' | 'approved' | 'rejected' | 'deleted'
-
+export type assetStates = 'pending' | 'approved' | 'rejected'
 import type { SvelteComponent } from 'svelte'
 export type Component = $$Generic<typeof SvelteComponent<any, any, any>>
 

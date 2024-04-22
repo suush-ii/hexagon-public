@@ -52,6 +52,7 @@ const permissionLevels = [
 const adminPanelPermissions = [
 	{ path: '/admin/sitealert', requiredLevel: 1 },
 	{ path: '/admin/configuration', requiredLevel: 1 },
+	{ path: '/admin/reports', requiredLevel: 3 },
 	{ path: '/admin/users', requiredLevel: 3 },
 	{ path: '/admin/catalog', requiredLevel: 4 },
 	{ path: '/admin/logs', requiredLevel: 4 }
@@ -105,7 +106,7 @@ export const handle: Handle = sequence(rccAuth, async ({ event, resolve }) => {
 				try {
 					await tx
 						.update(usersTable)
-						.set({ laststipend: currentTime, coins: user.coins + 25 })
+						.set({ laststipend: currentTime, coins: Number(event.locals.user.coins) + 25 })
 						.where(eq(usersTable.userid, user.userid))
 
 					await tx.insert(transactionsTable).values({

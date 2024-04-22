@@ -51,7 +51,7 @@ export const load: LayoutServerLoad = async ({ params, locals, depends, cookies,
 
 	const slugGameName = slugify(place.associatedgame.gamename)
 
-	if (params?.game !== slugGameName) {
+	if (params?.game !== slugGameName && slugGameName !== '') {
 		redirect(302, '/games/' + Number(params.gameid) + '/' + slugGameName)
 	}
 

@@ -12,6 +12,8 @@ import type { userState, userRole, userGenders } from '$lib/types'
 import { relations } from 'drizzle-orm'
 import { keyTable } from './keys'
 import { gamesTable, jobsTable } from './games'
+import type { ActionTypes } from '../admin'
+import { assetTable } from './assets'
 
 // with timestamps ALWAYS USE WITHTIMEZONE!!!
 
@@ -55,6 +57,32 @@ export const transactionsTable = pgTable('transactions', {
 	amount: bigint('amount', { mode: 'number' }).notNull(),
 	sourceuserid: bigint('sourceuserid', { mode: 'number' })
 })
+
+export const adminLogsTable = pgTable('adminlogs', {
+	logid: bigserial('logid', { mode: 'number' }).notNull().primaryKey(),
+	userid: bigint('userid', { mode: 'number' }).notNull(),
+	associatedid: bigint('associatedid', { mode: 'number' }).notNull(),
+	associatedidtype: text('associatedidtype').$type<'item' | 'user' | 'game' | 'job'>().notNull(),
+	time: timestamp('time', { mode: 'date', withTimezone: true }).notNull().defaultNow(),
+	action: text('action').$type<ActionTypes>().notNull(),
+	banlength: text('banlength').$type<'1 day' | '3 days' | '7 days' | '14 days'>(),
+	newrole: text('newrole').$type<userRole>()
+})
+
+export const adminLogsRelations = relations(adminLogsTable, ({ one }) => ({
+	admin: one(usersTable, {
+		fields: [adminLogsTable.userid],
+		references: [usersTable.userid]
+	}),
+	game: one(gamesTable, {
+		fields: [adminLogsTable.associatedid],
+		references: [gamesTable.universeid]
+	}),
+	asset: one(assetTable, {
+		fields: [adminLogsTable.associatedid],
+		references: [assetTable.assetid]
+	})
+}))
 
 export const usersRelations = relations(usersTable, ({ many, one }) => ({
 	keysCreated: many(keyTable),

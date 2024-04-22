@@ -61,6 +61,7 @@
 		<li class="path2 ml-4 relative"><a href="/admin/configuration">Configuration</a></li>
 
 		<li class="path2 ml-4 relative"><a href="/admin/sitealert">Site Alert</a></li>
+		<li class="path2 ml-4 relative"><a href="/admin/reports">Reports</a></li>
 		<li class="path2 ml-4 relative"><a href="/admin/logs">Logs</a></li>
 
 		{#each subLists as { title, links }}

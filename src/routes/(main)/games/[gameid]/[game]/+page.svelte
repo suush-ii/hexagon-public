@@ -248,7 +248,7 @@
 							<Separator class="mt-2" />
 						</div>
 					</Tabs.Content>
-					<ReportButton class="justify-end" />
+					<ReportButton class="ml-auto" />
 
 					{#if $page.url.searchParams.get('page') === 'servers'}
 						<Tabs.Content value="servers" class="flex flex-col gap-y-4">

@@ -2,6 +2,8 @@
 	import '$src/app.postcss'
 	import Navbar from '$src/components/navbar.svelte'
 
+	import { Toaster } from '$src/components/ui/sonner'
+
 	import { page } from '$app/stores'
 
 	import type { PageData } from './$types'
@@ -39,6 +41,8 @@
 			? ''
 			: '!pt-0'} flex flex-1 flex-wrap"
 	>
+		<Toaster theme="dark" />
+
 		<slot />
 	</main>
 </div>

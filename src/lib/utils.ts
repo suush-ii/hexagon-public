@@ -84,3 +84,13 @@ export const stateTextMap = {
 	studio: 'text-orange',
 	offline: 'text-muted-foreground/70'
 }
+
+export function getPageNumber(url: URL) {
+	let page = Number(url.searchParams.get('page') ?? 1)
+
+	if (page < 1) {
+		page = 1
+	}
+
+	return page
+}

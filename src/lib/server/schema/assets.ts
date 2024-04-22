@@ -1,22 +1,14 @@
 import { relations } from 'drizzle-orm'
 import { bigint, integer, bigserial, pgTable, text, timestamp } from 'drizzle-orm/pg-core'
 import { placesTable } from './games'
-import type { assetStates } from '$lib/types'
+import type { assetStates, assetTypes } from '$lib/types'
 import { usersTable } from './users'
 
 export const assetTable = pgTable('assets', {
 	assetid: bigserial('assetid', { mode: 'number' }).notNull().primaryKey(),
 	assetname: text('assetname').notNull(),
 	assetType: text('assettype')
-		.$type<
-			| 'games'
-			| 'audio'
-			| 'decals'
-			| 'shirts'
-			| 'pants'
-			| 'gear'
-			| 'images' /* Images are used internally for things likes shirts and pants */
-		>()
+		.$type<assetTypes /* Images are used internally for things likes shirts and pants */>()
 		.notNull(),
 	created: timestamp('created', { mode: 'date', withTimezone: true }).notNull().defaultNow(),
 	updated: timestamp('updated', { mode: 'date', withTimezone: true }).notNull().defaultNow(),
