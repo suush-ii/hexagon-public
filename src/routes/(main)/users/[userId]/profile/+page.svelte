@@ -5,15 +5,21 @@
 
 	import { stateTextMap } from '$lib/utils'
 
-	import * as Avatar2 from '$src/components/ui/avatar'
-
 	import { Separator } from '$src/components/ui/separator'
+
+	import RelativeTime from '@yaireo/relative-time'
+
+	const relativeTime = new RelativeTime()
 
 	import type { PageData } from './$types'
 
 	export let data: PageData
 
 	const textColor = stateTextMap[data.status]
+
+	import { pageName } from '$src/stores'
+
+	pageName.set(data.username)
 </script>
 
 <div class="container p-4 flex flex-col gap-y-4 pt-8">
@@ -74,7 +80,7 @@
 
 					<div>
 						<p class="font-bold text-muted-foreground">Last Online</p>
-						<p>{data.lastactivetime.toLocaleString('en-US')}</p>
+						<p>{relativeTime.from(data.lastactivetime)}</p>
 					</div>
 				</div>
 

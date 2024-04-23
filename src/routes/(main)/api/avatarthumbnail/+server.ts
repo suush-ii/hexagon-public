@@ -12,13 +12,13 @@ import { S3 } from '$lib/server/s3'
 const Key = 'thumbnails'
 
 const avatarSchema = z.object({
-	type: z.enum(['headshot', 'avatar']),
+	type: z.enum(['headshot', 'avatar', 'obj']),
 	userid: z.coerce.number().int()
 })
 
 export const POST: RequestHandler = async ({ request }) => {
 	let userid: number
-	let type: 'headshot' | 'avatar'
+	let type: 'headshot' | 'avatar' | 'obj'
 	let result
 	try {
 		;({ userid, type } = await request.json())
@@ -57,7 +57,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		})
 	}
 
-	if (type === 'avatar') {
+	if (type === 'avatar' || type === 'obj') {
 		if (!user[0].avatarbody) {
 			// we need to generate it
 			const [instanceNew] = await db
@@ -133,28 +133,40 @@ export const POST: RequestHandler = async ({ request }) => {
 				textures: []
 			}
 
-			//console.log(Object.keys(_3dManifest.files))
+			//console.log(Object.keys(_3dManifest.files).reverse())
 
-			for (const [key, value] of Object.entries(_3dManifest.files)) {
+			let mtlAssets: Record<string, string> = {}
+
+			for (const [key, value] of Object.entries(_3dManifest.files).reverse()) {
+				// reverse is important here so we can list the files first then change them to their hash in the mtl file as the mtl file comes before the textures
 				// loop through all files and upload them / create the manifest for three.js
 				const extension = key.split('.').pop()
 
+				let fileContent: Buffer | String = Buffer.from(value.content, 'base64')
+
 				const fileHash = Buffer.from(
-					createHash('sha512').update(value.content).digest('hex')
+					createHash('sha512').update(fileContent).digest('hex')
 				).toString()
 
 				if (extension === 'obj') {
 					newManifest['obj'] = fileHash
 				} else if (extension === 'mtl') {
+					const pattern = new RegExp(Object.keys(mtlAssets).join('|'), 'g')
+
+					fileContent = fileContent.toString()
+
+					fileContent = fileContent.replace(pattern, (match) => `${mtlAssets[match]}`)
+
 					newManifest['mtl'] = fileHash
 				} else {
 					newManifest['textures'].push(fileHash)
+					mtlAssets[key] = fileHash
 				}
 
 				const command = new PutObjectCommand({
 					Bucket: s3BucketName,
 					Key: 'thumbnails' + '/' + fileHash,
-					Body: Buffer.from(value.content, 'base64'),
+					Body: fileContent as Buffer,
 					ContentType:
 						extension === 'mtl' || extension === 'obj' ? `model/${extension}` : `image/${extension}`
 				})
@@ -173,13 +185,13 @@ export const POST: RequestHandler = async ({ request }) => {
 			}
 
 			// finally upload the manifest
-			const fileHash = Buffer.from(
+			const _3dfileHash = Buffer.from(
 				createHash('sha512').update(JSON.stringify(newManifest)).digest('hex')
 			).toString()
 
 			const commandManifest = new PutObjectCommand({
 				Bucket: s3BucketName,
-				Key: 'thumbnails' + '/' + fileHash,
+				Key: 'thumbnails' + '/' + _3dfileHash,
 				Body: Buffer.from(JSON.stringify(newManifest)),
 				ContentType: 'application/json'
 			})
@@ -198,12 +210,20 @@ export const POST: RequestHandler = async ({ request }) => {
 
 			await db
 				.update(usersTable)
-				.set({ avatarbody: fileName, _3dmanifest: fileHash })
+				.set({ avatarbody: fileName, _3dmanifest: _3dfileHash })
 				.where(eq(usersTable.userid, userid))
 
 			await db.delete(jobsTable).where(eq(jobsTable.jobid, instanceNew.jobid))
 
 			//console.log(_3dManifest.files)
+
+			if (type === 'obj') {
+				return json({
+					success: true,
+					message: '',
+					data: { url: `https://${s3Url}/${Key}/${_3dfileHash}`, status: 'completed' }
+				})
+			}
 
 			return json({
 				success: true,
@@ -211,12 +231,19 @@ export const POST: RequestHandler = async ({ request }) => {
 				data: { url: `https://${s3Url}/${Key}/${fileName}`, status: 'completed' }
 			})
 		} else {
-			const url = `https://${s3Url}/${Key}/${user[0].avatarbody}`
 			// it does exist return cdn url!
+			if (type === 'obj') {
+				return json({
+					success: true,
+					message: '',
+					data: { url: `https://${s3Url}/${Key}/${user[0]._3dmanifest}`, status: 'completed' }
+				})
+			}
+
 			return json({
 				success: true,
 				message: '',
-				data: { url: url, status: 'completed' }
+				data: { url: `https://${s3Url}/${Key}/${user[0].avatarbody}`, status: 'completed' }
 			})
 		}
 	}

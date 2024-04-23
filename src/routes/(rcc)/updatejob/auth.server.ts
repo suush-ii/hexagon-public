@@ -9,7 +9,8 @@ export const rccAuth = (async ({ event, resolve }) => {
 		pathname === '/GetAllowedSecurityVersions' /*||
 		pathname === '/game/gameserver.ashx'*/
 	) {
-		const accessKey = event.url.searchParams.get('accessKey')
+		const accessKey =
+			event.url.searchParams.get('accessKey') || event.request.headers.get('accessKey')
 
 		if (!accessKey || RCC_ACCESS_KEY != accessKey) {
 			return error(403, {

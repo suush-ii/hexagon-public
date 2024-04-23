@@ -44,7 +44,17 @@ try {
 
 const configPrepared = db.select().from(configTable).limit(1).prepare('configGrab')
 
-const protectedRoutes = ['/home', '/catalog', '/develop', '/games']
+const protectedRoutes = [
+	'/home',
+	'/catalog',
+	'/develop',
+	'/games',
+	'/settings',
+	'/transactions',
+	'/avatar',
+	'/friends',
+	'/users'
+]
 const adminProtectedRoutes = ['/admin', '/api/admin']
 
 const permissionLevels = [
