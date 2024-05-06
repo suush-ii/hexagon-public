@@ -1,6 +1,8 @@
 <script lang="ts">
 	import type { userRole } from '$lib/types'
 
+	import { Badge } from '$src/components/ui/badge'
+
 	let subLists = [
 		{
 			title: 'People',
@@ -20,6 +22,8 @@
 	]
 
 	export let role: userRole
+
+	export let queueCount: number
 </script>
 
 <svelte:head>
@@ -61,7 +65,13 @@
 		<li class="path2 ml-4 relative"><a href="/admin/configuration">Configuration</a></li>
 
 		<li class="path2 ml-4 relative"><a href="/admin/sitealert">Site Alert</a></li>
-		<li class="path2 ml-4 relative"><a href="/admin/reports">Reports</a></li>
+		<li class="path2 ml-4 relative">
+			<a href="/admin/reports"
+				>Reports <Badge class="ml-4 text-lg h-6 overflow-hidden" variant="destructive"
+					>{queueCount}</Badge
+				></a
+			>
+		</li>
 		<li class="path2 ml-4 relative"><a href="/admin/logs">Logs</a></li>
 
 		{#each subLists as { title, links }}
@@ -69,7 +79,14 @@
 				<li class="path path2">{title}</li>
 				<ul class="list-disc list-inside ml-4">
 					{#each links as { title, href }}
-						<li class="path2 relative"><a {href}>{title}</a></li>
+						<li class="path2 relative">
+							<a {href}
+								>{title}
+								{#if title === 'Queue'}
+									<Badge class="ml-4 text-lg h-6 overflow-hidden">{queueCount}</Badge>
+								{/if}
+							</a>
+						</li>
 					{/each}
 				</ul>
 			</ul>

@@ -1,7 +1,7 @@
 <script lang="ts">
-	import SidePanel from '$src/components/admin/sidepanel.svelte'
 	import { invalidate } from '$app/navigation'
 	import { Button } from '$src/components/ui/button'
+	import { Loader2 } from 'lucide-svelte'
 
 	import QueueCard from '$src/components/admin/queuecard.svelte'
 	import EmptyCard from '$src/components/emptyCard.svelte'
@@ -14,7 +14,11 @@
 
 	export let data: PageData
 
+	let submitting = false
+
 	async function submitAsssets() {
+		submitting = true
+
 		const assetsToSend = data.assets
 			.filter((asset) => asset.moderationState !== 'pending')
 			.map((asset) => ({
@@ -31,6 +35,8 @@
 		})
 
 		invalidate('app:assetqueue')
+
+		submitting = false
 	}
 </script>
 
@@ -42,32 +48,32 @@
 	}}
 />
 
-<div class="w-full flex flex-row">
-	<div class="p-4 flex-shrink-0">
-		<SidePanel role={data.user.role} />
-	</div>
+<div class="p-8 flex flex-col space-y-4 grow">
+	<h1 class="text-xl">Queue: {data.assetCount}</h1>
+	<h1 class="text-xl">You can press enter instead of submit</h1>
 
-	<div class="p-8 flex flex-col space-y-4 grow">
-		<h1 class="text-xl">Queue: {data.assetCount}</h1>
-		<h1 class="text-xl">You can press enter instead of submit</h1>
-
-		<div class="flex flex-row">
-			<div class="flex flex-row flex-wrap grow gap-x-8">
-				{#each data.assets as asset}
-					<QueueCard
-						bind:moderationState={asset.moderationState}
-						assetType={asset.assetType}
-						assetId={asset.assetId}
-						assetName={asset.assetName}
-						assetUrl={asset.assetUrl}
-						creatorUserId={asset.creatorUserId}
-					/>
-				{/each}
-				{#if data?.assets?.length === 0}
-					<EmptyCard />{/if}
-			</div>
-
-			<Button on:click={submitAsssets} variant="outline" class="grow max-w-60">Submit</Button>
+	<div class="flex flex-row">
+		<div class="flex flex-row flex-wrap grow gap-x-8">
+			{#each data.assets as asset}
+				<QueueCard
+					bind:moderationState={asset.moderationState}
+					assetType={asset.assetType}
+					assetId={asset.assetId}
+					assetName={asset.assetName}
+					assetUrl={asset.assetUrl}
+					creatorUserId={asset.creatorUserId}
+				/>
+			{/each}
+			{#if data?.assets?.length === 0}
+				<EmptyCard />
+			{/if}
 		</div>
+
+		<Button on:click={submitAsssets} variant="outline" class="grow max-w-60" disabled={submitting}
+			>{#if submitting}
+				<Loader2 class="mr-2 h-4 w-4 animate-spin" />
+			{/if}
+			Submit</Button
+		>
 	</div>
 </div>

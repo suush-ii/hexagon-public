@@ -37,7 +37,8 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 		columns: {
 			price: true,
 			moderationstate: true,
-			sales: true
+			sales: true,
+			assetType: true
 		},
 		with: {
 			author: {
@@ -103,7 +104,9 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 					}
 				}
 
-				await tx.insert(inventoryTable).values({ itemid, userid: user.userid, wearing: false })
+				await tx
+					.insert(inventoryTable)
+					.values({ itemid, userid: user.userid, wearing: false, itemtype: item.assetType })
 
 				await tx.insert(transactionsTable).values({
 					userid: user.userid,

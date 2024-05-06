@@ -1,16 +1,13 @@
 <script lang="ts">
-	import SidePanel from '$src/components/admin/sidepanel.svelte'
-
 	import * as Table from '$src/components/ui/table'
 
 	import { pageName } from '$src/stores'
 
-	import * as Pagination from '$src/components/ui/pagination'
+	import PaginationWrapper from '$src/components/pagnationWrapper.svelte'
 
 	pageName.set('Admin')
 
 	import type { PageData } from './$types'
-	import { ChevronLeft, ChevronRight } from 'lucide-svelte'
 
 	import { getText } from './index.js'
 	import type { ActionTypes } from '$src/lib/server/admin'
@@ -78,10 +75,6 @@
 	export let data: PageData
 </script>
 
-<div class="p-4">
-	<SidePanel role={data.user.role} />
-</div>
-
 <div class="p-8 flex flex-col space-y-4 grow mx-auto max-w-7xl">
 	{#if data.logs}
 		<div class="h-full flex flex-col justify-around py-4">
@@ -134,42 +127,7 @@
 				</Table.Root>
 			</div>
 
-			<Pagination.Root
-				class="justify-self-end"
-				count={data.logsCount[0].count}
-				perPage={30}
-				siblingCount={1}
-				let:pages
-				let:currentPage
-			>
-				<Pagination.Content>
-					<Pagination.Item>
-						<Pagination.PrevButton on:click={previousPage}>
-							<ChevronLeft class="h-4 w-4" />
-							<span class="hidden sm:block">Previous</span>
-						</Pagination.PrevButton>
-					</Pagination.Item>
-					{#each pages as page (page.key)}
-						{#if page.type === 'ellipsis'}
-							<Pagination.Item>
-								<Pagination.Ellipsis />
-							</Pagination.Item>
-						{:else}
-							<Pagination.Item>
-								<Pagination.Link {page} isActive={currentPage === page.value}>
-									{page.value}
-								</Pagination.Link>
-							</Pagination.Item>
-						{/if}
-					{/each}
-					<Pagination.Item>
-						<Pagination.NextButton on:click={nextPage}>
-							<span class="hidden sm:block">Next</span>
-							<ChevronRight class="h-4 w-4" />
-						</Pagination.NextButton>
-					</Pagination.Item>
-				</Pagination.Content>
-			</Pagination.Root>
+			<PaginationWrapper count={data.logsCount[0].count} size={30} url={$page.url} />
 		</div>
 	{/if}
 </div>

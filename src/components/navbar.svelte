@@ -99,7 +99,9 @@
 					<DropdownMenu.Content>
 						<DropdownMenu.Label class="select-none">My Account</DropdownMenu.Label>
 						<DropdownMenu.Separator />
-						<a href="/transactions"><DropdownMenu.Item>My Transactions</DropdownMenu.Item></a>
+						<a href="/transactions"
+							><DropdownMenu.Item class="cursor-pointer">My Transactions</DropdownMenu.Item></a
+						>
 						<DropdownMenu.Item
 							>{coins}
 							{coins != 1 ? currencyNamePlural : currencyName}
@@ -117,8 +119,12 @@
 					<DropdownMenu.Content>
 						<DropdownMenu.Label class="select-none">My Account</DropdownMenu.Label>
 						<DropdownMenu.Separator />
-						<a href="/settings"><DropdownMenu.Item>Settings</DropdownMenu.Item></a>
-						<a href="/logout"><DropdownMenu.Item>Logout</DropdownMenu.Item></a>
+						<a href="/settings"
+							><DropdownMenu.Item class="cursor-pointer">Settings</DropdownMenu.Item></a
+						>
+						<a href="/logout"
+							><DropdownMenu.Item class="cursor-pointer">Logout</DropdownMenu.Item></a
+						>
 					</DropdownMenu.Content>
 				</DropdownMenu.Root>
 			{/if}

@@ -2,13 +2,14 @@ import {
 	bigint,
 	bigserial,
 	integer,
+	smallint,
 	pgTable,
 	text,
 	timestamp,
 	varchar,
 	boolean
 } from 'drizzle-orm/pg-core'
-import type { userState, userRole, userGenders } from '$lib/types'
+import type { userState, userRole, userGenders, AssetTypes } from '$lib/types'
 import { relations } from 'drizzle-orm'
 import { keyTable } from './keys'
 import { gamesTable, jobsTable } from './games'
@@ -35,7 +36,13 @@ export const usersTable = pgTable('users', {
 		.defaultNow(),
 	avatarheadshot: text('avatarheadshot'),
 	avatarbody: text('avatarbody'),
-	_3dmanifest: text('3dmanifest')
+	_3dmanifest: text('3dmanifest'),
+	headcolor: smallint('headcolor').default(24).notNull(),
+	leftarmcolor: smallint('leftarmcolor').default(24).notNull(),
+	leftlegcolor: smallint('leftlegcolor').default(119).notNull(),
+	rightarmcolor: smallint('rightarmcolor').default(24).notNull(),
+	rightlegcolor: smallint('rightlegcolor').default(119).notNull(),
+	torsocolor: smallint('torsocolor').default(23).notNull() // noob colors
 })
 
 export const inventoryTable = pgTable('inventory', {
@@ -45,7 +52,8 @@ export const inventoryTable = pgTable('inventory', {
 	wearing: boolean('wearing').notNull(),
 	obatineddate: timestamp('obatineddate', { mode: 'date', withTimezone: true })
 		.notNull()
-		.defaultNow()
+		.defaultNow(),
+	itemtype: text('itemtype').$type<AssetTypes>().notNull()
 })
 
 export const transactionsTable = pgTable('transactions', {
@@ -90,12 +98,24 @@ export const usersRelations = relations(usersTable, ({ many, one }) => ({
 	activegame: one(jobsTable, {
 		fields: [usersTable.userid],
 		references: [jobsTable.players]
-	})
+	}),
+	inventory: many(inventoryTable)
 }))
 
 export const keysRelations = relations(keyTable, ({ one }) => ({
 	author: one(usersTable, {
 		fields: [keyTable.madebyuserid],
+		references: [usersTable.userid]
+	})
+}))
+
+export const inventoryRelations = relations(inventoryTable, ({ one }) => ({
+	asset: one(assetTable, {
+		fields: [inventoryTable.itemid],
+		references: [assetTable.assetid]
+	}),
+	owner: one(usersTable, {
+		fields: [inventoryTable.userid],
 		references: [usersTable.userid]
 	})
 }))

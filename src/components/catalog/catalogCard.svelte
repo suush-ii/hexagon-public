@@ -1,5 +1,6 @@
 <script lang="ts">
-	import * as Avatar from '$src/components/ui/avatar'
+	//import * as Avatar from '$src/components/ui/avatar'
+	import Avatar from './avatar.svelte'
 	import { MoonStar } from 'lucide-svelte'
 	import RelativeTime from '@yaireo/relative-time'
 	import { formatCompactNumber } from '$lib/utils'
@@ -27,10 +28,7 @@
 	class="flex flex-col w-32 group hover:outline-dashed outline-muted-foreground/20 outline-offset-8"
 >
 	<a href="/catalog/{itemId}/{slugify(itemName)}">
-		<Avatar.Root class="w-32 h-32 rounded-xl aspect-square">
-			<Avatar.Image src={'/Images/iconplaceholder.png'} alt={itemName} loading="lazy" />
-			<Avatar.Fallback />
-		</Avatar.Root>
+		<Avatar css="w-32 h-32 rounded-xl aspect-square" {itemId} {itemName} disable3d={true} />
 		<h1 class="line-clamp-2 tracking-tighter break-words text-xl hover:underline">{itemName}</h1>
 		<h1 class="tracking-tighter truncate text-sm flex flex-row">
 			<MoonStar class="h-5" />{cost}

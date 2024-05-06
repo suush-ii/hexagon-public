@@ -55,7 +55,7 @@ export const fallback: RequestHandler = async ({ url, locals }) => {
 	}
 
 	joinJson.MachineAddress = '127.0.0.1'
-	joinJson.ServerPort = 53640
+	joinJson.ServerPort = 25565
 
 	joinJson.UserName = 'Player'
 	joinJson.UserId = 1

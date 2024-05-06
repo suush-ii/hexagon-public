@@ -25,7 +25,8 @@ export const load: LayoutServerLoad = async ({ params, locals }) => {
 			created: true,
 			updated: true,
 			sales: true,
-			description: true
+			description: true,
+			moderationstate: true
 		},
 		with: {
 			author: {

@@ -6,7 +6,7 @@ export const categories = [
 		types: [
 			{ value: 'featured', label: 'All Featured Items' },
 			{ value: 'featuredhats', label: 'Featured Hats' },
-			{ value: 'featuredgear', label: 'Featured Gear' },
+			{ value: 'featuredgears', label: 'Featured Gear' },
 			{ value: 'featuredfaces', label: 'Featured Faces' },
 			{ value: 'featuredpackages', label: 'Featured Packages' }
 		]
@@ -18,7 +18,7 @@ export const categories = [
 			{ value: 'collectibles', label: 'All Collectibles' },
 			{ value: 'collectibleface', label: 'Collectible Faces' },
 			{ value: 'collectiblehats', label: 'Collectibles Hats' },
-			{ value: 'collectiblegear', label: 'Collectibles Gear' }
+			{ value: 'collectiblegears', label: 'Collectibles Gear' }
 		]
 	},
 	{
@@ -28,7 +28,7 @@ export const categories = [
 			{ value: 'clothing', label: 'All Clothing' },
 			{ value: 'hats', label: 'Hats' },
 			{ value: 'shirts', label: 'Shirts' },
-			{ value: 'tshirts', label: 'T-Shirts' },
+			{ value: 't-shirts', label: 'T-Shirts' },
 			{ value: 'pants', label: 'Pants' },
 			{ value: 'packages', label: 'Packages' }
 		]
@@ -44,10 +44,10 @@ export const categories = [
 		]
 	},
 	{
-		value: 'gear',
+		value: 'gears',
 		label: 'Gear',
 		types: [
-			{ value: 'gear', label: 'All Gear' },
+			{ value: 'gears', label: 'All Gear' },
 			{ value: 'meleeweapon', label: 'Melee Weapon' },
 			{ value: 'rangedweapon', label: 'Ranged Weapon' },
 			{ value: 'explosive', label: 'Explosive' },

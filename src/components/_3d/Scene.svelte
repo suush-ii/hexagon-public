@@ -7,7 +7,7 @@
 
 	import Camera from './Camera.svelte'
 	import { s3Url } from '$src/stores'
-	import { Mesh, MeshStandardMaterial } from 'three'
+	import { Mesh, MeshLambertMaterial, MeshPhongMaterial, MeshStandardMaterial } from 'three'
 	const suspend = useSuspense()
 
 	export let objManifest: any
@@ -29,14 +29,19 @@
 	const obj = suspend(
 		useLoader(OBJLoader, {
 			extend: async (loader) => {
-				loader.setMaterials(await load(objManifest.mtl))
+				const materials = await load(objManifest.mtl)
+				materials.preload()
+
+				loader.setMaterials(materials)
 			}
 		}).load(objManifest.obj, {
 			transform: (object) => {
 				object.traverse((child) => {
 					if (child instanceof Mesh) {
 						const shinyMaterial = new MeshStandardMaterial({
-							map: child.material.map
+							map: child.material.map,
+							transparent: false,
+							opacity: 1
 						})
 
 						child.material = shinyMaterial

@@ -6,14 +6,14 @@
 	<script id="Functions" type="text/jscript">
 		function insertContent(id) {
 			try {
-				window.external.Insert('http://hex.cirroskais.xyz/asset?id=' + id)
+				window.external.Insert('http://hexagon.pw/asset?id=' + id)
 			} catch (x) {
 				alert('Could not insert the requested item')
 			}
 		}
 		function dragRBX(id) {
 			try {
-				window.external.StartDrag('http://hex.cirroskais.xyz/asset?id=' + id)
+				window.external.StartDrag('http://hexagon.pw/asset?id=' + id)
 			} catch (x) {
 				alert('Sorry Could not drag the requested item')
 			}

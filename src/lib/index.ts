@@ -17,3 +17,23 @@ export const gameGenreZod = [
 	'Fighting',
 	'Western'
 ] as const
+
+export const assetTypes = [
+	'games',
+	'hats',
+	'faces',
+	'heads',
+	't-shirts',
+	'torsos',
+	'l arms',
+	'r arms',
+	'l legs',
+	'r legs',
+	'packages',
+	'audio',
+	'decals',
+	'shirts',
+	'pants',
+	'gears',
+	'images'
+] as const

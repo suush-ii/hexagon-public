@@ -14,6 +14,8 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 		}
 	})
 
+	await fetch(`http://${GAMESERVER_IP}:8000/closejob/${jobid}/${instance?.placeid ?? 0}/2016`)
+
 	if (!instance) {
 		return error(400, {
 			success: false,
@@ -23,8 +25,6 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 	}
 
 	await db.delete(jobsTable).where(eq(jobsTable.jobid, jobid))
-
-	await fetch(`http://${GAMESERVER_IP}:8000/closejob/${jobid}/${instance.placeid}/2016`)
 
 	return json({
 		success: true,

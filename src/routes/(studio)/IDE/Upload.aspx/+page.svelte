@@ -8,6 +8,6 @@
 
 <svelte:head>
 	<script>
-		//window.external.SaveUrl('https://hex.cirroskais.xyz/cum')
+		window.external.SaveUrl('https://hexagon.pw/cum')
 	</script>
 </svelte:head>

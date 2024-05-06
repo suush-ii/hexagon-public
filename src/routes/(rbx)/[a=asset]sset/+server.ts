@@ -153,13 +153,13 @@ export const GET: RequestHandler = async ({ url, request }) => {
 		// authenticate this
 		const accessKey = url.searchParams.get('accessKey')
 
-		if (!accessKey || RCC_ACCESS_KEY != accessKey) {
+		/*if (!accessKey || RCC_ACCESS_KEY != accessKey) {
 			return error(400, {
 				success: false,
 				message: "You don't have permission to access this asset.",
 				data: {}
 			})
-		}
+		}*/
 
 		redirect(302, `https://${s3Url}/${existingAsset?.assetType}/` + existingAsset?.place.placeurl)
 	}

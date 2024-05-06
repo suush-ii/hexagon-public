@@ -190,6 +190,27 @@
       "when": 1713745702022,
       "tag": "0026_known_tusk",
       "breakpoints": true
+    },
+    {
+      "idx": 27,
+      "version": "5",
+      "when": 1714001036361,
+      "tag": "0027_wise_grandmaster",
+      "breakpoints": true
+    },
+    {
+      "idx": 28,
+      "version": "5",
+      "when": 1714441964960,
+      "tag": "0028_easy_beast",
+      "breakpoints": true
+    },
+    {
+      "idx": 29,
+      "version": "5",
+      "when": 1714446222870,
+      "tag": "0029_ordinary_daimon_hellstrom",
+      "breakpoints": true
     }
   ]
 }

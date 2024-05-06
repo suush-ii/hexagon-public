@@ -15,38 +15,46 @@
 
 	export let data: PageData
 
-	const textColor = stateTextMap[data.status]
+	$: status = data.status
+
+	$: userid = data.userid
+
+	$: username = data.username
+
+	$: textColor = stateTextMap[status]
 
 	import { pageName } from '$src/stores'
 
-	pageName.set(data.username)
+	pageName.set(username)
 </script>
 
 <div class="container p-4 flex flex-col gap-y-4 pt-8">
 	<div
 		class="flex flex-row gap-x-4 bg-muted-foreground/5 p-6 rounded-xl outline-dashed outline-muted-foreground/20"
 	>
-		<Avatar state={data.status} userid={data.userid} username={data.username} />
-		<h1 class="font-semibold text-5xl">{data.username}</h1>
+		{#key data.userid}
+			<Avatar state={status} {userid} {username} />
+		{/key}
+		<h1 class="font-semibold text-5xl">{username}</h1>
 	</div>
 
 	<div class="flex flex-row h-full">
 		<div class="w-1/2 flex flex-col gap-y-4 h-full">
 			<Separator class="w-full" />
-			<h1 class="text-3xl font-semibold tracking-tight w-1/2">About {data.username}</h1>
+			<h1 class="text-3xl font-semibold tracking-tight w-1/2">About {username}</h1>
 			<div
 				class="bg-muted-foreground/5 outline-dashed outline-muted-foreground/20 rounded-xl p-6 gap-y-4 flex flex-col"
 			>
 				<div class="mx-auto flex flex-col">
-					{#if data.status == 'online'}
+					{#if status == 'online'}
 						<h1 class="text-lg {textColor} mx-auto">[ Online: Website ]</h1>
-					{:else if data.status == 'offline'}
+					{:else if status == 'offline'}
 						<h1 class="text-lg {textColor} mx-auto">[ Offline ]</h1>
-					{:else if data.status == 'game'}
+					{:else if status == 'game'}
 						<h1 class="text-lg {textColor} mx-auto hover:underline">
 							[ Online: <a href="/games/1">sdf</a> ]
 						</h1>
-					{:else if data.status == 'studio'}
+					{:else if status == 'studio'}
 						<h1 class="text-lg {textColor} mx-auto">[ Online: Studio ]</h1>
 					{/if}
 					<h1 class="text-lg {textColor} mx-auto hover:underline">
@@ -60,13 +68,15 @@
 				/>
 			</Avatar2.Root>-->
 
-				<Avatar
-					state={data.status}
-					userid={data.userid}
-					username={data.username}
-					css={'xl:h-80 h-fit w-full max-w-80 aspect-square'}
-					type="avatar"
-				/>
+				{#key data.userid}
+					<Avatar
+						state={status}
+						{userid}
+						{username}
+						css={'xl:h-80 h-fit w-full max-w-80 aspect-square'}
+						type="avatar"
+					/>
+				{/key}
 
 				<p class="mx-auto line-clamp-6 break-words">Hi!</p>
 
@@ -100,7 +110,7 @@
 				class="h-full bg-muted-foreground/5 outline-dashed outline-muted-foreground/20 rounded-xl"
 			/>
 
-			<h1 class="text-3xl font-semibold tracking-tight w-1/2">{data.username}'s Friends!</h1>
+			<h1 class="text-3xl font-semibold tracking-tight w-1/2">{username}'s Friends!</h1>
 
 			<div
 				class="h-full bg-muted-foreground/5 outline-dashed outline-muted-foreground/20 rounded-xl"

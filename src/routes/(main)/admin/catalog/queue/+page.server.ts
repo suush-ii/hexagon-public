@@ -3,14 +3,9 @@ import { db } from '$lib/server/db'
 import { eq, count, ne, and } from 'drizzle-orm'
 import { assetTable } from '$lib/server/schema/assets'
 
-export const load: PageServerLoad = async ({ depends }) => {
-	const filter = and(
-		eq(assetTable.moderationstate, 'pending'),
-		ne(assetTable.assetType, 'shirts'),
-		ne(assetTable.assetType, 'pants'),
-		ne(assetTable.assetType, 'decals')
-	)
+import { filter } from '.'
 
+export const load: PageServerLoad = async ({ depends }) => {
 	const assets = await db
 		.select({
 			assetId: assetTable.assetid,

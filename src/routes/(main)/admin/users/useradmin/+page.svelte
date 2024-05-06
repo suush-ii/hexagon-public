@@ -1,6 +1,4 @@
 <script lang="ts">
-	import SidePanel from '$src/components/admin/sidepanel.svelte'
-
 	import { pageName } from '$src/stores'
 
 	pageName.set('Admin')
@@ -17,10 +15,6 @@
 		{ friendlyName: 'Joindate', value: '4/20/2024' }
 	]
 </script>
-
-<div class="p-4">
-	<SidePanel role={data.user.role} />
-</div>
 
 <div class="p-8 flex flex-col space-y-4 grow">
 	<h1 class="text-lg">Account Summary</h1>

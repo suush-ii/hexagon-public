@@ -1,6 +1,4 @@
 <script lang="ts">
-	import SidePanel from '$src/components/admin/sidepanel.svelte'
-
 	import { Input } from '$src/components/ui/input'
 
 	import { Separator } from '$src/components/ui/separator'
@@ -15,6 +13,7 @@
 	import { zodClient } from 'sveltekit-superforms/adapters'
 
 	import { page } from '$app/stores'
+	import { Loader2 } from 'lucide-svelte'
 
 	$: redirect = $page.url.searchParams.get('redirect')
 
@@ -26,18 +25,18 @@
 		validators: zodClient(usernameSchema)
 	})
 
-	const { form: usernameData, enhance: usernameEnhance } = usernameform
+	const {
+		form: usernameData,
+		enhance: usernameEnhance,
+		submitting: usernameSubmitting
+	} = usernameform
 
 	const idForm = superForm(data.idForm, {
 		validators: zodClient(idSchema)
 	})
 
-	const { form: idData, enhance: idEnhance } = idForm
+	const { form: idData, enhance: idEnhance, submitting: idSubmitting } = idForm
 </script>
-
-<div class="p-4">
-	<SidePanel role={data.user.role} />
-</div>
 
 <div class="p-8 flex flex-col space-y-4">
 	<form class="flex align-middle space-x-4" method="POST" action="?/username" use:usernameEnhance>
@@ -48,7 +47,12 @@
 			</Form.Control>
 			<Form.FieldErrors />
 		</Form.Field>
-		<Form.Button variant="outline">Search</Form.Button>
+		<Form.Button disabled={$usernameSubmitting} variant="outline">
+			{#if $usernameSubmitting}
+				<Loader2 class="mr-2 h-4 w-4 animate-spin" />
+			{/if}
+			Search</Form.Button
+		>
 	</form>
 
 	<Separator />
@@ -66,7 +70,11 @@
 			</Form.Control>
 			<Form.FieldErrors />
 		</Form.Field>
-		<Form.Button variant="outline">Search</Form.Button>
+		<Form.Button disabled={$idSubmitting} variant="outline"
+			>{#if $idSubmitting}
+				<Loader2 class="mr-2 h-4 w-4 animate-spin" />
+			{/if}Search</Form.Button
+		>
 	</form>
 	{#if form?.users}
 		<div>

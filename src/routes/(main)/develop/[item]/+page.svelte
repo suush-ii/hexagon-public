@@ -12,6 +12,8 @@
 	import EmptyCard from '$src/components/emptyCard.svelte'
 
 	pageName.set('Develop')
+
+	$: creations = data.creations
 </script>
 
 <div class="container p-8 flex flex-col gap-y-8">
@@ -44,14 +46,14 @@
 					<h1 class="mx-auto mb-auto font-semibold text-xl">Upload Here</h1>
 				</div></a
 			>
-			{#if data.creations.length === 0}
+			{#if creations.length === 0}
 				<EmptyCard class="p-8 m-auto" />
 			{/if}
 		</Tabs.Content>
 	</Tabs.Root>
-	{#if data.creations.length > 0}
+	{#if creations.length > 0}
 		<div class="flex flex-col gap-y-4">
-			{#each data.creations as creation}
+			{#each creations as creation}
 				<div class="flex flex-row gap-x-2 w-full justify-center">
 					<Avatar.Root class="w-24 h-24 rounded-xl">
 						<Avatar.Image

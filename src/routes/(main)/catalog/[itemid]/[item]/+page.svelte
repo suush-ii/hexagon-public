@@ -1,5 +1,6 @@
 <script lang="ts">
-	import * as Avatar from '$src/components/ui/avatar'
+	import Avatar from '$src/components/catalog/avatar.svelte'
+	import UserAvatar from '$src/components/users/avatar.svelte'
 	import { MoonStar, Box, Webhook, Star } from 'lucide-svelte'
 
 	import { Button } from '$src/components/ui/button'
@@ -47,7 +48,9 @@
 		purchasing = false
 	}
 
-	const itemName = data.item.assetType.charAt(0).toUpperCase() + data.item.assetType.slice(1)
+	$: itemName = data.item.assetType.charAt(0).toUpperCase() + data.item.assetType.slice(1)
+
+	$: itemid = data.item.assetid
 </script>
 
 <div class="container p-8 flex flex-col gap-y-4">
@@ -62,17 +65,26 @@
 	</div>
 
 	<div class="flex flex-row gap-x-8 lg:flex-nowrap flex-wrap">
-		<Avatar.Root class="w-full lg:w-1/3 aspect-square h-fit rounded-xl">
-			<Avatar.Image src={'/Images/iconplaceholder.png'} />
-			<Avatar.Fallback />
-		</Avatar.Root>
+		{#key itemid}
+			<Avatar
+				css="w-full lg:w-1/3 aspect-square h-fit rounded-xl"
+				itemName={data.item.assetname}
+				itemId={itemid}
+				disable3d={data.item.moderationstate === 'approved' ? false : true}
+			/>
+		{/key}
 
 		<div class="flex flex-col gap-y-4 w-1/3">
 			<div class="flex flex-row gap-x-4">
-				<Avatar.Root class="w-20 h-20 rounded-xl">
-					<Avatar.Image src={'/Images/iconplaceholder.png'} />
-					<Avatar.Fallback />
-				</Avatar.Root>
+				{#key data.item.creatoruserid}
+					<UserAvatar
+						css="w-20 h-20 rounded-xl"
+						userid={data.item.creatoruserid}
+						username={data.item.author.username}
+						type="avatar"
+						disable3d={true}
+					/>
+				{/key}
 
 				<div class="flex flex-col gap-y-2">
 					<h1 class="text-sm text-muted-foreground">

@@ -1,4 +1,4 @@
-import { gameGenreZod } from '.'
+import { gameGenreZod, assetTypes } from '.'
 
 export type userState = 'offline' | 'online' | 'game' | 'studio'
 export type userRole = 'owner' | 'admin' | 'mod' | 'uploader' | 'normal'
@@ -6,7 +6,7 @@ export type userGenders = 'male' | 'female' | 'nonbinary'
 
 export type gameGenre = (typeof gameGenreZod)[number]
 
-export type assetTypes = 'games' | 'audio' | 'decals' | 'shirts' | 'pants' | 'gears' | 'images'
+export type AssetTypes = (typeof assetTypes)[number]
 
 export type renderStatus = 'pending' | 'completed'
 

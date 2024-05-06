@@ -212,7 +212,6 @@
 	"FFlagCreateServerScriptServiceInStudio": "True",
 	"FFlagCreateServerStorageInStudio": "True",
 	"FFlagCreateNando": "True",
-	"FFlagCreateServerStorageInStudio": "True",
 	"FFlagCreateReplicatedStorageInStudio": "True",
 	"FFlagFilterEmoteChat": "True",
 	"DFFlagUseCharacterRootforCameraTarget": "True",

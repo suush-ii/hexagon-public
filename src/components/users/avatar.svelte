@@ -4,7 +4,7 @@
 	import { Button } from '$src/components/ui/button'
 	import { stateOutlineMap } from '$lib/utils'
 	import { Canvas, extend } from '@threlte/core'
-	import Scene from './Scene.svelte'
+	import Scene from '$src/components/_3d/Scene.svelte'
 	import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 	import { Loader2 } from 'lucide-svelte'
 	import { browser } from '$app/environment'
@@ -13,54 +13,60 @@
 		OrbitControls
 	})
 
-	export let state: userState
+	export let state: userState = 'online'
 	export let userid: number // TODO: fetch
-	export let type: 'headshot' | 'avatar' | 'obj' = 'headshot'
+	export let type: 'headshot' | 'avatar' = 'headshot'
 	export let username: string = ''
 
 	export let css: string = ''
 
-	let dimension: '3D' | '2D' = '2D'
+	export let dimension: '3D' | '2D' = '2D'
+
+	export let disable3d = false
 
 	const outline = stateOutlineMap[state]
 
-	if (browser) {
+	if (browser && !disable3d) {
 		dimension = localStorage.getItem('profileAvatarMode') === '3D' ? '3D' : '2D' // get preferred dimension
 	}
 
 	let attempt = 0
 
-	async function fetchAvatar() {
+	export let trig = false
+
+	async function fetchAvatar(d: boolean) {
 		if (attempt <= 3) {
 			const thumbnailResponse = await fetch('/api/avatarthumbnail', {
 				method: 'POST',
 				body: JSON.stringify({
-					userid,
-					type
+					assetid: userid,
+					type,
+					asset: 'user'
 				})
 			})
 			const thumbnail = await thumbnailResponse.json()
 
-			if (thumbnail.success) {
+			if (thumbnail.success && thumbnail.data.url !== '') {
 				return thumbnail.data.url
 			}
 
 			if (thumbnail.success && thumbnail.data.url === '') {
 				//generating still
-				await new Promise((resolve) => setTimeout(resolve, 5000))
-				fetchAvatar()
+				await new Promise((resolve) => setTimeout(resolve, 500))
+				fetchAvatar(d)
 				attempt += 1
 			}
 		}
 	}
 
-	async function fetchAvatarObj() {
+	async function fetchAvatarObj(d: boolean) {
 		if (attempt <= 3) {
 			const thumbnailResponse = await fetch('/api/avatarthumbnail', {
 				method: 'POST',
 				body: JSON.stringify({
-					userid,
-					type: 'obj'
+					assetid: userid,
+					type: 'obj',
+					asset: 'user'
 				})
 			})
 			const thumbnail = await thumbnailResponse.json()
@@ -83,8 +89,8 @@
 
 			if (thumbnail.success && thumbnail.data.url === '') {
 				//generating still
-				await new Promise((resolve) => setTimeout(resolve, 5000))
-				fetchAvatar()
+				await new Promise((resolve) => setTimeout(resolve, 500))
+				fetchAvatarObj(d)
 				attempt += 1
 			}
 		}
@@ -94,7 +100,7 @@
 {#if type === 'headshot'}
 	<div class="flex flex-col gap-y-1">
 		<Avatar.Root class="w-28 h-28 outline-offset-4 {css} {outline} outline-dashed rounded-full">
-			{#await fetchAvatar() then src}
+			{#await fetchAvatar(trig) then src}
 				<Avatar.Image {src} alt={username} />
 			{/await}
 			<Avatar.Fallback />
@@ -104,7 +110,7 @@
 	<div class="flex gap-x-1 relative">
 		<div class="w-28 h-28 {css} mx-auto relative" id="int-target">
 			{#if dimension === '2D'}
-				{#await fetchAvatar()}
+				{#await fetchAvatar(trig)}
 					<Loader2 class="w-full h-full animate-spin text-secondary" />
 				{:then src}
 					<Avatar.Root class="w-28 h-28 {css} mx-auto ">
@@ -113,7 +119,7 @@
 					</Avatar.Root>
 				{/await}
 			{:else}
-				{#await fetchAvatarObj()}
+				{#await fetchAvatarObj(trig)}
 					<Loader2 class="w-full h-full animate-spin text-secondary" />
 				{:then objManifest}
 					<Canvas renderMode={'always'}>
@@ -122,12 +128,14 @@
 				{/await}
 			{/if}
 		</div>
-		<Button
-			class="absolute right-0"
-			on:click={() => {
-				dimension === '3D' ? (dimension = '2D') : (dimension = '3D')
-				localStorage.setItem('profileAvatarMode', dimension)
-			}}>{dimension === '2D' ? '3D' : '2D'}</Button
-		>
+		{#if !disable3d}
+			<Button
+				class="absolute right-0"
+				on:click={() => {
+					dimension === '3D' ? (dimension = '2D') : (dimension = '3D')
+					localStorage.setItem('profileAvatarMode', dimension)
+					attempt = 0
+				}}>{dimension === '2D' ? '3D' : '2D'}</Button
+			>{/if}
 	</div>
 {/if}
