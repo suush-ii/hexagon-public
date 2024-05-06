@@ -10,6 +10,7 @@ import { usersTable, transactionsTable } from '$lib/server/schema/users'
 import { eq } from 'drizzle-orm'
 import { s3BucketName } from '$src/stores'
 import { rccAuth } from './routes/(rcc)/updatejob/auth.server'
+import { get } from '$lib/server/config'
 
 import {
 	CLOUDFLARE_S3_ACCESS_KEY,
@@ -42,8 +43,6 @@ try {
 	await S3.send(createBucketCommand)
 }
 
-const configPrepared = db.select().from(configTable).limit(1).prepare('configGrab')
-
 const protectedRoutes = [
 	'/home',
 	'/catalog',
@@ -74,6 +73,26 @@ const adminPanelPermissions = [
 	{ path: '/admin/logs', requiredLevel: 4 }
 ]
 
+const skipAuth = [
+	'/api/avatarthumbnail',
+	'/asset',
+	'/asset/characterfetch.ashx',
+	'/asset/bodycolors.ashx',
+	'/game/tools/insertasset.ashx',
+	'/game/tools/thumbnailasset.ashx',
+	'/game/validate-machine',
+	'/game/studio.ashx',
+	'/game/players',
+	'/game/gameserver.ashx',
+	'/Setting/QuietGet/ClientAppSettings',
+	'/Setting/QuietGet/ClientSharedSettings',
+	'/Setting/QuietGet/RCCService',
+	'/game/JoinRate.ashx',
+	'/game/MachineConfiguration.ashx',
+	'/game/report-stats',
+	'/api/clicker'
+] // speeds requests significantly
+
 await migrate(db, { migrationsFolder: './drizzle' })
 
 export const handle: Handle = sequence(
@@ -82,16 +101,23 @@ export const handle: Handle = sequence(
 		// Stage 1
 		console.log(event.url.pathname)
 
-		const config = await configPrepared.execute()
-
-		if (config.length === 0) {
-			await db.insert(configTable).values({})
-		}
+		const config = get()
 
 		if (config?.[0]?.maintenanceEnabled === true) {
 			if (event.url.pathname != '/maintenance') {
 				redirect(302, '/maintenance')
 			}
+		}
+
+		if (
+			skipAuth.some((substr) =>
+				event.url.pathname.toLowerCase().startsWith(substr.toLowerCase())
+			) === true
+		) {
+			event.locals.config = config
+
+			const response = await resolve(event)
+			return response
 		}
 
 		event.locals.auth = auth.handleRequest(event)

@@ -120,22 +120,22 @@ export const POST: RequestHandler = async ({ request }) => {
 		}
 	}
 
-	const instance = await db
-		.select({})
-		.from(jobsTable)
-		.where(eq(jobsTable.associatedid, assetid))
-		.limit(1)
-
-	if (instance.length > 0) {
-		return json({
-			success: true,
-			message: '',
-			data: { url: '', status: 'pending' }
-		})
-	}
-
 	if (type === 'avatar' || type === 'obj') {
 		if (!user?.[0]?.avatarbody && !item?.[0]?.assetrender) {
+			const instance = await db
+				.select({})
+				.from(jobsTable)
+				.where(eq(jobsTable.associatedid, assetid))
+				.limit(1)
+
+			if (instance.length > 0) {
+				return json({
+					success: true,
+					message: '',
+					data: { url: '', status: 'pending' }
+				})
+			}
+
 			// we need to generate it
 			const [instanceNew] = await db
 				.insert(jobsTable)
@@ -340,6 +340,20 @@ export const POST: RequestHandler = async ({ request }) => {
 
 	if (type === 'headshot') {
 		if (!user[0].avatarheadshot) {
+			const instance = await db
+				.select({})
+				.from(jobsTable)
+				.where(eq(jobsTable.associatedid, assetid))
+				.limit(1)
+
+			if (instance.length > 0) {
+				return json({
+					success: true,
+					message: '',
+					data: { url: '', status: 'pending' }
+				})
+			}
+
 			// we need to generate it
 			const [instanceNew] = await db
 				.insert(jobsTable)
