@@ -238,7 +238,14 @@
 					<p class="absolute top-[-100%] mx-auto text-sm text-muted-foreground">
 						{Math.floor($displayed_count + 1)}
 					</p>
-					<p class="mx-auto text-sm text-muted-foreground">{Math.floor($displayed_count)}</p>
+					<noscript>
+						<p class="mx-auto text-sm text-muted-foreground">
+							{data.clicker}
+						</p>
+					</noscript>
+					<p class="mx-auto text-sm text-muted-foreground">
+						{Math.floor($displayed_count)}
+					</p>
 				</div>
 				<p class="mx-auto text-sm text-muted-foreground">times.</p>
 			</div>

@@ -34,7 +34,7 @@
 
 	export let trig = false
 
-	async function fetchAvatar(d: boolean) {
+	async function fetchAvatar(d: boolean, userid: number) {
 		if (attempt <= 3) {
 			const thumbnailResponse = await fetch('/api/avatarthumbnail', {
 				method: 'POST',
@@ -53,13 +53,13 @@
 			if (thumbnail.success && thumbnail.data.url === '') {
 				//generating still
 				await new Promise((resolve) => setTimeout(resolve, 500))
-				fetchAvatar(d)
+				fetchAvatar(d, userid)
 				attempt += 1
 			}
 		}
 	}
 
-	async function fetchAvatarObj(d: boolean) {
+	async function fetchAvatarObj(d: boolean, userid: number) {
 		if (attempt <= 3) {
 			const thumbnailResponse = await fetch('/api/avatarthumbnail', {
 				method: 'POST',
@@ -90,7 +90,7 @@
 			if (thumbnail.success && thumbnail.data.url === '') {
 				//generating still
 				await new Promise((resolve) => setTimeout(resolve, 500))
-				fetchAvatarObj(d)
+				fetchAvatarObj(d, userid)
 				attempt += 1
 			}
 		}
@@ -100,7 +100,7 @@
 {#if type === 'headshot'}
 	<div class="flex flex-col gap-y-1">
 		<Avatar.Root class="w-28 h-28 outline-offset-4 {css} {outline} outline-dashed rounded-full">
-			{#await fetchAvatar(trig) then src}
+			{#await fetchAvatar(trig, userid) then src}
 				<Avatar.Image {src} alt={username} />
 			{/await}
 			<Avatar.Fallback />
@@ -110,7 +110,7 @@
 	<div class="flex gap-x-1 relative">
 		<div class="w-28 h-28 {css} mx-auto relative" id="int-target">
 			{#if dimension === '2D'}
-				{#await fetchAvatar(trig)}
+				{#await fetchAvatar(trig, userid)}
 					<Loader2 class="w-full h-full animate-spin text-secondary" />
 				{:then src}
 					<Avatar.Root class="w-28 h-28 {css} mx-auto ">
@@ -119,7 +119,7 @@
 					</Avatar.Root>
 				{/await}
 			{:else}
-				{#await fetchAvatarObj(trig)}
+				{#await fetchAvatarObj(trig, userid)}
 					<Loader2 class="w-full h-full animate-spin text-secondary" />
 				{:then objManifest}
 					<Canvas renderMode={'always'}>

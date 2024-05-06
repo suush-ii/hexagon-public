@@ -32,9 +32,8 @@
 	<div
 		class="flex flex-row gap-x-4 bg-muted-foreground/5 p-6 rounded-xl outline-dashed outline-muted-foreground/20"
 	>
-		{#key data.userid}
-			<Avatar state={status} {userid} {username} />
-		{/key}
+		<Avatar state={status} {userid} {username} />
+
 		<h1 class="font-semibold text-5xl">{username}</h1>
 	</div>
 
@@ -68,15 +67,13 @@
 				/>
 			</Avatar2.Root>-->
 
-				{#key data.userid}
-					<Avatar
-						state={status}
-						{userid}
-						{username}
-						css={'xl:h-80 h-fit w-full max-w-80 aspect-square'}
-						type="avatar"
-					/>
-				{/key}
+				<Avatar
+					state={status}
+					{userid}
+					{username}
+					css={'xl:h-80 h-fit w-full max-w-80 aspect-square'}
+					type="avatar"
+				/>
 
 				<p class="mx-auto line-clamp-6 break-words">Hi!</p>
 

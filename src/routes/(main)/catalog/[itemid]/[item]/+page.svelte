@@ -65,26 +65,22 @@
 	</div>
 
 	<div class="flex flex-row gap-x-8 lg:flex-nowrap flex-wrap">
-		{#key itemid}
-			<Avatar
-				css="w-full lg:w-1/3 aspect-square h-fit rounded-xl"
-				itemName={data.item.assetname}
-				itemId={itemid}
-				disable3d={data.item.moderationstate === 'approved' ? false : true}
-			/>
-		{/key}
+		<Avatar
+			css="w-full lg:w-1/3 aspect-square h-fit rounded-xl"
+			itemName={data.item.assetname}
+			itemId={itemid}
+			disable3d={data.item.moderationstate === 'approved' ? false : true}
+		/>
 
 		<div class="flex flex-col gap-y-4 w-1/3">
 			<div class="flex flex-row gap-x-4">
-				{#key data.item.creatoruserid}
-					<UserAvatar
-						css="w-20 h-20 rounded-xl"
-						userid={data.item.creatoruserid}
-						username={data.item.author.username}
-						type="avatar"
-						disable3d={true}
-					/>
-				{/key}
+				<UserAvatar
+					css="w-20 h-20 rounded-xl"
+					userid={data.item.creatoruserid}
+					username={data.item.author.username}
+					type="avatar"
+					disable3d={true}
+				/>
 
 				<div class="flex flex-col gap-y-2">
 					<h1 class="text-sm text-muted-foreground">

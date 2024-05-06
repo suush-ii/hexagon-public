@@ -44,12 +44,30 @@ export const POST: RequestHandler = async ({ request }) => {
 
 	const user =
 		asset === 'user'
-			? await db.select().from(usersTable).where(eq(usersTable.userid, assetid)).limit(1)
+			? await db
+					.select({
+						avatarbody: usersTable.avatarbody,
+						_3dmanifest: usersTable._3dmanifest,
+						avatarheadshot: usersTable.avatarheadshot
+					})
+					.from(usersTable)
+					.where(eq(usersTable.userid, assetid))
+					.limit(1)
 			: []
 
 	const item =
 		asset === 'item'
-			? await db.select().from(assetTable).where(eq(assetTable.assetid, assetid)).limit(1)
+			? await db
+					.select({
+						moderationstate: assetTable.moderationstate,
+						assetType: assetTable.assetType,
+						simpleasseturl: assetTable.simpleasseturl,
+						assetrender: assetTable.assetrender,
+						_3dmanifest: assetTable._3dmanifest
+					})
+					.from(assetTable)
+					.where(eq(assetTable.assetid, assetid))
+					.limit(1)
 			: []
 
 	if (user.length === 0 && item.length === 0) {
@@ -103,7 +121,7 @@ export const POST: RequestHandler = async ({ request }) => {
 	}
 
 	const instance = await db
-		.select()
+		.select({})
 		.from(jobsTable)
 		.where(eq(jobsTable.associatedid, assetid))
 		.limit(1)

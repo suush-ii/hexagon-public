@@ -2,13 +2,28 @@ import { error, json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types'
 import { db } from '$src/lib/server/db'
 import { z } from 'zod'
-import { inventoryTable, usersTable, assetTable } from '$src/lib/server/schema'
-import { eq, and, or } from 'drizzle-orm'
+import { inventoryTable, usersTable } from '$lib/server/schema'
+import { eq, and } from 'drizzle-orm'
+import type { AssetTypes } from '$lib/types'
 
 const itemSchema = z.object({
 	itemId: z.coerce.number().int(),
 	wear: z.boolean()
 })
+
+const canOnlyWearOne: AssetTypes[] = [
+	'shirts',
+	'pants',
+	'faces',
+	'heads',
+	't-shirts',
+	'torsos',
+	'l arms',
+	'r arms',
+	'l legs',
+	'r legs',
+	'packages'
+]
 
 export const POST: RequestHandler = async ({ locals, request }) => {
 	const user = locals.user
@@ -30,6 +45,27 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 	if (!result.success) {
 		const errors = result.error.issues.map((issue) => issue.message) // get us only the error msgs
 		error(400, { success: false, message: 'Malformed JSON.', data: { errors } })
+	}
+
+	const wearingAssets = await db.query.inventoryTable.findMany({
+		where: and(eq(inventoryTable.userid, user.userid), eq(inventoryTable.wearing, true)),
+		with: {
+			asset: {
+				columns: {
+					assetType: true
+				}
+			}
+		}
+	})
+
+	const wearingCount = wearingAssets.filter((w) => !canOnlyWearOne.includes(w.asset.assetType)) // we only care about accessories like hats and gears
+
+	if (wearingCount.length >= 10 && result.data.wear === true) {
+		return error(400, {
+			success: false,
+			message: 'You can only wear up to 10 accessories.',
+			data: {}
+		})
 	}
 
 	const item = await db.query.inventoryTable.findFirst({
@@ -58,19 +94,8 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 		return error(400, { success: false, message: 'This asset is not approved.', data: {} })
 	}
 
-	if (item.asset.assetType === 'shirts' || item.asset.assetType === 'pants') {
+	if (canOnlyWearOne.includes(item.asset.assetType)) {
 		// can only wear one shirt and one pants
-		const wearingAssets = await db.query.inventoryTable.findMany({
-			where: and(eq(inventoryTable.userid, user.userid), eq(inventoryTable.wearing, true)),
-			with: {
-				asset: {
-					columns: {
-						assetType: true
-					}
-				}
-			}
-		})
-
 		const wearing = wearingAssets.find((w) => w.asset.assetType === item.asset.assetType)
 
 		if (wearing) {
