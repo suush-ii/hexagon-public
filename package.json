@@ -59,7 +59,7 @@
 		"bits-ui": "^0.21.4",
 		"clsx": "^2.1.0",
 		"dotenv": "^16.3.1",
-		"drizzle-orm": "^0.29.3",
+		"drizzle-orm": "^0.30.10",
 		"jose": "^5.2.4",
 		"lucia": "^2.7.7",
 		"lucide-svelte": "^0.372.0",

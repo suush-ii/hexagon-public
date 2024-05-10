@@ -1,14 +1,14 @@
 <script lang="ts">
 	import Avatar from '$src/components/catalog/avatar.svelte'
 	import UserAvatar from '$src/components/users/avatar.svelte'
-	import { MoonStar, Box, Webhook, Star } from 'lucide-svelte'
+	import { MoonStar, Webhook, Star } from 'lucide-svelte'
 
 	import { Button } from '$src/components/ui/button'
 	import { Separator } from '$src/components/ui/separator'
 	import * as Card from '$src/components/ui/card'
 	import ReportButton from '$src/components/reportButton.svelte'
 	import * as AlertDialog from '$src/components/ui/alert-dialog'
-	import { formatCompactNumber } from '$lib/utils'
+	import { depluralize, formatCompactNumber, slugify } from '$lib/utils'
 
 	import { toast } from 'svelte-sonner'
 
@@ -18,6 +18,9 @@
 
 	import type { PageData } from './$types'
 	import { invalidateAll } from '$app/navigation'
+	import EmptyCard from '$src/components/emptyCard.svelte'
+	import Genre from '$src/components/catalog/genre.svelte'
+	import GearAttributes from '$src/components/catalog/gearattributes.svelte'
 
 	export let data: PageData
 
@@ -60,7 +63,7 @@
 		</h1>
 
 		<h1 class="text-xl leading-none tracking-tight font-semibold">
-			Hexagon {itemName === 'Shirts' ? 'Shirt' : itemName}
+			Hexagon {depluralize(itemName)}
 		</h1>
 	</div>
 
@@ -69,18 +72,30 @@
 			css="w-full lg:w-1/3 aspect-square h-fit rounded-xl"
 			itemName={data.item.assetname}
 			itemId={itemid}
-			disable3d={data.item.moderationstate === 'approved' ? false : true}
+			disable3d={data.item.moderationstate !== 'approved'
+				? true
+				: data.item.assetType === 'audio'
+					? true
+					: data.item.assetType === 'decals'
+						? true
+						: data.item.assetType === 'images'
+							? true
+							: data.item.assetType === 'faces'
+								? true
+								: false}
 		/>
 
 		<div class="flex flex-col gap-y-4 w-1/3">
 			<div class="flex flex-row gap-x-4">
-				<UserAvatar
-					css="w-20 h-20 rounded-xl"
-					userid={data.item.creatoruserid}
-					username={data.item.author.username}
-					type="avatar"
-					disable3d={true}
-				/>
+				<a href="/users/{data.item.creatoruserid}/profile">
+					<UserAvatar
+						css="w-20 h-20 rounded-xl"
+						userid={data.item.creatoruserid}
+						username={data.item.author.username}
+						type="avatar"
+						disable3d={true}
+					/></a
+				>
 
 				<div class="flex flex-col gap-y-2">
 					<h1 class="text-sm text-muted-foreground">
@@ -105,16 +120,14 @@
 			<Separator />
 
 			<h1 class="text-sm text-muted-foreground">Genres:</h1>
-			<h1 class="text-sm flex items-center gap-x-1">
-				<Box />All
-			</h1>
-			{#if data.item.assetType === 'gears'}
+			{#each data.item.genres as genre}
+				<Genre {genre} />
+			{/each}
+			{#if data.item.gearattributes}
 				<h1 class="text-sm text-muted-foreground">Gear Attributes:</h1>
-				<!--TODO: do a better way to configure icons for these probably a json and associate htem with icons ez-->
-				<!--Important to list these for gears only-->
-				<h1 class="text-sm flex items-center gap-x-1">
-					<Webhook />Social Item
-				</h1>
+				{#each data.item.gearattributes as attribute}
+					<GearAttributes {attribute} />
+				{/each}
 			{/if}
 		</div>
 
@@ -124,16 +137,26 @@
 			>
 				<Card.Header>
 					<Card.Title class="flex mx-auto"
-						>Price: <MoonStar class="h-4 " /> {data.item.price}</Card.Title
-					>
+						>Price:
+						<MoonStar class="h-4 " />
+						{#if data.item.price === 0}
+							Free
+						{:else}
+							{data.item.price}
+						{/if}
+					</Card.Title>
 				</Card.Header>
 				<Card.Content>
 					<AlertDialog.Root closeOnOutsideClick={true}>
 						<AlertDialog.Trigger asChild let:builder>
 							{#if !data.alreadyOwned && data.user.coins >= (data.item.price ?? 0)}
-								<Button builders={[builder]} class="w-full font-semibold text-lg"
-									>Buy with <MoonStar class="h-4 " /></Button
-								>
+								{#if data.item.price === 0}
+									<Button builders={[builder]} class="w-full font-semibold text-lg">Free</Button>
+								{:else}
+									<Button builders={[builder]} class="w-full font-semibold text-lg"
+										>Buy with <MoonStar class="h-4 " /></Button
+									>
+								{/if}
 							{:else if data.alreadyOwned}
 								<Button builders={[builder]} class="w-full font-semibold text-lg" disabled
 									>Already Owned</Button
@@ -181,6 +204,41 @@
 			<h1 class="text-lg font-semibold flex align-middle mx-auto gap-x-1 text-yellow-400">
 				<Star class="hover:fill-yellow-400" size={28} /> 0
 			</h1>
+		</div>
+	</div>
+
+	<div class="flex flex-col gap-y-4">
+		<h1 class="text-xl leading-none tracking-tight font-semibold">Recommendations</h1>
+		<Separator />
+
+		<div class="flex flex-row flex-wrap gap-8">
+			{#if data.recommendations.length > 0}
+				{#each data.recommendations as item}
+					<div class="text-center text-lg w-40">
+						<a href="/catalog/{item.assetid}/{slugify(item.assetname)}">
+							<Avatar
+								css="w-40 h-40 rounded-xl aspect-square"
+								itemId={item.assetid}
+								itemName={item.assetname}
+								disable3d={true}
+							/></a
+						>
+						<a href="/catalog/{item.assetid}/{slugify(item.assetname)}">
+							<h1 class="line-clamp-2 tracking-tighter break-words text-xl hover:underline">
+								{item.assetname}
+							</h1></a
+						>
+
+						<h1 class="text-base text-muted-foreground mt-2 line-clamp-2">
+							Creator: <a href="/users/{item.creatoruserid}/profile"
+								><span class="text-primary hover:underline">{item.author.username}</span></a
+							>
+						</h1>
+					</div>
+				{/each}
+			{:else}
+				<EmptyCard />
+			{/if}
 		</div>
 	</div>
 </div>

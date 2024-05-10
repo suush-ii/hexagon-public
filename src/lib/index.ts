@@ -1,6 +1,6 @@
 // place files you want to import through the `$lib` alias in this folder.
 
-export const gameGenreZod = [
+export const assetGenreZod = [
 	'All',
 	'Building',
 	'Horror',
@@ -16,6 +16,18 @@ export const gameGenreZod = [
 	'Sports',
 	'Fighting',
 	'Western'
+] as const
+
+export const gearAttributesZod = [
+	'Melee weapons',
+	'Ranged weapons',
+	'Explosives',
+	'Power ups',
+	'Navigation enhancers',
+	'Musical instruments',
+	'Social items',
+	'Building tools',
+	'Personal transport'
 ] as const
 
 export const assetTypes = [

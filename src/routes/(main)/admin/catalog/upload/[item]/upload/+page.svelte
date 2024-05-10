@@ -1,0 +1,27 @@
+<script lang="ts">
+	import type { PageData } from './$types'
+
+	import AssetFormPrimitive from '$src/components/develop/assetFormPrimitive.svelte'
+
+	import GearFormPrimitive from '$src/components/develop/gearFormPrimitive.svelte'
+
+	export let data: PageData
+</script>
+
+<div class="container p-8 flex flex-col gap-y-8">
+	<h1 class="text-4xl leading-none tracking-tight font-semibold">Upload {data.friendlyName}</h1>
+
+	{#if data.item === 'hats' || data.item === 'faces'}
+		<AssetFormPrimitive
+			fileTypes={data.fileTypes}
+			data={data.assetForm}
+			friendlyName={data.friendlyName}
+		/>
+	{:else if data.item === 'gears'}
+		<GearFormPrimitive
+			fileTypes={data.fileTypes}
+			data={data.gearForm}
+			friendlyName={data.friendlyName}
+		/>
+	{/if}
+</div>

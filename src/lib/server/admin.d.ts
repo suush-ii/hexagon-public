@@ -9,7 +9,8 @@ export const actionTypes = [
 	'rejectedasset',
 	'moderatedasset',
 	'shutdownjob',
-	'shutdownalljobs'
+	'shutdownalljobs',
+	'uploadasset'
 ] as const
 
 export type ActionTypes = (typeof actionTypes)[number]

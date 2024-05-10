@@ -1,4 +1,6 @@
 import { z } from 'zod'
+import type { AssetGenre } from '$lib/types'
+import { assetGenreZod } from '$lib'
 
 export const formSchema = z.object({
 	name: z
@@ -14,7 +16,12 @@ export const formSchema = z.object({
 		.default(0),
 	asset: z
 		.instanceof(File, { message: 'Please upload a file.' })
-		.refine((f: { size: number }) => f.size / Math.pow(1024, 2) < 10, 'Max 10 MB upload size.')
+		.refine((f: { size: number }) => f.size / Math.pow(1024, 2) < 10, 'Max 10 MB upload size.'),
+	genres: z
+		.array(z.enum(assetGenreZod))
+		.min(1, { message: 'At least one genre!' })
+		.max(5, { message: 'No more than 5 genres!' })
+		.default(['All'])
 })
 
 export type FormSchema = typeof formSchema

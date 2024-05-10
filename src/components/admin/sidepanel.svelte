@@ -15,7 +15,7 @@
 		{
 			title: 'Catalog',
 			links: [
-				{ title: 'Upload', href: '/admin/catalog/upload' },
+				{ title: 'Upload', href: '/admin/catalog/upload/hats' },
 				{ title: 'Queue', href: '/admin/catalog/queue' }
 			]
 		}

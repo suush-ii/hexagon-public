@@ -3,6 +3,7 @@
 	import Avatar from '$src/components/catalog/avatar.svelte'
 	import { Button } from '$src/components/ui/button'
 	import { slugify } from '$src/lib/utils'
+	import { toast } from 'svelte-sonner'
 
 	export let itemName: string
 
@@ -13,13 +14,22 @@
 	export let trig: boolean
 
 	async function toggle() {
-		await fetch(`/api/avatar/setwearingassets`, {
+		const response = await fetch(`/api/avatar/setwearingassets`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
 			},
 			body: JSON.stringify({ itemId, wear: !wearing })
 		})
+
+		const json = await response.json()
+
+		if (json.success === false) {
+			toast.error(json.message)
+		} else {
+			toast.success('Successfully updated avatar!')
+			invalidateAll()
+		}
 
 		invalidateAll()
 

@@ -94,3 +94,11 @@ export function getPageNumber(url: URL) {
 
 	return page
 }
+
+export function depluralize(str: string) {
+	return str.toLowerCase() === 'pants'
+		? str
+		: str.toLowerCase() === 'audio'
+			? str
+			: str.slice(0, -1)
+}

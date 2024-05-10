@@ -60,9 +60,9 @@ export const actions: Actions = {
 				attributes: {
 					username: username,
 					coins: 0,
-					joindate: new Date(),
 					role: 'normal',
-					gender: gender
+					gender: gender,
+					registerip: event.getClientAddress()
 				}
 			})
 

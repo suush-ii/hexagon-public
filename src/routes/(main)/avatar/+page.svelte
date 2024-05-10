@@ -183,7 +183,7 @@
 						</EmptyCard>
 					{/if}
 
-					<div class="flex gap-4">
+					<div class="flex flex-wrap gap-4">
 						{#each data?.inventory ?? [] as item}
 							<AvatarCard
 								itemId={item.itemid}
@@ -202,7 +202,7 @@
 						Currently Wearing
 					</h1>
 
-					<div class="flex gap-4">
+					<div class="flex flex-wrap gap-4">
 						{#each data?.inventoryWearing ?? [] as item}
 							<AvatarCard
 								itemId={item.itemid}

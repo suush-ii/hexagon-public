@@ -80,6 +80,17 @@ export const POST: RequestHandler = async ({ request }) => {
 
 	const userRender = user.length > 0 && asset === 'user'
 
+	if (
+		asset === 'item' &&
+		type === 'obj' &&
+		(item?.[0]?.assetType === 'faces' ||
+			item?.[0]?.assetType === 'decals' ||
+			item?.[0]?.assetType === 'images' ||
+			item?.[0]?.assetType === 'audio')
+	) {
+		error(400, { success: false, message: 'Malformed JSON.', data: {} })
+	}
+
 	if (item?.[0]?.moderationstate !== 'approved' && asset === 'item') {
 		if (item?.[0].moderationstate === 'rejected') {
 			return json({
@@ -120,7 +131,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		}
 	}
 
-	if (type === 'avatar' || type === 'obj') {
+	if (type === 'avatar') {
 		if (!user?.[0]?.avatarbody && !item?.[0]?.assetrender) {
 			const instance = await db
 				.select({})
@@ -147,7 +158,7 @@ export const POST: RequestHandler = async ({ request }) => {
 				.returning({ jobid: jobsTable.jobid })
 
 			const response = await fetch(
-				`http://${GAMESERVER_IP}:8000/${userRender ? 'openrender2016' : 'openrenderasset2016'}/${instanceNew.jobid}/${assetid}${userRender ? '/false' : ''}${item.length > 0 ? `/${item[0].assetType}` : ''}`
+				`http://${GAMESERVER_IP}:8000/${userRender ? 'openrender2016' : 'openrenderasset2016'}/${instanceNew.jobid}/${assetid}${userRender ? '/false' : ''}${'/false'}${item.length > 0 ? `/${item[0].assetType}` : ''}`
 			)
 
 			const responseJson = await response.json()
@@ -178,6 +189,79 @@ export const POST: RequestHandler = async ({ request }) => {
 					message: 'Unknown error',
 					data: {}
 				})
+			}
+
+			if (userRender) {
+				await db
+					.update(usersTable)
+					.set({ avatarbody: fileName })
+					.where(eq(usersTable.userid, assetid))
+			}
+
+			if (!userRender) {
+				await db
+					.update(assetTable)
+					.set({ assetrender: fileName })
+					.where(eq(assetTable.assetid, assetid))
+			}
+
+			await db.delete(jobsTable).where(eq(jobsTable.jobid, instanceNew.jobid))
+
+			return json({
+				success: true,
+				message: '',
+				data: { url: `https://${s3Url}/${Key}/${fileName}`, status: 'completed' }
+			})
+		} else {
+			// it does exist return cdn url!
+
+			return json({
+				success: true,
+				message: '',
+				data: {
+					url: `https://${s3Url}/${Key}/${user?.[0]?.avatarbody ?? item[0].assetrender}`,
+					status: 'completed'
+				}
+			})
+		}
+	}
+
+	if (type === 'obj') {
+		if (!user?.[0]?._3dmanifest && !item?.[0]?._3dmanifest) {
+			const instance = await db
+				.select({})
+				.from(jobsTable)
+				.where(eq(jobsTable.associatedid, assetid))
+				.limit(1)
+
+			if (instance.length > 0) {
+				return json({
+					success: true,
+					message: '',
+					data: { url: '', status: 'pending' }
+				})
+			}
+
+			// we need to generate it
+			const [instanceNew] = await db
+				.insert(jobsTable)
+				.values({
+					associatedid: assetid,
+					type: 'render',
+					clientversion: '2014'
+				})
+				.returning({ jobid: jobsTable.jobid })
+
+			const response = await fetch(
+				`http://${GAMESERVER_IP}:8000/${userRender ? 'openrender2016' : 'openrenderasset2016'}/${instanceNew.jobid}/${assetid}${userRender ? '/false' : ''}${'/true'}${item.length > 0 ? `/${item[0].assetType}` : ''}`
+			)
+
+			const responseJson = await response.json()
+
+			if (responseJson.success === false) {
+				await db.delete(jobsTable).where(eq(jobsTable.jobid, instanceNew.jobid))
+
+				return json({ success: true, message: '', data: { url: '', status: 'pending' } })
 			}
 
 			type axis = { x: number; y: number; z: number }
@@ -290,48 +374,28 @@ export const POST: RequestHandler = async ({ request }) => {
 			if (userRender) {
 				await db
 					.update(usersTable)
-					.set({ avatarbody: fileName, _3dmanifest: _3dfileHash })
+					.set({ _3dmanifest: _3dfileHash })
 					.where(eq(usersTable.userid, assetid))
 			} else {
 				await db
 					.update(assetTable)
-					.set({ assetrender: fileName, _3dmanifest: _3dfileHash })
+					.set({ _3dmanifest: _3dfileHash })
 					.where(eq(assetTable.assetid, assetid))
 			}
 
 			await db.delete(jobsTable).where(eq(jobsTable.jobid, instanceNew.jobid))
 
-			if (type === 'obj') {
-				return json({
-					success: true,
-					message: '',
-					data: { url: `https://${s3Url}/${Key}/${_3dfileHash}`, status: 'completed' }
-				})
-			}
-
 			return json({
 				success: true,
 				message: '',
-				data: { url: `https://${s3Url}/${Key}/${fileName}`, status: 'completed' }
+				data: { url: `https://${s3Url}/${Key}/${_3dfileHash}`, status: 'completed' }
 			})
 		} else {
-			// it does exist return cdn url!
-			if (type === 'obj') {
-				return json({
-					success: true,
-					message: '',
-					data: {
-						url: `https://${s3Url}/${Key}/${user?.[0]?._3dmanifest ?? item[0]._3dmanifest}`,
-						status: 'completed'
-					}
-				})
-			}
-
 			return json({
 				success: true,
 				message: '',
 				data: {
-					url: `https://${s3Url}/${Key}/${user?.[0]?.avatarbody ?? item[0].assetrender}`,
+					url: `https://${s3Url}/${Key}/${user?.[0]?._3dmanifest ?? item[0]._3dmanifest}`,
 					status: 'completed'
 				}
 			})
@@ -365,7 +429,7 @@ export const POST: RequestHandler = async ({ request }) => {
 				.returning({ jobid: jobsTable.jobid })
 
 			const response = await fetch(
-				`http://${GAMESERVER_IP}:8000/openrender2016/${instanceNew.jobid}/${assetid}/true`
+				`http://${GAMESERVER_IP}:8000/openrender2016/${instanceNew.jobid}/${assetid}/true${'/false'}`
 			)
 
 			const responseJson = await response.json()

@@ -7,11 +7,12 @@ export const actionTexts: Record<ActionTypes, string> = {
 	poison: 'Poisoned banned {name}',
 	unban: 'Unbanned {name}',
 	changedrole: 'Changed role for {name} to {role}',
-	approvedasset: 'Approved a {type}: {name} (ID: {id})',
-	rejectedasset: 'Rejected a {type}: {name} (ID: {id})',
+	approvedasset: 'Approved {type}: {itemname} (ID: {id})',
+	rejectedasset: 'Rejected {type}: {itemname} (ID: {id})',
 	moderatedasset: 'Moderated a {type} {itemname} (ID: {id})',
 	shutdownjob: 'Shutdown a game job in {gamename}',
-	shutdownalljobs: 'Shut all game jobs for {gamename}'
+	shutdownalljobs: 'Shut all game jobs for {gamename}',
+	uploadasset: 'Uploaded {type}: {itemname} (ID: {id})'
 }
 
 export function getText(action: ActionTypes): string {

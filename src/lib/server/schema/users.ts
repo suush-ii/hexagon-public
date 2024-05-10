@@ -24,7 +24,7 @@ export const usersTable = pgTable('users', {
 	username: text('username').notNull().unique(),
 	coins: bigint('coins', { mode: 'number' }).notNull(),
 	discordid: integer('discordid'),
-	joindate: timestamp('joindate', { mode: 'date', withTimezone: true }).notNull(),
+	joindate: timestamp('joindate', { mode: 'date', withTimezone: true }).defaultNow().notNull(),
 	role: text('role').$type<userRole>().notNull(),
 	state: text('state').$type<userState>().notNull().default('offline'),
 	gender: text('gender').$type<userGenders>().notNull().default('nonbinary'),
@@ -42,7 +42,11 @@ export const usersTable = pgTable('users', {
 	leftlegcolor: smallint('leftlegcolor').default(119).notNull(),
 	rightarmcolor: smallint('rightarmcolor').default(24).notNull(),
 	rightlegcolor: smallint('rightlegcolor').default(119).notNull(),
-	torsocolor: smallint('torsocolor').default(23).notNull() // noob colors
+	torsocolor: smallint('torsocolor').default(23).notNull(), // noob colors
+	registerip: text('registerip'),
+	lastip: text('lastip'),
+	banid: bigint('banid', { mode: 'number' }),
+	blurb: text('blurb')
 })
 
 export const inventoryTable = pgTable('inventory', {
@@ -77,6 +81,15 @@ export const adminLogsTable = pgTable('adminlogs', {
 	newrole: text('newrole').$type<userRole>()
 })
 
+export const bansTable = pgTable('bans', {
+	banid: bigserial('banid', { mode: 'number' }).notNull().primaryKey(),
+	banlength: text('banlength').$type<'1 day' | '3 days' | '7 days' | '14 days'>(),
+	action: text('action').$type<'warn' | 'ban' | 'terminate' | 'poison'>().notNull(),
+	expiration: timestamp('expiration', { mode: 'date', withTimezone: true }).notNull(),
+	time: timestamp('time', { mode: 'date', withTimezone: true }).notNull().defaultNow(),
+	userid: bigint('userid', { mode: 'number' }).notNull() // moderator
+})
+
 export const adminLogsRelations = relations(adminLogsTable, ({ one }) => ({
 	admin: one(usersTable, {
 		fields: [adminLogsTable.userid],
@@ -99,7 +112,15 @@ export const usersRelations = relations(usersTable, ({ many, one }) => ({
 		fields: [usersTable.userid],
 		references: [jobsTable.players]
 	}),
-	inventory: many(inventoryTable)
+	inventory: many(inventoryTable),
+	bans: many(bansTable)
+}))
+
+export const bansRelations = relations(bansTable, ({ many, one }) => ({
+	user: one(usersTable, {
+		fields: [bansTable.banid],
+		references: [usersTable.banid]
+	})
 }))
 
 export const keysRelations = relations(keyTable, ({ one }) => ({

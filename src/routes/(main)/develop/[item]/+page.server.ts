@@ -1,12 +1,13 @@
 import type { PageServerLoad } from './$types'
-import { _assetSchema } from './+layout'
+import { _assetSchema } from './+layout.server'
 import { db } from '$lib/server/db'
 import { gamesTable } from '$lib/server/schema/games'
 import { assetTable } from '$lib/server/schema/assets'
-import { eq, and } from 'drizzle-orm'
+import { eq, and, desc } from 'drizzle-orm'
 import { error } from '@sveltejs/kit'
 import { s3Url } from '$src/stores'
 import pending from '$lib/icons/iconpending.png'
+import rejected from '$lib/icons/iconrejected.png'
 import audio from '$lib/icons/audio.png'
 
 export const load: PageServerLoad = async ({ params, parent }) => {
@@ -64,20 +65,23 @@ export const load: PageServerLoad = async ({ params, parent }) => {
 						simpleasseturl: true
 					}
 				}
-			}
+			},
+			orderBy: desc(assetTable.created)
 		}) // TODO: Pagination here
 
 		creations = assetcreations.map((asset) => ({
 			assetName: asset.assetname,
 			assetid: asset.assetid,
 			iconUrl:
-				asset.assetType === 'decals' && asset.moderationstate === 'approved'
-					? `https://${s3Url}/images/` + asset?.associatedImage?.simpleasseturl
-					: asset.moderationstate === 'pending'
-						? pending
-						: asset.assetType === 'audio' && asset.moderationstate === 'approved'
-							? audio
-							: null, //TODO: make an audio default icon
+				asset.moderationstate === 'pending'
+					? pending
+					: asset.moderationstate === 'rejected'
+						? rejected
+						: asset.assetType === 'decals'
+							? `https://${s3Url}/images/` + asset?.associatedImage?.simpleasseturl
+							: asset.assetType === 'audio'
+								? audio
+								: null, //TODO: make an audio default icon
 			updated: asset.created,
 			assetType: params.item,
 			totalStat: asset.sales,
@@ -85,5 +89,5 @@ export const load: PageServerLoad = async ({ params, parent }) => {
 		}))
 	}
 
-	return { creations }
+	return { creations, params: params.item }
 }

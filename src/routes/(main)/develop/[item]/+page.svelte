@@ -1,6 +1,7 @@
 <script lang="ts">
 	import * as Tabs from '$src/components/ui/tabs'
 	import * as Avatar from '$src/components/ui/avatar'
+	import CatalogAvatar from '$src/components/catalog/avatar.svelte'
 	import { Button } from '$src/components/ui/button'
 	import { Upload } from 'lucide-svelte'
 
@@ -55,14 +56,23 @@
 		<div class="flex flex-col gap-y-4">
 			{#each creations as creation}
 				<div class="flex flex-row gap-x-2 w-full justify-center">
-					<Avatar.Root class="w-24 h-24 rounded-xl">
-						<Avatar.Image
-							src={creation.iconUrl ? creation.iconUrl : '/Images/iconplaceholder.png'}
-							alt={creation.assetName}
-							loading="lazy"
+					{#if data.params === 'shirts' || data.params === 'pants'}
+						<CatalogAvatar
+							css="w-32 h-32 rounded-xl aspect-square"
+							itemId={creation.assetid}
+							itemName={creation.assetName}
+							disable3d={true}
 						/>
-						<Avatar.Fallback />
-					</Avatar.Root>
+					{:else}
+						<Avatar.Root class="w-24 h-24 rounded-xl">
+							<Avatar.Image
+								src={creation.iconUrl ? creation.iconUrl : '/Images/iconplaceholder.png'}
+								alt={creation.assetName}
+								loading="lazy"
+							/>
+							<Avatar.Fallback />
+						</Avatar.Root>
+					{/if}
 
 					<div class="flex flex-row gap-x-4 w-full max-w-6xl">
 						<table class="table-auto w-full">

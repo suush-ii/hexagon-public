@@ -1,6 +1,7 @@
-import { z } from 'zod'
-import type { LayoutLoad } from './$types'
+import type { LayoutServerLoad } from './$types'
 import { error } from '@sveltejs/kit'
+import { z } from 'zod'
+
 export const _assetSchema = z.enum(['games', 'audio', 'decals', 'shirts', 'pants'])
 
 interface assetPrimitive {
@@ -12,6 +13,11 @@ interface assetPrimitive {
 const imagePrimitive = {
 	fileTypes: ['.png', '.jpg', '.jpeg'],
 	mimeTypes: ['image/png', 'image/jpeg', 'image/jpg']
+}
+
+const accessoryPrimitive = {
+	fileTypes: ['.rbxm'],
+	mimeTypes: ['application/octet-stream']
 }
 
 export let _uploadableAssets: Record<string, assetPrimitive> = {
@@ -28,14 +34,26 @@ export let _uploadableAssets: Record<string, assetPrimitive> = {
 	pants: {
 		friendlyName: 'Pants',
 		...imagePrimitive
+	},
+	hats: {
+		friendlyName: 'Hat',
+		...accessoryPrimitive
+	},
+	gears: {
+		friendlyName: 'Gear',
+		...accessoryPrimitive
+	},
+	faces: {
+		friendlyName: 'Face',
+		...accessoryPrimitive
 	}
 }
 
-export const load: LayoutLoad = async ({ params }) => {
+export const load: LayoutServerLoad = async ({ params }) => {
 	const result = await _assetSchema.safeParseAsync(params.item)
 
 	if (result.success === false) {
-		error(404, { success: false, message: 'Not found.' });
+		error(404, { success: false, message: 'Not found.' })
 	}
 
 	return {

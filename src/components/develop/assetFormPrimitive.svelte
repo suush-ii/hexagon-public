@@ -12,6 +12,10 @@
 	import { Input, defaultClass } from '$src/components/ui/input'
 	import { Textarea } from '$src/components/ui/textarea'
 	import { zodClient } from 'sveltekit-superforms/adapters'
+	import * as Select from '$src/components/ui/select'
+	import SuperDebug from 'sveltekit-superforms'
+
+	import { assetGenreZod as genres } from '$lib'
 
 	export let data: SuperValidated<Infer<AssetSchema>>
 
@@ -32,6 +36,8 @@
 	function handleUpdate(e: FormTextareaEvent<any>) {
 		description = e?.target?.value
 	}
+
+	$: selectedGenre = $formData.genres.map((c) => ({ label: c, value: c }))
 </script>
 
 <form method="POST" action="?/asset" enctype="multipart/form-data" class="max-w-4xl" use:enhance>
@@ -81,6 +87,37 @@
 		<Form.FieldErrors />
 	</Form.Field>
 
+	<Form.Field {form} name="genres">
+		<Form.Control let:attrs>
+			<Form.Label>Genres</Form.Label>
+			<Select.Root
+				multiple
+				selected={selectedGenre}
+				onSelectedChange={(s) => {
+					if (s) {
+						$formData.genres = s.map((c) => c.value)
+					} else {
+						$formData.genres = []
+					}
+				}}
+				disabled={$submitting}
+			>
+				{#each $formData.genres as color}
+					<input name={attrs.name} hidden value={color} />
+				{/each}
+				<Select.Trigger {...attrs}>
+					<Select.Value />
+				</Select.Trigger>
+				<Select.Content>
+					{#each genres as value}
+						<Select.Item {value} label={value} />
+					{/each}
+				</Select.Content>
+			</Select.Root>
+		</Form.Control>
+		<Form.FieldErrors />
+	</Form.Field>
+
 	<Form.Field {form} name="asset">
 		<Form.Control let:attrs>
 			<Form.Label>{friendlyName}</Form.Label>
@@ -101,3 +138,4 @@
 
 	<Form.Button disabled={$submitting}>Upload</Form.Button>
 </form>
+<SuperDebug data={$formData} />

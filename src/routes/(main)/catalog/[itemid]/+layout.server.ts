@@ -6,6 +6,7 @@ import { z } from 'zod'
 import { assetTable } from '$lib/server/schema/assets'
 import { inventoryTable } from '$lib/server/schema/users'
 import { slugify } from '$lib/utils'
+import { commonWhere } from '$lib/server/catalog'
 
 export const load: LayoutServerLoad = async ({ params, locals }) => {
 	const result = await z.number().safeParseAsync(Number(params.itemid))
@@ -26,7 +27,9 @@ export const load: LayoutServerLoad = async ({ params, locals }) => {
 			updated: true,
 			sales: true,
 			description: true,
-			moderationstate: true
+			moderationstate: true,
+			genres: true,
+			gearattributes: true
 		},
 		with: {
 			author: {
@@ -41,6 +44,12 @@ export const load: LayoutServerLoad = async ({ params, locals }) => {
 		error(404, { success: false, message: 'Item not found.', data: {} })
 	}
 
+	const slugItemName = slugify(item.assetname)
+
+	if (params?.item !== slugItemName && slugItemName !== '') {
+		redirect(302, '/catalog/' + Number(params.itemid) + '/' + slugItemName)
+	}
+
 	const alreadyOwned = await db
 		.select()
 		.from(inventoryTable)
@@ -49,14 +58,30 @@ export const load: LayoutServerLoad = async ({ params, locals }) => {
 		)
 		.limit(1)
 
-	const slugItemName = slugify(item.assetname)
-
-	if (params?.item !== slugItemName && slugItemName !== '') {
-		redirect(302, '/catalog/' + Number(params.itemid) + '/' + slugItemName)
-	}
+	const recommendations = await db.query.assetTable.findMany({
+		where: and(
+			ne(assetTable.assetid, Number(params.itemid)),
+			eq(assetTable.assetType, item.assetType),
+			commonWhere
+		), // we dont wanna recommend library assets
+		columns: {
+			assetname: true,
+			assetid: true,
+			creatoruserid: true
+		},
+		with: {
+			author: {
+				columns: {
+					username: true
+				}
+			}
+		},
+		limit: 10
+	})
 
 	return {
 		item: item,
-		alreadyOwned: alreadyOwned.length > 0
+		alreadyOwned: alreadyOwned.length > 0,
+		recommendations
 	}
 }

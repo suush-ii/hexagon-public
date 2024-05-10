@@ -135,16 +135,26 @@ export const handle: Handle = sequence(
 
 			const currentTime = new Date()
 
-			if (currentTime.valueOf() - user.lastactivetime > 3 * 60 * 1000) {
+			if (currentTime.valueOf() - Date.parse(user.lastactivetime) > 3 * 60 * 1000) {
 				// they haven't visited in over 3 mins
 				// the reason why we don't update last active on every request is to minimize database requests
-				await db
+				const [newUser] = await db
 					.update(usersTable)
 					.set({ lastactivetime: currentTime })
 					.where(eq(usersTable.userid, user.userid))
+					.returning({ lastip: usersTable.lastip })
+
+				const currentIp = event.getClientAddress()
+
+				if (newUser?.lastip !== currentIp) {
+					await db
+						.update(usersTable)
+						.set({ lastip: currentIp })
+						.where(eq(usersTable.userid, user.userid))
+				}
 			}
 
-			if (currentTime.valueOf() - user.laststipend > 24 * 60 * 60 * 1000) {
+			if (currentTime.valueOf() - Date.parse(user.laststipend) > 24 * 60 * 60 * 1000) {
 				// 24 hours
 				await db.transaction(async (tx) => {
 					try {

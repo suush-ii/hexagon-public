@@ -22,7 +22,8 @@ const canOnlyWearOne: AssetTypes[] = [
 	'r arms',
 	'l legs',
 	'r legs',
-	'packages'
+	'packages',
+	'gears'
 ]
 
 export const POST: RequestHandler = async ({ locals, request }) => {
@@ -58,7 +59,7 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 		}
 	})
 
-	const wearingCount = wearingAssets.filter((w) => !canOnlyWearOne.includes(w.asset.assetType)) // we only care about accessories like hats and gears
+	const wearingCount = wearingAssets.filter((w) => !canOnlyWearOne.includes(w.asset.assetType)) // we only care about accessories like hats
 
 	if (wearingCount.length >= 10 && result.data.wear === true) {
 		return error(400, {
@@ -88,6 +89,15 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 
 	if (!item) {
 		return error(400, { success: false, message: "You don't own this!", data: {} })
+	}
+
+	if (
+		item.asset.assetType === 'games' ||
+		item.asset.assetType === 'audio' ||
+		item.asset.assetType === 'images' ||
+		item.asset.assetType === 'decals'
+	) {
+		return error(400, { success: false, message: 'You cannot wear this asset.', data: {} })
 	}
 
 	if (item.asset.moderationstate !== 'approved') {

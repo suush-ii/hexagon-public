@@ -13,26 +13,7 @@
 	import type { ActionTypes } from '$src/lib/server/admin'
 
 	import { page } from '$app/stores'
-	import { goto } from '$app/navigation'
-	import { getPageNumber } from '$lib/utils'
-
-	$: pageNumber = getPageNumber($page.url)
-
-	function previousPage() {
-		let query = new URLSearchParams($page.url.searchParams.toString())
-
-		query.set('page', (pageNumber - 1).toString())
-
-		goto(`?${query.toString()}`)
-	}
-
-	function nextPage() {
-		let query = new URLSearchParams($page.url.searchParams.toString())
-
-		query.set('page', (pageNumber + 1).toString())
-
-		goto(`?${query.toString()}`)
-	}
+	import { depluralize } from '$lib/utils'
 
 	function formatAction(
 		action: ActionTypes,
@@ -64,9 +45,14 @@
 			return text.replace('{gamename}', gamename)
 		}
 
-		if (action === 'approvedasset' || action === 'rejectedasset' || action === 'moderatedasset') {
+		if (
+			action === 'approvedasset' ||
+			action === 'rejectedasset' ||
+			action === 'moderatedasset' ||
+			action === 'uploadasset'
+		) {
 			return text
-				.replace('{type}', assettype)
+				.replace('{type}', depluralize(assettype.charAt(0).toUpperCase() + assettype.slice(1)))
 				.replace('{itemname}', assetname)
 				.replace('{id}', associatedid.toString())
 		}

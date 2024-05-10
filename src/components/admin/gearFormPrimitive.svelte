@@ -2,25 +2,21 @@
 	import * as Form from '$src/components/ui/form'
 	import { type SuperValidated, type Infer, superForm, fileProxy } from 'sveltekit-superforms'
 
-	import type { FormSchema as GameSchema } from '$lib/schemas/gameschema'
+	import type { FormSchema as AssetSchema } from '$lib/schemas/assetschema'
 
-	import { formSchema as gameSchema } from '$lib/schemas/gameschema'
-
-	import * as Select from '$src/components/ui/select'
-
-	import { assetGenreZod as genres } from '$lib'
+	import { formSchema as assetSchema } from '$lib/schemas/assetschema'
 
 	import type { FormTextareaEvent } from '$src/components/ui/textarea'
 	import { BookText } from 'lucide-svelte'
+	import { currencyNamePlural } from '$src/stores'
 	import { Input, defaultClass } from '$src/components/ui/input'
 	import { Textarea } from '$src/components/ui/textarea'
 	import { zodClient } from 'sveltekit-superforms/adapters'
-	import SuperDebug from 'sveltekit-superforms'
 
-	export let data: SuperValidated<Infer<GameSchema>>
+	export let data: SuperValidated<Infer<AssetSchema>>
 
 	let form = superForm(data, {
-		validators: zodClient(gameSchema)
+		validators: zodClient(assetSchema)
 	})
 
 	const { form: formData, enhance, submitting, constraints } = form
@@ -36,16 +32,9 @@
 	function handleUpdate(e: FormTextareaEvent<any>) {
 		description = e?.target?.value
 	}
-
-	$: selectedGenre = $formData.genre
-		? {
-				label: $formData.genre,
-				value: $formData.genre
-			}
-		: undefined
 </script>
 
-<form method="POST" action="?/game" enctype="multipart/form-data" class="max-w-4xl" use:enhance>
+<form method="POST" action="?/asset" enctype="multipart/form-data" class="max-w-4xl" use:enhance>
 	<Form.Field {form} name="name">
 		<Form.Control let:attrs>
 			<Form.Label>{friendlyName} Name</Form.Label>
@@ -76,41 +65,18 @@
 		<Form.FieldErrors />
 	</Form.Field>
 
-	<Form.Field {form} name="serversize">
+	<Form.Field {form} name="price">
 		<Form.Control let:attrs>
-			<Form.Label>Server Size</Form.Label>
+			<Form.Label>Price</Form.Label>
 			<Input
+				{...attrs}
 				disabled={$submitting}
 				type="number"
 				min={0}
-				max={50}
-				{...attrs}
-				bind:value={$formData.serversize}
+				max={999999999}
+				bind:value={$formData.price}
 			/>
-			<Form.Description>Up to 50 players.</Form.Description>
-		</Form.Control>
-		<Form.FieldErrors />
-	</Form.Field>
-
-	<Form.Field {form} name="genre">
-		<Form.Control let:attrs>
-			<Form.Label>Genre</Form.Label>
-			<Select.Root
-				selected={selectedGenre}
-				onSelectedChange={(v) => {
-					v && ($formData.genre = v.value)
-				}}
-				disabled={$submitting}
-			>
-				<Select.Trigger {...attrs}>
-					<Select.Value />
-				</Select.Trigger>
-				<Select.Content>
-					{#each genres as value}
-						<Select.Item {value} label={value} />
-					{/each}
-				</Select.Content>
-			</Select.Root>
+			<Form.Description>Up to 999999999 {currencyNamePlural}.</Form.Description>
 		</Form.Control>
 		<Form.FieldErrors />
 	</Form.Field>
@@ -127,7 +93,7 @@
 				disabled={$submitting}
 			/>
 			<Form.Description
-				>{#each fileTypes as fileType}{fileType.toUpperCase()} {' '}{/each} Format 10MB Max
+				>{#each fileTypes as fileType}{fileType.toUpperCase()} {' '}{/each} Format
 			</Form.Description>
 		</Form.Control>
 		<Form.FieldErrors />

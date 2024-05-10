@@ -2,8 +2,9 @@ import type { PageServerLoad } from './$types'
 import { db } from '$lib/server/db'
 import { assetTable } from '$lib/server/schema/assets'
 import type { AssetTypes } from '$lib/types'
-import { and, eq, not } from 'drizzle-orm'
+import { and, desc, eq, not } from 'drizzle-orm'
 import { categories } from './'
+import { commonWhere } from '$lib/server/catalog'
 
 export const load: PageServerLoad = async ({ url }) => {
 	let category =
@@ -15,14 +16,6 @@ export const load: PageServerLoad = async ({ url }) => {
 		categories[0]
 
 	let items
-
-	const commonWhere = and(
-		not(eq(assetTable.assetType, 'games')),
-		not(eq(assetTable.assetType, 'decals')),
-		not(eq(assetTable.assetType, 'images')),
-		not(eq(assetTable.assetType, 'audio')),
-		eq(assetTable.moderationstate, 'approved')
-	) // library assets
 
 	if (category.value.includes('featured')) {
 		category.value = category.value.replace('featured', '')
@@ -45,7 +38,8 @@ export const load: PageServerLoad = async ({ url }) => {
 						username: true
 					}
 				}
-			}
+			},
+			orderBy: desc(assetTable.updated)
 		})
 	} else {
 		items = await db.query.assetTable.findMany({
@@ -64,7 +58,8 @@ export const load: PageServerLoad = async ({ url }) => {
 						username: true
 					}
 				}
-			}
+			},
+			orderBy: desc(assetTable.updated)
 		})
 	}
 
