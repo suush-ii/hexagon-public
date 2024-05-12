@@ -17,6 +17,7 @@ declare global {
 				joindate: Date
 				gender: import('./lib/types.ts').userGenders
 				role: import('./lib/types.ts').userRole
+				banid: number
 			}
 			type DatabaseSessionAttributes = NonNullable<unknown>
 		}
@@ -30,6 +31,7 @@ declare global {
 				pageClicker: number
 				gamesEnabled: boolean
 				developEnabled: boolean
+				sitealert: string
 			}[]
 		}
 		// interface PageData {}

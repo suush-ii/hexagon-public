@@ -10,6 +10,7 @@
 	import { Search } from 'lucide-svelte'
 	import CatalogCard from '$src/components/catalog/catalogCard.svelte'
 	import EmptyCard from '$src/components/emptyCard.svelte'
+	import PaginationWrapper from '$src/components/pagnationWrapper.svelte'
 
 	import { categories } from './'
 
@@ -52,7 +53,18 @@
 		<h1 class="text-4xl leading-none tracking-tight font-semibold">Catalog</h1>
 
 		<div class="flex flex-row flex-wrap md:flex-nowrap gap-x-2 grow">
-			<Input bind:value={searchQuery} type="text" maxlength={128} class="w-full" icon={Search} />
+			<Input
+				bind:value={searchQuery}
+				on:keyup={(event) => {
+					if (event.key === 'Enter') {
+						search()
+					}
+				}}
+				type="text"
+				maxlength={128}
+				class="w-full"
+				icon={Search}
+			/>
 
 			<Select.Root bind:selected>
 				<Select.Trigger class="w-[300px]">
@@ -167,7 +179,7 @@
 		<div class="flex flex-col gap-y-4 w-full">
 			{#if data.items?.length !== 0}
 				<h1 class="text-4xl leading-none tracking-tight">Featured Items on Hexagon</h1>
-				<div class="flex flex-row flex-wrap gap-8">
+				<div class="flex flex-row flex-wrap gap-8 mb-auto">
 					{#if data.items}
 						{#each data.items as item}
 							<CatalogCard
@@ -182,6 +194,7 @@
 						{/each}
 					{/if}
 				</div>
+				<PaginationWrapper count={data.itemscount} size={28} url={$page.url} />
 			{:else}
 				<EmptyCard />
 			{/if}

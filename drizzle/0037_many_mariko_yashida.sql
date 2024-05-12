@@ -1,0 +1,1 @@
+ALTER TABLE "config" ADD COLUMN "sitealert" text DEFAULT '' NOT NULL;

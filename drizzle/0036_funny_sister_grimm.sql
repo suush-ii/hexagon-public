@@ -1,0 +1,1 @@
+ALTER TABLE "bans" ADD COLUMN "moderatorid" bigint;

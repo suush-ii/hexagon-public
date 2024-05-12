@@ -13,7 +13,6 @@
 	import { Textarea } from '$src/components/ui/textarea'
 	import { zodClient } from 'sveltekit-superforms/adapters'
 	import * as Select from '$src/components/ui/select'
-	import SuperDebug from 'sveltekit-superforms'
 
 	import { assetGenreZod as genres } from '$lib'
 
@@ -138,4 +137,3 @@
 
 	<Form.Button disabled={$submitting}>Upload</Form.Button>
 </form>
-<SuperDebug data={$formData} />

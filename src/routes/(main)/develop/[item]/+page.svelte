@@ -11,6 +11,8 @@
 
 	import { pageName } from '$src/stores'
 	import EmptyCard from '$src/components/emptyCard.svelte'
+	import PaginationWrapper from '$src/components/pagnationWrapper.svelte'
+	import { page } from '$app/stores'
 
 	pageName.set('Develop')
 
@@ -53,7 +55,7 @@
 		</Tabs.Content>
 	</Tabs.Root>
 	{#if creations.length > 0}
-		<div class="flex flex-col gap-y-4">
+		<div class="flex flex-col gap-y-4 mb-auto">
 			{#each creations as creation}
 				<div class="flex flex-row gap-x-2 w-full justify-center">
 					{#if data.params === 'shirts' || data.params === 'pants'}
@@ -105,5 +107,6 @@
 				</div>
 			{/each}
 		</div>
+		<PaginationWrapper count={data.itemcount} size={28} url={$page.url} />
 	{/if}
 </div>

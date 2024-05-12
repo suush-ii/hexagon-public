@@ -15,6 +15,7 @@ import { keyTable } from './keys'
 import { gamesTable, jobsTable } from './games'
 import type { ActionTypes } from '../admin'
 import { assetTable } from './assets'
+import type { Action as moderationTypes } from '$src/routes/(main)/admin/users/moderateuser/schema'
 
 // with timestamps ALWAYS USE WITHTIMEZONE!!!
 
@@ -77,17 +78,20 @@ export const adminLogsTable = pgTable('adminlogs', {
 	associatedidtype: text('associatedidtype').$type<'item' | 'user' | 'game' | 'job'>().notNull(),
 	time: timestamp('time', { mode: 'date', withTimezone: true }).notNull().defaultNow(),
 	action: text('action').$type<ActionTypes>().notNull(),
-	banlength: text('banlength').$type<'1 day' | '3 days' | '7 days' | '14 days'>(),
+	banlength: text('banlength').$type<moderationTypes>(),
 	newrole: text('newrole').$type<userRole>()
 })
 
 export const bansTable = pgTable('bans', {
 	banid: bigserial('banid', { mode: 'number' }).notNull().primaryKey(),
-	banlength: text('banlength').$type<'1 day' | '3 days' | '7 days' | '14 days'>(),
-	action: text('action').$type<'warn' | 'ban' | 'terminate' | 'poison'>().notNull(),
+	banlength: text('banlength').$type<moderationTypes>(),
+	action: text('action').$type<moderationTypes>().notNull(),
 	expiration: timestamp('expiration', { mode: 'date', withTimezone: true }).notNull(),
 	time: timestamp('time', { mode: 'date', withTimezone: true }).notNull().defaultNow(),
-	userid: bigint('userid', { mode: 'number' }).notNull() // moderator
+	userid: bigint('userid', { mode: 'number' }).notNull(), // moderator
+	reason: text('reason').notNull(),
+	internalreason: text('internalreason').notNull(),
+	moderatorid: bigint('moderatorid', { mode: 'number' })
 })
 
 export const adminLogsRelations = relations(adminLogsTable, ({ one }) => ({
@@ -113,13 +117,18 @@ export const usersRelations = relations(usersTable, ({ many, one }) => ({
 		references: [jobsTable.players]
 	}),
 	inventory: many(inventoryTable),
-	bans: many(bansTable)
+	bans: many(bansTable, { relationName: 'user' })
 }))
 
-export const bansRelations = relations(bansTable, ({ many, one }) => ({
+export const bansRelations = relations(bansTable, ({ one }) => ({
 	user: one(usersTable, {
-		fields: [bansTable.banid],
-		references: [usersTable.banid]
+		fields: [bansTable.userid],
+		references: [usersTable.userid],
+		relationName: 'user'
+	}),
+	moderator: one(usersTable, {
+		fields: [bansTable.moderatorid],
+		references: [usersTable.userid]
 	})
 }))
 

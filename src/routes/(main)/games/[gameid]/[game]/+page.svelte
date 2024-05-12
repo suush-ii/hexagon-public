@@ -23,6 +23,12 @@
 
 	import type { PageData } from './$types'
 
+	import AllowedGear from '$src/components/games/allowedGear.svelte'
+
+	import RelativeTime from '@yaireo/relative-time'
+
+	const relativeTime = new RelativeTime()
+
 	export let data: PageData
 
 	pageName.set(data.place.associatedgame.gamename)
@@ -232,7 +238,7 @@
 
 								<div>
 									<p class="font-bold text-muted-foreground">Updated</p>
-									<p>{data.place.updated.toLocaleDateString('en-US')}</p>
+									<p>{relativeTime.from(data.place.updated)}</p>
 								</div>
 
 								<div>
@@ -243,6 +249,15 @@
 								<div>
 									<p class="font-bold text-muted-foreground">Genre</p>
 									<p>{data.place.associatedgame.genre}</p>
+								</div>
+
+								<div>
+									<p class="font-bold text-muted-foreground">Allowed Gear</p>
+									<AllowedGear
+										allowedGear={data.place.allowedgear ?? []}
+										genreEnforcement={data.place.geargenreenforced}
+										gameGenre={data.place.associatedgame.genre}
+									/>
 								</div>
 							</div>
 							<Separator class="mt-2" />

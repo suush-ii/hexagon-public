@@ -55,7 +55,7 @@
 </script>
 
 <div class="flex flex-row gap-2 w-full flex-wrap justify-end">
-	<SeeAll href="/games/{type}" />
+	<SeeAll href="/games/all/{type}" />
 
 	<div
 		class="flex flex-row gap-x-2 w-full outline-dashed outline-muted-foreground/20 rounded-xl outline-offset-4"

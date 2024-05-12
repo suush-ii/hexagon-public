@@ -6,8 +6,8 @@ import { db } from '$lib/server/db'
 import { migrate } from 'drizzle-orm/postgres-js/migrator'
 import { auth } from '$lib/server/lucia'
 import { dev } from '$app/environment'
-import { usersTable, transactionsTable } from '$lib/server/schema/users'
-import { eq } from 'drizzle-orm'
+import { usersTable, transactionsTable, bansTable } from '$lib/server/schema/users'
+import { desc, eq } from 'drizzle-orm'
 import { s3BucketName } from '$src/stores'
 import { rccAuth } from './routes/(rcc)/updatejob/auth.server'
 import { get } from '$lib/server/config'
@@ -52,7 +52,8 @@ const protectedRoutes = [
 	'/transactions',
 	'/avatar',
 	'/friends',
-	'/users'
+	'/users',
+	'/not-approved'
 ]
 const adminProtectedRoutes = ['/admin', '/api/admin']
 
@@ -104,8 +105,29 @@ export const handle: Handle = sequence(
 		const config = get()
 
 		if (config?.[0]?.maintenanceEnabled === true) {
-			if (event.url.pathname != '/maintenance') {
-				redirect(302, '/maintenance')
+			event.locals.auth = auth.handleRequest(event)
+
+			event.locals.config = config
+
+			const session = await event.locals.auth.validate()
+
+			const user = session?.user
+
+			if (user) {
+				event.locals.user = user
+
+				const currentPermissionLevel =
+					permissionLevels.find((level) => level.name === user.role)?.level ?? 5
+
+				if (currentPermissionLevel >= 4) {
+					if (event.url.pathname != '/maintenance') {
+						return redirect(302, '/maintenance')
+					}
+				}
+			} else {
+				if (event.url.pathname != '/maintenance') {
+					return redirect(302, '/maintenance')
+				}
 			}
 		}
 
@@ -134,6 +156,18 @@ export const handle: Handle = sequence(
 			}
 
 			const currentTime = new Date()
+
+			if (user.banid) {
+				const [ban] = await db
+					.select({})
+					.from(bansTable)
+					.where(eq(bansTable.banid, user.banid))
+					.limit(1)
+
+				if (ban && event.url.pathname !== '/not-approved') {
+					redirect(302, '/not-approved')
+				}
+			}
 
 			if (currentTime.valueOf() - Date.parse(user.lastactivetime) > 3 * 60 * 1000) {
 				// they haven't visited in over 3 mins
@@ -213,7 +247,7 @@ export const handle: Handle = sequence(
 				)
 
 				const currentPermissionLevel =
-					permissionLevels.find((level) => level.name === user.role)?.level ?? 0
+					permissionLevels.find((level) => level.name === user.role)?.level ?? 5
 
 				if (permissionRequired) {
 					if (currentPermissionLevel > permissionRequired.requiredLevel) {

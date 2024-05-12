@@ -1,4 +1,4 @@
-import { bigint, boolean, pgTable } from 'drizzle-orm/pg-core'
+import { bigint, boolean, pgTable, text } from 'drizzle-orm/pg-core'
 
 //export const genderEnum = pgEnum("gender", ["Male", "Female", "Other"]) nvm :skull:
 export const configTable = pgTable('config', {
@@ -7,5 +7,6 @@ export const configTable = pgTable('config', {
 	gamesEnabled: boolean('gamesenabled').notNull().default(true),
 	developEnabled: boolean('developEnabled').notNull().default(true),
 	keysEnabled: boolean('keysenabled').notNull().default(false),
-	pageClicker: bigint('pageclicker', { mode: 'number' }).notNull().default(0)
+	pageClicker: bigint('pageclicker', { mode: 'number' }).notNull().default(0),
+	sitealert: text('sitealert').notNull().default('')
 })

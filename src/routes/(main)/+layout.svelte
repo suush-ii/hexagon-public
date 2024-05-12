@@ -31,9 +31,21 @@
 
 <div class="flex flex-col h-screen">
 	{#if $page.url.pathname != '/' && $page.url.pathname != '/login'}
-		<Navbar {loggedIn} userId={data?.user?.userid} coins={data?.user?.coins} {admin} />
+		<Navbar
+			{loggedIn}
+			userId={data?.user?.userid}
+			coins={data?.user?.coins}
+			{admin}
+			sitealert={data.sitealert}
+		/>
 	{:else if $page.url.pathname === '/login'}
-		<Navbar {loggedIn} signUpButton={true} coins={data?.user?.coins} {admin} />
+		<Navbar
+			{loggedIn}
+			signUpButton={true}
+			coins={data?.user?.coins}
+			{admin}
+			sitealert={data.sitealert}
+		/>
 	{/if}
 
 	<main

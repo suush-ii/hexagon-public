@@ -33,6 +33,14 @@
 
 		goto(`?${query.toString()}`)
 	}
+
+	function pagebutton(value: number) {
+		let query = new URLSearchParams(url.searchParams.toString())
+
+		query.set(queryName, value.toString())
+
+		return query.toString()
+	}
 </script>
 
 <Pagination.Root
@@ -56,11 +64,13 @@
 					<Pagination.Ellipsis />
 				</Pagination.Item>
 			{:else}
-				<Pagination.Item>
-					<Pagination.Link {page} isActive={currentPage === page.value}>
-						{page.value}
-					</Pagination.Link>
-				</Pagination.Item>
+				<a href="?{pagebutton(page.value)}">
+					<Pagination.Item>
+						<Pagination.Link {page} isActive={currentPage === page.value}>
+							{page.value}
+						</Pagination.Link>
+					</Pagination.Item></a
+				>
 			{/if}
 		{/each}
 		<Pagination.Item>

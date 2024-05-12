@@ -18,13 +18,8 @@ export const load: LayoutServerLoad = (async ({ url, locals }) => {
 
 	const config = locals.config
 
-	if (config?.[0]?.maintenanceEnabled === true) {
-		if (url.pathname != '/maintenance') {
-			redirect(302, '/maintenance')
-		}
-	}
-
 	return {
-		user
+		user,
+		sitealert: config[0].sitealert
 	}
 }) satisfies LayoutServerLoad

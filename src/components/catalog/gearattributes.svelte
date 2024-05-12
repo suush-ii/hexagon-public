@@ -1,7 +1,6 @@
 <script lang="ts">
 	import type { GearAttributes } from '$lib/types'
 	import {
-		Box,
 		Webhook,
 		Sword,
 		Crosshair,
@@ -26,8 +25,13 @@
 		'Building tools': Wrench,
 		'Personal transport': DoorOpen
 	}
+
+	export let showName = true
 </script>
 
 <h1 class="text-sm flex items-center gap-x-1">
-	<svelte:component this={icons[attribute]} />{attribute}
+	<svelte:component this={icons[attribute]} />
+	{#if showName}
+		{attribute}
+	{/if}
 </h1>

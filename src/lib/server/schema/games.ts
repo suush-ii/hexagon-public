@@ -1,6 +1,6 @@
-import type { assetStates, gameGenre } from '$lib/types'
+import type { GearAttributes, assetStates, gameGenre } from '$lib/types'
 import type { clientVersions } from '$lib/types'
-import { relations } from 'drizzle-orm'
+import { relations, sql } from 'drizzle-orm'
 import {
 	bigint,
 	bigserial,
@@ -49,7 +49,14 @@ export const placesTable = pgTable('places', {
 	universeid: bigint('universeid', { mode: 'number' }).notNull(),
 	created: timestamp('created', { mode: 'date', withTimezone: true }).notNull().defaultNow(),
 	updated: timestamp('updated', { mode: 'date', withTimezone: true }).notNull().defaultNow(),
-	placeurl: text('placeurl')
+	placeurl: text('placeurl'),
+	allowedgear: text('allowedgear')
+		.notNull()
+		.$type<GearAttributes>()
+		.array()
+		.$type<GearAttributes[]>()
+		.default(sql`'{}'::text[]`),
+	geargenreenforced: boolean('geargenreenforced').notNull().default(false)
 })
 
 export const placesRelations = relations(placesTable, ({ one, many }) => ({
@@ -70,7 +77,10 @@ export const jobsTable = pgTable('jobs', {
 	active: integer('active').default(0), // how mnay people are in the instance used for games only
 	status: integer('status').default(1), // 2 is done loading and 1 is loading
 	port: integer('port').default(0),
-	players: bigint('players', { mode: 'number' }).array().$type<number[]>().default([])
+	players: bigint('players', { mode: 'number' })
+		.array()
+		.$type<number[]>()
+		.default(sql`'{}'::bigint[]`)
 })
 
 export const jobsRelations = relations(jobsTable, ({ one, many }) => ({

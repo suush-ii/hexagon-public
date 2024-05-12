@@ -18,6 +18,7 @@
 	export let signUpButton = false
 	export let userId = 0
 	export let admin = false
+	export let sitealert: string
 
 	interface pagePrimitive extends HTMLAnchorAttributes {
 		pageUrl: string
@@ -149,5 +150,16 @@
 				</nav>
 			</div>
 		</div>
+		{#if sitealert && sitealert !== ''}
+			<div
+				class="supports-backdrop-blur:bg-background/60 fixed top-24 z-40 w-full border-b bg-secondary/40 shadow-sm backdrop-blur flex"
+			>
+				<div class="container flex h-6 items-center">
+					<nav class="flex items-center space-x-4 lg:space-x-6">
+						<h1 class="text-lg font-semibold">{sitealert}</h1>
+					</nav>
+				</div>
+			</div>
+		{/if}
 	{/if}
 </header>

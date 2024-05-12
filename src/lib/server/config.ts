@@ -3,8 +3,24 @@ import { configTable } from './schema/config'
 const configPrepared = db.select().from(configTable).limit(1).prepare('configGrab')
 
 type Config = typeof configTable.$inferSelect
+let config: Config[]
 
-let config = await configPrepared.execute()
+try {
+	config = await configPrepared.execute()
+} catch {
+	config = [
+		{
+			maintenanceEnabled: true,
+			registrationEnabled: false,
+			gamesEnabled: false,
+			developEnabled: false,
+			keysEnabled: false,
+			pageClicker: 0,
+			sitealert: ''
+		}
+	]
+	console.log('might wanna fix the db')
+}
 
 if (config.length === 0) {
 	await db.insert(configTable).values({})
@@ -14,9 +30,28 @@ export function get() {
 	return config
 }
 
-export async function set(newConfig: Config) {
-	config[0] = newConfig
-	await db.update(configTable).set(newConfig)
+export async function set(newConfig: Omit<Omit<Config, 'pageClicker'>, 'sitealert'>) {
+	config[0].developEnabled = newConfig.developEnabled
+	config[0].gamesEnabled = newConfig.gamesEnabled
+	config[0].keysEnabled = newConfig.keysEnabled
+	config[0].maintenanceEnabled = newConfig.maintenanceEnabled
+	config[0].registrationEnabled = newConfig.registrationEnabled
+
+	await db.update(configTable).set({
+		maintenanceEnabled: newConfig.maintenanceEnabled,
+		registrationEnabled: newConfig.registrationEnabled,
+		keysEnabled: newConfig.keysEnabled,
+		gamesEnabled: newConfig.gamesEnabled,
+		developEnabled: newConfig.developEnabled
+	})
+}
+
+export async function setSitealert(sitealert: string) {
+	config[0].sitealert = sitealert
+
+	await db.update(configTable).set({
+		sitealert
+	})
 }
 
 // this only works in single node instances not edge caching like this signifcantly reduces ping

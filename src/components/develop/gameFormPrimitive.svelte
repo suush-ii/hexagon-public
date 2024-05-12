@@ -15,7 +15,6 @@
 	import { Input, defaultClass } from '$src/components/ui/input'
 	import { Textarea } from '$src/components/ui/textarea'
 	import { zodClient } from 'sveltekit-superforms/adapters'
-	import SuperDebug from 'sveltekit-superforms'
 
 	export let data: SuperValidated<Infer<GameSchema>>
 

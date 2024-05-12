@@ -34,7 +34,7 @@
 			action === 'unban' ||
 			action === 'ban'
 		) {
-			return text.replace('{length}', banlength)
+			return text.replace('{length}', banlength.replace('Ban', ''))
 		}
 
 		if (action === 'changedrole') {
