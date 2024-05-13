@@ -1,12 +1,11 @@
 import { json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types'
-import { db } from '$src/lib/server/db'
-import { configTable } from '$src/lib/server/schema/config'
+import { incrementClicker } from '$lib/server/config'
 
 export const POST: RequestHandler = async ({ locals }) => {
 	const configOld = locals.config
 
-	await db.update(configTable).set({ pageClicker: configOld[0].pageClicker + 1 })
+	incrementClicker()
 
 	return json({ success: true, message: '', data: { clicker: configOld[0].pageClicker + 1 } })
 }

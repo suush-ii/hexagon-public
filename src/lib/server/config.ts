@@ -54,4 +54,12 @@ export async function setSitealert(sitealert: string) {
 	})
 }
 
+export async function incrementClicker() {
+	config[0].pageClicker++
+
+	await db.update(configTable).set({
+		pageClicker: config[0].pageClicker
+	})
+}
+
 // this only works in single node instances not edge caching like this signifcantly reduces ping
