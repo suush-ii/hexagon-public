@@ -4,6 +4,7 @@
 	import { Gamepad2 } from 'lucide-svelte'
 	import { Wand2 } from 'lucide-svelte'
 	import { Home } from 'lucide-svelte'
+	import { X } from 'lucide-svelte'
 	import { Terminal } from 'lucide-svelte'
 	import type { Component } from '$lib/types'
 	import type { HTMLAnchorAttributes } from 'svelte/elements'
@@ -12,6 +13,7 @@
 	import * as DropdownMenu from '$src/components/ui/dropdown-menu'
 
 	import { currencyName, currencyNamePlural } from '$src/stores'
+	import { browser } from '$app/environment'
 
 	export let loggedIn: boolean
 	export let coins: number
@@ -43,6 +45,12 @@
 			{ pageUrl: '/avatar', friendlyName: 'Customize' },
 			{ pageUrl: '/admin', friendlyName: 'Admin', protected: true }
 		]
+	}
+
+	let storedalert: string = ''
+
+	if (browser) {
+		storedalert = localStorage.getItem('storedalert') ?? ''
 	}
 </script>
 
@@ -150,14 +158,20 @@
 				</nav>
 			</div>
 		</div>
-		{#if sitealert && sitealert !== ''}
+		{#if sitealert && sitealert !== '' && sitealert !== storedalert}
 			<div
-				class="supports-backdrop-blur:bg-background/60 fixed top-24 z-40 w-full border-b bg-secondary/40 shadow-sm backdrop-blur flex"
+				class="supports-backdrop-blur:bg-background/60 fixed top-24 z-40 w-full border-b bg-orange shadow-sm backdrop-blur flex"
 			>
 				<div class="container flex h-6 items-center">
 					<nav class="flex items-center space-x-4 lg:space-x-6">
 						<h1 class="text-lg font-semibold">{sitealert}</h1>
 					</nav>
+					<button
+						on:click={() => {
+							localStorage.setItem('storedalert', sitealert)
+						}}
+						class="ml-auto"><X /></button
+					>
 				</div>
 			</div>
 		{/if}
