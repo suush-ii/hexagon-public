@@ -1,6 +1,6 @@
 import type { LayoutServerLoad } from './$types'
 import { db } from '$lib/server/db'
-import { ne, and, eq } from 'drizzle-orm'
+import { ne, and, eq, sql } from 'drizzle-orm'
 import { error, redirect } from '@sveltejs/kit'
 import { z } from 'zod'
 import { assetTable } from '$lib/server/schema/assets'
@@ -76,7 +76,8 @@ export const load: LayoutServerLoad = async ({ params, locals }) => {
 				}
 			}
 		},
-		limit: 10
+		limit: 10,
+		orderBy: sql<number>`random()`
 	})
 
 	return {

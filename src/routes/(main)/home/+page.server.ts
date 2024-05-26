@@ -1,4 +1,7 @@
 import type { PageServerLoad } from './$types'
+import { placesTable, recentlyPlayedTable } from '$lib/server/schema'
+import { db } from '$src/lib/server/db'
+import { desc, eq } from 'drizzle-orm'
 const welcomeMessages = [
 	'Welkom',
 	'Mirëseerdhët',
@@ -97,8 +100,34 @@ const welcomeMessages = [
 	'Siyakwamukela'
 ]
 
-export const load: PageServerLoad = () => {
+export const load: PageServerLoad = async ({ locals }) => {
+	const recentlyPlayed = await db.query.recentlyPlayedTable.findMany({
+		where: eq(recentlyPlayedTable.userid, locals.user.userid),
+		orderBy: desc(recentlyPlayedTable.time),
+		limit: 9,
+		columns: {},
+		with: {
+			game: {
+				columns: {
+					gamename: true,
+					active: true,
+					iconurl: true
+				},
+				with: {
+					places: {
+						where: eq(placesTable.startplace, true),
+						limit: 1,
+						columns: {
+							placeid: true
+						}
+					}
+				}
+			}
+		}
+	})
+
 	return {
-		welcomeMessage: welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)]
+		welcomeMessage: welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)],
+		recentlyPlayed
 	}
 }

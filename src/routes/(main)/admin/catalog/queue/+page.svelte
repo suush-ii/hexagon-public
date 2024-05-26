@@ -23,7 +23,8 @@
 			.filter((asset) => asset.moderationState !== 'pending')
 			.map((asset) => ({
 				assetId: asset.assetId,
-				moderationState: asset.moderationState
+				moderationState: asset.moderationState,
+				punish: asset.punish
 			}))
 
 		const response = await fetch('/api/admin/approveAssets', {
@@ -57,11 +58,10 @@
 			{#each data.assets as asset}
 				<QueueCard
 					bind:moderationState={asset.moderationState}
+					bind:punish={asset.punish}
 					assetType={asset.assetType}
-					assetId={asset.assetId}
 					assetName={asset.assetName}
 					assetUrl={asset.assetUrl}
-					creatorUserId={asset.creatorUserId}
 				/>
 			{/each}
 			{#if data?.assets?.length === 0}

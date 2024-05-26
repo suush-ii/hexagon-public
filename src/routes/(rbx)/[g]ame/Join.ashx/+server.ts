@@ -8,6 +8,9 @@ import { auth } from '$lib/server/lucia'
 import { LuciaError } from 'lucia'
 import { z } from 'zod'
 import { createSign } from 'node:crypto'
+import script from './join.lua?raw'
+
+const scriptNew: string = script.replaceAll('www.roblox.com', BASE_URL)
 
 const CharacterAppearance = `http://${BASE_URL}/Asset/CharacterFetch.ashx`
 const BaseUrl = `http://${BASE_URL}/`
@@ -109,7 +112,7 @@ export const fallback: RequestHandler = async ({ url, locals }) => {
 		})
 	}
 
-	if (instance.active ?? 0 >= place.associatedgame.serversize ?? 0) {
+	if (Number(instance.active) >= place.associatedgame.serversize) {
 		// job is full
 		return json({
 			success: false,
@@ -129,8 +132,8 @@ export const fallback: RequestHandler = async ({ url, locals }) => {
 	}
 
 	if (instance && instance.port && instance.status === 2) {
-		// an instance is available
-		let joinJson = {
+		// an instance is available\
+		let joinJson: { [key: string]: string | number | boolean } = {
 			ClientPort: 0,
 			MachineAddress: 'localhost',
 			ServerPort: 53640,
@@ -177,7 +180,7 @@ export const fallback: RequestHandler = async ({ url, locals }) => {
 
 		joinJson.UserName = session.username
 		joinJson.UserId = Number(session.userid)
-		joinJson.CharacterAppearance += `?userId=${session.userid}&placeId=${place.placeid}`
+		joinJson.CharacterAppearance += `?userId=${session.userid}&jobId=${instance.jobid}`
 
 		joinJson.GameId = Number(place.associatedgame.universeid)
 		joinJson.PlaceId = Number(place.placeid)
@@ -215,12 +218,17 @@ export const fallback: RequestHandler = async ({ url, locals }) => {
 
 		// joinscript signature
 
-		const sign = createSign('SHA1')
-		sign.update('\r\n' + JSON.stringify(joinJson))
+		let scriptNewArgs = scriptNew
 
+		for (let key in joinJson) {
+			scriptNewArgs = scriptNewArgs.replaceAll(`{${key}}`, joinJson[key].toString())
+		}
+
+		const sign = createSign('SHA1')
+		sign.update('\r\n' + scriptNewArgs)
 		const signature = sign.sign(CLIENT_PRIVATE_KEY, 'base64')
 
-		return text('--rbxsig%' + signature + '%\r\n' + JSON.stringify(joinJson))
+		return text('--rbxsig%' + signature + '%\r\n' + scriptNewArgs)
 	}
 
 	return json({})

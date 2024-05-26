@@ -1,8 +1,8 @@
 import { relations } from 'drizzle-orm'
-import { bigint, integer, bigserial, pgTable, text, timestamp } from 'drizzle-orm/pg-core'
+import { bigint, integer, bigserial, pgTable, text, timestamp, boolean } from 'drizzle-orm/pg-core'
 import { placesTable } from './games'
 import type { assetStates, AssetTypes, AssetGenreDB, GearAttributes } from '$lib/types'
-import { inventoryTable, usersTable } from './users'
+import { usersTable } from './users'
 
 export const assetTable = pgTable('assets', {
 	assetid: bigserial('assetid', { mode: 'number' }).notNull().primaryKey(),
@@ -27,7 +27,9 @@ export const assetTable = pgTable('assets', {
 		.$type<AssetGenreDB[]>()
 		.default(['All'])
 		.notNull(),
-	gearattributes: text('gearattributes').$type<GearAttributes>().array().$type<GearAttributes[]>()
+	gearattributes: text('gearattributes').$type<GearAttributes>().array().$type<GearAttributes[]>(),
+	topunish: boolean('topunish').default(false),
+	punished: boolean('punished').default(false)
 })
 
 export const assetRelations = relations(assetTable, ({ one, many }) => ({

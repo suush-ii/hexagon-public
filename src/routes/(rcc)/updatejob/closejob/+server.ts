@@ -1,6 +1,6 @@
 import { error, json, type RequestHandler } from '@sveltejs/kit'
 import { db } from '$lib/server/db'
-import { jobsTable } from '$lib/server/schema'
+import { gamesTable, jobsTable, usersTable } from '$lib/server/schema'
 import { and, eq } from 'drizzle-orm'
 import { GAMESERVER_IP } from '$env/static/private'
 
@@ -10,11 +10,25 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 	const instance = await db.query.jobsTable.findFirst({
 		where: and(eq(jobsTable.jobid, jobid), eq(jobsTable.type, 'game')),
 		columns: {
-			placeid: true
+			placeid: true,
+			players: true
+		},
+		with: {
+			associatedplace: {
+				columns: {},
+				with: {
+					associatedgame: {
+						columns: {
+							active: true,
+							universeid: true
+						}
+					}
+				}
+			}
 		}
 	})
 
-	await fetch(`http://${GAMESERVER_IP}:8000/closejob/${jobid}/${instance?.placeid ?? 0}/2016`)
+	fetch(`http://${GAMESERVER_IP}:8000/closejob/${jobid}/${instance?.placeid ?? 0}/2016`)
 
 	if (!instance) {
 		return error(400, {
@@ -25,6 +39,20 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 	}
 
 	await db.delete(jobsTable).where(eq(jobsTable.jobid, jobid))
+
+	if (instance.players && instance.players.length > 0) {
+		for (const player of instance.players) {
+			await db.update(usersTable).set({ activegame: null }).where(eq(usersTable.userid, player))
+		}
+
+		const newActive =
+			Number(instance?.associatedplace?.associatedgame?.active) - instance.players.length
+
+		await db
+			.update(gamesTable)
+			.set({ active: newActive })
+			.where(eq(gamesTable.universeid, instance?.associatedplace?.associatedgame.universeid ?? 0))
+	}
 
 	return json({
 		success: true,

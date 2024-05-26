@@ -9,7 +9,8 @@
 			links: [
 				{ title: 'Find', href: '/admin/users/find' },
 				{ title: 'User Admin', href: '/admin/users/useradmin' },
-				{ title: 'Moderate User', href: '/admin/users/moderateuser' }
+				{ title: 'Moderate User', href: '/admin/users/moderateuser' },
+				{ title: 'User Queue', href: '/admin/users/moderateuser?queue=true' }
 			]
 		},
 		{
@@ -24,6 +25,8 @@
 	export let role: userRole
 
 	export let queueCount: number
+
+	export let userQueueCount: number
 </script>
 
 <svelte:head>
@@ -67,8 +70,7 @@
 		<li class="path2 ml-4 relative"><a href="/admin/sitealert">Site Alert</a></li>
 		<li class="path2 ml-4 relative">
 			<a href="/admin/reports"
-				>Reports <Badge class="ml-4 text-lg h-6 overflow-hidden" variant="destructive"
-					>{queueCount}</Badge
+				>Reports <Badge class="ml-4 text-lg h-6 overflow-hidden" variant="destructive">{0}</Badge
 				></a
 			>
 		</li>
@@ -84,6 +86,12 @@
 								>{title}
 								{#if title === 'Queue'}
 									<Badge class="ml-4 text-lg h-6 overflow-hidden">{queueCount}</Badge>
+								{/if}
+
+								{#if title === 'User Queue'}
+									<Badge class="ml-4 text-lg h-6 overflow-hidden" variant="destructive"
+										>{userQueueCount}</Badge
+									>
 								{/if}
 							</a>
 						</li>

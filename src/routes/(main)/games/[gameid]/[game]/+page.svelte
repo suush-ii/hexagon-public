@@ -2,6 +2,7 @@
 	import * as Avatar from '$src/components/ui/avatar'
 	import * as Tabs from '$src/components/ui/tabs'
 	import ReportButton from '$src/components/reportButton.svelte'
+	import * as AlertDialog from '$src/components/ui/alert-dialog'
 
 	import UserImage from '$src/components/userimage.svelte'
 
@@ -27,6 +28,14 @@
 
 	import RelativeTime from '@yaireo/relative-time'
 
+	import { PUBLIC_setupcdn } from '$env/static/public'
+
+	import { newLib } from '.'
+
+	const defaultText = 'A server is loading the game...'
+
+	let loadingText = defaultText
+
 	const relativeTime = new RelativeTime()
 
 	export let data: PageData
@@ -34,6 +43,8 @@
 	pageName.set(data.place.associatedgame.gamename)
 
 	let submitting = false
+
+	let open = false
 
 	function calculatePercent(likes: number, dislikes: number) {
 		return Math.round((likes / (likes + dislikes)) * 100)
@@ -80,6 +91,70 @@
 
 		submitting = false
 	}
+
+	import { PUBLIC_sitetest } from '$env/static/public'
+
+	let disableRandom = false
+
+	let disableLoadingText = false
+
+	function randomtext() {
+		if (!disableRandom) {
+			disableRandom = true
+			setTimeout(() => {
+				disableRandom = false
+			}, 1000)
+			loadingText = newLib()
+
+			setInterval(function () {
+				randomtext()
+			}, 4000)
+		}
+	}
+
+	async function placeLauncher(jobId?: string) {
+		let query = new URLSearchParams()
+		if (!jobId) {
+			query.set('placeid', data.place.placeid.toString())
+		} else {
+			query.set('jobid', jobId)
+		}
+
+		const response = await fetch(`/game/PlaceLauncher.ashx?${query}`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		})
+
+		const json = await response.json()
+
+		if (json.status === 1) {
+			if (!disableLoadingText) {
+				loadingText = 'A server is loading the game...'
+				disableLoadingText = true
+			}
+
+			setTimeout(() => {
+				disableRandom = false
+
+				randomtext()
+				placeLauncher()
+			}, 3000)
+		} else if (json.status === 2) {
+			loadingText = 'The server is ready. Joining the game...'
+			document.location = `hexagon-player${PUBLIC_sitetest === 'true' ? '-sitetest1' : ''}:1+launchmode:play+gameinfo:${json.authenticationTicket}+placelauncherurl:${encodeURIComponent(json.joinScriptUrl)}`
+
+			open = false
+
+			disableRandom = true
+			loadingText = defaultText
+		}
+	}
+
+	function placeLauncherJob(event: CustomEvent<{ jobId: string }>) {
+		placeLauncher(event.detail.jobId)
+	}
 </script>
 
 <div class="container p-4 flex flex-col gap-y-4">
@@ -114,16 +189,37 @@
 						>
 					</h1>
 					<Separator class="mt-2" />
-					<Button
-						on:click={() => {
-							document.location = `hexagonlaunch://${data.place.placeid}[${data.ticket}[${2016}[player`
-						}}
-						variant="minimal"
-						size="lg"
-						class="w-full h-16 mt-4 xl:mt-auto hover:shadow-md hover:shadow-white bg-success flex gap-x-4 rounded-xl"
-					>
-						<Play class="w-full h-10 fill-white" />
-					</Button>
+
+					<AlertDialog.Root closeOnOutsideClick={true} bind:open>
+						<AlertDialog.Trigger asChild let:builder>
+							<Button
+								variant="minimal"
+								size="lg"
+								builders={[builder]}
+								class="w-full h-16 mt-4 xl:mt-auto hover:shadow-md hover:shadow-white bg-success flex gap-x-4 rounded-xl"
+								on:click={() => {
+									placeLauncher()
+									disableLoadingText = false
+								}}
+							>
+								<Play class="w-full h-10 fill-white" />
+							</Button>
+						</AlertDialog.Trigger>
+						<AlertDialog.Content class="space-y-8">
+							<AlertDialog.Header>
+								<Loader2 class="h-24 w-24 animate-spin mx-auto" />
+								<h1 class="text-center text-2xl font-semibold">{loadingText}</h1>
+								<a
+									href={`https://${PUBLIC_setupcdn}/HexagonPlayerLauncher.exe`}
+									class="text-center text-lg hover:underline">Download</a
+								>
+							</AlertDialog.Header>
+
+							<AlertDialog.Cancel asChild let:builder>
+								<Button size="sm" builders={[builder]}>Cancel</Button>
+							</AlertDialog.Cancel>
+						</AlertDialog.Content>
+					</AlertDialog.Root>
 					<Separator class="mt-2" />
 					<div class="flex flex-row gap-x-4">
 						<h1 class="text-lg font-semibold flex align-middle my-auto gap-x-1 text-yellow-400">
@@ -271,8 +367,10 @@
 							<GameServers
 								servers={data.servers}
 								serverSize={data.place.associatedgame.serversize}
-								placeid={data.place.placeid}
-								ticket={data.ticket}
+								on:placelauncher={(event) => {
+									placeLauncherJob(event)
+									disableLoadingText = false
+								}}
 							/>
 						</Tabs.Content>
 					{/if}

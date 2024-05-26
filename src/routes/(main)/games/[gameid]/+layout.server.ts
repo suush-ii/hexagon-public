@@ -8,6 +8,8 @@ import { votesTable } from '$lib/server/schema/gamevotes'
 import { jobsTable } from '$lib/server/schema/games'
 import { slugify } from '$lib/utils'
 type jobs = typeof jobsTable.$inferSelect
+import { BASE_URL } from '$env/static/private'
+const joinScriptUrl = `http://${BASE_URL}/game/Join.ashx`
 
 export const load: LayoutServerLoad = async ({ params, locals, depends, cookies, url }) => {
 	const result = await z.number().safeParseAsync(Number(params.gameid))
@@ -88,7 +90,7 @@ export const load: LayoutServerLoad = async ({ params, locals, depends, cookies,
 			voted: alreadyVoted.length > 0,
 			voteType: alreadyVoted.length > 0 ? alreadyVoted[0].type : null
 		},
-		ticket: cookies.get('auth_session') ?? '',
-		servers
+		servers,
+		joinScriptUrl
 	}
 }

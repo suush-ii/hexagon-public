@@ -5,7 +5,7 @@ import { BASE_URL } from '$env/static/private'
 const joinScriptUrl = `http://${BASE_URL}/game/Join2.ashx`
 const authenticationUrl = `http://${BASE_URL}/Login/Negotiate.ashx`
 
-export const fallback: RequestHandler = async () => {
+/*export const fallback: RequestHandler = async () => {
 	let placeLauncherJson = {
 		jobId: '',
 		status: 2,
@@ -17,3 +17,4 @@ export const fallback: RequestHandler = async () => {
 
 	return json(placeLauncherJson)
 }
+*/

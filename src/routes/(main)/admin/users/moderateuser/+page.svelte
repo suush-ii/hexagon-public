@@ -5,6 +5,8 @@
 	import * as RadioGroup from '$src/components/ui/radio-group'
 	import { Textarea } from '$src/components/ui/textarea'
 	import { Button } from '$src/components/ui/button'
+	import Assetcardprimitive from '$src/components/admin/assetcardprimitive.svelte'
+	import { Checkbox } from '$src/components/ui/checkbox/index.js'
 
 	pageName.set('Admin')
 
@@ -47,6 +49,9 @@
 			'Do not harass other users. Do not say inappropriate or mean things about others on Hexagon.',
 		Scam: 'Do not scam other users.',
 		'Bad Image': 'Do not post inappropriate images.'
+	}
+	$: if ($formData.scrubusername) {
+		$formData.action = 'Delete'
 	}
 </script>
 
@@ -101,6 +106,24 @@
 				<Form.FieldErrors />
 			</Form.Field>
 
+			<Form.Field
+				{form}
+				name="scrubusername"
+				class="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4"
+			>
+				<Form.Control let:attrs>
+					<Checkbox {...attrs} bind:checked={$formData.scrubusername} />
+					<div class="space-y-1 leading-none">
+						<Form.Label
+							><span class="font-bold tracking-tighter">Scrub Username:</span> This will set the user's
+							name to [Content Deleted]. Making it impossible for them to log in. It will also delete
+							this account.</Form.Label
+						>
+					</div>
+					<input name={attrs.name} value={$formData.scrubusername} hidden />
+				</Form.Control>
+			</Form.Field>
+
 			<Form.Button disabled={$submitting} variant="outline" size="lg" class="w-full">
 				{#if $submitting}
 					<Loader2 class="mr-2 h-4 w-4 animate-spin" />
@@ -109,6 +132,20 @@
 			>
 			{#if $message}<Warntext text={$message} />{/if}
 		</div>
+
+		{#if data.asset}
+			<div>
+				<h1 class="text-xl">Current abuses to review for {username}</h1>
+
+				<div class="w-[350px] flex flex-col">
+					<Assetcardprimitive
+						assetName={data.asset.assetname}
+						assetType={data.asset.assetType}
+						assetUrl={data.asset.simpleasseturl}
+					/>
+				</div>
+			</div>
+		{/if}
 	</form>
 
 	<div class="flex gap-x-8">
@@ -131,8 +168,8 @@
 
 		<div>
 			<h1 class="text-lg">Past Punishments</h1>
-			<div class="max-w-4xl space-y-4">
-				<Table.Root class="">
+			<div class="max-w-4xl space-y-4 h-full">
+				<Table.Root class="mb-auto">
 					<Table.Header>
 						<Table.Row>
 							<Table.Head>ID</Table.Head>

@@ -5,19 +5,36 @@
 
 	import FriendAvatar from '$src/components/home/friendAvatar.svelte'
 
+	import GameCard from '$src/components/games/gameCard.svelte'
+
 	import { pageName } from '$src/stores'
 	pageName.set('Home')
 
 	import EmptyCard from '$src/components/emptyCard.svelte'
 	import SeeAll from '$src/components/seeAll.svelte'
+	import Avatar from '$src/components/users/avatar.svelte'
 
 	let friends = [1] // TODO: Fetch real friends.
+
+	$: recentlyPlayed = data.recentlyPlayed
 </script>
 
 <div class="container p-8 flex flex-col">
-	<h1 class="text-5xl leading-none tracking-tight font-semibold">
-		{data.welcomeMessage}, {data.user.username}...
-	</h1>
+	<div class="flex">
+		<a href="/users/{data.user.userid}/profile">
+			<Avatar
+				state={'online'}
+				userid={data.user.userid}
+				username={data.user.username}
+				disableoutline={true}
+				css="w-48 h-48 !rounded-none"
+			/>
+		</a>
+
+		<h1 class="text-5xl leading-none tracking-tight font-semibold my-auto">
+			{data.welcomeMessage}, {data.user.username}...
+		</h1>
+	</div>
 
 	<div class="pt-24 flex flex-col gap-y-4">
 		<div class="flex flex-row justify-between px-4">
@@ -37,6 +54,31 @@
 				{/each}
 			{/if}
 			<!--TODO: FINISH this...-->
+		</div>
+
+		<div class="flex flex-row justify-between px-4 mt-6">
+			<h1 class="text-3xl">Recently Played</h1>
+
+			<SeeAll href="/recentlyplayed" />
+		</div>
+
+		<div class="flex flex-row gap-x-5 w-full">
+			{#if recentlyPlayed.length > 0}
+				{#each recentlyPlayed as game}
+					<GameCard
+						gameId={game.game.places[0].placeid}
+						gameName={game.game.gamename}
+						playerCount={game.game.active}
+						iconUrl={game.game.iconurl ?? ''}
+					/>
+				{/each}
+			{:else}
+				<EmptyCard class="p-8 m-auto">
+					<h5 class="text-center">
+						Maybe play some <a href="/games" class="hover:underline font-semibold">games</a>?
+					</h5>
+				</EmptyCard>
+			{/if}
 		</div>
 	</div>
 </div>

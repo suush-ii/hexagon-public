@@ -12,7 +12,7 @@ import {
 import type { userState, userRole, userGenders, AssetTypes } from '$lib/types'
 import { relations } from 'drizzle-orm'
 import { keyTable } from './keys'
-import { gamesTable, jobsTable } from './games'
+import { gamesTable, jobsTable, placesTable } from './games'
 import type { ActionTypes } from '../admin'
 import { assetTable } from './assets'
 import type { Action as moderationTypes } from '$src/routes/(main)/admin/users/moderateuser/schema'
@@ -47,7 +47,17 @@ export const usersTable = pgTable('users', {
 	registerip: text('registerip'),
 	lastip: text('lastip'),
 	banid: bigint('banid', { mode: 'number' }),
-	blurb: text('blurb')
+	blurb: text('blurb'),
+	scrubbedusername: text('scrubbedusername'),
+	activegame: bigint('activegame', { mode: 'number' })
+})
+
+export const relationsTable = pgTable('relations', {
+	requestid: bigserial('requestid', { mode: 'number' }).notNull().primaryKey(),
+	sender: bigint('sender', { mode: 'number' }).notNull(),
+	recipient: bigint('recipient', { mode: 'number' }).notNull(),
+	time: timestamp('time', { mode: 'date', withTimezone: true }).notNull().defaultNow(),
+	type: text('type').$type<'friend' | 'block' | 'follow' | 'request'>().notNull()
 })
 
 export const inventoryTable = pgTable('inventory', {
@@ -91,7 +101,16 @@ export const bansTable = pgTable('bans', {
 	userid: bigint('userid', { mode: 'number' }).notNull(), // moderator
 	reason: text('reason').notNull(),
 	internalreason: text('internalreason').notNull(),
-	moderatorid: bigint('moderatorid', { mode: 'number' })
+	moderatorid: bigint('moderatorid', { mode: 'number' }),
+	offensivecontent: text('offensivecontent'),
+	offensiveassetid: bigint('offensiveassetid', { mode: 'number' })
+})
+
+export const recentlyPlayedTable = pgTable('recentlyplayed', {
+	recentlyplayedid: bigserial('recentlyplayedid', { mode: 'number' }).notNull().primaryKey(),
+	userid: bigint('userid', { mode: 'number' }).notNull(),
+	gameid: bigint('gameid', { mode: 'number' }).notNull(),
+	time: timestamp('time', { mode: 'date', withTimezone: true }).notNull().defaultNow()
 })
 
 export const adminLogsRelations = relations(adminLogsTable, ({ one }) => ({
@@ -109,15 +128,42 @@ export const adminLogsRelations = relations(adminLogsTable, ({ one }) => ({
 	})
 }))
 
+export const recentlyPlayedRelations = relations(recentlyPlayedTable, ({ one }) => ({
+	user: one(usersTable, {
+		fields: [recentlyPlayedTable.userid],
+		references: [usersTable.userid]
+	}),
+	game: one(gamesTable, {
+		fields: [recentlyPlayedTable.gameid],
+		references: [gamesTable.universeid]
+	})
+}))
+
 export const usersRelations = relations(usersTable, ({ many, one }) => ({
 	keysCreated: many(keyTable),
 	games: many(gamesTable),
-	activegame: one(jobsTable, {
-		fields: [usersTable.userid],
-		references: [jobsTable.players]
-	}),
 	inventory: many(inventoryTable),
-	bans: many(bansTable, { relationName: 'user' })
+	bans: many(bansTable, { relationName: 'user' }),
+	received: many(relationsTable, { relationName: 'received' }),
+	sent: many(relationsTable, { relationName: 'sent' }),
+	recentlyplayed: many(recentlyPlayedTable),
+	activegame: one(placesTable, {
+		fields: [usersTable.activegame],
+		references: [placesTable.placeid]
+	})
+}))
+
+export const relationsRelations = relations(relationsTable, ({ one }) => ({
+	recipient: one(usersTable, {
+		fields: [relationsTable.recipient],
+		references: [usersTable.userid],
+		relationName: 'received'
+	}),
+	sender: one(usersTable, {
+		fields: [relationsTable.sender],
+		references: [usersTable.userid],
+		relationName: 'sent'
+	})
 }))
 
 export const bansRelations = relations(bansTable, ({ one }) => ({
@@ -129,6 +175,10 @@ export const bansRelations = relations(bansTable, ({ one }) => ({
 	moderator: one(usersTable, {
 		fields: [bansTable.moderatorid],
 		references: [usersTable.userid]
+	}),
+	offensiveasset: one(assetTable, {
+		fields: [bansTable.offensiveassetid],
+		references: [assetTable.assetid]
 	})
 }))
 

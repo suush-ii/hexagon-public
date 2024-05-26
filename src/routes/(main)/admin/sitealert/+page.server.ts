@@ -7,7 +7,8 @@ import { setSitealert } from '$lib/server/config'
 
 export const load: PageServerLoad = async ({ locals }) => {
 	return {
-		form: await superValidate(zod(formSchema))
+		form: await superValidate(zod(formSchema)),
+		config: locals.config[0]
 	}
 }
 export const actions: Actions = {

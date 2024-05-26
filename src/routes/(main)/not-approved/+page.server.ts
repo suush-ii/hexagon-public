@@ -25,7 +25,8 @@ export const load: PageServerLoad = async ({ locals }) => {
 			action: bansTable.action,
 			note: bansTable.reason,
 			time: bansTable.time,
-			expiration: bansTable.expiration
+			expiration: bansTable.expiration,
+			offensivetext: bansTable.offensivecontent
 		})
 		.from(bansTable)
 		.where(eq(bansTable.banid, locals.user.banid))
@@ -39,7 +40,8 @@ export const load: PageServerLoad = async ({ locals }) => {
 		ban: {
 			action: friendlyMessage,
 			note: ban.note,
-			time: ban.time
+			time: ban.time,
+			offensivetext: ban.offensivetext
 		},
 		expired: new Date(ban.expiration) < currentTime
 	}

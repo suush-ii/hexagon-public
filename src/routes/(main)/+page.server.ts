@@ -6,8 +6,9 @@ import { db } from '$src/lib/server/db'
 import { auth } from '$src/lib/server/lucia'
 import postgres from 'postgres' // TODO: Check this out later seems to be a workaround for a postgres issue https://github.com/porsager/postgres/issues/684 10/3/2023
 import { usersTable } from '$src/lib/server/schema/users'
-import { eq } from 'drizzle-orm'
+import { eq, or, sql } from 'drizzle-orm'
 import { zod } from 'sveltekit-superforms/adapters'
+import { LuciaError } from 'lucia'
 
 export const load: PageServerLoad = async (event) => {
 	const config = event.locals.config
@@ -43,7 +44,12 @@ export const actions: Actions = {
 				username: usersTable.username
 			})
 			.from(usersTable)
-			.where(eq(usersTable.username, username))
+			.where(
+				or(
+					eq(usersTable.username, username),
+					eq(sql`lower(${usersTable.scrubbedusername})`, sql`lower(${username})`)
+				)
+			)
 			.limit(1)
 
 		if (user.length != 0) {
@@ -73,11 +79,14 @@ export const actions: Actions = {
 			event.locals.auth.setSession(session) // set session cookie
 		} catch (e) {
 			//console.log(e)
-			if (e instanceof postgres.PostgresError && e.code === '23505') {
+			if (
+				(e instanceof postgres.PostgresError && e.code === '23505') ||
+				(e instanceof LuciaError && e.message === 'AUTH_DUPLICATE_KEY_ID')
+			) {
 				return setError(form, 'username', 'Username taken!')
 			}
 
-			return fail(400, form) // wtf happened!!
+			return fail(400, { form }) // wtf happened!!
 		}
 
 		redirect(301, '/home')

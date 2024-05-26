@@ -53,7 +53,8 @@ const protectedRoutes = [
 	'/avatar',
 	'/friends',
 	'/users',
-	'/not-approved'
+	'/not-approved',
+	'/game/PlaceLauncher.ashx' // Join.ashx uses special auth
 ]
 const adminProtectedRoutes = ['/admin', '/api/admin']
 

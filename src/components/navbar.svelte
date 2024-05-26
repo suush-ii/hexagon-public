@@ -61,21 +61,23 @@
 		<nav class="flex items-center space-x-3 sm:space-x-4 lg:space-x-6 w-full">
 			<div class="flex items-center space-x-3 sm:space-x-4 lg:space-x-6 w-full">
 				<a href={loggedIn === false ? '/' : '/home'}
-					><img alt="H" class="w-8 sm:w-12 max-w-xs" src="/hexagon128.png" /></a
+					><img alt="H" class="w-8 sm:w-12 max-w-xs mr-0 ml-6" src="/hexagon128.png" /></a
 				>
 				{#each pages.notAuthenticated as navPage}
 					<a
 						href={navPage.pageUrl}
-						class="text-sm sm:text-base font-medium space-y-1 {$page.url.pathname ===
+						class="text-sm sm:text-base font-medium space-y-1 mr-0 ml-6 {$page.url.pathname ===
 							navPage.pageUrl ||
 						$page.url.pathname.startsWith(navPage.pageUrl) ||
 						(navPage.pageUrl === '/develop/games' && $page.url.pathname.startsWith('/develop'))
 							? ''
 							: 'text-muted-foreground'} transition-colors hover:text-primary group relative"
 					>
-						<div class="flex flex-row gap-x-1 sm:gap-x-2">
-							<svelte:component this={navPage.Icon} class="h-6 sm:h-full" />
-							{navPage.friendlyName}
+						<div class="flex flex-row space-x-1 sm:space-x-2">
+							<svelte:component this={navPage.Icon} class="h-6" />
+							<h1 class="ml-1 mr-0 sm:ml-2">
+								{navPage.friendlyName}
+							</h1>
 						</div>
 						{#if $page.url.pathname === navPage.pageUrl || $page.url.pathname.startsWith(navPage.pageUrl) || (navPage.pageUrl === '/develop/games' && $page.url.pathname.startsWith('/develop'))}
 							<div

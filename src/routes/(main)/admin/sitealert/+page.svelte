@@ -2,7 +2,6 @@
 	import { type Infer, type SuperValidated, superForm } from 'sveltekit-superforms'
 	import { zodClient } from 'sveltekit-superforms/adapters'
 	import * as Form from '$src/components/ui/form/index.js'
-	import { Checkbox } from '$src/components/ui/checkbox/index.js'
 	import { formSchema, type FormSchema } from './schema'
 	import type { PageData } from './$types'
 	import { Input } from '$src/components/ui/input'
@@ -15,6 +14,8 @@
 	})
 
 	const { form: formData, enhance } = form
+
+	$formData.sitealert = data.config.sitealert
 </script>
 
 <div class="p-8 flex flex-col space-y-4 grow max-w-2xl">

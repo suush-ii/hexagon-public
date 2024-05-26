@@ -24,7 +24,9 @@
 
 	export let disable3d = false
 
-	const outline = stateOutlineMap[state]
+	export let disableoutline = false
+
+	$: outline = stateOutlineMap[state]
 
 	if (browser && !disable3d) {
 		dimension = localStorage.getItem('profileAvatarMode') === '3D' ? '3D' : '2D' // get preferred dimension
@@ -99,7 +101,11 @@
 
 {#if type === 'headshot'}
 	<div class="flex flex-col gap-y-1">
-		<Avatar.Root class="w-28 h-28 outline-offset-4 {css} {outline} outline-dashed rounded-full">
+		<Avatar.Root
+			class="w-28 h-28 outline-offset-4 {css} {outline} {disableoutline === true
+				? ''
+				: 'outline-dashed'} rounded-full"
+		>
 			{#await fetchAvatar(trig, userid) then src}
 				<Avatar.Image {src} alt={username} />
 			{/await}

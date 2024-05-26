@@ -17,7 +17,9 @@ export const moderationSchema = z.object({
 	action: z.enum(actions),
 	note: z.string().max(1000),
 	internalnote: z.string().max(10),
-	scrubusername: z.boolean().default(false)
+	scrubusername: z.boolean().default(false),
+	assetid: z.number().int().optional(),
+	userid: z.number().int().optional()
 })
 
 export type ModerationSchema = typeof moderationSchema

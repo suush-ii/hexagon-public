@@ -7,13 +7,19 @@
 
 	import type { instances } from '$lib/types'
 
+	import { createEventDispatcher } from 'svelte'
+
+	const dispatch = createEventDispatcher()
+
+	function placeLauncher(jobId: string) {
+		dispatch('placelauncher', {
+			jobId
+		})
+	}
+
 	export let servers: instances
 
 	export let serverSize: number
-
-	export let placeid: number
-
-	export let ticket: string
 </script>
 
 {#each servers as server}
@@ -24,20 +30,22 @@
 			<h5>{server.active} of {serverSize} people max</h5>
 
 			<Button
-				on:click={() => {
-					document.location = `hexagonlaunch://${placeid}[${ticket}[${2016}[player[${server.jobid}`
-				}}
 				variant="secondary"
 				size="sm"
-				class="w-full">Join</Button
+				class="w-full"
+				on:click={() => {
+					placeLauncher(server.jobid)
+				}}>Join</Button
 			>
 		</div>
 
 		<Separator orientation="vertical" />
 
-		<div class="flex-row flex-wrap">
+		<div class="flex gap-x-4 flex-row flex-wrap p-4">
 			{#each server.players ?? [] as player}
-				<Avatar state={'game'} userid={player} css="h-10 w-10" />
+				<a href="/users/{player}/profile">
+					<Avatar state={'game'} userid={player} css="h-14 w-14" disableoutline={true} />
+				</a>
 			{/each}
 		</div>
 	</div>

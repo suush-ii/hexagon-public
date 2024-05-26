@@ -8,7 +8,11 @@
 
 <div class="w-full flex flex-row">
 	<div class="p-4 flex-shrink-0">
-		<SidePanel role={data.user.role} queueCount={data.queueCount} />
+		<SidePanel
+			role={data.user.role}
+			queueCount={data.queueCount}
+			userQueueCount={data.userQueueCount}
+		/>
 	</div>
 
 	<slot />

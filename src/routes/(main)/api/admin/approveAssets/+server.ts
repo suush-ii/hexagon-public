@@ -12,13 +12,15 @@ import { adminLogsTable } from '$src/lib/server/schema'
 
 const approveAssetsSchema = z.object({
 	moderationState: z.enum(['pending', 'approved', 'rejected', 'deleted']),
-	assetId: z.coerce.number().int()
+	assetId: z.coerce.number().int(),
+	punish: z.boolean()
 })
 
 export const POST: RequestHandler = async ({ request, locals }) => {
 	let assets: {
 		assetId: number
 		moderationState: assetStates
+		punish: boolean
 	}[]
 	let result
 	try {
@@ -57,12 +59,13 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 		}
 
 		const newModerationState = assets.find((a) => a.assetId === asset.assetId)?.moderationState
+		const punish = assets.find((a) => a.assetId === asset.assetId)?.punish
 
 		if (newModerationState !== 'pending') {
 			// avoid unnecessary updates
 			await db
 				.update(assetTable)
-				.set({ moderationstate: newModerationState })
+				.set({ moderationstate: newModerationState, topunish: punish })
 				.where(eq(assetTable.assetid, asset.assetId))
 
 			if (newModerationState === 'rejected') {
@@ -70,14 +73,18 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
 				const fileName = asset.simpleAssetUrl
 
-				const command = new DeleteObjectCommand({
-					Bucket: s3BucketName,
-					Key: Key + '/' + fileName
-				})
-				try {
-					await S3.send(command)
-				} catch (err) {
-					console.log(err)
+				if (punish === false) {
+					// we want to show this in user queue
+
+					const command = new DeleteObjectCommand({
+						Bucket: s3BucketName,
+						Key: Key + '/' + fileName
+					})
+					try {
+						await S3.send(command)
+					} catch (err) {
+						console.log(err)
+					}
 				}
 			}
 

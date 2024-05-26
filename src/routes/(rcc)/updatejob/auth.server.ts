@@ -6,8 +6,11 @@ export const rccAuth = (async ({ event, resolve }) => {
 	if (
 		pathname.startsWith('/updatejob') ||
 		pathname === '/GetAllowedMD5Hashes' ||
-		pathname === '/GetAllowedSecurityVersions' /*||
-		pathname === '/game/gameserver.ashx'*/
+		pathname === '/GetAllowedSecurityVersions' ||
+		pathname === '/game/gameserver.ashx' ||
+		pathname === '/game/ClientPresence.ashx' ||
+		pathname === '/game/PlaceVisit.ashx' ||
+		pathname === '/verify-player'
 	) {
 		const accessKey =
 			event.url.searchParams.get('accessKey') || event.request.headers.get('accessKey')

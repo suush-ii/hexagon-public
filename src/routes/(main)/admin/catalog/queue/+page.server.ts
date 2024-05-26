@@ -24,7 +24,7 @@ export const load: PageServerLoad = async ({ depends }) => {
 	depends('app:assetqueue')
 
 	return {
-		assets,
+		assets: assets.map((asset) => ({ ...asset, punish: false })),
 		assetCount: assetCount[0].count
 	}
 }

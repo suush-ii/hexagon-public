@@ -11,7 +11,7 @@ const alg = 'HS256'
 const CharacterAppearance = `http://${BASE_URL}/Asset/CharacterFetch.ashx`
 const BaseUrl = `http://${BASE_URL}/`
 
-export const fallback: RequestHandler = async ({ url, locals }) => {
+/*export const fallback: RequestHandler = async ({ url, locals }) => {
 	let joinJson = {
 		ClientPort: 0,
 		MachineAddress: 'localhost',
@@ -89,3 +89,4 @@ export const fallback: RequestHandler = async ({ url, locals }) => {
 
 	return text('--rbxsig%' + signature + '%\r\n' + JSON.stringify(joinJson))
 }
+*/

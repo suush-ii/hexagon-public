@@ -3,14 +3,12 @@
 
 local sleeptime, url, timeout, access = 0, "http://www.roblox.com", 0, "8169b38d-abbc-480f-8971-14d8fd560aad"
 
-local accessKey, placeId, port, JobId = {1}
+local accessKey, placeId, port, JobId, maxPlayers = {1}
 --defining jobid here is a hack for now
 
 
 -- REQUIRES: StartGanmeSharedArgs.txt
 -- REQUIRES: MonitorGameStatus.txt
-
-local maxPlayers = 1
 
 ------------------- UTILITY FUNCTIONS --------------------------
 local ok, err = ypcall(function()
@@ -179,14 +177,7 @@ end
 game:GetService("Players").PlayerAdded:connect(function(player)
 	print("Player " .. player.userId .. " added")
 
-	-- TODO: if players exceeds max kick them
-
-	if url and access and placeId and player and player.userId then
-		game:HttpGet(url .. "/Game/ClientPresence.ashx?action=connect&" .. accessKey .. "&PlaceID=" .. placeId .. "&UserID=" .. player.userId)
-		game:HttpPost(url .. "/Game/PlaceVisit.ashx?UserID=" .. player.userId .. "&AssociatedPlaceID=" .. placeId .. "&" .. accessKey, "")
-		
-		game:HttpGet(url .. "/Game/PlayerTracking.ashx?m=r&" .. accessKey .. "&i=" .. player.userId .. "&n=" .. player.Name)
-	end
+	
 end)
 
 
@@ -194,9 +185,28 @@ game:GetService("Players").PlayerRemoving:connect(function(player)
 	print("Player " .. player.userId .. " leaving")
 
 	if url and access and placeId and player and player.userId then
-		game:HttpGet(url .. "/Game/ClientPresence.ashx?action=disconnect&" .. accessKey .. "&PlaceID=" .. placeId .. "&UserID=" .. player.userId)
+		game:HttpPost(url .. "/game/ClientPresence.ashx?action=disconnect&accessKey=" .. accessKey .. "&PlaceID=" .. placeId .. "&JobID=" .. JobId .. "&UserID=" .. player.userId)
 		
-		game:HttpGet(url .. "/Game/PlayerTracking.ashx?m=u&" .. accessKey .. "&i=" .. player.userId)
+
+	end
+end)
+
+spawn(function()
+	local HttpService = game:GetService("HttpService")
+	
+    -- if a player doesn't join in 60 seconds because of failed job or they didn't join close the job
+	wait(60)
+
+	while true do
+	if #game:GetService("Players"):GetPlayers() < 1 then
+			-- less than one player is in the game so lets shut down
+			local arguments = {
+				["jobid"] = JobId
+			}
+			game:HttpPostAsync(url .. "/updatejob/closejob?accessKey=" .. accessKey,HttpService:JSONEncode(arguments),"application/json")
+		end
+
+	wait(5)
 	end
 end)
 
@@ -220,11 +230,11 @@ local function urlencode(url)
     url = url:gsub("([^%w%-%.%_%~%!%*%'%(%)])", char_to_hex)
     return url
 end
---[[
+
 ns.ChildAdded:connect(function(replicator) -- mostly from polygon tbh with some added changes
-    local player = replicator:GetPlayer()
-    
     local ok, err = ypcall(function()
+
+		local player = replicator:GetPlayer()
 
         i = 0
         if player == nil then
@@ -240,10 +250,12 @@ ns.ChildAdded:connect(function(replicator) -- mostly from polygon tbh with some 
             end
         end
 
+		replicator:DisableProcessPackets()
+
         if player.CharacterAppearance ~= url .. "/Asset/CharacterFetch.ashx?userId=" ..player.userId.. "&jobId=" .. JobId then
             replicator:CloseConnection()
             print("[paclib] kicked " .. player.Name .. " because player does not have correct character appearance for this server")
-            print("[paclib] correct character appearance url: " .. url .. "/Asset/CharacterFetch.ashx?userId=" .. player.userId .. "&JobId=" .. JobId)
+            print("[paclib] correct character appearance url: " .. url .. "/Asset/CharacterFetch.ashx?userId=" .. player.userId .. "&jobId=" .. JobId)
             print("[paclib] appearance that the server received: " .. player.CharacterAppearance)
             return
         end
@@ -262,8 +274,12 @@ ns.ChildAdded:connect(function(replicator) -- mostly from polygon tbh with some 
             return
         end
 
+		local HexagonTicket = player.HexagonTicket.Value
 
-        local response = game:HttpGet(url .. "/api/verify-player?Username=" .. player.Name .. "&UserID=" .. player.userId .. "&Ticket=" .. urlencode(player.HexagonTicket.Value) .. "&JobID=" .. JobId .. "&MembershipType=" .. player.MembershipType .. "&CharacterAppearance=".. player.CharacterAppearance .. "&accessKey" .. accessKey, true)
+		player.HexagonTicket:Remove()
+
+
+        local response = game:HttpGet(url .. "/verify-player?Username=" .. player.Name .. "&UserID=" .. player.userId .. "&Ticket=" .. urlencode(HexagonTicket) .. "&JobID=" .. JobId .. "&MembershipType=" .. player.MembershipType.Name .. "&CharacterAppearance=".. player.CharacterAppearance .. "&accessKey=" .. accessKey, true)
         if response ~= "True" then
             replicator:CloseConnection()
             print("[paclib] kicked " .. player.Name .. " because could not validate player")
@@ -271,26 +287,47 @@ ns.ChildAdded:connect(function(replicator) -- mostly from polygon tbh with some 
             return
         end
 
-        player.HexagonTicket:Remove()
+		replicator:EnableProcessPackets()
+        
 
+		--print("[paclib] " .. player.Name .. " has been authenticated")
+
+		if url and access and placeId and player and player.userId then
+			game:HttpPost(url .. "/game/ClientPresence.ashx?action=connect&accessKey=" .. accessKey .. "&PlaceID=" .. placeId .. "&JobID=" .. JobId .. "&UserID=" .. player.userId, "")
+			game:HttpPost(url .. "/game/PlaceVisit.ashx?UserID=" .. player.userId .. "&AssociatedPlaceID=" .. placeId .. "&accessKey=" .. accessKey, "")
+			
+		end
     end)
 
     if not ok then
         print(tostring(err))
         replicator:CloseConnection()
 
-        print("[paclib] kicked " .. player.Name .. " because could not validate player")
+        print("[paclib] kicked because could not validate player")
         return
     end
 
-    --print("[paclib] " .. player.Name .. " has been authenticated")
+	
+
+    
 end)
---]]
 
 -- Now start the connection
-ns:Start(port, sleeptime)
+local success, message = pcall(function() ns:Start(port) end)
+if not success then
+local HttpService = game:GetService("HttpService")
+	-- failed job close it
+	local arguments = {
+		["jobid"] = JobId
+	}
+	game:HttpPostAsync(url .. "/updatejob/closejob?accessKey="..accessKey,HttpService:JSONEncode(arguments),"application/json")
+end
 
-
+local HttpService = game:GetService("HttpService")
+	local arguments = {
+		["jobid"] = JobId
+	}
+	game:HttpPostAsync(url .. "/updatejob/gameloaded?accessKey="..accessKey,HttpService:JSONEncode(arguments),"application/json")
 
 if timeout then
 	scriptContext:SetTimeout(timeout)

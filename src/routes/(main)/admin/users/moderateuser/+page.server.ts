@@ -1,14 +1,17 @@
 import { error, fail, redirect, type Actions } from '@sveltejs/kit'
 import type { PageServerLoad } from './$types'
-import { usersTable, bansTable, adminLogsTable } from '$lib/server/schema'
+import { usersTable, bansTable, adminLogsTable, assetTable } from '$lib/server/schema'
 import { db } from '$lib/server/db'
 import { z } from 'zod'
 import { count, eq, desc } from 'drizzle-orm'
 import { superValidate } from 'sveltekit-superforms'
-import { message } from 'sveltekit-superforms/server'
+import { defaultValues, message } from 'sveltekit-superforms/server'
 import { zod } from 'sveltekit-superforms/adapters'
 import { moderationSchema } from './schema'
 import { getPageNumber } from '$src/lib/utils'
+import { DeleteObjectCommand } from '@aws-sdk/client-s3'
+import { s3BucketName } from '$src/stores'
+import { S3 } from '$lib/server/s3'
 
 const permissionLevels = [
 	{ name: 'owner', level: 1 },
@@ -19,19 +22,46 @@ const permissionLevels = [
 ]
 
 export const load: PageServerLoad = async ({ url }) => {
-	if (!url.searchParams.get('id')) {
+	if (!url.searchParams.get('id') && !url.searchParams.get('queue')) {
 		redirect(302, '/admin/users/find?redirect=moderateuser')
-	}
-
-	const result = await z.number().safeParseAsync(Number(url.searchParams.get('id')))
-
-	if (result.success === false) {
-		error(400, { success: false, message: 'Malformed input.' })
 	}
 
 	let page = getPageNumber(url)
 
 	let size = 5
+
+	let queue = url.searchParams.get('queue') === 'true' ? true : false
+
+	let userid
+
+	let asset
+
+	if (queue) {
+		const user = await db.query.assetTable.findFirst({
+			where: eq(assetTable.topunish, true),
+			columns: { simpleasseturl: true, assetname: true, assetType: true, assetid: true },
+			with: {
+				author: {
+					columns: {
+						userid: true
+					}
+				}
+			}
+		})
+
+		userid = user?.author.userid
+		asset = user
+
+		if (!userid) {
+			return redirect(302, '/admin/users/find?redirect=moderateuser')
+		}
+	}
+
+	const result = await z.number().safeParseAsync(Number(url.searchParams.get('id') ?? userid))
+
+	if (result.success === false) {
+		error(400, { success: false, message: 'Malformed input.' })
+	}
 
 	const punishmentsCount = await db
 		.select({ count: count() })
@@ -75,15 +105,21 @@ export const load: PageServerLoad = async ({ url }) => {
 		}
 	})
 
+	const defaults = defaultValues(zod(moderationSchema))
+
+	defaults.userid = user?.userid
+	defaults.assetid = asset?.assetid
+
 	if (user) {
 		return {
 			username: user.username,
 			userid: user.userid,
 			lastactivetime: user.lastactivetime,
 			joindate: user.joindate,
-			form: await superValidate(zod(moderationSchema)),
+			form: await superValidate(zod(moderationSchema), { defaults: defaults }),
 			punishments: user.bans,
-			punishmentsCount: punishmentsCount[0].count
+			punishmentsCount: punishmentsCount[0].count,
+			asset
 		}
 	}
 
@@ -103,11 +139,15 @@ export const actions: Actions = {
 			return { form }
 		}
 
-		if (!event.url.searchParams.get('id')) {
+		if (!event.url.searchParams.get('id') && !event.url.searchParams.get('queue')) {
 			redirect(302, '/admin/users/find?redirect=moderateuser')
 		}
 
-		const result = await z.number().safeParseAsync(Number(event.url.searchParams.get('id')))
+		let queue = event.url.searchParams.get('queue') === 'true' ? true : false
+
+		const result = await z
+			.number()
+			.safeParseAsync(Number(event.url.searchParams.get('id') ?? form.data.userid))
 
 		if (result.success === false) {
 			error(400, { success: false, message: 'Malformed input.' })
@@ -115,7 +155,8 @@ export const actions: Actions = {
 
 		const user = await db
 			.select({
-				role: usersTable.role
+				role: usersTable.role,
+				username: usersTable.username
 			})
 			.from(usersTable)
 			.where(eq(usersTable.userid, result.data))
@@ -140,30 +181,34 @@ export const actions: Actions = {
 
 		const expiration = new Date()
 
-		if (form.data.action === 'Ban 1 Day') {
-			expiration.setDate(expiration.getDate() + 1)
-		} else if (form.data.action === 'Ban 7 Days') {
-			expiration.setDate(expiration.getDate() + 7)
-		} else if (form.data.action === 'Ban 14 Days') {
-			expiration.setDate(expiration.getDate() + 14)
+		if (form.data.scrubusername === false) {
+			if (form.data.action === 'Ban 1 Day') {
+				expiration.setDate(expiration.getDate() + 1)
+			} else if (form.data.action === 'Ban 7 Days') {
+				expiration.setDate(expiration.getDate() + 7)
+			} else if (form.data.action === 'Ban 14 Days') {
+				expiration.setDate(expiration.getDate() + 14)
+			}
 		}
 
 		const [ban] = await db
 			.insert(bansTable)
 			.values({
-				action: form.data.action,
+				action: form.data.scrubusername === true ? 'Delete' : form.data.action,
 				userid: result.data,
 				reason: form.data.note,
 				internalreason: form.data.internalnote,
 				expiration: expiration,
-				moderatorid: event.locals.user.userid
+				moderatorid: event.locals.user.userid,
+				offensiveassetid: form.data.assetid ?? null
 			})
 			.returning({ banid: bansTable.banid })
 
 		if (
-			form.data.action === 'Ban 1 Day' ||
-			form.data.action === 'Ban 7 Days' ||
-			form.data.action === 'Ban 14 Days'
+			(form.data.action === 'Ban 1 Day' ||
+				form.data.action === 'Ban 7 Days' ||
+				form.data.action === 'Ban 14 Days') &&
+			form.data.scrubusername === false
 		) {
 			await db.insert(adminLogsTable).values({
 				userid: event.locals.user.userid,
@@ -174,17 +219,49 @@ export const actions: Actions = {
 			})
 		}
 
-		if (form.data.action === 'Delete' || form.data.action === 'Poison') {
+		if (
+			form.data.action === 'Delete' ||
+			form.data.action === 'Poison' ||
+			form.data.scrubusername === true
+		) {
 			await db.insert(adminLogsTable).values({
 				userid: event.locals.user.userid,
 				associatedid: result.data,
 				associatedidtype: 'user',
 				action: 'terminate'
 			})
+
+			if (form.data.scrubusername === true) {
+				await db
+					.update(usersTable)
+					.set({ username: `[Content Deleted ${result.data}]`, scrubbedusername: user[0].username })
+					.where(eq(usersTable.userid, result.data))
+			}
 		}
 
 		await db.update(usersTable).set({ banid: ban.banid }).where(eq(usersTable.userid, result.data))
 
+		if (queue && form.data.assetid) {
+			const [toDelete] = await db
+				.update(assetTable)
+				.set({ topunish: false, punished: true })
+				.where(eq(assetTable.assetid, form.data.assetid))
+				.returning({ assetType: assetTable.assetType, simpleAssetUrl: assetTable.simpleasseturl })
+
+			const Key = toDelete.assetType
+
+			const fileName = toDelete.simpleAssetUrl
+
+			const command = new DeleteObjectCommand({
+				Bucket: s3BucketName,
+				Key: Key + '/' + fileName
+			})
+			try {
+				await S3.send(command)
+			} catch (err) {
+				console.log(err)
+			}
+		}
 		return {
 			form
 		}

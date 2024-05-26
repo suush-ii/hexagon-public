@@ -1,6 +1,8 @@
 <script lang="ts">
 	import Avatar from '$src/components/users/avatar.svelte'
 
+	import { Button } from '$src/components/ui/button'
+
 	import { page } from '$app/stores'
 
 	import { stateTextMap } from '$lib/utils'
@@ -24,8 +26,21 @@
 	$: textColor = stateTextMap[status]
 
 	import { pageName } from '$src/stores'
+	import { invalidateAll } from '$app/navigation'
 
 	pageName.set(username)
+
+	async function friend(friend: boolean) {
+		await fetch(`/api/account/friend`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({ recipientid: userid, type: friend === true ? 'friend' : 'unfriend' })
+		})
+
+		invalidateAll()
+	}
 </script>
 
 <div class="container p-4 flex flex-col gap-y-4 pt-8">
@@ -35,12 +50,42 @@
 		<Avatar state={status} {userid} {username} />
 
 		<h1 class="font-semibold text-5xl">{username}</h1>
+
+		{#if userid != data.user.userid}
+			{#if data.relation.length > 0 && data.relation[0].type === 'block'}
+				<Button variant="outline" class="ml-auto mt-auto h-14 w-40 text-lg" disabled size="lg"
+					>Blocked</Button
+				>
+			{:else if data.relation.length > 0 && data.relation[0].type === 'friend'}
+				<Button
+					on:click={() => {
+						friend(false)
+					}}
+					variant="outline"
+					class="ml-auto mt-auto h-14 w-40 text-lg"
+					size="lg">Unfriend</Button
+				>
+			{:else if data.relation.length > 0 && data.relation[0].type === 'request'}
+				<Button variant="outline" class="ml-auto mt-auto h-14 w-40 text-lg" disabled size="lg"
+					>Pending</Button
+				>
+			{:else}
+				<Button
+					on:click={() => {
+						friend(true)
+					}}
+					variant="outline"
+					class="ml-auto mt-auto h-14 w-40 text-lg"
+					size="lg">Add Friend</Button
+				>
+			{/if}
+		{/if}
 	</div>
 
 	<div class="flex flex-row h-full">
 		<div class="w-1/2 flex flex-col gap-y-4 h-full">
 			<Separator class="w-full" />
-			<h1 class="text-3xl font-semibold tracking-tight w-1/2">About {username}</h1>
+			<h1 class="text-3xl font-semibold tracking-tight">About {username}</h1>
 			<div
 				class="bg-muted-foreground/5 outline-dashed outline-muted-foreground/20 rounded-xl p-6 gap-y-4 flex flex-col"
 			>
@@ -51,7 +96,9 @@
 						<h1 class="text-lg {textColor} mx-auto">[ Offline ]</h1>
 					{:else if status == 'game'}
 						<h1 class="text-lg {textColor} mx-auto hover:underline">
-							[ Online: <a href="/games/1">sdf</a> ]
+							[ Online: <a href="/games/{data.activegame?.placeid}"
+								>{data.activegame?.associatedgame.gamename}</a
+							> ]
 						</h1>
 					{:else if status == 'studio'}
 						<h1 class="text-lg {textColor} mx-auto">[ Online: Studio ]</h1>
@@ -60,12 +107,6 @@
 						<a href={$page.url.toString()}>{$page.url}</a>
 					</h1>
 				</div>
-				<!--<Avatar2.Root class="w-80 h-80 mx-auto">
-				<Avatar2.Image
-					src="https://tr.rbxcdn.com/30DAY-Avatar-1AA774E499A132625B5A5CCA287E57BB-Png/352/352/Avatar/Png/noFilter"
-					alt={data.username}
-				/>
-			</Avatar2.Root>-->
 
 				<Avatar
 					state={status}
@@ -102,12 +143,12 @@
 
 		<div class="w-1/2 flex flex-col gap-y-4 h-full">
 			<Separator class="w-full" />
-			<h1 class="text-3xl font-semibold tracking-tight w-1/2">Active Places</h1>
+			<h1 class="text-3xl font-semibold tracking-tight">Active Places</h1>
 			<div
 				class="h-full bg-muted-foreground/5 outline-dashed outline-muted-foreground/20 rounded-xl"
 			/>
 
-			<h1 class="text-3xl font-semibold tracking-tight w-1/2">{username}'s Friends!</h1>
+			<h1 class="text-3xl font-semibold tracking-tight">{username}'s Friends!</h1>
 
 			<div
 				class="h-full bg-muted-foreground/5 outline-dashed outline-muted-foreground/20 rounded-xl"

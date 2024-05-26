@@ -6,36 +6,21 @@ import { eq, and, lt } from 'drizzle-orm'
 import { GAMESERVER_IP } from '$env/static/private'
 import { auth } from '$lib/server/lucia'
 import { LuciaError } from 'lucia'
-import { BASE_URL } from '$env/static/private'
+import { BASE_URL, JWT_SECRET_KEY } from '$env/static/private'
+import * as jose from 'jose'
+
+const secret = new TextEncoder().encode(JWT_SECRET_KEY)
+const alg = 'HS256'
 
 const joinScriptUrl = `http://${BASE_URL}/game/Join.ashx`
 const authenticationUrl = `http://${BASE_URL}/Login/Negotiate.ashx`
+const CharacterAppearance = `http://${BASE_URL}/Asset/CharacterFetch.ashx`
 
-export const fallback: RequestHandler = async ({ url, locals, fetch }) => {
+export const fallback: RequestHandler = async ({ url, locals, fetch, cookies }) => {
 	// capture get/post
 	let placeid = url.searchParams.get('placeid')
-	let authBearer = url.searchParams.get('auth') ?? ''
-
-	try {
-		const sessionVal = await auth.validateSession(authBearer)
-
-		if (!sessionVal) {
-			return json({
-				success: false,
-				message: 'Invalid session.',
-				data: {}
-			})
-		}
-	} catch (e) {
-		if (e instanceof LuciaError && e.message === `AUTH_INVALID_SESSION_ID`) {
-			// invalid session
-			return json({
-				success: false,
-				message: 'Invalid session.',
-				data: {}
-			})
-		}
-	}
+	let jobid = url.searchParams.get('jobid')
+	let authBearer = cookies.get('auth_session')
 
 	let placeLauncherJson = {
 		jobId: '',
@@ -56,12 +41,51 @@ export const fallback: RequestHandler = async ({ url, locals, fetch }) => {
 		})
 	}
 
-	if (!placeid) {
+	if (!placeid && !jobid) {
 		return json({
 			success: false,
 			message: 'Missing parameters.',
 			data: {}
 		})
+	}
+
+	if (jobid) {
+		const instance = await db.query.jobsTable.findFirst({
+			where: and(eq(jobsTable.jobid, jobid), eq(jobsTable.type, 'game'))
+		})
+
+		if (!instance) {
+			return json({
+				success: false,
+				message: 'Job not found.',
+				data: {}
+			})
+		}
+
+		if (instance && instance.port && (instance.status === 1 || instance.status === 2)) {
+			placeLauncherJson.status = instance.status
+			placeLauncherJson.jobId = instance.jobid
+			placeLauncherJson.joinScriptUrl += '?auth=' + authBearer + '&jobid=' + instance.jobid
+
+			let characterAppearance =
+				CharacterAppearance + `?userId=` + locals.user.userid + '&jobId=' + instance.jobid
+
+			const jwt = await new jose.SignJWT({
+				username: 'username',
+				userId: 3,
+				jobId: 'ass',
+				membershipType: 'None',
+				characterAppearance
+			})
+				.setProtectedHeader({ alg })
+				.setIssuedAt()
+				.setExpirationTime('1min')
+				.sign(secret)
+
+			placeLauncherJson.authenticationTicket = jwt
+
+			return json(placeLauncherJson)
+		}
 	}
 
 	const place = await db.query.placesTable.findFirst({
@@ -105,6 +129,23 @@ export const fallback: RequestHandler = async ({ url, locals, fetch }) => {
 			placeLauncherJson.jobId = instance.jobid
 			placeLauncherJson.joinScriptUrl += '?auth=' + authBearer + '&jobid=' + instance.jobid
 
+			let characterAppearance =
+				CharacterAppearance + `?userId=` + locals.user.userid + '&jobId=' + instance.jobid
+
+			const jwt = await new jose.SignJWT({
+				username: 'username',
+				userId: 3,
+				jobId: 'ass',
+				membershipType: 'None',
+				characterAppearance
+			})
+				.setProtectedHeader({ alg })
+				.setIssuedAt()
+				.setExpirationTime('1min')
+				.sign(secret)
+
+			placeLauncherJson.authenticationTicket = jwt
+
 			return json(placeLauncherJson)
 		}
 	}
@@ -125,7 +166,8 @@ export const fallback: RequestHandler = async ({ url, locals, fetch }) => {
 			placeid: Number(placeid),
 			associatedid: place.associatedgame.universeid,
 			type: 'game',
-			clientversion: '2014'
+			clientversion: '2014',
+			status: 1
 		})
 		.returning({ jobid: jobsTable.jobid })
 
@@ -134,7 +176,7 @@ export const fallback: RequestHandler = async ({ url, locals, fetch }) => {
 	placeLauncherJson.status = 1
 
 	const response = await fetch(
-		`http://${GAMESERVER_IP}:8000/opengame2016/${instanceNew.jobid}/${Number(placeid)}`
+		`http://${GAMESERVER_IP}:8000/opengame2014/${instanceNew.jobid}/${Number(placeid)}/${place.associatedgame.serversize}`
 	)
 	const gameresponse = await response.json()
 
