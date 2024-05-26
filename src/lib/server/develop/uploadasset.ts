@@ -19,7 +19,7 @@ export async function uploadAsset(
 ) {
 	let mimeTypes = _uploadableAssets[item].mimeTypes
 
-	if (file.size / Math.pow(1024, 2) > 10) {
+	if (file.size > 10485760) {
 		// 10mb
 		return setError(form, 'asset', 'File is too large!')
 	}
