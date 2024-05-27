@@ -94,8 +94,6 @@
 		submitting = false
 	}
 
-	import { PUBLIC_sitetest } from '$env/static/public'
-
 	let disableRandom = false
 
 	let disableLoadingText = false
@@ -151,7 +149,7 @@
 				}, 3000)
 			} else if (json.status === 2) {
 				loadingText = 'The server is ready. Joining the game...'
-				document.location = `hexagon-player${PUBLIC_sitetest === 'true' ? '-sitetest1' : ''}:1+launchmode:play+gameinfo:${json.authenticationTicket}+placelauncherurl:${encodeURIComponent(json.joinScriptUrl)}`
+				document.location = `hexagon-player:1+launchmode:play+gameinfo:${json.authenticationTicket}+placelauncherurl:${encodeURIComponent(json.joinScriptUrl)}`
 
 				open = false
 
