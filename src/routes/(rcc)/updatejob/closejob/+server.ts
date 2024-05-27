@@ -2,7 +2,7 @@ import { error, json, type RequestHandler } from '@sveltejs/kit'
 import { db } from '$lib/server/db'
 import { gamesTable, jobsTable, usersTable } from '$lib/server/schema'
 import { and, eq } from 'drizzle-orm'
-import { GAMESERVER_IP } from '$env/static/private'
+import { GAMESERVER_IP, ARBITER_PORT } from '$env/static/private'
 
 export const POST: RequestHandler = async ({ request, fetch }) => {
 	const jobid = (await request.json()).jobid
@@ -28,7 +28,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 		}
 	})
 
-	fetch(`http://${GAMESERVER_IP}:8000/closejob/${jobid}/${instance?.placeid ?? 0}/2016`)
+	fetch(`http://${GAMESERVER_IP}:${ARBITER_PORT}/closejob/${jobid}/${instance?.placeid ?? 0}/2016`)
 
 	if (!instance) {
 		return error(400, {

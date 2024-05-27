@@ -46,6 +46,8 @@
 
 	let open = false
 
+	let cancel = false
+
 	function calculatePercent(likes: number, dislikes: number) {
 		return Math.round((likes / (likes + dislikes)) * 100)
 	}
@@ -113,42 +115,49 @@
 	}
 
 	async function placeLauncher(jobId?: string) {
-		let query = new URLSearchParams()
-		if (!jobId) {
-			query.set('placeid', data.place.placeid.toString())
-		} else {
-			query.set('jobid', jobId)
-		}
-
-		const response = await fetch(`/game/PlaceLauncher.ashx?${query}`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			}
-		})
-
-		const json = await response.json()
-
-		if (json.status === 1) {
-			if (!disableLoadingText) {
-				loadingText = 'A server is loading the game...'
-				disableLoadingText = true
+		if (!cancel) {
+			let query = new URLSearchParams()
+			if (!jobId) {
+				query.set('placeid', data.place.placeid.toString())
+			} else {
+				query.set('jobid', jobId)
 			}
 
-			setTimeout(() => {
-				disableRandom = false
+			const response = await fetch(`/game/PlaceLauncher.ashx?${query}`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				}
+			})
 
-				randomtext()
-				placeLauncher()
-			}, 3000)
-		} else if (json.status === 2) {
-			loadingText = 'The server is ready. Joining the game...'
-			document.location = `hexagon-player${PUBLIC_sitetest === 'true' ? '-sitetest1' : ''}:1+launchmode:play+gameinfo:${json.authenticationTicket}+placelauncherurl:${encodeURIComponent(json.joinScriptUrl)}`
+			const json = await response.json()
 
-			open = false
+			if (json.success === false) {
+				loadingText = json.message
+				return
+			}
 
-			disableRandom = true
-			loadingText = defaultText
+			if (json.status === 1) {
+				if (!disableLoadingText) {
+					loadingText = 'A server is loading the game...'
+					disableLoadingText = true
+				}
+
+				setTimeout(() => {
+					disableRandom = false
+
+					randomtext()
+					placeLauncher()
+				}, 3000)
+			} else if (json.status === 2) {
+				loadingText = 'The server is ready. Joining the game...'
+				document.location = `hexagon-player${PUBLIC_sitetest === 'true' ? '-sitetest1' : ''}:1+launchmode:play+gameinfo:${json.authenticationTicket}+placelauncherurl:${encodeURIComponent(json.joinScriptUrl)}`
+
+				open = false
+
+				disableRandom = true
+				loadingText = defaultText
+			}
 		}
 	}
 
@@ -190,7 +199,7 @@
 					</h1>
 					<Separator class="mt-2" />
 
-					<AlertDialog.Root closeOnOutsideClick={true} bind:open>
+					<AlertDialog.Root closeOnOutsideClick={false} bind:open>
 						<AlertDialog.Trigger asChild let:builder>
 							<Button
 								variant="minimal"
@@ -198,6 +207,7 @@
 								builders={[builder]}
 								class="w-full h-16 mt-4 xl:mt-auto hover:shadow-md hover:shadow-white bg-success flex gap-x-4 rounded-xl"
 								on:click={() => {
+									cancel = false
 									placeLauncher()
 									disableLoadingText = false
 								}}
@@ -216,7 +226,13 @@
 							</AlertDialog.Header>
 
 							<AlertDialog.Cancel asChild let:builder>
-								<Button size="sm" builders={[builder]}>Cancel</Button>
+								<Button
+									size="sm"
+									builders={[builder]}
+									on:click={() => {
+										cancel = true
+									}}>Cancel</Button
+								>
 							</AlertDialog.Cancel>
 						</AlertDialog.Content>
 					</AlertDialog.Root>
@@ -368,6 +384,7 @@
 								servers={data.servers}
 								serverSize={data.place.associatedgame.serversize}
 								on:placelauncher={(event) => {
+									cancel = false
 									placeLauncherJob(event)
 									disableLoadingText = false
 								}}

@@ -3,7 +3,7 @@ import type { RequestHandler } from './$types'
 import { jobsTable, placesTable } from '$lib/server/schema'
 import { db } from '$lib/server/db'
 import { eq, and, lt } from 'drizzle-orm'
-import { GAMESERVER_IP_ALL, BASE_URL, CLIENT_PRIVATE_KEY } from '$env/static/private'
+import { GAMESERVER_IP, BASE_URL, CLIENT_PRIVATE_KEY } from '$env/static/private'
 import { auth } from '$lib/server/lucia'
 import { LuciaError } from 'lucia'
 import { z } from 'zod'
@@ -75,7 +75,7 @@ export const fallback: RequestHandler = async ({ url, locals }) => {
 	})
 
 	if (!instance) {
-		return json({
+		return error(404, {
 			success: false,
 			message: 'Invalid Jobid',
 			data: {}
@@ -175,7 +175,7 @@ export const fallback: RequestHandler = async ({ url, locals }) => {
 			CharacterAppearanceId: 1
 		}
 
-		joinJson.MachineAddress = GAMESERVER_IP_ALL
+		joinJson.MachineAddress = GAMESERVER_IP
 		joinJson.ServerPort = instance.port
 
 		joinJson.UserName = session.username

@@ -1,11 +1,9 @@
-import { json } from '@sveltejs/kit'
+import { error, json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types'
 import { jobsTable, placesTable } from '$lib/server/schema'
 import { db } from '$lib/server/db'
 import { eq, and, lt } from 'drizzle-orm'
-import { GAMESERVER_IP } from '$env/static/private'
-import { auth } from '$lib/server/lucia'
-import { LuciaError } from 'lucia'
+import { GAMESERVER_IP, ARBITER_PORT } from '$env/static/private'
 import { BASE_URL, JWT_SECRET_KEY } from '$env/static/private'
 import * as jose from 'jose'
 
@@ -34,7 +32,7 @@ export const fallback: RequestHandler = async ({ url, locals, fetch, cookies }) 
 	let enabled = locals.config[0].gamesEnabled
 
 	if (!enabled) {
-		return json({
+		return error(403, {
 			success: false,
 			message: 'Games are disabled.',
 			data: {}
@@ -42,7 +40,7 @@ export const fallback: RequestHandler = async ({ url, locals, fetch, cookies }) 
 	}
 
 	if (!placeid && !jobid) {
-		return json({
+		return error(400, {
 			success: false,
 			message: 'Missing parameters.',
 			data: {}
@@ -55,7 +53,7 @@ export const fallback: RequestHandler = async ({ url, locals, fetch, cookies }) 
 		})
 
 		if (!instance) {
-			return json({
+			return error(404, {
 				success: false,
 				message: 'Job not found.',
 				data: {}
@@ -176,7 +174,7 @@ export const fallback: RequestHandler = async ({ url, locals, fetch, cookies }) 
 	placeLauncherJson.status = 1
 
 	const response = await fetch(
-		`http://${GAMESERVER_IP}:8000/opengame2014/${instanceNew.jobid}/${Number(placeid)}/${place.associatedgame.serversize}`
+		`http://${GAMESERVER_IP}:${ARBITER_PORT}/opengame2014/${instanceNew.jobid}/${Number(placeid)}/${place.associatedgame.serversize}`
 	)
 	const gameresponse = await response.json()
 

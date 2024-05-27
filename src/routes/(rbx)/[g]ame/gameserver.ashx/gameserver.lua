@@ -230,7 +230,7 @@ local function urlencode(url)
     url = url:gsub("([^%w%-%.%_%~%!%*%'%(%)])", char_to_hex)
     return url
 end
---[[
+
 ns.ChildAdded:connect(function(replicator) -- mostly from polygon tbh with some added changes
     local ok, err = ypcall(function()
 
@@ -311,7 +311,7 @@ ns.ChildAdded:connect(function(replicator) -- mostly from polygon tbh with some 
 
     
 end)
-]]
+
 -- Now start the connection
 local success, message = pcall(function() ns:Start(port) end)
 if not success then
