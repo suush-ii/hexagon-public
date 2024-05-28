@@ -2,7 +2,7 @@ import { error, json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types'
 import { db } from '$src/lib/server/db'
 import { jobsTable, usersTable, assetTable } from '$src/lib/server/schema'
-import { eq } from 'drizzle-orm'
+import { and, eq } from 'drizzle-orm'
 import { z } from 'zod'
 import { GAMESERVER_IP, ARBITER_PORT } from '$env/static/private'
 import { PutObjectCommand } from '@aws-sdk/client-s3'
@@ -80,6 +80,8 @@ export const POST: RequestHandler = async ({ request }) => {
 
 	const userRender = user.length > 0 && asset === 'user'
 
+	const renderType = userRender ? 'user' : 'asset'
+
 	if (
 		asset === 'item' &&
 		type === 'obj' &&
@@ -136,7 +138,7 @@ export const POST: RequestHandler = async ({ request }) => {
 			const instance = await db
 				.select({})
 				.from(jobsTable)
-				.where(eq(jobsTable.associatedid, assetid))
+				.where(and(eq(jobsTable.associatedid, assetid), eq(jobsTable.rendertype, renderType)))
 				.limit(1)
 
 			if (instance.length > 0) {
@@ -153,7 +155,8 @@ export const POST: RequestHandler = async ({ request }) => {
 				.values({
 					associatedid: assetid,
 					type: 'render',
-					clientversion: '2014'
+					clientversion: '2014',
+					rendertype: renderType
 				})
 				.returning({ jobid: jobsTable.jobid })
 
@@ -231,7 +234,7 @@ export const POST: RequestHandler = async ({ request }) => {
 			const instance = await db
 				.select({})
 				.from(jobsTable)
-				.where(eq(jobsTable.associatedid, assetid))
+				.where(and(eq(jobsTable.associatedid, assetid), eq(jobsTable.rendertype, renderType)))
 				.limit(1)
 
 			if (instance.length > 0) {
@@ -248,7 +251,8 @@ export const POST: RequestHandler = async ({ request }) => {
 				.values({
 					associatedid: assetid,
 					type: 'render',
-					clientversion: '2014'
+					clientversion: '2014',
+					rendertype: renderType
 				})
 				.returning({ jobid: jobsTable.jobid })
 
@@ -407,7 +411,7 @@ export const POST: RequestHandler = async ({ request }) => {
 			const instance = await db
 				.select({})
 				.from(jobsTable)
-				.where(eq(jobsTable.associatedid, assetid))
+				.where(and(eq(jobsTable.associatedid, assetid), eq(jobsTable.rendertype, renderType)))
 				.limit(1)
 
 			if (instance.length > 0) {
@@ -424,7 +428,8 @@ export const POST: RequestHandler = async ({ request }) => {
 				.values({
 					associatedid: assetid,
 					type: 'render',
-					clientversion: '2014'
+					clientversion: '2014',
+					rendertype: renderType
 				})
 				.returning({ jobid: jobsTable.jobid })
 

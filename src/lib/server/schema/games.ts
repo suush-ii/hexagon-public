@@ -72,6 +72,7 @@ export const jobsTable = pgTable('jobs', {
 	placeid: bigint('placeid', { mode: 'number' }),
 	associatedid: bigint('associatedid', { mode: 'number' }),
 	type: text('type').$type<'game' | 'render' | 'renderobj'>().notNull(),
+	rendertype: text('rendertype').$type<'asset' | 'user'>(),
 	clientversion: text('clientversion').$type<clientVersions>().notNull(),
 	created: timestamp('created', { mode: 'date', withTimezone: true }).notNull().defaultNow(),
 	active: integer('active').default(0), // how mnay people are in the instance used for games only
