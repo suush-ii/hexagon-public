@@ -4,7 +4,7 @@
 	"private": true,
 	"scripts": {
 		"dev": "vite dev",
-		"build": "NODE_OPTIONS=--max-old-space-size=4096 BODY_SIZE_LIMIT=Infinity vite build",
+		"build": "cross-env NODE_OPTIONS=--max-old-space-size=4096 BODY_SIZE_LIMIT=Infinity vite build",
 		"preview": "vite preview",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
@@ -13,9 +13,9 @@
 		"generate": "drizzle-kit generate:pg",
 		"push": "drizzle-kit push:pg",
 		"drop": "drizzle-kit drop",
-		"prod": "PROTOCOL_HEADER=x-forwarded-proto HOST_HEADER=x-forwarded-host PORT=9000 HOST=127.0.0.1 BODY_SIZE_LIMIT=Infinity node build",
-		"prodpm2": "PROTOCOL_HEADER=x-forwarded-proto HOST_HEADER=x-forwarded-host PORT=9000 HOST=127.0.0.1 BODY_SIZE_LIMIT=Infinity pm2 start build/index.js",
-		"prodpm2reload": "PROTOCOL_HEADER=x-forwarded-proto HOST_HEADER=x-forwarded-host PORT=9000 HOST=127.0.0.1 BODY_SIZE_LIMIT=Infinity pm2 reload build/index.js"
+		"prod": "cross-env PROTOCOL_HEADER=x-forwarded-proto HOST_HEADER=x-forwarded-host PORT=9000 HOST=127.0.0.1 BODY_SIZE_LIMIT=Infinity node build",
+		"prodpm2": "cross-env PROTOCOL_HEADER=x-forwarded-proto HOST_HEADER=x-forwarded-host PORT=9000 HOST=127.0.0.1 BODY_SIZE_LIMIT=Infinity pm2 start build/index.js",
+		"prodpm2reload": "cross-env PROTOCOL_HEADER=x-forwarded-proto HOST_HEADER=x-forwarded-host PORT=9000 HOST=127.0.0.1 BODY_SIZE_LIMIT=Infinity pm2 reload build/index.js"
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "^3.1.0",
@@ -27,6 +27,7 @@
 		"@typescript-eslint/parser": "^6.18.0",
 		"@yushijinhun/three-minifier-rollup": "^0.4.0",
 		"autoprefixer": "^10.4.16",
+		"cross-env": "^7.0.3",
 		"drizzle-kit": "^0.20.9",
 		"eslint": "^8.56.0",
 		"eslint-config-prettier": "^9.1.0",

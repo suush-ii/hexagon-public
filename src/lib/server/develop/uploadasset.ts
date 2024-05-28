@@ -25,7 +25,7 @@ export async function uploadAsset(
 	}
 
 	try {
-		const fileBuffer = Buffer.from(await file.arrayBuffer())
+		let fileBuffer = Buffer.from(await file.arrayBuffer())
 
 		const fileName = Buffer.from(createHash('sha512').update(fileBuffer).digest('hex')).toString()
 
@@ -58,6 +58,12 @@ export async function uploadAsset(
 
 		if (moderationState !== 'rejected') {
 			// do not upload if it was previously rejected
+			if (item === 'hats') {
+				let fileString = fileBuffer.toString()
+				fileString = fileString.replaceAll('Accessory', 'Hat')
+				fileBuffer = Buffer.from(fileString)
+			}
+
 			const command = new PutObjectCommand({
 				Bucket: s3BucketName,
 				Key: Key + '/' + fileName,
