@@ -179,6 +179,17 @@ game:GetService("Players").PlayerAdded:connect(function(player)
 
 	
 end)
+local HttpService = game:GetService("HttpService")
+
+local function check()
+	if #game:GetService("Players"):GetPlayers() < 1 then
+		-- less than one player is in the game so lets shut down
+		local arguments = {
+			["jobid"] = JobId
+		}
+		game:HttpPostAsync(url .. "/updatejob/closejob?accessKey=" .. accessKey,HttpService:JSONEncode(arguments),"application/json")
+	end
+end
 
 
 game:GetService("Players").PlayerRemoving:connect(function(player)
@@ -186,28 +197,15 @@ game:GetService("Players").PlayerRemoving:connect(function(player)
 
 	if url and access and placeId and player and player.userId then
 		game:HttpPost(url .. "/game/ClientPresence.ashx?action=disconnect&accessKey=" .. accessKey .. "&PlaceID=" .. placeId .. "&JobID=" .. JobId .. "&UserID=" .. player.userId, "")
-		
+		check()
 
 	end
 end)
 
 spawn(function()
-	local HttpService = game:GetService("HttpService")
-	
     -- if a player doesn't join in 60 seconds because of failed job or they didn't join close the job
 	wait(60)
-
-	while true do
-	if #game:GetService("Players"):GetPlayers() < 1 then
-			-- less than one player is in the game so lets shut down
-			local arguments = {
-				["jobid"] = JobId
-			}
-			game:HttpPostAsync(url .. "/updatejob/closejob?accessKey=" .. accessKey,HttpService:JSONEncode(arguments),"application/json")
-		end
-
-	wait(5)
-	end
+	check()
 end)
 
 if placeId~=nil and url~=nil then
