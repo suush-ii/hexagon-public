@@ -1,0 +1,1 @@
+ALTER TABLE "keys" ALTER COLUMN "claimedby" DROP NOT NULL;

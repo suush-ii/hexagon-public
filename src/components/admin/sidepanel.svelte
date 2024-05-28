@@ -10,7 +10,8 @@
 				{ title: 'Find', href: '/admin/users/find' },
 				{ title: 'User Admin', href: '/admin/users/useradmin' },
 				{ title: 'Moderate User', href: '/admin/users/moderateuser' },
-				{ title: 'User Queue', href: '/admin/users/moderateuser?queue=true' }
+				{ title: 'User Queue', href: '/admin/users/moderateuser?queue=true' },
+				{ title: 'Generate Key', href: '/admin/generate' }
 			]
 		},
 		{

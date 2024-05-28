@@ -302,6 +302,20 @@
       "when": 1716745158461,
       "tag": "0042_thick_banshee",
       "breakpoints": true
+    },
+    {
+      "idx": 43,
+      "version": "5",
+      "when": 1716860863420,
+      "tag": "0043_flaky_namorita",
+      "breakpoints": true
+    },
+    {
+      "idx": 44,
+      "version": "5",
+      "when": 1716863299980,
+      "tag": "0044_left_triathlon",
+      "breakpoints": true
     }
   ]
 }

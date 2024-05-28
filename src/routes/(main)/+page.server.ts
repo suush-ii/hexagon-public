@@ -5,7 +5,7 @@ import { fail, redirect } from '@sveltejs/kit'
 import { db } from '$src/lib/server/db'
 import { auth } from '$src/lib/server/lucia'
 import postgres from 'postgres' // TODO: Check this out later seems to be a workaround for a postgres issue https://github.com/porsager/postgres/issues/684 10/3/2023
-import { usersTable } from '$src/lib/server/schema/users'
+import { usersTable, keyTable } from '$lib/server/schema'
 import { eq, or, sql } from 'drizzle-orm'
 import { zod } from 'sveltekit-superforms/adapters'
 import { LuciaError } from 'lucia'
@@ -37,6 +37,22 @@ export const actions: Actions = {
 
 		if (config?.[0]?.registrationEnabled === false) {
 			return message(form, 'Registration disabled.')
+		}
+
+		const keyDb = await db
+			.select({ useable: keyTable.useable })
+			.from(keyTable)
+			.where(eq(keyTable.key, key))
+			.limit(1)
+
+		if (config?.[0]?.keysEnabled === true) {
+			if (keyDb.length < 1) {
+				return setError(form, 'key', 'Invalid key!')
+			}
+
+			if (keyDb?.[0].useable === false) {
+				return setError(form, 'key', 'Key already used!')
+			}
 		}
 
 		const user = await db
@@ -77,6 +93,16 @@ export const actions: Actions = {
 				attributes: {}
 			})
 			event.locals.auth.setSession(session) // set session cookie
+
+			if (config?.[0]?.keysEnabled === true) {
+				await db
+					.update(keyTable)
+					.set({
+						claimedby: session.user.userid,
+						useable: false
+					})
+					.where(eq(keyTable.key, key))
+			}
 		} catch (e) {
 			//console.log(e)
 			if (

@@ -1,11 +1,10 @@
-import { bigserial, boolean, pgTable, serial, text, timestamp } from 'drizzle-orm/pg-core'
+import { boolean, pgTable, text, timestamp, bigint } from 'drizzle-orm/pg-core'
 
 export const keyTable = pgTable('keys', {
 	key: text('key').notNull().primaryKey(),
-	keyid: serial('keyid').notNull(),
-	madeby: text('madeby').notNull(),
-	madebyuserid: bigserial('madebyuserid', { mode: 'number' }).notNull(),
-	claimedby: text('claimedby'),
+	madebyuserid: bigint('madeby', { mode: 'number' }).notNull(),
+	claimedby: bigint('claimedby', { mode: 'number' }),
 	expires: timestamp('expires', { mode: 'date', withTimezone: true }).notNull(),
-	useable: boolean('useable').notNull()
+	useable: boolean('useable').notNull(),
+	created: timestamp('created', { mode: 'date', withTimezone: true }).notNull().defaultNow()
 })

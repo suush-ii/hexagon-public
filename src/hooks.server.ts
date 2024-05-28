@@ -72,7 +72,8 @@ const adminPanelPermissions = [
 	{ path: '/admin/reports', requiredLevel: 3 },
 	{ path: '/admin/users', requiredLevel: 3 },
 	{ path: '/admin/catalog', requiredLevel: 4 },
-	{ path: '/admin/logs', requiredLevel: 4 }
+	{ path: '/admin/logs', requiredLevel: 4 },
+	{ path: '/admin/generate', requiredLevel: 3 }
 ]
 
 const skipAuth = [
