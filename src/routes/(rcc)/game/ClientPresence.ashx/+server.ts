@@ -43,7 +43,7 @@ export const POST: RequestHandler = async ({ url }) => {
 		})
 	}
 
-	let active = instance?.associatedplace?.associatedgame.active ?? 0
+	let active = instance?.players?.length ?? 0
 
 	let playerCountUniverse = (
 		await db.select({ active: gamesTable.active }).from(gamesTable).limit(1)
