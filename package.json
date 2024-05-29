@@ -13,9 +13,9 @@
 		"generate": "drizzle-kit generate:pg",
 		"push": "drizzle-kit push:pg",
 		"drop": "drizzle-kit drop",
-		"prod": "cross-env PROTOCOL_HEADER=x-forwarded-proto HOST_HEADER=x-forwarded-host PORT=9000 HOST=127.0.0.1 BODY_SIZE_LIMIT=Infinity node build",
-		"prodpm2": "cross-env PROTOCOL_HEADER=x-forwarded-proto HOST_HEADER=x-forwarded-host PORT=9000 HOST=127.0.0.1 BODY_SIZE_LIMIT=Infinity pm2 start build/index.js",
-		"prodpm2reload": "cross-env PROTOCOL_HEADER=x-forwarded-proto HOST_HEADER=x-forwarded-host PORT=9000 HOST=127.0.0.1 BODY_SIZE_LIMIT=Infinity pm2 reload build/index.js"
+		"prod": "cross-env PROTOCOL_HEADER=x-forwarded-proto HOST_HEADER=x-forwarded-host PORT=9000 HOST=127.0.0.1 ADDRESS_HEADER=cf-connecting-ip BODY_SIZE_LIMIT=Infinity node build",
+		"prodpm2": "cross-env PROTOCOL_HEADER=x-forwarded-proto HOST_HEADER=x-forwarded-host PORT=9000 HOST=127.0.0.1 ADDRESS_HEADER=cf-connecting-ip BODY_SIZE_LIMIT=Infinity pm2 start build/index.js",
+		"prodpm2reload": "cross-env PROTOCOL_HEADER=x-forwarded-proto HOST_HEADER=x-forwarded-host PORT=9000 HOST=127.0.0.1 ADDRESS_HEADER=cf-connecting-ip BODY_SIZE_LIMIT=Infinity pm2 reload build/index.js"
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "^3.1.0",
