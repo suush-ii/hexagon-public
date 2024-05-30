@@ -1,6 +1,7 @@
 import { _uploadableAssets } from '$src/routes/(main)/develop/[item]/+layout.server'
 import { error } from '@sveltejs/kit'
-export const _assetSchema = z.enum(['hats', 'faces', 'gears'])
+import { adminAssets } from '.'
+export const _assetSchema = z.enum(adminAssets)
 
 import type { LayoutServerLoad } from './$types'
 import { z } from 'zod'

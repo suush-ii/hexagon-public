@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Avatar from '$src/components/catalog/avatar.svelte'
 	import UserAvatar from '$src/components/users/avatar.svelte'
-	import { MoonStar, Star } from 'lucide-svelte'
+	import { MoonStar, Star, Menu } from 'lucide-svelte'
 
 	import { Button } from '$src/components/ui/button'
 	import { Separator } from '$src/components/ui/separator'
@@ -9,6 +9,7 @@
 	import ReportButton from '$src/components/reportButton.svelte'
 	import * as AlertDialog from '$src/components/ui/alert-dialog'
 	import { depluralize, formatCompactNumber, slugify } from '$lib/utils'
+	import * as DropdownMenu from '$src/components/ui/dropdown-menu'
 
 	import { toast } from 'svelte-sonner'
 
@@ -58,9 +59,30 @@
 
 <div class="container p-8 flex flex-col gap-y-4">
 	<div class="flex flex-col gap-y-4">
-		<h1 class="text-5xl leading-none tracking-tight font-semibold break-words">
-			{data.item.assetname}
-		</h1>
+		<div class="flex">
+			<h1 class="text-5xl leading-none tracking-tight font-semibold break-words mr-auto">
+				{data.item.assetname}
+			</h1>
+
+			{#if data.canEdit}
+				<DropdownMenu.Root>
+					<DropdownMenu.Trigger asChild let:builder
+						><Button builders={[builder]} variant="minimal" class="text-lg" size="icon">
+							<Menu class="w-8 h-8 my-auto" />
+						</Button>
+					</DropdownMenu.Trigger>
+					<DropdownMenu.Content align="end">
+						<a
+							href="/{data.adminAsset === false ? 'develop' : 'admin/catalog/upload'}/{data.item
+								.assetType}/{itemid}/edit"
+							><DropdownMenu.Item class="cursor-pointer"
+								>Configure this {depluralize(itemName)}</DropdownMenu.Item
+							></a
+						>
+					</DropdownMenu.Content>
+				</DropdownMenu.Root>
+			{/if}
+		</div>
 
 		<h1 class="text-xl leading-none tracking-tight font-semibold">
 			Hexagon {depluralize(itemName)}
@@ -150,20 +172,32 @@
 					<AlertDialog.Root closeOnOutsideClick={true}>
 						<AlertDialog.Trigger asChild let:builder>
 							{#if !data.alreadyOwned && data.user.coins >= (data.item.price ?? 0)}
-								{#if data.item.price === 0}
-									<Button builders={[builder]} class="w-full font-semibold text-lg">Free</Button>
+								{#if data.item.onsale === false}
+									<Button
+										builders={[builder]}
+										class="w-full font-semibold text-lg select-none"
+										disabled>Offsale</Button
+									>
+								{:else if data.item.price === 0}
+									<Button builders={[builder]} class="w-full font-semibold text-lg select-none"
+										>Free</Button
+									>
 								{:else}
-									<Button builders={[builder]} class="w-full font-semibold text-lg"
+									<Button builders={[builder]} class="w-full font-semibold text-lg select-none"
 										>Buy with <MoonStar class="h-4 " /></Button
 									>
 								{/if}
 							{:else if data.alreadyOwned}
-								<Button builders={[builder]} class="w-full font-semibold text-lg" disabled
-									>Already Owned</Button
+								<Button
+									builders={[builder]}
+									class="w-full font-semibold text-lg select-none"
+									disabled>Already Owned</Button
 								>
 							{:else if data.item.price ?? 0 > data.user.coins}
-								<Button builders={[builder]} class="w-full font-semibold text-lg" disabled
-									>Not Enough <MoonStar class="h-4 " /></Button
+								<Button
+									builders={[builder]}
+									class="w-full font-semibold text-lg select-none"
+									disabled>Not Enough <MoonStar class="h-4 " /></Button
 								>
 							{/if}
 						</AlertDialog.Trigger>
@@ -181,10 +215,11 @@
 											{data.item.price}</span
 										>?
 									</div>
-									<img
-										src={'/Images/iconplaceholder.png'}
-										alt={data.item.assetname}
-										class="mx-auto aspect-square w-40 rounded-xl"
+									<Avatar
+										css="mx-auto aspect-square w-40 rounded-xl"
+										itemId={data.item.assetid}
+										itemName={data.item.assetname}
+										disable3d={true}
 									/>
 								</AlertDialog.Description>
 							</AlertDialog.Header>

@@ -11,9 +11,8 @@ import rejected from '$lib/icons/iconrejected.png'
 import audio from '$lib/icons/audio.png'
 import { getPageNumber } from '$lib/utils'
 
-export const load: PageServerLoad = async ({ params, parent, url }) => {
+export const load: PageServerLoad = async ({ params, locals, url }) => {
 	const result = await _assetSchema.safeParseAsync(params.item)
-	const session = await (await parent()).user
 
 	if (result.success === false) {
 		error(404, { success: false, message: 'Not found.' })
@@ -39,7 +38,7 @@ export const load: PageServerLoad = async ({ params, parent, url }) => {
 		itemscount = await db
 			.select({ count: count() })
 			.from(gamesTable)
-			.where(eq(gamesTable.creatoruserid, session.userid))
+			.where(eq(gamesTable.creatoruserid, locals.user.userid))
 			.limit(1)
 
 		if (itemscount[0].count < (page - 1) * size) {
@@ -49,7 +48,7 @@ export const load: PageServerLoad = async ({ params, parent, url }) => {
 		const gamecreations = await db
 			.select()
 			.from(gamesTable)
-			.where(eq(gamesTable.creatoruserid, session.userid))
+			.where(eq(gamesTable.creatoruserid, locals.user.userid))
 			.limit(size)
 			.offset((page - 1) * size)
 
@@ -74,7 +73,7 @@ export const load: PageServerLoad = async ({ params, parent, url }) => {
 			.select({ count: count() })
 			.from(assetTable)
 			.where(
-				and(eq(assetTable.creatoruserid, session.userid), eq(assetTable.assetType, params.item))
+				and(eq(assetTable.creatoruserid, locals.user.userid), eq(assetTable.assetType, params.item))
 			)
 			.limit(1)
 
@@ -85,7 +84,7 @@ export const load: PageServerLoad = async ({ params, parent, url }) => {
 		// default asset
 		const assetcreations = await db.query.assetTable.findMany({
 			where: and(
-				eq(assetTable.creatoruserid, session.userid),
+				eq(assetTable.creatoruserid, locals.user.userid),
 				eq(assetTable.assetType, params.item)
 			),
 			with: {
@@ -98,7 +97,7 @@ export const load: PageServerLoad = async ({ params, parent, url }) => {
 			orderBy: desc(assetTable.created),
 			limit: size,
 			offset: (page - 1) * size
-		}) // TODO: Pagination here
+		})
 
 		creations = assetcreations.map((asset) => ({
 			assetName: asset.assetname,

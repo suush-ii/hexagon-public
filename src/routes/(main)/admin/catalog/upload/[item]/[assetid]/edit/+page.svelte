@@ -1,8 +1,7 @@
 <script lang="ts">
 	import { depluralize } from '$lib/utils'
 	import EditAssetFormPrimitive from '$src/components/develop/edit/editAssetFormPrimitive.svelte'
-	import EditClothingFormPrimitive from '$src/components/develop/edit/editClothingFormPrimitive.svelte'
-	import EditGameFormPrimitive from '$src/components/develop/edit/editGameFormPrimitive.svelte'
+	import EditGearFormPrimitive from '$src/components/develop/edit/editGearFormPrimitive.svelte'
 	import type { PageData } from './$types'
 
 	export let data: PageData
@@ -15,17 +14,18 @@
 		Configure {depluralize(itemName)}
 	</h1>
 
-	{#if data.item === 'shirts' || data.item === 'pants'}
-		<EditClothingFormPrimitive
-			data={data.clothingForm}
+	{#if data.item === 'gears'}
+		<EditGearFormPrimitive
+			data={data.gearForm}
 			friendlyName={data.friendlyName}
 			name={data.assetname}
 			description={data.description}
 			onsale={data.onsale}
 			price={data.price}
 			genres={data.genres}
+			gearattributes={data.gearattributes}
 		/>
-	{:else if data.item === 'audio' || data.item === 'decals'}
+	{:else if data.item === 'hats' || data.item === 'faces'}
 		<EditAssetFormPrimitive
 			data={data.assetForm}
 			friendlyName={data.friendlyName}
@@ -34,15 +34,6 @@
 			onsale={data.onsale}
 			price={data.price}
 			genres={data.genres}
-		/>
-	{:else if data.item === 'games'}
-		<EditGameFormPrimitive
-			data={data.gameForm}
-			friendlyName={data.friendlyName}
-			name={data.assetname}
-			description={data.description}
-			genre={data.genres[0]}
-			serversize={data.serversize}
 		/>
 	{/if}
 </div>

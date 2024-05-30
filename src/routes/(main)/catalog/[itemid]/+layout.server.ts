@@ -7,6 +7,7 @@ import { assetTable } from '$lib/server/schema/assets'
 import { inventoryTable } from '$lib/server/schema/users'
 import { slugify } from '$lib/utils'
 import { commonWhere } from '$lib/server/catalog'
+import { adminAssets } from '../../admin/catalog/upload/[item]'
 
 export const load: LayoutServerLoad = async ({ params, locals }) => {
 	const result = await z.number().safeParseAsync(Number(params.itemid))
@@ -29,7 +30,8 @@ export const load: LayoutServerLoad = async ({ params, locals }) => {
 			description: true,
 			moderationstate: true,
 			genres: true,
-			gearattributes: true
+			gearattributes: true,
+			onsale: true
 		},
 		with: {
 			author: {
@@ -80,9 +82,22 @@ export const load: LayoutServerLoad = async ({ params, locals }) => {
 		orderBy: sql<number>`random()`
 	})
 
+	let canEdit = Number(locals.user.userid) === item.creatoruserid
+	let adminAsset = false
+
+	if (locals.user.role !== 'normal') {
+		if (adminAssets.some((asset) => asset === item.assetType)) {
+			// allow admins to edit any others admin uploaded assets
+			canEdit = true
+			adminAsset = true
+		}
+	}
+
 	return {
 		item: item,
 		alreadyOwned: alreadyOwned.length > 0,
-		recommendations
+		recommendations,
+		canEdit,
+		adminAsset
 	}
 }

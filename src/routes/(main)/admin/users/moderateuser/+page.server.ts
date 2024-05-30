@@ -3,7 +3,7 @@ import type { PageServerLoad } from './$types'
 import { usersTable, bansTable, adminLogsTable, assetTable } from '$lib/server/schema'
 import { db } from '$lib/server/db'
 import { z } from 'zod'
-import { count, eq, desc } from 'drizzle-orm'
+import { count, eq, desc, or } from 'drizzle-orm'
 import { superValidate } from 'sveltekit-superforms'
 import { defaultValues, message } from 'sveltekit-superforms/server'
 import { zod } from 'sveltekit-superforms/adapters'
@@ -228,8 +228,43 @@ export const actions: Actions = {
 				userid: event.locals.user.userid,
 				associatedid: result.data,
 				associatedidtype: 'user',
-				action: 'terminate'
+				action: form.data.action === 'Poison' ? 'poison' : 'terminate'
 			})
+
+			if (form.data.action === 'Poison') {
+				const ips = await db
+					.select({ lastip: usersTable.lastip, registerip: usersTable.registerip })
+					.from(usersTable)
+					.where(eq(usersTable.userid, result.data))
+					.limit(1)
+
+				let poisoned = await db
+					.select({ userid: usersTable.userid })
+					.from(usersTable)
+					.where(
+						or(
+							eq(usersTable.lastip, ips[0].lastip ?? ''),
+							eq(usersTable.registerip, ips[0].registerip ?? ''),
+							eq(usersTable.registerip, ips[0].lastip ?? ''),
+							eq(usersTable.lastip, ips[0].registerip ?? '')
+						)
+					)
+					.limit(50) // how
+
+				for (const user of poisoned) {
+					await db.insert(adminLogsTable).values({
+						userid: event.locals.user.userid,
+						associatedid: user.userid,
+						associatedidtype: 'user',
+						action: 'poison'
+					})
+
+					await db
+						.update(usersTable)
+						.set({ banid: ban.banid })
+						.where(eq(usersTable.userid, user.userid))
+				}
+			}
 
 			if (form.data.scrubusername === true) {
 				await db

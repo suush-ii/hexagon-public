@@ -38,7 +38,8 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 			price: true,
 			moderationstate: true,
 			sales: true,
-			assetType: true
+			assetType: true,
+			onsale: true
 		},
 		with: {
 			author: {
@@ -52,7 +53,7 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 
 	if (!item || item.price === null) {
 		return error(404, {
-			success: true,
+			success: false,
 			message: "This item doesn't exist!",
 			data: {}
 		})
@@ -60,8 +61,16 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 
 	if (item.moderationstate === 'rejected') {
 		return error(403, {
-			success: true,
+			success: false,
 			message: 'This item is moderated!',
+			data: {}
+		})
+	}
+
+	if (item.onsale === false) {
+		return error(403, {
+			success: false,
+			message: 'This item is not for sale!',
 			data: {}
 		})
 	}

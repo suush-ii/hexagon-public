@@ -13,6 +13,7 @@
 	import EmptyCard from '$src/components/emptyCard.svelte'
 	import PaginationWrapper from '$src/components/pagnationWrapper.svelte'
 	import { page } from '$app/stores'
+	import { slugify } from '$lib/utils'
 
 	pageName.set('Develop')
 
@@ -58,23 +59,25 @@
 		<div class="flex flex-col gap-y-4 mb-auto">
 			{#each creations as creation}
 				<div class="flex flex-row gap-x-2 w-full justify-center">
-					{#if data.params === 'shirts' || data.params === 'pants'}
-						<CatalogAvatar
-							css="w-32 h-32 rounded-xl aspect-square"
-							itemId={creation.assetid}
-							itemName={creation.assetName}
-							disable3d={true}
-						/>
-					{:else}
-						<Avatar.Root class="w-24 h-24 rounded-xl">
-							<Avatar.Image
-								src={creation.iconUrl ? creation.iconUrl : '/Images/iconplaceholder.png'}
-								alt={creation.assetName}
-								loading="lazy"
+					<a href="/catalog/{creation.assetid}/{slugify(creation.assetName)}">
+						{#if data.params === 'shirts' || data.params === 'pants'}
+							<CatalogAvatar
+								css="w-32 h-32 rounded-xl aspect-square"
+								itemId={creation.assetid}
+								itemName={creation.assetName}
+								disable3d={true}
 							/>
-							<Avatar.Fallback />
-						</Avatar.Root>
-					{/if}
+						{:else}
+							<Avatar.Root class="w-24 h-24 rounded-xl">
+								<Avatar.Image
+									src={creation.iconUrl ? creation.iconUrl : '/Images/iconplaceholder.png'}
+									alt={creation.assetName}
+									loading="lazy"
+								/>
+								<Avatar.Fallback />
+							</Avatar.Root>
+						{/if}</a
+					>
 
 					<div class="flex flex-row gap-x-4 w-full max-w-6xl">
 						<table class="table-auto w-full">

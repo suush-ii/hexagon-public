@@ -32,7 +32,8 @@ export const gamesTable = pgTable('games', {
 	iconstatus: text('iconstatus').$type<assetStates>(),
 	thumbnailstatus: text('thumbnailstatus').$type<assetStates>(),
 	likes: bigint('likes', { mode: 'number' }).notNull().default(0),
-	dislikes: bigint('dislikes', { mode: 'number' }).notNull().default(0)
+	dislikes: bigint('dislikes', { mode: 'number' }).notNull().default(0),
+	scrubbedgamename: text('scrubbedgamename')
 })
 
 export const gamesRelations = relations(gamesTable, ({ one, many }) => ({
@@ -56,7 +57,12 @@ export const placesTable = pgTable('places', {
 		.array()
 		.$type<GearAttributes[]>()
 		.default(sql`'{}'::text[]`),
-	geargenreenforced: boolean('geargenreenforced').notNull().default(false)
+	geargenreenforced: boolean('geargenreenforced').notNull().default(false),
+	placeversions: text('placeversions')
+		.$type<string[]>()
+		.array()
+		.$type<string[]>()
+		.default(sql`'{}'::text[]`)
 })
 
 export const placesRelations = relations(placesTable, ({ one, many }) => ({

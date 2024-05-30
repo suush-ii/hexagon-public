@@ -169,7 +169,8 @@ export async function uploadAsset(
 							creatoruserid: userid,
 							simpleasseturl: fileName,
 							moderationstate: moderationState,
-							price: 0
+							price: 0,
+							onsale: false
 						})
 						.returning({ assetid: assetTable.assetid })
 

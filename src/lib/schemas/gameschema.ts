@@ -16,8 +16,6 @@ export const formSchema = z.object({
 		.min(1, { message: 'Minimum of 1 player!' })
 		.max(50, { message: 'Maximum of 50 players!' })
 		.default(30),
-	/*thumbnail: z.any(),
-	icon: z.any(),*/
 	asset: shape.asset,
 	genre: z.enum(assetGenreZod).default('All')
 })
