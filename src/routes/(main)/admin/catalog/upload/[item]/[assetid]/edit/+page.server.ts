@@ -46,10 +46,6 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 			error(404, { success: false, message: 'Asset not found.' })
 		}
 
-		if (asset[0].creatoruserid !== Number(locals.user.userid)) {
-			error(403, { success: false, message: 'You do not have permission to edit this asset.' })
-		}
-
 		if (asset[0].moderationstate === 'rejected') {
 			error(403, { success: false, message: 'This asset has been moderated.' })
 		}

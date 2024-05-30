@@ -277,7 +277,7 @@ ns.ChildAdded:connect(function(replicator) -- mostly from polygon tbh with some 
 		player.HexagonTicket:Remove()
 
 
-        local response = game:HttpGet(url .. "/verify-player?Username=" .. player.Name .. "&UserID=" .. player.userId .. "&Ticket=" .. urlencode(HexagonTicket) .. "&JobID=" .. JobId .. "&MembershipType=" .. player.MembershipType.Name .. "&CharacterAppearance=".. player.CharacterAppearance .. "&accessKey=" .. accessKey, true)
+        local response = game:HttpGet(url .. "/verify-player?Username=" .. player.Name .. "&UserID=" .. player.userId .. "&Ticket=" .. urlencode(HexagonTicket) .. "&JobID=" .. JobId .. "&MembershipType=" .. player.MembershipType.Name .. "&CharacterAppearance=".. player.CharacterAppearance .. "&accessKey=" .. accessKey, "")
         if response ~= "True" then
             replicator:CloseConnection()
             print("[paclib] kicked " .. player.Name .. " because could not validate player")
