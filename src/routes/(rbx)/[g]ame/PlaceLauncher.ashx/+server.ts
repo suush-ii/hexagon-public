@@ -60,7 +60,7 @@ export const fallback: RequestHandler = async ({ url, locals, fetch, cookies }) 
 			})
 		}
 
-		if (instance && instance.port && (instance.status === 1 || instance.status === 2)) {
+		if (instance && (instance.status === 1 || instance.status === 2)) {
 			placeLauncherJson.status = instance.status
 			placeLauncherJson.jobId = instance.jobid
 			placeLauncherJson.joinScriptUrl += '?auth=' + authBearer + '&jobid=' + instance.jobid
