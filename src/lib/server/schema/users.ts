@@ -113,6 +113,17 @@ export const recentlyPlayedTable = pgTable('recentlyplayed', {
 	time: timestamp('time', { mode: 'date', withTimezone: true }).notNull().defaultNow()
 })
 
+export const transactionsRelations = relations(transactionsTable, ({ one }) => ({
+	member: one(usersTable, {
+		fields: [transactionsTable.sourceuserid],
+		references: [usersTable.userid]
+	}),
+	item: one(assetTable, {
+		fields: [transactionsTable.itemid],
+		references: [assetTable.assetid]
+	})
+}))
+
 export const adminLogsRelations = relations(adminLogsTable, ({ one }) => ({
 	admin: one(usersTable, {
 		fields: [adminLogsTable.userid],
