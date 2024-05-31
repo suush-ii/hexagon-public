@@ -178,11 +178,6 @@
 		href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&display=swap&text=ProjectHexagon"
 		rel="stylesheet"
 	/>
-	<style>
-		body {
-			background-color: black;
-		}
-	</style>
 </svelte:head>
 <!-- svelte-ignore a11y-media-has-caption -->
 <video
