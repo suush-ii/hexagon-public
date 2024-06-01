@@ -89,12 +89,14 @@
 						{:else if transaction.type === 'adjustment'}
 							<Table.Cell>Adjustment</Table.Cell>
 						{:else if transaction.type === 'sales'}
-							<Table.Cell>Sold {transaction.item?.assetname}</Table.Cell>
+							<Table.Cell
+								>Sold <a class="hover:underline" href="/catalog/{transaction.itemid ?? 0}"
+									>{transaction.item?.assetname}</a
+								></Table.Cell
+							>
 						{:else}
 							<Table.Cell
-								>Purchased <a
-									class="hover:underline"
-									href="/users/{transaction.sourceuserid ?? 0}/profile"
+								>Purchased <a class="hover:underline" href="/catalog/{transaction.itemid ?? 0}"
 									>{transaction.item?.assetname}</a
 								></Table.Cell
 							>
