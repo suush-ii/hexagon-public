@@ -52,7 +52,7 @@ export const load: PageServerLoad = async ({ url, locals }) => {
 
 		return {
 			transactions,
-			transactionsCount: transactionsCount[0].count ?? 0
+			transactionsCount: transactionsCount[0].count
 		}
 	}
 }

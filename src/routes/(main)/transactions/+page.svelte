@@ -109,5 +109,5 @@
 		</Table.Body>
 	</Table.Root>
 
-	<PaginationWrapper count={data.transactionsCount} size={30} url={$page.url} />
+	<PaginationWrapper count={data.transactionsCount ?? 0} size={30} url={$page.url} />
 </div>

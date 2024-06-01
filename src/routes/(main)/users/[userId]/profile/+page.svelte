@@ -28,7 +28,7 @@
 	import { pageName } from '$src/stores'
 	import { invalidateAll } from '$app/navigation'
 
-	pageName.set(username)
+	$: pageName.set(username)
 
 	async function friend(friend: boolean) {
 		await fetch(`/api/account/friend`, {

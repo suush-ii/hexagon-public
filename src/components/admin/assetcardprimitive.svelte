@@ -65,7 +65,9 @@
 	</Card.Content>
 {:else if assetType === 'audio'}
 	<Card.Content class="flex flex-col gap-y-4">
-		<h1>Temporary cuz custom is buggy</h1>
+		<h1 class="text-md mx-auto line-clamp-1 tracking-tighter break-words">{assetName}</h1>
+
+		<h1 class="mx-auto">Temporary</h1>
 		<audio
 			controls
 			bind:this={audioElement}

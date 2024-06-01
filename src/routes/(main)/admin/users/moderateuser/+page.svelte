@@ -139,7 +139,7 @@
 
 				<div class="w-[350px] flex flex-col">
 					<Assetcardprimitive
-						assetName={data.asset.assetname}
+						assetName={data.asset.scrubbedassetname ?? data.asset.assetname}
 						assetType={data.asset.assetType}
 						assetUrl={data.asset.simpleasseturl}
 					/>

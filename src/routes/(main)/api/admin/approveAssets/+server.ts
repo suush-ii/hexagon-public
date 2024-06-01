@@ -48,7 +48,8 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 			assetId: assetTable.assetid,
 			moderationState: assetTable.moderationstate,
 			assetType: assetTable.assetType,
-			simpleAssetUrl: assetTable.simpleasseturl
+			simpleAssetUrl: assetTable.simpleasseturl,
+			assetname: assetTable.assetname
 		})
 		.from(assetTable)
 		.where(inArray(assetTable.assetid, assetIds))
@@ -65,7 +66,14 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 			// avoid unnecessary updates
 			await db
 				.update(assetTable)
-				.set({ moderationstate: newModerationState, topunish: punish })
+				.set({
+					moderationstate: newModerationState,
+					topunish: punish,
+					assetname: '[ Content Deleted ]',
+					scrubbedassetname: asset.assetname,
+					description: '[ Content Deleted ]',
+					onsale: false
+				})
 				.where(eq(assetTable.assetid, asset.assetId))
 
 			if (newModerationState === 'rejected') {

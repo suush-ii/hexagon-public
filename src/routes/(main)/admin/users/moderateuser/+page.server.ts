@@ -39,7 +39,13 @@ export const load: PageServerLoad = async ({ url }) => {
 	if (queue) {
 		const user = await db.query.assetTable.findFirst({
 			where: eq(assetTable.topunish, true),
-			columns: { simpleasseturl: true, assetname: true, assetType: true, assetid: true },
+			columns: {
+				simpleasseturl: true,
+				assetname: true,
+				assetType: true,
+				assetid: true,
+				scrubbedassetname: true
+			},
 			with: {
 				author: {
 					columns: {

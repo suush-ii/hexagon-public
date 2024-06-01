@@ -83,23 +83,28 @@
 						<table class="table-auto w-full">
 							<tbody>
 								<tr>
-									<td class="text-xl">{creation.assetName}</td>
-									<td />
-									<td class="text-sm text-muted-foreground text-right"
-										>Total
-										{#if creation.assetType === 'games'}
-											Visitors:
-										{:else}
-											Sales:
-										{/if}
+									<td class="text-xl"><h1 class="truncate">{creation.assetName}</h1></td>
+									<td class="text-sm text-right"
+										><span class="text-muted-foreground"
+											>Total
+											{#if creation.assetType === 'games'}
+												Visitors:
+											{:else}
+												Sales:
+											{/if}
+										</span>
+										{creation.totalStat}
 									</td>
-									<td class="text-sm">{creation.totalStat}</td>
 								</tr>
 								<tr class="align-text-top">
-									<td class="text-sm text-muted-foreground w-0">Updated:</td>
-									<td class="text-sm">{creation.updated.toLocaleDateString('en-US')}</td>
-									<td class="text-sm text-muted-foreground text-right">Last 7 days:</td>
-									<td class="text-sm w-0">{creation.last7DaysStat}</td>
+									<td class="text-sm"
+										><span class="text-muted-foreground">Updated:</span>
+										{creation.updated.toLocaleDateString('en-US')}</td
+									>
+									<td class="text-sm text-right"
+										><span class="text-muted-foreground">Last 7 days:</span>
+										{creation.last7DaysStat}
+									</td>
 								</tr>
 							</tbody>
 						</table>
