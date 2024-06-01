@@ -33,9 +33,9 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 		error(400, { success: false, message: 'Malformed JSON.', data: { errors } })
 	}
 
-	const both = or(
-		and(eq(relationsTable.sender, user.userid), eq(relationsTable.recipient, recipientid)),
-		and(eq(relationsTable.sender, recipientid), eq(relationsTable.recipient, user.userid))
+	const both = and(
+		eq(relationsTable.sender, recipientid),
+		eq(relationsTable.recipient, user.userid)
 	)
 
 	const alreadyFriends = await db

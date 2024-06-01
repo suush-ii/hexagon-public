@@ -1,6 +1,12 @@
 <script lang="ts">
 	import Avatar from '$src/components/users/avatar.svelte'
 
+	import * as AvatarThumb from '$src/components/ui/avatar'
+
+	import * as Accordion from '$src/components/ui/accordion'
+
+	import PaginationWrapper from '$src/components/pagnationWrapper.svelte'
+
 	import { Button } from '$src/components/ui/button'
 
 	import { page } from '$app/stores'
@@ -128,7 +134,17 @@
 
 					<div>
 						<p class="font-bold text-muted-foreground">Last Online</p>
-						<p>{relativeTime.from(data.lastactivetime)}</p>
+						{#if new Date().valueOf() - new Date(data.lastactivetime).valueOf() < 3 * 60 * 1000}
+							<p>Now</p>
+							<!--Less than 3 mins ago-->
+						{:else}
+							<p>{relativeTime.from(data.lastactivetime)}</p>
+						{/if}
+					</div>
+
+					<div>
+						<p class="font-bold text-muted-foreground">Place Visits</p>
+						<p>{data.placeVisits}</p>
 					</div>
 				</div>
 
@@ -145,8 +161,38 @@
 			<Separator class="w-full" />
 			<h1 class="text-3xl font-semibold tracking-tight">Active Places</h1>
 			<div
-				class="h-full bg-muted-foreground/5 outline-dashed outline-muted-foreground/20 rounded-xl"
-			/>
+				class="h-full bg-muted-foreground/5 outline-dashed outline-muted-foreground/20 rounded-xl p-4 flex flex-col"
+			>
+				<Accordion.Root class="w-full mb-auto">
+					{#each data.places as place}
+						<Accordion.Item value="item-1">
+							<Accordion.Trigger>{place.gamename}</Accordion.Trigger>
+							<Accordion.Content class="p-4">
+								<div class="space-y-2">
+									<h1 class="text-base">Visited {place.visits} times</h1>
+									<a href="/games/{place.places?.[0].placeid}">
+										<AvatarThumb.Root class="h-fit w-full rounded-xl aspect-video">
+											<AvatarThumb.Image
+												src={place.thumbnailurl
+													? place.thumbnailurl
+													: '/Images/thumbnailplaceholder.png'}
+												alt={place.gamename}
+												loading="lazy"
+											/>
+											<AvatarThumb.Fallback />
+										</AvatarThumb.Root>
+									</a>
+									<p class="text-base leading-relaxed tracking-tight max-h-32 overflow-y-auto">
+										{place.description}
+									</p>
+								</div>
+							</Accordion.Content>
+						</Accordion.Item>
+					{/each}
+				</Accordion.Root>
+
+				<PaginationWrapper count={data.placeCount} size={40} url={$page.url} queryName={'places'} />
+			</div>
 
 			<h1 class="text-3xl font-semibold tracking-tight">{username}'s Friends!</h1>
 

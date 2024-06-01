@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Accordion as AccordionPrimitive } from "bits-ui";
-	import ChevronDown from "lucide-svelte/icons/chevron-down";
+	import ChevronRight from "lucide-svelte/icons/chevron-right";
 	import { cn } from "$lib/utils.js";
 
 	type $$Props = AccordionPrimitive.TriggerProps;
@@ -14,13 +14,13 @@
 <AccordionPrimitive.Header {level} class="flex">
 	<AccordionPrimitive.Trigger
 		class={cn(
-			"flex flex-1 items-center justify-between py-4 font-medium transition-all hover:underline [&[data-state=open]>svg]:rotate-180",
+			"flex flex-1 gap-x-2 items-center py-4 font-medium transition-all hover:underline [&[data-state=open]>svg]:rotate-90 h-10",
 			className
 		)}
 		{...$$restProps}
 		on:click
 	>
+		<ChevronRight class="h-4 w-4 transition-transform duration-200" />
 		<slot />
-		<ChevronDown class="h-4 w-4 transition-transform duration-200" />
 	</AccordionPrimitive.Trigger>
 </AccordionPrimitive.Header>

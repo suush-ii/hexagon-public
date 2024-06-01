@@ -98,46 +98,48 @@
 			{/if}
 
 			{#if loggedIn}
-				<DropdownMenu.Root>
-					<DropdownMenu.Trigger asChild let:builder
-						><Button builders={[builder]} variant="minimal" class="text-lg" size="icon">
-							<div class="flex items-center gap-x-3">
-								<MoonStar class="h-full" />
-								<h5 class="font-bold">{coins}</h5>
-							</div>
-						</Button>
-					</DropdownMenu.Trigger>
-					<DropdownMenu.Content>
-						<DropdownMenu.Label class="select-none">My Account</DropdownMenu.Label>
-						<DropdownMenu.Separator />
-						<a href="/transactions"
-							><DropdownMenu.Item class="cursor-pointer">My Transactions</DropdownMenu.Item></a
-						>
-						<DropdownMenu.Item
-							>{coins}
-							{coins != 1 ? currencyNamePlural : currencyName}
-							<MoonStar class="h-4 ml-auto" />
-						</DropdownMenu.Item>
-					</DropdownMenu.Content>
-				</DropdownMenu.Root>
+				<div class="flex gap-x-6">
+					<DropdownMenu.Root>
+						<DropdownMenu.Trigger asChild let:builder
+							><Button builders={[builder]} variant="minimal" class="text-lg" size="icon">
+								<div class="flex items-center gap-x-3">
+									<MoonStar class="h-full" />
+									<h5 class="font-bold">{coins}</h5>
+								</div>
+							</Button>
+						</DropdownMenu.Trigger>
+						<DropdownMenu.Content>
+							<DropdownMenu.Label class="select-none">My Account</DropdownMenu.Label>
+							<DropdownMenu.Separator />
+							<a href="/transactions"
+								><DropdownMenu.Item class="cursor-pointer">My Transactions</DropdownMenu.Item></a
+							>
+							<DropdownMenu.Item
+								>{coins}
+								{coins != 1 ? currencyNamePlural : currencyName}
+								<MoonStar class="h-4 ml-auto" />
+							</DropdownMenu.Item>
+						</DropdownMenu.Content>
+					</DropdownMenu.Root>
 
-				<DropdownMenu.Root>
-					<DropdownMenu.Trigger asChild let:builder
-						><Button builders={[builder]} variant="outline" size="icon">
-							<Cog />
-						</Button>
-					</DropdownMenu.Trigger>
-					<DropdownMenu.Content>
-						<DropdownMenu.Label class="select-none">My Account</DropdownMenu.Label>
-						<DropdownMenu.Separator />
-						<a href="/settings"
-							><DropdownMenu.Item class="cursor-pointer">Settings</DropdownMenu.Item></a
-						>
-						<a href="/logout"
-							><DropdownMenu.Item class="cursor-pointer">Logout</DropdownMenu.Item></a
-						>
-					</DropdownMenu.Content>
-				</DropdownMenu.Root>
+					<DropdownMenu.Root>
+						<DropdownMenu.Trigger asChild let:builder
+							><Button builders={[builder]} variant="outline" size="icon">
+								<Cog />
+							</Button>
+						</DropdownMenu.Trigger>
+						<DropdownMenu.Content>
+							<DropdownMenu.Label class="select-none">My Account</DropdownMenu.Label>
+							<DropdownMenu.Separator />
+							<a href="/settings"
+								><DropdownMenu.Item class="cursor-pointer">Settings</DropdownMenu.Item></a
+							>
+							<a href="/logout"
+								><DropdownMenu.Item class="cursor-pointer">Logout</DropdownMenu.Item></a
+							>
+						</DropdownMenu.Content>
+					</DropdownMenu.Root>
+				</div>
 			{/if}
 		</nav>
 	</div>
