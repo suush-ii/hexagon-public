@@ -164,8 +164,8 @@
 				class="h-full bg-muted-foreground/5 outline-dashed outline-muted-foreground/20 rounded-xl p-4 flex flex-col"
 			>
 				<Accordion.Root class="w-full mb-auto">
-					{#each data.places as place}
-						<Accordion.Item value="item-1">
+					{#each data.places as place, i}
+						<Accordion.Item value="item-{i}">
 							<Accordion.Trigger>{place.gamename}</Accordion.Trigger>
 							<Accordion.Content class="p-4">
 								<div class="space-y-2">
