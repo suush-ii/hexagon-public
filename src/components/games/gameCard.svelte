@@ -1,6 +1,8 @@
 <script lang="ts">
 	import * as Avatar from '$src/components/ui/avatar'
 
+	import CatalogAvatar from '$src/components/catalog/avatar.svelte'
+
 	import { formatCompactNumber } from '$lib/utils'
 
 	import { slugify } from '$lib/utils'
@@ -11,19 +13,25 @@
 
 	export let playerCount: number
 
-	export let iconUrl: string
+	export let iconId: number
 </script>
 
 <a href="/games/{gameId}/{slugify(gameName)}"
 	><div class="flex flex-col w-32">
-		<Avatar.Root class="w-32 h-32 rounded-xl">
-			<Avatar.Image
-				src={iconUrl ? iconUrl : '/Images/iconplaceholder.png'}
-				alt={gameName}
-				loading="lazy"
+		{#if iconId}
+			<CatalogAvatar
+				css="w-32 h-32 rounded-xl aspect-square"
+				itemId={iconId}
+				itemName={gameName}
+				disable3d={true}
 			/>
-			<Avatar.Fallback />
-		</Avatar.Root>
+		{:else}
+			<Avatar.Root class="w-32 h-32 rounded-xl">
+				<Avatar.Image src={'/Images/iconplaceholder.png'} alt={gameName} loading="lazy" />
+				<Avatar.Fallback />
+			</Avatar.Root>
+		{/if}
+
 		<h1 class="line-clamp-2 tracking-tighter break-words text-xl">{gameName}</h1>
 		<h1 class="tracking-tighter truncate text-xs">{formatCompactNumber(playerCount)} Playing</h1>
 	</div></a

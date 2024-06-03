@@ -3,6 +3,8 @@
 	import EditAssetFormPrimitive from '$src/components/develop/edit/editAssetFormPrimitive.svelte'
 	import EditClothingFormPrimitive from '$src/components/develop/edit/editClothingFormPrimitive.svelte'
 	import EditGameFormPrimitive from '$src/components/develop/edit/editGameFormPrimitive.svelte'
+	import EditGameImageFormPrimitive from '$src/components/develop/edit/game/editGameImageFormPrimitive.svelte'
+	import * as Tabs from '$src/components/ui/tabs/index.js'
 	import type { PageData } from './$types'
 
 	export let data: PageData
@@ -36,13 +38,40 @@
 			genres={data.genres}
 		/>
 	{:else if data.item === 'games'}
-		<EditGameFormPrimitive
-			data={data.gameForm}
-			friendlyName={data.friendlyName}
-			name={data.assetname}
-			description={data.description}
-			genre={data.genres[0]}
-			serversize={data.serversize}
-		/>
+		<Tabs.Root value="settings">
+			<Tabs.List>
+				<Tabs.Trigger value="settings">Settings</Tabs.Trigger>
+				<Tabs.Trigger value="places">Places</Tabs.Trigger>
+				<Tabs.Trigger value="icon">Icon</Tabs.Trigger>
+				<Tabs.Trigger value="thumbnail">Thumbnail</Tabs.Trigger>
+			</Tabs.List>
+			<Tabs.Content value="settings"
+				><EditGameFormPrimitive
+					data={data.gameForm}
+					friendlyName={data.friendlyName}
+					name={data.assetname}
+					description={data.description}
+					genre={data.genres[0]}
+					serversize={data.serversize}
+				/></Tabs.Content
+			>
+			<Tabs.Content value="places">can't wait to do this :D</Tabs.Content>
+			<Tabs.Content value="icon">
+				<EditGameImageFormPrimitive
+					data={data.gameImageForm}
+					friendlyName={'Image'}
+					fileTypes={data._uploadableAssets.decals.fileTypes}
+					type={'icon'}
+				/>
+			</Tabs.Content>
+			<Tabs.Content value="thumbnail">
+				<EditGameImageFormPrimitive
+					data={data.gameImageForm}
+					friendlyName={'Image'}
+					fileTypes={data._uploadableAssets.decals.fileTypes}
+					type={'thumbnail'}
+				/>
+			</Tabs.Content>
+		</Tabs.Root>
 	{/if}
 </div>

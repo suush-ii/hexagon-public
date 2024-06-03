@@ -15,7 +15,8 @@ export async function uploadAsset(
 	file: File,
 	item: string,
 	form: SuperValidated<any, any, any>,
-	userid: number
+	userid: number,
+	assetname?: string
 ) {
 	let mimeTypes = _uploadableAssets[item].mimeTypes
 
@@ -151,6 +152,24 @@ export async function uploadAsset(
 					description: form.data.description,
 					genres: form.data.genres,
 					gearattributes: form.data.gearattributes
+				})
+				.returning({ assetid: assetTable.assetid })
+
+			return assetResponse.assetid
+		}
+
+		if (item === 'images') {
+			const [assetResponse] = await db
+				.insert(assetTable)
+				.values({
+					assetname: assetname ?? '',
+					assetType: item,
+					creatoruserid: userid,
+					simpleasseturl: fileName,
+					moderationstate: moderationState,
+					price: 0,
+					description: '',
+					genres: []
 				})
 				.returning({ assetid: assetTable.assetid })
 

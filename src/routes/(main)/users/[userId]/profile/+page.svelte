@@ -1,6 +1,12 @@
 <script lang="ts">
 	import Avatar from '$src/components/users/avatar.svelte'
 
+	import FriendAvatar from '$src/components/home/friendAvatar.svelte'
+
+	import CatalogAvatar from '$src/components/catalog/avatar.svelte'
+
+	import { friend as friendLib } from '$lib/friend'
+
 	import * as AvatarThumb from '$src/components/ui/avatar'
 
 	import * as Accordion from '$src/components/ui/accordion'
@@ -37,13 +43,7 @@
 	$: pageName.set(username)
 
 	async function friend(friend: boolean) {
-		await fetch(`/api/account/friend`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify({ recipientid: userid, type: friend === true ? 'friend' : 'unfriend' })
-		})
+		await friendLib(friend, userid)
 
 		invalidateAll()
 	}
@@ -109,9 +109,16 @@
 					{:else if status == 'studio'}
 						<h1 class="text-lg {textColor} mx-auto">[ Online: Studio ]</h1>
 					{/if}
+
 					<h1 class="text-lg {textColor} mx-auto hover:underline">
 						<a href={$page.url.toString()}>{$page.url}</a>
 					</h1>
+
+					{#if data.role === 'admin' || data.role === 'owner'}
+						<h1 class="text-lg text-destructive mx-auto">[ Administrator ]</h1>
+					{:else if data.role === 'mod'}
+						<h1 class="text-lg text-destructive mx-auto">[ Moderator ]</h1>
+					{/if}
 				</div>
 
 				<Avatar
@@ -171,16 +178,23 @@
 								<div class="space-y-2">
 									<h1 class="text-base">Visited {place.visits} times</h1>
 									<a href="/games/{place.places?.[0].placeid}">
-										<AvatarThumb.Root class="h-fit w-full rounded-xl aspect-video">
-											<AvatarThumb.Image
-												src={place.thumbnailurl
-													? place.thumbnailurl
-													: '/Images/thumbnailplaceholder.png'}
-												alt={place.gamename}
-												loading="lazy"
+										{#if place.thumbnailid}
+											<CatalogAvatar
+												css="h-fit w-full rounded-xl aspect-video"
+												itemId={place.thumbnailid}
+												itemName={place.gamename}
+												disable3d={true}
 											/>
-											<AvatarThumb.Fallback />
-										</AvatarThumb.Root>
+										{:else}
+											<AvatarThumb.Root class="h-fit w-full rounded-xl aspect-video">
+												<AvatarThumb.Image
+													src={'/Images/thumbnailplaceholder.png'}
+													alt={place.gamename}
+													loading="lazy"
+												/>
+												<AvatarThumb.Fallback />
+											</AvatarThumb.Root>
+										{/if}
 									</a>
 									<p class="text-base leading-relaxed tracking-tight max-h-32 overflow-y-auto">
 										{place.description}
@@ -197,8 +211,29 @@
 			<h1 class="text-3xl font-semibold tracking-tight">{username}'s Friends!</h1>
 
 			<div
-				class="h-full bg-muted-foreground/5 outline-dashed outline-muted-foreground/20 rounded-xl"
-			/>
+				class="h-full bg-muted-foreground/5 outline-dashed outline-muted-foreground/20 rounded-xl p-8 px-16 flex flex-col"
+			>
+				<div class="flex flex-wrap gap-x-12 gap-y-4 mb-auto">
+					{#if data.friends}
+						{#each data.friends as friend}
+							<a href="/users/{friend.sender.userid}/profile">
+								<FriendAvatar
+									state={friend.status}
+									username={friend.sender.username}
+									userid={friend.sender.userid}
+								/>
+							</a>
+						{/each}
+					{/if}
+				</div>
+
+				<PaginationWrapper
+					count={data.friendsCount}
+					size={8}
+					url={$page.url}
+					queryName={'friends'}
+				/>
+			</div>
 
 			<Separator class="w-full" />
 		</div>

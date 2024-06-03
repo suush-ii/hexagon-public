@@ -9,7 +9,7 @@
 	import ReportButton from '$src/components/reportButton.svelte'
 	import * as AlertDialog from '$src/components/ui/alert-dialog'
 	import { depluralize, formatCompactNumber, slugify } from '$lib/utils'
-	import * as DropdownMenu from '$src/components/ui/dropdown-menu'
+	import Configure from '$src/components/develop/edit/configure.svelte'
 
 	import { toast } from 'svelte-sonner'
 
@@ -65,22 +65,12 @@
 			</h1>
 
 			{#if data.canEdit}
-				<DropdownMenu.Root>
-					<DropdownMenu.Trigger asChild let:builder
-						><Button builders={[builder]} variant="minimal" class="text-lg" size="icon">
-							<Menu class="w-8 h-8 my-auto" />
-						</Button>
-					</DropdownMenu.Trigger>
-					<DropdownMenu.Content align="end">
-						<a
-							href="/{data.adminAsset === false ? 'develop' : 'admin/catalog/upload'}/{data.item
-								.assetType}/{itemid}/edit"
-							><DropdownMenu.Item class="cursor-pointer"
-								>Configure this {depluralize(itemName)}</DropdownMenu.Item
-							></a
-						>
-					</DropdownMenu.Content>
-				</DropdownMenu.Root>
+				<Configure
+					adminAsset={data.adminAsset}
+					assetType={data.item.assetType}
+					{itemid}
+					{itemName}
+				/>
 			{/if}
 		</div>
 

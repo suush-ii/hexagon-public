@@ -13,6 +13,6 @@
 <AvatarPrimitive.Image
 	{src}
 	{alt}
-	class={cn("aspect-square h-full w-full", className)}
+	class={cn("h-full w-full", className)}
 	{...$$restProps}
 />

@@ -6,5 +6,6 @@ export const commonWhere = and(
 	not(eq(assetTable.assetType, 'decals')),
 	not(eq(assetTable.assetType, 'images')),
 	not(eq(assetTable.assetType, 'audio')),
-	eq(assetTable.moderationstate, 'approved')
+	eq(assetTable.moderationstate, 'approved'),
+	eq(assetTable.onsale, true)
 ) // library assets

@@ -48,14 +48,14 @@ export const categories = [
 		label: 'Gear',
 		types: [
 			{ value: 'gears', label: 'All Gear' },
-			{ value: 'meleeweapon', label: 'Melee Weapon' },
-			{ value: 'rangedweapon', label: 'Ranged Weapon' },
-			{ value: 'explosive', label: 'Explosive' },
-			{ value: 'navigationenhancer', label: 'Navigation Enhancer' },
-			{ value: 'musicalinstrument', label: 'Musical Instrument' },
-			{ value: 'socialitem', label: 'Social Item' },
-			{ value: 'buildingtool', label: 'Building Tool' },
-			{ value: 'personaltransport', label: 'Personal Transport' }
+			{ value: 'Melee weapons', label: 'Melee Weapon' },
+			{ value: 'Ranged weapons', label: 'Ranged Weapon' },
+			{ value: 'Explosives', label: 'Explosive' },
+			{ value: 'Navigation enhancers', label: 'Navigation Enhancer' },
+			{ value: 'Musical instruments', label: 'Musical Instrument' },
+			{ value: 'Social items', label: 'Social Item' },
+			{ value: 'Building tools', label: 'Building Tool' },
+			{ value: 'Personal transport', label: 'Personal Transport' }
 		]
 	}
 ]

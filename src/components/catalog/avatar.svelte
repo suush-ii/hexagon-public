@@ -96,7 +96,7 @@
 	<div class="h-full mx-auto relative" id="int-target">
 		{#if dimension === '2D'}
 			{#if src}
-				<Avatar.Root class="w-full mx-auto aspect-square h-full rounded-xl">
+				<Avatar.Root class="w-full mx-auto h-full rounded-xl">
 					<Avatar.Image {src} alt={itemName} {...$$restProps} />
 					<Avatar.Fallback />
 				</Avatar.Root>
@@ -104,7 +104,7 @@
 				{#await fetchAvatar(itemId)}
 					<Loader2 class="w-full h-full animate-spin text-secondary " />
 				{:then src}
-					<Avatar.Root class="w-full mx-auto aspect-square h-full rounded-xl">
+					<Avatar.Root class="w-full mx-auto h-full rounded-xl">
 						<Avatar.Image {src} alt={itemName} {...$$restProps} />
 						<Avatar.Fallback />
 					</Avatar.Root>

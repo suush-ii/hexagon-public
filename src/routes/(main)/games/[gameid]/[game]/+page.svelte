@@ -1,8 +1,10 @@
 <script lang="ts">
+	import CatalogAvatar from '$src/components/catalog/avatar.svelte'
 	import * as Avatar from '$src/components/ui/avatar'
 	import * as Tabs from '$src/components/ui/tabs'
 	import ReportButton from '$src/components/reportButton.svelte'
 	import * as AlertDialog from '$src/components/ui/alert-dialog'
+	import Configure from '$src/components/develop/edit/configure.svelte'
 
 	import UserImage from '$src/components/userimage.svelte'
 
@@ -172,21 +174,37 @@
 			class="flex flex-col w-full h-fit supports-backdrop-blur:bg-background/60 bg-muted-foreground/5 p-4 gap-y-4"
 		>
 			<div class="flex flex-row flex-wrap xl:flex-nowrap gap-x-4">
-				<Avatar.Root class="xl:h-[360px] h-fit w-full max-w-[640px] rounded-xl aspect-video">
-					<Avatar.Image
-						src={data.place.associatedgame.thumbnailurl
-							? data.place.associatedgame.thumbnailurl
-							: '/Images/thumbnailplaceholder.png'}
-						alt={data.place.associatedgame.gamename}
-						loading="lazy"
+				{#if data.place.associatedgame.thumbnailid}
+					<CatalogAvatar
+						css="xl:h-[360px] h-fit w-full max-w-[640px] rounded-xl aspect-video"
+						itemId={data.place.associatedgame.thumbnailid}
+						itemName={data.place.associatedgame.gamename}
+						disable3d={true}
 					/>
-					<Avatar.Fallback />
-				</Avatar.Root>
+				{:else}
+					<Avatar.Root class="xl:h-[360px] h-fit w-full max-w-[640px] rounded-xl aspect-video">
+						<Avatar.Image
+							src={'/Images/thumbnailplaceholder.png'}
+							alt={data.place.associatedgame.gamename}
+							loading="lazy"
+						/>
+						<Avatar.Fallback />
+					</Avatar.Root>
+				{/if}
 
 				<div class="flex flex-col w-full">
-					<h1 class="text-5xl leading-none tracking-tight font-semibold">
-						{data.place.associatedgame.gamename}
-					</h1>
+					<div class="flex">
+						<h1 class="text-5xl leading-none tracking-tight font-semibold mr-auto">
+							{data.place.associatedgame.gamename}
+						</h1>
+
+						<Configure
+							adminAsset={false}
+							assetType={'games'}
+							itemid={data.place.associatedgame.universeid}
+							itemName={'Games'}
+						/>
+					</div>
 
 					<h1 class="text-2xl text-muted-foreground">
 						By <a

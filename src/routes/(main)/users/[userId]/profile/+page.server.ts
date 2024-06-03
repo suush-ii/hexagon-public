@@ -21,25 +21,11 @@ export const load: PageServerLoad = async ({ params, locals, url }) => {
 			userid: true,
 			lastactivetime: true,
 			joindate: true,
-			activegame: true
+			activegame: true,
+			role: true
 		},
 		where: eq(usersTable.userid, Number(params.userId)),
 		with: {
-			sent: {
-				columns: {
-					type: true
-				},
-				where: or(
-					and(
-						eq(relationsTable.sender, locals.user.userid),
-						eq(relationsTable.recipient, Number(params.userId))
-					),
-					eq(relationsTable.type, 'friend'),
-					eq(relationsTable.type, 'block'),
-					eq(relationsTable.type, 'request')
-				),
-				limit: 1
-			},
 			received: {
 				columns: {
 					type: true
@@ -96,23 +82,38 @@ export const load: PageServerLoad = async ({ params, locals, url }) => {
 		)
 		.limit(1)
 
-	const friends = await db.query.relationsTable.findMany({
+	let pageFriends = getPageNumber(url, 'friends')
+
+	let sizeFriends = 8
+
+	if (friendsCount[0].count < (pageFriends - 1) * sizeFriends) {
+		pageFriends = 1
+	}
+
+	const friendsUser = await db.query.relationsTable.findMany({
 		columns: {},
-		where: and(
-			or(
-				eq(relationsTable.recipient, Number(params.userId)),
-				eq(relationsTable.sender, Number(params.userId))
-			),
-			eq(relationsTable.type, 'friend')
-		),
 		with: {
-			recipient: {
+			sender: {
 				columns: {
+					username: true,
 					userid: true,
-					username: true
+					lastactivetime: true,
+					activegame: true
 				}
 			}
-		}
+		},
+		where: and(
+			eq(relationsTable.type, 'friend'),
+			eq(relationsTable.recipient, Number(params.userId))
+		),
+		limit: sizeFriends,
+		offset: (pageFriends - 1) * sizeFriends,
+		orderBy: desc(relationsTable.time)
+	})
+
+	const friends = friendsUser?.map((request) => {
+		const status = getUserState(request.sender.lastactivetime, request.sender.activegame)
+		return { ...request, status }
 	})
 
 	const followingCount = await db
@@ -150,12 +151,13 @@ export const load: PageServerLoad = async ({ params, locals, url }) => {
 	const places = await db.query.gamesTable.findMany({
 		columns: {
 			gamename: true,
-			thumbnailurl: true,
+			thumbnailid: true,
 			visits: true,
 			description: true
 		},
 		orderBy: [desc(gamesTable.active)],
 		limit: size,
+		offset: (page - 1) * size,
 		with: {
 			places: {
 				columns: {
@@ -170,13 +172,14 @@ export const load: PageServerLoad = async ({ params, locals, url }) => {
 
 	const status: userState = getUserState(user.lastactivetime, user.activegame)
 
-	const relation = user.sent.concat(user.received)
+	const relation = user.received
 
 	return {
 		username: user.username,
 		userid: user.userid,
 		lastactivetime: user.lastactivetime,
 		joindate: user.joindate,
+		role: user.role,
 		status,
 		activegame: user.activegame,
 		relation: relation,
@@ -186,6 +189,7 @@ export const load: PageServerLoad = async ({ params, locals, url }) => {
 		isFollowing: isFollowing.length > 0,
 		placeVisits: placeVisits[0].count ?? 0,
 		places,
-		placeCount: placeVisits[0].amount
+		placeCount: placeVisits[0].amount,
+		friends
 	}
 }

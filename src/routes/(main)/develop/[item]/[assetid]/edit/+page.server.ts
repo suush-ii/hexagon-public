@@ -1,9 +1,10 @@
 import { error, fail, redirect } from '@sveltejs/kit'
 import type { PageServerLoad, Actions } from './$types'
-import { superValidate } from 'sveltekit-superforms/server'
+import { message, superValidate } from 'sveltekit-superforms/server'
 import { formSchema as gameSchema } from '$src/lib/schemas/edit/editgameschema'
 import { formSchema as clothingSchema } from '$src/lib/schemas/edit/editclothingschema'
 import { formSchema as assetSchema } from '$src/lib/schemas/edit/editassetschema'
+import { formSchema as gameImageSchema } from '$src/lib/schemas/edit/game/editimageschema'
 import { zod } from 'sveltekit-superforms/adapters'
 import { z } from 'zod'
 import { assetTable, gamesTable, placesTable } from '$lib/server/schema'
@@ -11,6 +12,7 @@ import { db } from '$lib/server/db'
 import { and, eq } from 'drizzle-orm'
 import { _assetSchema } from '../../+layout.server'
 import type { AssetGenreDB, GearAttributes } from '$lib/types'
+import { uploadAsset } from '$lib/server/develop/uploadasset'
 
 export const load: PageServerLoad = async ({ params, locals }) => {
 	const result = await z.number().safeParseAsync(Number(params.assetid))
@@ -26,33 +28,46 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 	let genres: AssetGenreDB[] = []
 	let gearattributes: GearAttributes[] = []
 	let serversize = 0
+	let places: {
+		placeid: number
+		startplace: boolean
+	}[] = []
 	let geargenreenforced = false
 
 	if (params.item === 'games') {
-		const game = await db
-			.select({
-				gamename: gamesTable.gamename,
-				description: gamesTable.description,
-				creatoruserid: gamesTable.creatoruserid,
-				genre: gamesTable.genre,
-				serversize: gamesTable.serversize
-			})
-			.from(gamesTable)
-			.where(eq(gamesTable.universeid, result.data))
-			.limit(1)
+		const game = await db.query.gamesTable.findFirst({
+			columns: {
+				gamename: true,
+				description: true,
+				creatoruserid: true,
+				genre: true,
+				serversize: true
+			},
+			with: {
+				places: {
+					columns: {
+						placeid: true,
+						startplace: true
+					},
+					orderBy: placesTable.startplace
+				}
+			},
+			where: eq(gamesTable.universeid, result.data)
+		})
 
-		if (game.length === 0) {
+		if (!game) {
 			error(404, { success: false, message: 'Game not found.' })
 		}
 
-		if (game[0].creatoruserid !== Number(locals.user.userid)) {
+		if (game.creatoruserid !== Number(locals.user.userid)) {
 			error(403, { success: false, message: 'You do not have permission to edit this game.' })
 		}
 
-		name = game[0].gamename
-		description = game[0].description
-		genres[0] = game[0].genre
-		serversize = game[0].serversize
+		name = game.gamename
+		description = game.description
+		genres[0] = game.genre
+		serversize = game.serversize
+		places = game.places
 	}
 
 	if (
@@ -100,11 +115,13 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 	const gameForm = await superValidate(zod(gameSchema))
 	const clothingForm = await superValidate(zod(clothingSchema))
 	const assetForm = await superValidate(zod(assetSchema))
+	const gameImageForm = await superValidate(zod(gameImageSchema))
 
 	return {
 		gameForm,
 		clothingForm,
 		assetForm,
+		gameImageForm,
 		assetid: result.data,
 		assetname: name,
 		description,
@@ -112,7 +129,8 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 		price,
 		genres,
 		gearattributes,
-		serversize
+		serversize,
+		places
 	}
 }
 
@@ -230,5 +248,56 @@ export const actions: Actions = {
 		)
 
 		return { form }
+	},
+	gameimage: async ({ request, params, locals }) => {
+		const form = await superValidate(request, zod(gameImageSchema))
+
+		const result = await _assetSchema.safeParseAsync(params.item)
+
+		if (result.success === false) {
+			return fail(400, {
+				form
+			})
+		}
+
+		if (!form.valid) {
+			return fail(400, {
+				form
+			})
+		}
+
+		const file = form.data.asset
+
+		let game = await db
+			.select({ gamename: gamesTable.gamename })
+			.from(gamesTable)
+			.where(eq(gamesTable.universeid, Number(params.assetid)))
+			.limit(1)
+
+		const assetid = await uploadAsset(
+			file,
+			'images',
+			form,
+			locals.user.userid,
+			`${locals.user.username}'s Place: ${game[0].gamename}_Image`
+		)
+
+		if (form.data.type === 'icon') {
+			await db
+				.update(gamesTable)
+				.set({
+					iconid: Number(assetid)
+				})
+				.where(eq(gamesTable.universeid, Number(params.assetid)))
+		} else {
+			await db
+				.update(gamesTable)
+				.set({
+					thumbnailid: Number(assetid)
+				})
+				.where(eq(gamesTable.universeid, Number(params.assetid)))
+		}
+
+		return message(form, 'Done!')
 	}
 }

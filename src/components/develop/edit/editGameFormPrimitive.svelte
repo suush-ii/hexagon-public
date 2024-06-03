@@ -8,16 +8,14 @@
 
 	import * as Select from '$src/components/ui/select'
 
-	import { assetGenreZod, gearAttributesZod } from '$lib'
+	import { assetGenreZod } from '$lib'
 
 	import type { FormTextareaEvent } from '$src/components/ui/textarea'
 	import { BookText } from 'lucide-svelte'
-	import { Input, defaultClass } from '$src/components/ui/input'
+	import { Input } from '$src/components/ui/input'
 	import { Textarea } from '$src/components/ui/textarea'
 	import { zodClient } from 'sveltekit-superforms/adapters'
 	import type { AssetGenreDB } from '$src/lib/types'
-	import * as RadioGroup from '$src/components/ui/radio-group'
-
 	export let data: SuperValidated<Infer<GameSchema>>
 
 	let form = superForm(data, {

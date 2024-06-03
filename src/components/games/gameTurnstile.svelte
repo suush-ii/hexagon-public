@@ -77,7 +77,7 @@
 						gameId={game.places[0].placeid}
 						gameName={game.gamename}
 						playerCount={game.active}
-						iconUrl={game.iconurl}
+						iconId={game.iconid ?? 0}
 					/>
 				{/each}
 			{:else}

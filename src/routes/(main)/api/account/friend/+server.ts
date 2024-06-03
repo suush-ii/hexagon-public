@@ -33,33 +33,20 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 		error(400, { success: false, message: 'Malformed JSON.', data: { errors } })
 	}
 
-	const both = and(
-		eq(relationsTable.sender, recipientid),
-		eq(relationsTable.recipient, user.userid)
-	)
-
 	const alreadyFriends = await db
 		.select({})
 		.from(relationsTable)
-		.where(and(both, eq(relationsTable.type, 'friend')))
+		.where(and((eq(relationsTable.sender, recipientid), eq(relationsTable.type, 'friend'))))
 		.limit(1)
 
-	if (alreadyFriends.length === 0 && type === 'unfriend') {
-		error(400, { success: false, message: 'Not friends', data: {} })
-	} else if (alreadyFriends.length > 0 && type === 'friend') {
+	if (alreadyFriends.length > 0 && type === 'friend') {
 		error(400, { success: false, message: 'Already friends', data: {} })
 	}
 
 	const alreadyRequested = await db
 		.select({})
 		.from(relationsTable)
-		.where(
-			and(
-				eq(relationsTable.sender, user.userid),
-				eq(relationsTable.recipient, recipientid),
-				eq(relationsTable.type, 'request')
-			)
-		)
+		.where(and(eq(relationsTable.sender, user.userid), eq(relationsTable.type, 'request')))
 		.limit(1)
 
 	if (alreadyRequested.length > 0 && type === 'friend') {
@@ -69,13 +56,7 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 	const recipientAlreadyRequested = await db
 		.select({})
 		.from(relationsTable)
-		.where(
-			and(
-				eq(relationsTable.sender, recipientid),
-				eq(relationsTable.recipient, user.userid),
-				eq(relationsTable.type, 'request')
-			)
-		)
+		.where(and(eq(relationsTable.sender, recipientid), eq(relationsTable.type, 'request')))
 		.limit(1)
 
 	if (type === 'friend' && recipientAlreadyRequested.length === 0) {
@@ -83,15 +64,38 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 			.insert(relationsTable)
 			.values({ recipient: recipientid, sender: user.userid, type: 'request' })
 	} else if (type === 'friend' && recipientAlreadyRequested.length > 0) {
-		await db.delete(relationsTable).where(and(both, eq(relationsTable.type, 'request')))
-
+		await db
+			.update(relationsTable)
+			.set({ recipient: user.userid, sender: recipientid, type: type })
+			.where(
+				and(
+					eq(relationsTable.sender, recipientid),
+					eq(relationsTable.recipient, user.userid),
+					eq(relationsTable.type, 'request')
+				)
+			)
 		await db
 			.insert(relationsTable)
-			.values({ recipient: user.userid, sender: recipientid, type: type }) // flip it here because the original sender is now the recipient
+			.values({ sender: user.userid, recipient: recipientid, type: type }) // create 2 way
 	} else {
 		//unfriend
 
-		await db.delete(relationsTable).where(and(both, eq(relationsTable.type, 'friend')))
+		await db.delete(relationsTable).where(
+			and(
+				eq(relationsTable.sender, recipientid),
+				eq(relationsTable.recipient, user.userid),
+				or(eq(relationsTable.type, 'friend'), eq(relationsTable.type, 'request')) // deny requests
+			)
+		)
+		await db
+			.delete(relationsTable)
+			.where(
+				and(
+					eq(relationsTable.sender, user.userid),
+					eq(relationsTable.recipient, recipientid),
+					eq(relationsTable.type, 'friend')
+				)
+			)
 	}
 
 	return json({

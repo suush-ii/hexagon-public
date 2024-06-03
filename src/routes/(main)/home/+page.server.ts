@@ -1,7 +1,9 @@
 import type { PageServerLoad } from './$types'
-import { placesTable, recentlyPlayedTable } from '$lib/server/schema'
+import { placesTable, recentlyPlayedTable, relationsTable, usersTable } from '$lib/server/schema'
 import { db } from '$src/lib/server/db'
-import { desc, eq } from 'drizzle-orm'
+import { and, count, desc, eq } from 'drizzle-orm'
+import { error } from '@sveltejs/kit'
+import { getUserState } from '$lib/server/userState'
 const welcomeMessages = [
 	'Welkom',
 	'Mirëseerdhët',
@@ -111,7 +113,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 				columns: {
 					gamename: true,
 					active: true,
-					iconurl: true
+					iconid: true
 				},
 				with: {
 					places: {
@@ -126,8 +128,48 @@ export const load: PageServerLoad = async ({ locals }) => {
 		}
 	})
 
+	const friendCount = await db
+		.select({ count: count() })
+		.from(relationsTable)
+		.where(and(eq(relationsTable.recipient, locals.user.userid), eq(relationsTable.type, 'friend')))
+		.limit(1)
+
+	const user = await db.query.usersTable.findFirst({
+		columns: {},
+		where: eq(usersTable.userid, locals.user.userid),
+		with: {
+			received: {
+				columns: {},
+				with: {
+					sender: {
+						columns: {
+							username: true,
+							userid: true,
+							lastactivetime: true,
+							activegame: true
+						}
+					}
+				},
+				where: eq(relationsTable.type, 'friend'),
+				limit: 9,
+				orderBy: desc(relationsTable.time)
+			}
+		}
+	})
+
+	if (!user) {
+		error(404, { success: false, message: 'User not found!' })
+	}
+
+	const friends = user.received.map((request) => {
+		const status = getUserState(request.sender.lastactivetime, request.sender.activegame)
+		return { ...request, status }
+	})
+
 	return {
 		welcomeMessage: welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)],
-		recentlyPlayed
+		recentlyPlayed,
+		friendCount: friendCount[0].count,
+		friends
 	}
 }

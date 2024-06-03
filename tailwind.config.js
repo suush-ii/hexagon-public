@@ -66,14 +66,6 @@ const config = {
 		data: {
 			invalidInput: 'fs-error'
 		}
-	},
-	corePlugins: {
-		backdropOpacity: false,
-		backgroundOpacity: false,
-		borderOpacity: false,
-		divideOpacity: false,
-		ringOpacity: false,
-		textOpacity: false
 	}
 }
 

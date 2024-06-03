@@ -39,7 +39,7 @@ export const assetTable = pgTable('assets', {
 	scrubbedassetname: text('scrubbedassetname')
 })
 
-export const assetRelations = relations(assetTable, ({ one, many }) => ({
+export const assetRelations = relations(assetTable, ({ one }) => ({
 	place: one(placesTable, {
 		fields: [assetTable.assetid],
 		references: [placesTable.placeid]

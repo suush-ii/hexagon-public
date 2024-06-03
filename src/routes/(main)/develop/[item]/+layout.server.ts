@@ -27,6 +27,10 @@ export let _uploadableAssets: Record<string, assetPrimitive> = {
 		friendlyName: 'Decal',
 		...imagePrimitive
 	},
+	images: {
+		friendlyName: 'Image',
+		...imagePrimitive
+	},
 	shirts: {
 		friendlyName: 'Shirt',
 		...imagePrimitive
@@ -59,6 +63,7 @@ export const load: LayoutServerLoad = async ({ params }) => {
 	return {
 		item: params.item,
 		friendlyName: _uploadableAssets[params.item].friendlyName,
-		fileTypes: _uploadableAssets[params.item].fileTypes
+		fileTypes: _uploadableAssets[params.item].fileTypes,
+		_uploadableAssets
 	}
 }

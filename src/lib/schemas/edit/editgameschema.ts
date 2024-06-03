@@ -1,6 +1,5 @@
 import { z } from 'zod'
 import { formSchema as gameSchema } from '$lib/schemas/gameschema'
-import { gearAttributesZod } from '$lib'
 
 const { shape } = gameSchema
 

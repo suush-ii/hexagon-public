@@ -9,7 +9,7 @@
 	import type { FormTextareaEvent } from '$src/components/ui/textarea'
 	import { BookText } from 'lucide-svelte'
 	import { currencyNamePlural } from '$src/stores'
-	import { Input, defaultClass } from '$src/components/ui/input'
+	import { Input } from '$src/components/ui/input'
 	import { Textarea } from '$src/components/ui/textarea'
 	import { zodClient } from 'sveltekit-superforms/adapters'
 	import * as Select from '$src/components/ui/select'

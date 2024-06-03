@@ -25,7 +25,7 @@ export const load: PageServerLoad = async ({ params, url }) => {
 			columns: {
 				gamename: true,
 				active: true,
-				iconurl: true
+				iconid: true
 			},
 			orderBy: [desc(gamesTable.active)],
 			limit: size,
@@ -49,7 +49,7 @@ export const load: PageServerLoad = async ({ params, url }) => {
 			columns: {
 				gamename: true,
 				active: true,
-				iconurl: true
+				iconid: true
 			},
 			orderBy: [desc(gamesTable.updated)],
 			limit: size,

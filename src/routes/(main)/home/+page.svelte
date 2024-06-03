@@ -14,8 +14,6 @@
 	import SeeAll from '$src/components/seeAll.svelte'
 	import Avatar from '$src/components/users/avatar.svelte'
 
-	let friends = [1] // TODO: Fetch real friends.
-
 	$: recentlyPlayed = data.recentlyPlayed
 </script>
 
@@ -38,19 +36,25 @@
 
 	<div class="pt-24 flex flex-col gap-y-4">
 		<div class="flex flex-row justify-between px-4">
-			<h1 class="text-3xl">Friends ({friends.length})</h1>
+			<h1 class="text-3xl">Friends ({data.friendCount})</h1>
 
 			<SeeAll href="/friends" />
 		</div>
 
 		<div
-			class="supports-backdrop-blur:bg-background/60 w-full border-b bg-muted-foreground/5 shadow-sm backdrop-blur flex flex-row overflow-x-auto p-4 gap-x-6 select-none outline-dashed outline-muted-foreground/20 rounded-xl"
+			class="supports-backdrop-blur:bg-background/60 w-full border-b bg-muted-foreground/5 shadow-sm backdrop-blur flex flex-row overflow-x-auto p-4 gap-x-10 outline-dashed outline-muted-foreground/20 rounded-xl"
 		>
-			{#if friends.length === 0}
+			{#if data.friendCount === 0}
 				<EmptyCard />
 			{:else}
-				{#each friends as friend}
-					<FriendAvatar state="game" username="Game{friend}" userid={1} />
+				{#each data.friends as friend}
+					<a href="/users/{friend.sender.userid}/profile">
+						<FriendAvatar
+							state={friend.status}
+							username={friend.sender.username}
+							userid={friend.sender.userid}
+						/>
+					</a>
 				{/each}
 			{/if}
 			<!--TODO: FINISH this...-->
@@ -69,7 +73,7 @@
 						gameId={game.game.places[0].placeid}
 						gameName={game.game.gamename}
 						playerCount={game.game.active}
-						iconUrl={game.game.iconurl ?? ''}
+						iconId={game.game.iconid ?? 0}
 					/>
 				{/each}
 			{:else}

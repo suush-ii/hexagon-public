@@ -27,10 +27,8 @@ export const gamesTable = pgTable('games', {
 	updated: timestamp('updated', { mode: 'date', withTimezone: true }).notNull().defaultNow(),
 	genre: text('genre').$type<gameGenre>().notNull(),
 	// below is image sttufz
-	iconurl: text('iconurl'),
-	thumbnailurl: text('thumbnailurl'),
-	iconstatus: text('iconstatus').$type<assetStates>(),
-	thumbnailstatus: text('thumbnailstatus').$type<assetStates>(),
+	iconid: bigint('iconid', { mode: 'number' }),
+	thumbnailid: bigint('thumbnailid', { mode: 'number' }),
 	likes: bigint('likes', { mode: 'number' }).notNull().default(0),
 	dislikes: bigint('dislikes', { mode: 'number' }).notNull().default(0),
 	scrubbedgamename: text('scrubbedgamename')
