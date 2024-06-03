@@ -29,7 +29,8 @@ export const load: PageServerLoad = async ({ params, locals, url }) => {
 		assetid: number
 		assetType: string
 		updated: Date
-		iconUrl: string | null
+		iconUrl?: string | null
+		iconId?: number | null
 		totalStat: number
 		last7DaysStat: number
 	}[] = []
@@ -55,7 +56,7 @@ export const load: PageServerLoad = async ({ params, locals, url }) => {
 		creations = gamecreations.map((game) => ({
 			assetName: game.gamename,
 			assetid: game.universeid,
-			iconUrl: game.iconurl,
+			iconId: game.iconid,
 			updated: game.updated,
 			assetType: params.item,
 			totalStat: game.visits,

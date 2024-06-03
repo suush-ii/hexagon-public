@@ -62,8 +62,15 @@
 					<a href="/catalog/{creation.assetid}/{slugify(creation.assetName)}">
 						{#if data.params === 'shirts' || data.params === 'pants'}
 							<CatalogAvatar
-								css="w-32 h-32 rounded-xl aspect-square"
+								css="w-24 h-24 rounded-xl aspect-square"
 								itemId={creation.assetid}
+								itemName={creation.assetName}
+								disable3d={true}
+							/>
+						{:else if data.params === 'games' && creation.iconId}
+							<CatalogAvatar
+								css="w-24 h-24 rounded-xl aspect-square"
+								itemId={creation.iconId}
 								itemName={creation.assetName}
 								disable3d={true}
 							/>
