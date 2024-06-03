@@ -38,9 +38,9 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 		.from(relationsTable)
 		.where(
 			and(
-				(eq(relationsTable.sender, recipientid),
+				eq(relationsTable.sender, recipientid),
 				eq(relationsTable.recipient, locals.user.userid),
-				eq(relationsTable.type, 'friend'))
+				eq(relationsTable.type, 'friend')
 			)
 		)
 		.limit(1)
