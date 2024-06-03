@@ -20,9 +20,11 @@ export const load: PageServerLoad = async ({ url }) => {
 	let gearsCategory = categories[5]
 
 	let categoryExists = gearsCategory?.types?.find((type) => type.value === category.value)
-	if (categoryExists) {
+	if (categoryExists && category.value !== 'gears') {
 		gearAttribute = true
 	}
+
+	console.log(gearAttribute)
 
 	let search = url.searchParams.get('search') ?? ''
 
