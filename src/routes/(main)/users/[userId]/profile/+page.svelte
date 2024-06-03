@@ -211,9 +211,9 @@
 			<h1 class="text-3xl font-semibold tracking-tight">{username}'s Friends!</h1>
 
 			<div
-				class="h-full bg-muted-foreground/5 outline-dashed outline-muted-foreground/20 rounded-xl p-8 px-16 flex flex-col"
+				class="h-full bg-muted-foreground/5 outline-dashed outline-muted-foreground/20 rounded-xl p-4 px-12 flex flex-col"
 			>
-				<div class="flex flex-wrap gap-x-12 gap-y-4 mb-auto">
+				<div class="flex flex-wrap gap-x-12 gap-y-4 mb-auto p-4">
 					{#if data.friends}
 						{#each data.friends as friend}
 							<a href="/users/{friend.sender.userid}/profile">
