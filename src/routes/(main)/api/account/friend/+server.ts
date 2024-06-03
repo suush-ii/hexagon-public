@@ -36,7 +36,13 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 	const alreadyFriends = await db
 		.select({})
 		.from(relationsTable)
-		.where(and((eq(relationsTable.sender, recipientid), eq(relationsTable.type, 'friend'))))
+		.where(
+			and(
+				(eq(relationsTable.sender, recipientid),
+				eq(relationsTable.recipient, locals.user.userid),
+				eq(relationsTable.type, 'friend'))
+			)
+		)
 		.limit(1)
 
 	if (alreadyFriends.length > 0 && type === 'friend') {
@@ -46,7 +52,13 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 	const alreadyRequested = await db
 		.select({})
 		.from(relationsTable)
-		.where(and(eq(relationsTable.sender, user.userid), eq(relationsTable.type, 'request')))
+		.where(
+			and(
+				eq(relationsTable.sender, user.userid),
+				eq(relationsTable.recipient, recipientid),
+				eq(relationsTable.type, 'request')
+			)
+		)
 		.limit(1)
 
 	if (alreadyRequested.length > 0 && type === 'friend') {
@@ -56,7 +68,13 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 	const recipientAlreadyRequested = await db
 		.select({})
 		.from(relationsTable)
-		.where(and(eq(relationsTable.sender, recipientid), eq(relationsTable.type, 'request')))
+		.where(
+			and(
+				eq(relationsTable.sender, recipientid),
+				eq(relationsTable.recipient, locals.user.userid),
+				eq(relationsTable.type, 'request')
+			)
+		)
 		.limit(1)
 
 	if (type === 'friend' && recipientAlreadyRequested.length === 0) {
