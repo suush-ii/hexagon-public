@@ -80,6 +80,8 @@ export const load: LayoutServerLoad = async ({ params, locals, depends, cookies,
 			.limit(40) // TODO: ADD PAGINATION
 	}
 
+	let canEdit = Number(locals.user.userid) === place.associatedgame.creatoruserid
+
 	return {
 		place: place,
 		likespercentage: Math.round(
@@ -91,6 +93,7 @@ export const load: LayoutServerLoad = async ({ params, locals, depends, cookies,
 			voteType: alreadyVoted.length > 0 ? alreadyVoted[0].type : null
 		},
 		servers,
-		joinScriptUrl
+		joinScriptUrl,
+		canEdit
 	}
 }

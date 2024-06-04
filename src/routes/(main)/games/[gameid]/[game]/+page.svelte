@@ -198,12 +198,14 @@
 							{data.place.associatedgame.gamename}
 						</h1>
 
-						<Configure
-							adminAsset={false}
-							assetType={'games'}
-							itemid={data.place.associatedgame.universeid}
-							itemName={'Games'}
-						/>
+						{#if data.canEdit}
+							<Configure
+								adminAsset={false}
+								assetType={'games'}
+								itemid={data.place.associatedgame.universeid}
+								itemName={'Games'}
+							/>
+						{/if}
 					</div>
 
 					<h1 class="text-2xl text-muted-foreground">
