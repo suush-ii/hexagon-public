@@ -17,7 +17,7 @@ const CharacterAppearance = `http://${BASE_URL}/Asset/CharacterFetch.ashx`
 export const fallback: RequestHandler = async ({ url, locals, fetch, cookies }) => {
 	// capture get/post
 	let placeid = url.searchParams.get('placeid') ?? url.searchParams.get('placeId')
-	let jobid = url.searchParams.get('jobid')
+	let jobid = url.searchParams.get('jobid') ?? url.searchParams.get('jobId')
 	let authBearer = cookies.get('.ROBLOSECURITY')
 
 	let placeLauncherJson = {
