@@ -12,7 +12,13 @@ export const auth = lucia({
 	adapter: postgresAdapter(client, { user: 'users', session: 'user_session', key: 'user_key' }),
 	env: dev ? 'DEV' : 'PROD',
 	middleware: sveltekit(),
-
+	sessionCookie: {
+		name: '.ROBLOSECURITY'
+	},
+	sessionExpiresIn: {
+		activePeriod: 86400000, // 1 day
+		idlePeriod: 1209600000 // 2 weeks
+	},
 	getUserAttributes: (data) => {
 		return {
 			username: data.username,

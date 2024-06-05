@@ -106,7 +106,7 @@ function doVisit()
 	else
 		player = game:GetService("Players"):CreateLocalPlayer(0)
 	end
-	player.CharacterAppearance = "https://www.roblox.com/Asset/CharacterFetch.ashx?userId=1&placeId=0"
+	player.CharacterAppearance = "http://www.roblox.com/Asset/CharacterFetch.ashx?userId=1&placeId=0"
 	local propExists, canAutoLoadChar = false
 	propExists = pcall(function()  canAutoLoadChar = game.Players.CharacterAutoLoads end)
 

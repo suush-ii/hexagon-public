@@ -68,7 +68,7 @@
 		}
 	}
 
-	function brickColorToBg(color: number) {
+	function brickColorToBg(color: number | undefined) {
 		return colorArray.find((x) => x.number === color)?.color
 	}
 

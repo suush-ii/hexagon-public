@@ -117,7 +117,7 @@ pcall(function() game:GetService("SocialService"):SetGroupRoleUrl("http://www.ro
 pcall(function() game:GetService("GamePassService"):SetPlayerHasPassUrl("http://www.roblox.com/Game/GamePass/GamePassHandler.ashx?Action=HasPass&UserID=%d&PassID=%d") end)
 pcall(function() game:GetService("MarketplaceService"):SetProductInfoUrl("https://www.roblox.com/marketplace/productinfo?assetId=%d") end)
 pcall(function() game:GetService("MarketplaceService"):SetPlayerOwnsAssetUrl("https://www.roblox.com/ownership/hasasset?userId=%d&assetId=%d") end)
-pcall(function() game:SetCreatorID(0, Enum.CreatorType.User) end)
+pcall(function() game:SetCreatorID({CreatorId}, Enum.CreatorType.User) end)
 
 -- Bubble chat.  This is all-encapsulated to allow us to turn it off with a config setting
 pcall(function() game:GetService("Players"):SetChatStyle(Enum.ChatStyle.ClassicAndBubble) end)

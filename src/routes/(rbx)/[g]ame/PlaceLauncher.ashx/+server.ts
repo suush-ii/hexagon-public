@@ -18,7 +18,7 @@ export const fallback: RequestHandler = async ({ url, locals, fetch, cookies }) 
 	// capture get/post
 	let placeid = url.searchParams.get('placeid')
 	let jobid = url.searchParams.get('jobid')
-	let authBearer = cookies.get('auth_session')
+	let authBearer = cookies.get('.ROBLOSECURITY')
 
 	let placeLauncherJson = {
 		jobId: '',

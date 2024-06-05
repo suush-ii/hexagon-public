@@ -2,14 +2,16 @@ import { type Handle, error } from '@sveltejs/kit'
 import { RCC_ACCESS_KEY } from '$env/static/private'
 
 export const rccAuth = (async ({ event, resolve }) => {
-	const pathname = event.url.pathname
+	const pathname = event.url.pathname.toLowerCase()
+
 	if (
 		pathname.startsWith('/updatejob') ||
-		pathname === '/GetAllowedMD5Hashes' ||
-		pathname === '/GetAllowedSecurityVersions' ||
+		pathname === '/getallowedmd5hashes' ||
+		pathname === '/getallowedsecurityversions' ||
 		pathname === '/game/gameserver.ashx' ||
-		pathname === '/game/ClientPresence.ashx' ||
-		pathname === '/game/PlaceVisit.ashx' ||
+		pathname === '/game/clientpresence.ashx' ||
+		pathname === '/game/placevisit.ashx' ||
+		pathname === '/game/placespecificscript.ashx' ||
 		pathname === '/verify-player'
 	) {
 		const accessKey =

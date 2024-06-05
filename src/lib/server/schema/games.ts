@@ -88,6 +88,13 @@ export const jobsTable = pgTable('jobs', {
 		.default(sql`'{}'::bigint[]`)
 })
 
+export const legacyPersistenceTable = pgTable('legacypersistence', {
+	persistenceid: bigserial('persistenceid', { mode: 'number' }).notNull().primaryKey(),
+	placeid: bigint('placeid', { mode: 'number' }).notNull(),
+	userid: bigint('userid', { mode: 'number' }).notNull(),
+	data: text('data').notNull()
+})
+
 export const jobsRelations = relations(jobsTable, ({ one, many }) => ({
 	associatedplace: one(placesTable, {
 		// games

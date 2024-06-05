@@ -124,13 +124,13 @@ if url~=nil then
 	game:GetService("InsertService"):SetAssetVersionUrl(url .. "/Asset/?assetversionid=%d")
 	game:GetService("InsertService"):SetTrustLevel(0) -- i dont know what this does... it just works...
 
-	--pcall(function() loadfile(url .. "/Game/LoadPlaceInfo.ashx?PlaceId=" .. placeId)() end)
+	pcall(function() loadfile(url .. "/Game/LoadPlaceInfo.ashx?PlaceId=" .. placeId)() end)
 
-	--[[pcall(function()
+	pcall(function()
 				if access then
-					loadfile(url .. "/Game/PlaceSpecificScript.ashx?PlaceId=" .. placeId .. "&" .. access)()
+					loadfile(url .. "/Game/PlaceSpecificScript.ashx?PlaceId=" .. placeId .. "&accessKey=" .. accessKey)()
 				end
-			end)--]]
+			end)
 end
 
 pcall(function() game:GetService("NetworkServer"):SetIsPlayerAuthenticationRequired(false) end)

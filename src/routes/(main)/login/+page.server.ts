@@ -35,7 +35,16 @@ export const actions: Actions = {
 				userId: user.userId,
 				attributes: {}
 			})
-			event.locals.auth.setSession(session) // set session cookie
+			let sessionCookie = auth.createSessionCookie(session)
+
+			const path = sessionCookie.attributes.path || '/'
+
+			sessionCookie.attributes.secure = false // allow on http
+
+			event.cookies.set(sessionCookie.name, sessionCookie.value, {
+				...sessionCookie.attributes,
+				path
+			}) // set session cookie
 		} catch (e) {
 			if (
 				e instanceof LuciaError &&
