@@ -219,19 +219,36 @@
 
 					<AlertDialog.Root closeOnOutsideClick={false} bind:open>
 						<AlertDialog.Trigger asChild let:builder>
-							<Button
-								variant="minimal"
-								size="lg"
-								builders={[builder]}
-								class="w-full h-16 mt-4 xl:mt-auto hover:shadow-md hover:shadow-white bg-success flex gap-x-4 rounded-xl"
-								on:click={() => {
-									cancel = false
-									placeLauncher()
-									disableLoadingText = false
-								}}
-							>
-								<Play class="w-full h-10 fill-white" />
-							</Button>
+							{#if data.userAgent?.includes('Android') === true || data.userAgent?.includes('iPhone') === true}
+								<a
+									data-sveltekit-reload
+									href="/games/start?placeid={data.place.placeid}"
+									class="mt-auto"
+								>
+									<Button
+										variant="minimal"
+										size="lg"
+										builders={[builder]}
+										class="w-full h-16 mt-4 xl:mt-auto hover:shadow-md hover:shadow-white bg-success flex gap-x-4 rounded-xl"
+									>
+										<Play class="w-full h-10 fill-white" />
+									</Button>
+								</a>
+							{:else}
+								<Button
+									variant="minimal"
+									size="lg"
+									builders={[builder]}
+									class="w-full h-16 mt-4 xl:mt-auto hover:shadow-md hover:shadow-white bg-success flex gap-x-4 rounded-xl"
+									on:click={() => {
+										cancel = false
+										placeLauncher()
+										disableLoadingText = false
+									}}
+								>
+									<Play class="w-full h-10 fill-white" />
+								</Button>
+							{/if}
 						</AlertDialog.Trigger>
 						<AlertDialog.Content class="space-y-8">
 							<AlertDialog.Header>

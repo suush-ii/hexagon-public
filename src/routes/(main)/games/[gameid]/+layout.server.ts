@@ -11,7 +11,7 @@ type jobs = typeof jobsTable.$inferSelect
 import { BASE_URL } from '$env/static/private'
 const joinScriptUrl = `http://${BASE_URL}/game/Join.ashx`
 
-export const load: LayoutServerLoad = async ({ params, locals, depends, cookies, url }) => {
+export const load: LayoutServerLoad = async ({ params, locals, depends, request, url }) => {
 	const result = await z.number().safeParseAsync(Number(params.gameid))
 
 	if (result.success === false) {
@@ -94,6 +94,7 @@ export const load: LayoutServerLoad = async ({ params, locals, depends, cookies,
 		},
 		servers,
 		joinScriptUrl,
-		canEdit
+		canEdit,
+		userAgent: request.headers.get('user-agent')
 	}
 }
