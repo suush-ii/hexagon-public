@@ -42,22 +42,20 @@ function formatPath(glob: Record<string, unknown>) {
 	)
 }
 
+let rbxms = formatPath(
+	import.meta.glob(['./common/*.rbxm', './common/2014L/*.rbxm'], {
+		eager: true,
+		query: '?raw',
+		import: 'default'
+	})
+)
+
 let commonAssets = formatPath(
-	import.meta.glob(
-		[
-			'./common/*.rbxm',
-			'./common/*.mp3',
-			'./common/*.png',
-			'./common/*.wav',
-			'./common/*.midi',
-			'./common/2014L/*.rbxm'
-		],
-		{
-			eager: true,
-			query: '?url', // raw doesn't work with some media types other than text?
-			import: 'default'
-		}
-	)
+	import.meta.glob(['./common/*.mp3', './common/*.png', './common/*.wav', './common/*.midi'], {
+		eager: true,
+		query: '?url', // raw doesn't work with some media types other than text?
+		import: 'default'
+	})
 )
 
 const assetSchema = z.number().int().positive()
@@ -84,6 +82,11 @@ export const GET: RequestHandler = async ({ url, request }) => {
 	const asset = commonAssets[assetId]
 	if (asset) {
 		return redirect(302, asset)
+	}
+
+	const rbxm = rbxms[assetId]
+	if (rbxm) {
+		return text(rbxm)
 	}
 
 	const existingAsset = await db.query.assetTable.findFirst({
