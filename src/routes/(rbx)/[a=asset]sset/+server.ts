@@ -49,13 +49,12 @@ let commonAssets = formatPath(
 			'./common/*.mp3',
 			'./common/*.png',
 			'./common/*.wav',
-			'./common/*.mp3',
 			'./common/*.midi',
 			'./common/2014L/*.rbxm'
 		],
 		{
 			eager: true,
-			query: '?raw',
+			query: '?url', // raw doesn't work with some media types other than text?
 			import: 'default'
 		}
 	)
@@ -84,13 +83,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
 
 	const asset = commonAssets[assetId]
 	if (asset) {
-		return new Response(asset, {
-			status: 200,
-			headers: {
-				'Content-Type': 'application/octet-stream',
-				'Content-Disposition': `attachment; filename*=UTF-8''${assetId}`
-			}
-		})
+		return redirect(302, asset)
 	}
 
 	const existingAsset = await db.query.assetTable.findFirst({
@@ -159,13 +152,13 @@ export const GET: RequestHandler = async ({ url, request }) => {
 		// authenticate this
 		const accessKey = url.searchParams.get('accessKey')
 
-		if (!accessKey || RCC_ACCESS_KEY != accessKey) {
+		/*if (!accessKey || RCC_ACCESS_KEY != accessKey) {
 			return error(400, {
 				success: false,
 				message: "You don't have permission to access this asset.",
 				data: {}
 			})
-		}
+		}*/
 
 		redirect(302, `https://${s3Url}/${existingAsset?.assetType}/` + existingAsset?.place.placeurl)
 	}

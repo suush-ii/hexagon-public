@@ -102,15 +102,7 @@
 
 	function randomtext() {
 		if (!disableRandom) {
-			disableRandom = true
-			setTimeout(() => {
-				disableRandom = false
-			}, 1000)
 			loadingText = newLib()
-
-			setInterval(function () {
-				randomtext()
-			}, 4000)
 		}
 	}
 
