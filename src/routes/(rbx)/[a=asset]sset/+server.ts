@@ -53,7 +53,7 @@ let rbxms = formatPath(
 let commonAssets = formatPath(
 	import.meta.glob(['./common/*.mp3', './common/*.png', './common/*.wav', './common/*.midi'], {
 		eager: true,
-		query: '?url', // raw doesn't work with some media types other than text?
+		query: '?arraybuffer',
 		import: 'default'
 	})
 )
@@ -81,7 +81,13 @@ export const GET: RequestHandler = async ({ url, request }) => {
 
 	const asset = commonAssets[assetId]
 	if (asset) {
-		return redirect(302, asset)
+		return new Response(asset, {
+			status: 200,
+			headers: {
+				'Content-Type': 'application/octet-stream',
+				'Content-Disposition': `attachment; filename*=UTF-8''${assetId}`
+			}
+		})
 	}
 
 	const rbxm = rbxms[assetId]
@@ -164,14 +170,6 @@ export const GET: RequestHandler = async ({ url, request }) => {
 		}
 
 		redirect(302, `https://${s3Url}/${existingAsset?.assetType}/` + existingAsset?.place.placeurl)
-	}
-
-	if (request.headers.get('user-agent') === 'HexagonWinInet') {
-		return error(404, {
-			success: false,
-			message: 'Asset not found.',
-			data: {}
-		})
 	}
 
 	const cachedAsset = await db

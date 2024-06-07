@@ -2,6 +2,7 @@ import { sentrySvelteKit } from '@sentry/sveltekit'
 import { sveltekit } from '@sveltejs/kit/vite'
 import { threeMinifier } from '@yushijinhun/three-minifier-rollup'
 import { defineConfig } from 'vite'
+import arraybuffer from 'vite-plugin-arraybuffer'
 
 export default defineConfig({
 	plugins: [
@@ -12,6 +13,7 @@ export default defineConfig({
 				project: 'hexagon-new'
 			}
 		}),
+		arraybuffer(),
 		sveltekit()
 	],
 	build: {
