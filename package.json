@@ -4,7 +4,7 @@
 	"private": true,
 	"scripts": {
 		"dev": "vite dev",
-		"build": "cross-env NODE_OPTIONS=--max-old-space-size=4096 BODY_SIZE_LIMIT=Infinity vite build",
+		"build": "cross-env NODE_OPTIONS=--max-old-space-size=16384 BODY_SIZE_LIMIT=Infinity vite build",
 		"preview": "vite preview",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
