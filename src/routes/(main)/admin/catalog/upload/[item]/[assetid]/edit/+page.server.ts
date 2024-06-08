@@ -88,7 +88,8 @@ async function updateAsset(
 			onsale,
 			price,
 			genres,
-			assetname
+			assetname,
+			updated: new Date()
 		})
 		.where(eq(assetTable.assetid, assetid))
 }
@@ -153,7 +154,8 @@ export const actions: Actions = {
 				price: data.price,
 				genres: data.genres,
 				gearattributes: data.gearattributes,
-				assetname: data.name
+				assetname: data.name,
+				updated: new Date()
 			})
 			.where(eq(assetTable.assetid, Number(params.assetid)))
 

@@ -149,7 +149,8 @@ async function updateAsset(
 			onsale,
 			price,
 			genres,
-			assetname
+			assetname,
+			updated: new Date()
 		})
 		.where(eq(assetTable.assetid, assetid))
 }
@@ -286,14 +287,16 @@ export const actions: Actions = {
 			await db
 				.update(gamesTable)
 				.set({
-					iconid: Number(assetid)
+					iconid: Number(assetid),
+					updated: new Date()
 				})
 				.where(eq(gamesTable.universeid, Number(params.assetid)))
 		} else {
 			await db
 				.update(gamesTable)
 				.set({
-					thumbnailid: Number(assetid)
+					thumbnailid: Number(assetid),
+					updated: new Date()
 				})
 				.where(eq(gamesTable.universeid, Number(params.assetid)))
 		}
