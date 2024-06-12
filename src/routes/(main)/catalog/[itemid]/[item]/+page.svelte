@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Avatar from '$src/components/catalog/avatar.svelte'
 	import UserAvatar from '$src/components/users/avatar.svelte'
-	import { MoonStar, Star, Menu } from 'lucide-svelte'
+	import { MoonStar } from 'lucide-svelte'
 
 	import { Button } from '$src/components/ui/button'
 	import { Separator } from '$src/components/ui/separator'
@@ -10,6 +10,7 @@
 	import * as AlertDialog from '$src/components/ui/alert-dialog'
 	import { depluralize, formatCompactNumber, slugify } from '$lib/utils'
 	import Configure from '$src/components/develop/edit/configure.svelte'
+	import Favorite from '$src/components/favorite.svelte'
 
 	import { toast } from 'svelte-sonner'
 
@@ -226,9 +227,13 @@
 					>
 				</Card.Content>
 			</Card.Root>
-			<h1 class="text-lg font-semibold flex align-middle mx-auto gap-x-1 text-yellow-400">
-				<Star class="hover:fill-yellow-400" size={28} /> 0
-			</h1>
+
+			<Favorite
+				alreadyFavorited={data.alreadyFavorited}
+				assetid={itemid}
+				favorites={data.favorites}
+				game={false}
+			/>
 		</div>
 	</div>
 

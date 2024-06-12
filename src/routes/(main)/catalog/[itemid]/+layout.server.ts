@@ -1,9 +1,9 @@
 import type { LayoutServerLoad } from './$types'
 import { db } from '$lib/server/db'
-import { ne, and, eq, sql } from 'drizzle-orm'
+import { ne, and, eq, sql, count } from 'drizzle-orm'
 import { error, redirect } from '@sveltejs/kit'
 import { z } from 'zod'
-import { assetTable } from '$lib/server/schema/assets'
+import { assetTable, assetFavoritesTable } from '$lib/server/schema'
 import { inventoryTable } from '$lib/server/schema/users'
 import { slugify } from '$lib/utils'
 import { commonWhere } from '$lib/server/catalog'
@@ -60,6 +60,23 @@ export const load: LayoutServerLoad = async ({ params, locals }) => {
 		)
 		.limit(1)
 
+	const favorites = await db
+		.select({ count: count() })
+		.from(assetFavoritesTable)
+		.where(eq(assetFavoritesTable.assetid, item.assetid))
+		.limit(1)
+
+	const alreadyFavorited = await db
+		.select()
+		.from(assetFavoritesTable)
+		.where(
+			and(
+				eq(assetFavoritesTable.userid, locals.user.userid),
+				eq(assetFavoritesTable.assetid, item.assetid)
+			)
+		)
+		.limit(1)
+
 	const recommendations = await db.query.assetTable.findMany({
 		where: and(
 			ne(assetTable.assetid, Number(params.itemid)),
@@ -96,6 +113,8 @@ export const load: LayoutServerLoad = async ({ params, locals }) => {
 	return {
 		item: item,
 		alreadyOwned: alreadyOwned.length > 0,
+		alreadyFavorited: alreadyFavorited.length > 0,
+		favorites: favorites[0].count,
 		recommendations,
 		canEdit,
 		adminAsset

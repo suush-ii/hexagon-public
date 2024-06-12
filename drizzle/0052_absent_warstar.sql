@@ -1,0 +1,2 @@
+ALTER TABLE "legacypersistence" DROP COLUMN IF EXISTS "persistenceid";
+ALTER TABLE "legacypersistence" ADD CONSTRAINT "legacypersistence_userid_placeid_pk" PRIMARY KEY("userid","placeid");--> statement-breakpoint

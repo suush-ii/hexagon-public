@@ -351,6 +351,34 @@
       "when": 1717541313923,
       "tag": "0049_careful_skrulls",
       "breakpoints": true
+    },
+    {
+      "idx": 50,
+      "version": "5",
+      "when": 1718154565813,
+      "tag": "0050_massive_onslaught",
+      "breakpoints": true
+    },
+    {
+      "idx": 51,
+      "version": "5",
+      "when": 1718154791685,
+      "tag": "0051_smiling_vermin",
+      "breakpoints": true
+    },
+    {
+      "idx": 52,
+      "version": "5",
+      "when": 1718154960251,
+      "tag": "0052_absent_warstar",
+      "breakpoints": true
+    },
+    {
+      "idx": 53,
+      "version": "5",
+      "when": 1718155097055,
+      "tag": "0053_white_adam_destine",
+      "breakpoints": true
     }
   ]
 }

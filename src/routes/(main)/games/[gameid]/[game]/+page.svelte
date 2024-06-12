@@ -33,6 +33,7 @@
 	import { PUBLIC_setupcdn } from '$env/static/public'
 
 	import { newLib } from '.'
+	import Favorite from '$src/components/favorite.svelte'
 
 	const defaultText = 'A server is loading the game...'
 
@@ -265,9 +266,12 @@
 					</AlertDialog.Root>
 					<Separator class="mt-2" />
 					<div class="flex flex-row gap-x-4">
-						<h1 class="text-lg font-semibold flex align-middle my-auto gap-x-1 text-yellow-400">
-							<Star class="hover:fill-yellow-400" size={28} /> 0
-						</h1>
+						<Favorite
+							alreadyFavorited={data.alreadyFavorited}
+							assetid={data.place.placeid}
+							favorites={data.favorites}
+							game={true}
+						/>
 						<div class="flex flex-col w-full px-4">
 							<div class="flex flex-row justify-around w-full">
 								<div class="text-success flex flex-row">

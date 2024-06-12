@@ -10,8 +10,7 @@ import {
 	timestamp,
 	uuid,
 	boolean,
-	jsonb,
-	PgArray
+	primaryKey
 } from 'drizzle-orm/pg-core'
 import { usersTable } from './users'
 import { assetTable } from './assets'
@@ -88,12 +87,17 @@ export const jobsTable = pgTable('jobs', {
 		.default(sql`'{}'::bigint[]`)
 })
 
-export const legacyPersistenceTable = pgTable('legacypersistence', {
-	persistenceid: bigserial('persistenceid', { mode: 'number' }).notNull().primaryKey(),
-	placeid: bigint('placeid', { mode: 'number' }).notNull(),
-	userid: bigint('userid', { mode: 'number' }).notNull(),
-	data: text('data').notNull()
-})
+export const legacyPersistenceTable = pgTable(
+	'legacypersistence',
+	{
+		placeid: bigint('placeid', { mode: 'number' }).notNull(),
+		userid: bigint('userid', { mode: 'number' }).notNull(),
+		data: text('data').notNull()
+	},
+	(table) => {
+		return { pk: primaryKey({ columns: [table.userid, table.placeid] }) }
+	}
+)
 
 export const jobsRelations = relations(jobsTable, ({ one, many }) => ({
 	associatedplace: one(placesTable, {

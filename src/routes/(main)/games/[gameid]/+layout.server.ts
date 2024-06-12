@@ -1,7 +1,7 @@
 import type { LayoutServerLoad } from './$types'
 import { placesTable } from '$lib/server/schema/games'
 import { db } from '$lib/server/db'
-import { eq, and } from 'drizzle-orm'
+import { eq, and, count } from 'drizzle-orm'
 import { error, redirect } from '@sveltejs/kit'
 import { z } from 'zod'
 import { votesTable } from '$lib/server/schema/gamevotes'
@@ -9,6 +9,7 @@ import { jobsTable } from '$lib/server/schema/games'
 import { slugify } from '$lib/utils'
 type jobs = typeof jobsTable.$inferSelect
 import { BASE_URL } from '$env/static/private'
+import { assetFavoritesTable } from '$src/lib/server/schema'
 const joinScriptUrl = `http://${BASE_URL}/game/Join.ashx`
 
 export const load: LayoutServerLoad = async ({ params, locals, depends, request, url }) => {
@@ -82,6 +83,23 @@ export const load: LayoutServerLoad = async ({ params, locals, depends, request,
 
 	let canEdit = Number(locals.user.userid) === place.associatedgame.creatoruserid
 
+	const favorites = await db
+		.select({ count: count() })
+		.from(assetFavoritesTable)
+		.where(eq(assetFavoritesTable.assetid, Number(params.gameid)))
+		.limit(1)
+
+	const alreadyFavorited = await db
+		.select()
+		.from(assetFavoritesTable)
+		.where(
+			and(
+				eq(assetFavoritesTable.userid, locals.user.userid),
+				eq(assetFavoritesTable.assetid, place.placeid)
+			)
+		)
+		.limit(1)
+
 	return {
 		place: place,
 		likespercentage: Math.round(
@@ -92,6 +110,8 @@ export const load: LayoutServerLoad = async ({ params, locals, depends, request,
 			voted: alreadyVoted.length > 0,
 			voteType: alreadyVoted.length > 0 ? alreadyVoted[0].type : null
 		},
+		alreadyFavorited: alreadyFavorited.length > 0,
+		favorites: favorites[0].count,
 		servers,
 		joinScriptUrl,
 		canEdit,

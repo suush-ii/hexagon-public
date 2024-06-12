@@ -73,12 +73,7 @@
 			})
 			const thumbnail = await thumbnailResponse.json()
 
-			console.log('meow')
-
-			console.log(thumbnail.data.url)
-
 			if (thumbnail.success) {
-				console.log('meow2')
 				const objResponse = await fetch(thumbnail.data.url, {
 					headers: {
 						Accept: 'application/json'

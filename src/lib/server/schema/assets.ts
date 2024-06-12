@@ -37,6 +37,7 @@ export const assetTable = pgTable('assets', {
 		.$type<string[]>()
 		.default(sql`'{}'::text[]`),
 	scrubbedassetname: text('scrubbedassetname')
+	//favorites: bigint('favorites', { mode: 'number' }).notNull().default(0)
 })
 
 export const assetRelations = relations(assetTable, ({ one }) => ({
