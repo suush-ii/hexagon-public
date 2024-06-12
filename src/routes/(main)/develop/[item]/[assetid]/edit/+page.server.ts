@@ -31,8 +31,10 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 	let places: {
 		placeid: number
 		startplace: boolean
+		associatedgame: {
+			thumbnailid: number | null
+		}
 	}[] = []
-	let geargenreenforced = false
 
 	if (params.item === 'games') {
 		const game = await db.query.gamesTable.findFirst({
@@ -49,7 +51,14 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 						placeid: true,
 						startplace: true
 					},
-					orderBy: placesTable.startplace
+					orderBy: placesTable.startplace,
+					with: {
+						associatedgame: {
+							columns: {
+								thumbnailid: true
+							}
+						}
+					}
 				}
 			},
 			where: eq(gamesTable.universeid, result.data)

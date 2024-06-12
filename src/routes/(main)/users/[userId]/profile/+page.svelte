@@ -3,11 +3,9 @@
 
 	import FriendAvatar from '$src/components/home/friendAvatar.svelte'
 
-	import CatalogAvatar from '$src/components/catalog/avatar.svelte'
+	import GameThumbnail from '$src/components/games/gameThumbnail.svelte'
 
 	import { friend as friendLib } from '$lib/friend'
-
-	import * as AvatarThumb from '$src/components/ui/avatar'
 
 	import * as Accordion from '$src/components/ui/accordion'
 
@@ -170,7 +168,7 @@
 			<div
 				class="h-full bg-muted-foreground/5 outline-dashed outline-muted-foreground/20 rounded-xl p-4 flex flex-col"
 			>
-				<Accordion.Root class="w-full mb-auto">
+				<Accordion.Root class="w-full mb-auto" multiple>
 					{#each data.places as place, i}
 						<Accordion.Item value="item-{i}">
 							<Accordion.Trigger>{place.gamename}</Accordion.Trigger>
@@ -178,23 +176,11 @@
 								<div class="space-y-2">
 									<h1 class="text-base">Visited {place.visits} times</h1>
 									<a href="/games/{place.places?.[0].placeid}">
-										{#if place.thumbnailid}
-											<CatalogAvatar
-												css="h-fit w-full rounded-xl aspect-video"
-												itemId={place.thumbnailid}
-												itemName={place.gamename}
-												disable3d={true}
-											/>
-										{:else}
-											<AvatarThumb.Root class="h-fit w-full rounded-xl aspect-video">
-												<AvatarThumb.Image
-													src={'/Images/thumbnailplaceholder.png'}
-													alt={place.gamename}
-													loading="lazy"
-												/>
-												<AvatarThumb.Fallback />
-											</AvatarThumb.Root>
-										{/if}
+										<GameThumbnail
+											thumbnailid={place.thumbnailid}
+											gamename={place.gamename}
+											size=" h-fit w-fit"
+										/>
 									</a>
 									<p class="text-base leading-relaxed tracking-tight max-h-32 overflow-y-auto">
 										{place.description}
