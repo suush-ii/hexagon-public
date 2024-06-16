@@ -336,11 +336,11 @@
 
 				<p class="px-8 text-center text-sm text-muted-foreground">
 					By clicking Sign Up, you agree to our
-					<a href="/terms" class="underline underline-offset-4 hover:text-primary">
+					<a href="/legal/terms" class="underline underline-offset-4 hover:text-primary">
 						Terms of Service
 					</a>
 					and
-					<a href="/privacy" class="underline underline-offset-4 hover:text-primary">
+					<a href="/legal/privacy" class="underline underline-offset-4 hover:text-primary">
 						Privacy Policy
 					</a>
 					.

@@ -1,7 +1,7 @@
 import type { LayoutServerLoad } from './$types'
-import { placesTable } from '$lib/server/schema/games'
+import { gamesTable, placesTable } from '$lib/server/schema/games'
 import { db } from '$lib/server/db'
-import { eq, and, count } from 'drizzle-orm'
+import { eq, and, count, desc, ne } from 'drizzle-orm'
 import { error, redirect } from '@sveltejs/kit'
 import { z } from 'zod'
 import { votesTable } from '$lib/server/schema/gamevotes'
@@ -100,6 +100,31 @@ export const load: LayoutServerLoad = async ({ params, locals, depends, request,
 		)
 		.limit(1)
 
+	let recommendations = await db.query.gamesTable.findMany({
+		where: ne(gamesTable.universeid, place.associatedgame.universeid),
+		columns: {
+			gamename: true,
+			active: true,
+			iconid: true
+		},
+		with: {
+			places: {
+				where: eq(placesTable.startplace, true),
+				limit: 1,
+				columns: {
+					placeid: true
+				}
+			}
+		},
+		limit: 8,
+		orderBy: desc(gamesTable.active) // first order by active players, then randomize that
+	})
+
+	recommendations = recommendations
+		.map((value) => ({ value, sort: Math.random() }))
+		.sort((a, b) => a.sort - b.sort)
+		.map(({ value }) => value)
+
 	return {
 		place: place,
 		likespercentage: Math.round(
@@ -115,6 +140,7 @@ export const load: LayoutServerLoad = async ({ params, locals, depends, request,
 		servers,
 		joinScriptUrl,
 		canEdit,
-		userAgent: request.headers.get('user-agent')
+		userAgent: request.headers.get('user-agent'),
+		recommendations
 	}
 }

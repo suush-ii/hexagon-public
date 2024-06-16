@@ -6,6 +6,7 @@
 	import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 	import Scene from '$src/components/_3d/Scene.svelte'
 	import { Button } from '$src/components/ui/button'
+	import { loadedImages } from '$src/stores'
 
 	extend({
 		OrbitControls
@@ -32,6 +33,13 @@
 
 	async function fetchAvatar(itemId: number) {
 		if (attempt <= 3) {
+			const foundImage = $loadedImages.find(
+				(img) => img.assetid === itemId && img.asset === 'item' && img.type === 'avatar'
+			)
+			if (foundImage) {
+				return foundImage.url
+			}
+
 			const thumbnailResponse = await fetch('/api/avatarthumbnail', {
 				method: 'POST',
 				body: JSON.stringify({
@@ -43,6 +51,14 @@
 			const thumbnail = await thumbnailResponse.json()
 
 			if (thumbnail.success && thumbnail.data.url !== '') {
+				$loadedImages.push({
+					url: thumbnail.data.url,
+					type: 'avatar',
+					assetid: itemId,
+					asset: 'item',
+					time: new Date()
+				})
+
 				src = thumbnail.data.url
 				return thumbnail.data.url
 			}
@@ -90,7 +106,7 @@
 </script>
 
 <div class="flex gap-x-1 relative {css}">
-	<div class="h-full mx-auto relative" id="int-target">
+	<div class="h-full w-full mx-auto relative" id="int-target">
 		{#if dimension === '2D'}
 			{#if src}
 				<Avatar.Root class="w-full mx-auto h-full rounded-xl">

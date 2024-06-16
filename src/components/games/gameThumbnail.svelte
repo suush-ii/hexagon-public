@@ -5,7 +5,7 @@
 	export let thumbnailid: number | null
 	export let gamename: string
 
-	export let size = 'xl:h-[360px] h-fit w-full max-w-[640px]'
+	export let size = 'xl:h-[360px] h-fit w-full max-w-[640px] shrink-0'
 </script>
 
 {#if thumbnailid}

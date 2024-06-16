@@ -1,6 +1,7 @@
 <script lang="ts">
 	import '$src/app.postcss'
 	import Navbar from '$src/components/navbar.svelte'
+	import Footer from '$src/components/footer.svelte'
 
 	import { Toaster } from '$src/components/ui/sonner'
 
@@ -29,7 +30,7 @@
 	<link rel="icon" type="image/png" href="/hexagon128.png" />
 </svelte:head>
 
-<div class="flex flex-col h-screen">
+<div class="flex flex-col min-h-screen justify-between">
 	{#if $page.url.pathname != '/' && $page.url.pathname != '/login'}
 		<Navbar
 			{loggedIn}
@@ -51,10 +52,12 @@
 	<main
 		class="pt-24 {$page.url.pathname != '/' && $page.url.pathname != '/login'
 			? ''
-			: '!pt-0'} flex flex-1 flex-wrap"
+			: '!pt-0'} flex flex-1 flex-wrap min-h-screen"
 	>
 		<Toaster theme="dark" />
 
 		<slot />
 	</main>
+
+	<Footer />
 </div>

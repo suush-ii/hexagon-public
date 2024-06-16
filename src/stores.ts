@@ -1,4 +1,4 @@
-import { writable } from 'svelte/store'
+import { writable, type Writable } from 'svelte/store'
 import { dev } from '$app/environment'
 
 export const appName: string = 'Hexagon'
@@ -17,3 +17,13 @@ console.log(
 export const currencyName: string = 'Moon'
 export const currencyNamePlural: string = 'Moons'
 export const pageName = writable()
+
+interface Image {
+	url: string
+	type: string
+	assetid: number
+	asset: string
+	time: Date
+}
+
+export const loadedImages: Writable<Image[]> = writable([])

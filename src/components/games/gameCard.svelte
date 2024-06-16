@@ -17,7 +17,7 @@
 </script>
 
 <a href="/games/{gameId}/{slugify(gameName)}"
-	><div class="flex flex-col w-32">
+	><div class="flex flex-col w-24 2xl:w-32">
 		{#if iconId}
 			<CatalogAvatar
 				css="w-32 h-32 rounded-xl aspect-square"
@@ -26,7 +26,7 @@
 				disable3d={true}
 			/>
 		{:else}
-			<Avatar.Root class="w-32 h-32 rounded-xl">
+			<Avatar.Root class="w-24 h-24 2xl:w-32 2xl:h-32 rounded-xl">
 				<Avatar.Image src={'/Images/iconplaceholder.png'} alt={gameName} loading="lazy" />
 				<Avatar.Fallback />
 			</Avatar.Root>

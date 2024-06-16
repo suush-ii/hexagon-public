@@ -8,6 +8,7 @@
 	import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 	import { Loader2 } from 'lucide-svelte'
 	import { browser } from '$app/environment'
+	import { loadedImages } from '$src/stores'
 
 	extend({
 		OrbitControls
@@ -36,8 +37,34 @@
 
 	export let trig = false
 
+	$: trig, (attempt = 0)
+
+	$: trig, refresh()
+
+	function refresh() {
+		const foundImage = $loadedImages.find(
+			(img) => img.assetid === userid && img.asset === 'user' && img.type === type
+		)
+		if (foundImage) {
+			$loadedImages = $loadedImages.filter((img) => img !== foundImage)
+		}
+	}
+
 	async function fetchAvatar(d: boolean, userid: number) {
 		if (attempt <= 3) {
+			const foundImage = $loadedImages.find(
+				(img) => img.assetid === userid && img.asset === 'user' && img.type === type
+			)
+			if (foundImage) {
+				if (new Date().valueOf() - foundImage.time.valueOf() > 1 * 60 * 1000) {
+					// 1 minute expiration
+
+					$loadedImages = $loadedImages.filter((img) => img !== foundImage)
+				} else {
+					return foundImage.url
+				}
+			}
+
 			const thumbnailResponse = await fetch('/api/avatarthumbnail', {
 				method: 'POST',
 				body: JSON.stringify({
@@ -49,6 +76,14 @@
 			const thumbnail = await thumbnailResponse.json()
 
 			if (thumbnail.success && thumbnail.data.url !== '') {
+				$loadedImages.push({
+					url: thumbnail.data.url,
+					type,
+					assetid: userid,
+					asset: 'user',
+					time: new Date()
+				})
+
 				return thumbnail.data.url
 			}
 

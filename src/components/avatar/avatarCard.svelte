@@ -37,9 +37,14 @@
 	}
 </script>
 
-<div class="w-32 relative">
+<div class="w-24 2xl:w-32 relative">
 	<a href="/catalog/{itemId}/{slugify(itemName)}">
-		<Avatar css="w-32 h-32 rounded-xl aspect-square" {itemId} {itemName} disable3d={true} />
+		<Avatar
+			css="w-24 2xl:w-32 2xl:h-32 rounded-xl aspect-square"
+			{itemId}
+			{itemName}
+			disable3d={true}
+		/>
 
 		<h1 class="line-clamp-2 tracking-tighter break-words text-xl hover:underline text-left">
 			{itemName}
