@@ -1,0 +1,1 @@
+ALTER TABLE "assets" ADD COLUMN "favorites" bigint DEFAULT 0 NOT NULL;

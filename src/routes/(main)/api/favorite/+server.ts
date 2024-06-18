@@ -32,7 +32,11 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 		error(400, { success: false, message: 'Malformed JSON.', data: { errors } })
 	}
 
-	const asset = await db.select({}).from(assetTable).where(eq(assetTable.assetid, assetid)).limit(1)
+	const asset = await db
+		.select({ favorites: assetTable.favorites })
+		.from(assetTable)
+		.where(eq(assetTable.assetid, assetid))
+		.limit(1)
 
 	if (asset.length === 0) {
 		return json({
@@ -52,17 +56,39 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 
 	if (existingFavorite.length !== 0) {
 		//unfavorite
-		await db
-			.delete(assetFavoritesTable)
-			.where(
-				and(eq(assetFavoritesTable.userid, user.userid), eq(assetFavoritesTable.assetid, assetid))
-			)
+		await db.transaction(async (tx) => {
+			try {
+				await tx
+					.delete(assetFavoritesTable)
+					.where(
+						and(
+							eq(assetFavoritesTable.userid, user.userid),
+							eq(assetFavoritesTable.assetid, assetid)
+						)
+					)
+				await tx
+					.update(assetTable)
+					.set({ favorites: asset[0].favorites - 1 })
+					.where(eq(assetTable.assetid, assetid))
+			} catch {
+				tx.rollback()
+			}
+		})
 
 		return json({ success: true, message: 'Item unfavorited!', data: {} })
 	} else {
 		//favorite
-
-		await db.insert(assetFavoritesTable).values({ userid: user.userid, assetid: assetid })
+		await db.transaction(async (tx) => {
+			try {
+				await tx.insert(assetFavoritesTable).values({ userid: user.userid, assetid: assetid })
+				await tx
+					.update(assetTable)
+					.set({ favorites: asset[0].favorites + 1 })
+					.where(eq(assetTable.assetid, assetid))
+			} catch {
+				tx.rollback()
+			}
+		})
 
 		return json({ success: true, message: 'Item favorited!', data: {} })
 	}

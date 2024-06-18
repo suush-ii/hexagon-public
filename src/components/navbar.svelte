@@ -11,6 +11,7 @@
 	import { Cog } from 'lucide-svelte'
 	import { MoonStar } from 'lucide-svelte'
 	import * as DropdownMenu from '$src/components/ui/dropdown-menu'
+	import { formatCompactNumber } from '$lib/utils'
 
 	import { currencyName, currencyNamePlural } from '$src/stores'
 	import { browser } from '$app/environment'
@@ -104,7 +105,7 @@
 							><Button builders={[builder]} variant="minimal" class="text-lg" size="icon">
 								<div class="flex items-center gap-x-3">
 									<MoonStar class="h-full" />
-									<h5 class="font-bold">{coins}</h5>
+									<h5 class="font-bold">{formatCompactNumber(coins, false)}</h5>
 								</div>
 							</Button>
 						</DropdownMenu.Trigger>
@@ -115,7 +116,7 @@
 								><DropdownMenu.Item class="cursor-pointer">My Transactions</DropdownMenu.Item></a
 							>
 							<DropdownMenu.Item
-								>{coins}
+								>{formatCompactNumber(coins)}
 								{coins != 1 ? currencyNamePlural : currencyName}
 								<MoonStar class="h-4 ml-auto" />
 							</DropdownMenu.Item>

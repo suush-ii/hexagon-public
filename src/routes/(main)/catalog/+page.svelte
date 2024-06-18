@@ -190,6 +190,7 @@
 								itemId={item.assetid}
 								sales={item.sales}
 								updated={item.updated}
+								favorites={item.favorites}
 							/>
 						{/each}
 					{/if}

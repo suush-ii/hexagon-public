@@ -1,15 +1,33 @@
 import type { PageServerLoad } from './$types'
 import { _assetSchema } from './+layout.server'
 import { db } from '$lib/server/db'
-import { gamesTable } from '$lib/server/schema/games'
+import { gamesTable, placesTable } from '$lib/server/schema/games'
 import { assetTable } from '$lib/server/schema/assets'
-import { eq, and, desc, count } from 'drizzle-orm'
+import { eq, and, desc, count, sum } from 'drizzle-orm'
 import { error } from '@sveltejs/kit'
 import { s3Url } from '$src/stores'
 import pending from '$lib/icons/iconpending.png'
 import rejected from '$lib/icons/iconrejected.png'
 import audio from '$lib/icons/audio.png'
 import { getPageNumber } from '$lib/utils'
+
+async function last7days(universeid: number) {
+	const places = await db.query.placesTable.findMany({
+		where: eq(placesTable.universeid, universeid),
+		columns: {},
+		with: {
+			associatedasset: {
+				columns: {
+					last7dayscounter: true
+				}
+			}
+		}
+	})
+
+	const last7days = places.reduce((acc, place) => acc + place.associatedasset.last7dayscounter, 0)
+
+	return last7days
+}
 
 export const load: PageServerLoad = async ({ params, locals, url }) => {
 	const result = await _assetSchema.safeParseAsync(params.item)
@@ -46,22 +64,31 @@ export const load: PageServerLoad = async ({ params, locals, url }) => {
 			page = 1
 		}
 
-		const gamecreations = await db
-			.select()
-			.from(gamesTable)
-			.where(eq(gamesTable.creatoruserid, locals.user.userid))
-			.limit(size)
-			.offset((page - 1) * size)
+		const gamecreations = await db.query.gamesTable.findMany({
+			where: eq(gamesTable.creatoruserid, locals.user.userid),
+			orderBy: desc(gamesTable.updated),
+			limit: size,
+			offset: (page - 1) * size,
+			columns: {
+				gamename: true,
+				universeid: true,
+				iconid: true,
+				updated: true,
+				visits: true
+			}
+		})
 
-		creations = gamecreations.map((game) => ({
-			assetName: game.gamename,
-			assetid: game.universeid,
-			iconId: game.iconid,
-			updated: game.updated,
-			assetType: params.item,
-			totalStat: game.visits,
-			last7DaysStat: 0
-		}))
+		creations = await Promise.all(
+			gamecreations.map(async (game) => ({
+				assetName: game.gamename,
+				assetid: game.universeid,
+				iconId: game.iconid,
+				updated: game.updated,
+				assetType: params.item,
+				totalStat: game.visits,
+				last7DaysStat: await last7days(game.universeid)
+			}))
+		)
 	}
 
 	if (
@@ -91,7 +118,8 @@ export const load: PageServerLoad = async ({ params, locals, url }) => {
 			with: {
 				associatedImage: {
 					columns: {
-						simpleasseturl: true
+						simpleasseturl: true,
+						last7dayscounter: true
 					}
 				}
 			},
@@ -116,7 +144,7 @@ export const load: PageServerLoad = async ({ params, locals, url }) => {
 			updated: asset.created,
 			assetType: params.item,
 			totalStat: asset.sales,
-			last7DaysStat: 0
+			last7DaysStat: asset.last7dayscounter
 		}))
 	}
 

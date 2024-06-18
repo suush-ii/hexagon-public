@@ -231,7 +231,7 @@
 			<Favorite
 				alreadyFavorited={data.alreadyFavorited}
 				assetid={itemid}
-				favorites={data.favorites}
+				favorites={data.item.favorites}
 				game={false}
 			/>
 		</div>

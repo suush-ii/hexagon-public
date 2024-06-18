@@ -22,6 +22,8 @@
 	export let itemId: number
 
 	export let cost: number | null
+
+	export let favorites: number
 </script>
 
 <div
@@ -51,8 +53,12 @@
 			Updated: <span class="text-foreground">{relativeTime.from(updated)}</span>
 		</h5>
 		<h5 class="text-muted-foreground">
-			Sales: <span class="text-foreground">{formatCompactNumber(sales)}</span>
+			Sales: <span class="text-foreground">{formatCompactNumber(sales, false)}</span>
 		</h5>
-		<h5 class="text-muted-foreground">Favorited: <span class="text-foreground">1 time</span></h5>
+		<h5 class="text-muted-foreground">
+			Favorited: <span class="text-foreground"
+				>{formatCompactNumber(favorites, false)} {favorites === 1 ? 'time' : 'times'}</span
+			>
+		</h5>
 	</div>
 </div>

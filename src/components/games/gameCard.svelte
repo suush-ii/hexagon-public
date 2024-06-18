@@ -33,6 +33,8 @@
 		{/if}
 
 		<h1 class="line-clamp-2 tracking-tighter break-words text-xl">{gameName}</h1>
-		<h1 class="tracking-tighter truncate text-xs">{formatCompactNumber(playerCount)} Playing</h1>
+		<h1 class="tracking-tighter truncate text-xs">
+			{formatCompactNumber(playerCount, false)} Playing
+		</h1>
 	</div></a
 >

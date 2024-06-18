@@ -20,6 +20,8 @@ export const load: PageServerLoad = async ({ params, url }) => {
 		page = 1
 	}
 
+	let friendlyType = params.type.charAt(0).toUpperCase() + params.type.slice(1)
+
 	if (params.type === 'popular') {
 		const popularGames = await db.query.gamesTable.findMany({
 			columns: {
@@ -41,7 +43,12 @@ export const load: PageServerLoad = async ({ params, url }) => {
 			}
 		})
 
-		return { games: popularGames, name: 'Popular', gamesCount: gamesCount.count }
+		return {
+			games: popularGames,
+			name: 'Popular',
+			gamesCount: gamesCount.count,
+			type: friendlyType
+		}
 	}
 
 	if (params.type === 'newest') {
@@ -65,8 +72,8 @@ export const load: PageServerLoad = async ({ params, url }) => {
 			}
 		})
 
-		return { games: newestGames, name: 'Newest', gamesCount: gamesCount.count }
+		return { games: newestGames, name: 'Newest', gamesCount: gamesCount.count, type: friendlyType }
 	}
 
-	return { games: [], name: '', gamesCount: gamesCount.count }
+	return { games: [], name: '', gamesCount: gamesCount.count, type: friendlyType }
 }

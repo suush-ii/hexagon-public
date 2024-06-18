@@ -39,7 +39,9 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 			moderationstate: true,
 			sales: true,
 			assetType: true,
-			onsale: true
+			onsale: true,
+			last7dayscounter: true,
+			lastweekreset: true
 		},
 		with: {
 			author: {
@@ -139,6 +141,26 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 					amount: item.price,
 					sourceuserid: user.userid
 				})
+
+				if (
+					new Date().valueOf() - item.lastweekreset.valueOf() >
+					7 * 24 * 60 * 60 * 1000 // 7 days
+				) {
+					await tx
+						.update(assetTable)
+						.set({ last7dayscounter: 0 })
+						.where(eq(assetTable.assetid, itemid))
+
+					await tx
+						.update(assetTable)
+						.set({ lastweekreset: new Date() })
+						.where(eq(assetTable.assetid, itemid))
+				} else {
+					await tx
+						.update(assetTable)
+						.set({ last7dayscounter: Number(item.last7dayscounter) + 1 })
+						.where(eq(assetTable.assetid, itemid))
+				}
 
 				await tx
 					.update(assetTable)

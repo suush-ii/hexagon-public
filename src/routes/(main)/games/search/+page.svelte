@@ -1,5 +1,4 @@
 <script lang="ts">
-	import GameTurnstile from '$src/components/games/gameTurnstile.svelte'
 	import { Input } from '$src/components/ui/input'
 	import * as Select from '$src/components/ui/select'
 	import { assetGenreZod as genres } from '$lib'
@@ -9,19 +8,24 @@
 	import { goto } from '$app/navigation'
 	import { Search } from 'lucide-svelte'
 	import { browser } from '$app/environment'
+	import { Button } from '$src/components/ui/button'
+	import GameCard from '$src/components/games/gameCard.svelte'
+	import PaginationWrapper from '$src/components/pagnationWrapper.svelte'
 
 	pageName.set('Games')
 
 	export let data: PageData
 
+	let searchQuery = $page.url.searchParams.get('search') ?? ''
+
+	let genre = $page.url.searchParams.get('genre') ?? 'All'
+
 	$: selected = {
-		label: 'All',
-		value: 'All'
+		label: genre,
+		value: genre
 	}
 
 	$: selected, search()
-
-	let searchQuery = $page.url.searchParams.get('search')
 
 	function search() {
 		let query = new URLSearchParams($page.url.searchParams.toString())
@@ -36,14 +40,14 @@
 		}
 
 		if (browser && query.size > 0) {
-			goto(`/games/search?${query.toString()}`)
+			goto(`?${query.toString()}`)
 		}
 	}
 </script>
 
 <div class="container p-4 flex flex-col gap-y-4">
 	<div class="flex flex-row gap-x-8 flex-wrap md:flex-nowrap">
-		<h1 class="text-4xl leading-none tracking-tight font-semibold">Games</h1>
+		<h1 class="text-4xl leading-none tracking-tight font-semibold">Search Results</h1>
 
 		<div class="flex flex-row flex-wrap md:flex-nowrap gap-x-2 grow items-center">
 			<h5>Genre:</h5>
@@ -70,18 +74,24 @@
 				}}
 				type="text"
 				maxlength={128}
-				class="w-fit ml-auto"
+				class="w-full"
 				icon={Search}
-				direction="r"
 			/>
+
+			<Button size="sm" on:click={search}>Search</Button>
 		</div>
 	</div>
 
-	<h1 class="text-2xl leading-none tracking-tight font-semibold">Popular</h1>
+	<div class="flex gap-4 mb-auto">
+		{#each data.games as game}
+			<GameCard
+				gameId={game.places[0].placeid}
+				gameName={game.gamename}
+				playerCount={game.active}
+				iconId={game.iconid ?? 0}
+			/>
+		{/each}
+	</div>
 
-	<GameTurnstile games={data.popular} type="popular" />
-
-	<h1 class="text-2xl leading-none tracking-tight font-semibold">Newest</h1>
-
-	<GameTurnstile games={data.newest} type="newest" />
+	<PaginationWrapper count={data.gamesCount} size={40} url={$page.url} />
 </div>

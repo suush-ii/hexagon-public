@@ -31,7 +31,8 @@ export const load: LayoutServerLoad = async ({ params, locals }) => {
 			moderationstate: true,
 			genres: true,
 			gearattributes: true,
-			onsale: true
+			onsale: true,
+			favorites: true
 		},
 		with: {
 			author: {
@@ -58,12 +59,6 @@ export const load: LayoutServerLoad = async ({ params, locals }) => {
 		.where(
 			and(eq(inventoryTable.userid, locals.user.userid), eq(inventoryTable.itemid, item.assetid))
 		)
-		.limit(1)
-
-	const favorites = await db
-		.select({ count: count() })
-		.from(assetFavoritesTable)
-		.where(eq(assetFavoritesTable.assetid, item.assetid))
 		.limit(1)
 
 	const alreadyFavorited = await db
@@ -114,7 +109,6 @@ export const load: LayoutServerLoad = async ({ params, locals }) => {
 		item: item,
 		alreadyOwned: alreadyOwned.length > 0,
 		alreadyFavorited: alreadyFavorited.length > 0,
-		favorites: favorites[0].count,
 		recommendations,
 		canEdit,
 		adminAsset

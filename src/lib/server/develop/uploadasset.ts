@@ -16,7 +16,8 @@ export async function uploadAsset(
 	item: string,
 	form: SuperValidated<any, any, any>,
 	userid: number,
-	assetname?: string
+	assetname?: string,
+	universeid?: number // for places
 ) {
 	let mimeTypes = _uploadableAssets[item].mimeTypes
 
@@ -57,6 +58,10 @@ export async function uploadAsset(
 			Key = 'images'
 		}
 
+		if (Key === 'places') {
+			Key = 'games'
+		}
+
 		if (moderationState !== 'rejected') {
 			// do not upload if it was previously rejected
 			//if (item === 'hats') {
@@ -82,7 +87,35 @@ export async function uploadAsset(
 			}
 		}
 
-		if (item === 'games') {
+		if (item === 'places' && universeid) {
+			await db.transaction(async (tx) => {
+				try {
+					let [assetResponse] = await tx
+						.insert(assetTable)
+						.values({
+							assetname: form.data.name,
+							assetType: 'games',
+							creatoruserid: userid,
+							moderationstate: 'approved'
+						})
+						.returning({ assetid: assetTable.assetid })
+
+					await tx.insert(placesTable).values({
+						placeid: assetResponse.assetid,
+						universeid: universeid,
+						placeurl: fileName,
+						startplace: true
+					})
+				} catch {
+					tx.rollback()
+					return fail(500, {
+						form
+					})
+				}
+			})
+		}
+
+		if (item === 'games' || item === 'places') {
 			await db.transaction(async (tx) => {
 				try {
 					let [gameResponse] = await tx

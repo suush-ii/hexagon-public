@@ -7,8 +7,8 @@ export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs))
 }
 
-export function formatCompactNumber(number: number) {
-	return Intl.NumberFormat('en', { notation: 'compact' }).format(number)
+export function formatCompactNumber(number: number, compact: boolean = true) {
+	return Intl.NumberFormat('en', { notation: compact ? 'compact' : 'standard' }).format(number)
 }
 
 type FlyAndScaleParams = {

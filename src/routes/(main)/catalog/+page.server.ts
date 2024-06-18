@@ -24,8 +24,6 @@ export const load: PageServerLoad = async ({ url }) => {
 		gearAttribute = true
 	}
 
-	console.log(gearAttribute)
-
 	let search = url.searchParams.get('search') ?? ''
 
 	let items
@@ -57,7 +55,8 @@ export const load: PageServerLoad = async ({ url }) => {
 				assetid: true,
 				creatoruserid: true,
 				updated: true,
-				sales: true
+				sales: true,
+				favorites: true
 			},
 			with: {
 				author: {
@@ -98,7 +97,8 @@ export const load: PageServerLoad = async ({ url }) => {
 				assetid: true,
 				creatoruserid: true,
 				updated: true,
-				sales: true
+				sales: true,
+				favorites: true
 			},
 			with: {
 				author: {
@@ -141,7 +141,8 @@ export const load: PageServerLoad = async ({ url }) => {
 				assetid: true,
 				creatoruserid: true,
 				updated: true,
-				sales: true
+				sales: true,
+				favorites: true
 			},
 			with: {
 				author: {
@@ -182,7 +183,8 @@ export const load: PageServerLoad = async ({ url }) => {
 				assetid: true,
 				creatoruserid: true,
 				updated: true,
-				sales: true
+				sales: true,
+				favorites: true
 			},
 			with: {
 				author: {

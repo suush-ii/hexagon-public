@@ -36,8 +36,12 @@ export const assetTable = pgTable('assets', {
 		.array()
 		.$type<string[]>()
 		.default(sql`'{}'::text[]`),
-	scrubbedassetname: text('scrubbedassetname')
-	//favorites: bigint('favorites', { mode: 'number' }).notNull().default(0)
+	scrubbedassetname: text('scrubbedassetname'),
+	favorites: bigint('favorites', { mode: 'number' }).notNull().default(0),
+	lastweekreset: timestamp('lastweekreset', { mode: 'date', withTimezone: true })
+		.notNull()
+		.defaultNow(),
+	last7dayscounter: bigint('last7dayscounter', { mode: 'number' }).notNull().default(0) // every week this is reset using the timestamp above
 })
 
 export const assetRelations = relations(assetTable, ({ one }) => ({

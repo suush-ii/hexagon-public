@@ -67,7 +67,11 @@ export const placesRelations = relations(placesTable, ({ one, many }) => ({
 		fields: [placesTable.universeid],
 		references: [gamesTable.universeid]
 	}),
-	jobs: many(jobsTable)
+	jobs: many(jobsTable),
+	associatedasset: one(assetTable, {
+		fields: [placesTable.placeid],
+		references: [assetTable.assetid]
+	})
 }))
 
 export const jobsTable = pgTable('jobs', {

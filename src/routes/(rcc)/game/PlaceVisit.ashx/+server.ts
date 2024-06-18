@@ -1,6 +1,6 @@
 import { error, json, type RequestHandler } from '@sveltejs/kit'
 import { db } from '$lib/server/db'
-import { gamesTable, recentlyPlayedTable, placesTable } from '$lib/server/schema'
+import { gamesTable, recentlyPlayedTable, placesTable, assetTable } from '$lib/server/schema'
 import { and, eq } from 'drizzle-orm'
 
 import { z } from 'zod'
@@ -26,7 +26,10 @@ export const POST: RequestHandler = async ({ url }) => {
 	const place = await db.query.placesTable.findFirst({
 		where: eq(placesTable.placeid, placeid),
 		columns: {},
-		with: { associatedgame: { columns: { visits: true, universeid: true } } }
+		with: {
+			associatedgame: { columns: { visits: true, universeid: true } },
+			associatedasset: { columns: { last7dayscounter: true, lastweekreset: true } }
+		}
 	})
 
 	if (!place) {
@@ -35,6 +38,23 @@ export const POST: RequestHandler = async ({ url }) => {
 			message: 'Place not found',
 			data: {}
 		})
+	}
+
+	if (
+		new Date().valueOf() - place.associatedasset.lastweekreset.valueOf() >
+		7 * 24 * 60 * 60 * 1000 // 7 days
+	) {
+		await db.update(assetTable).set({ last7dayscounter: 0 }).where(eq(assetTable.assetid, placeid))
+
+		await db
+			.update(assetTable)
+			.set({ lastweekreset: new Date() })
+			.where(eq(assetTable.assetid, placeid))
+	} else {
+		await db
+			.update(assetTable)
+			.set({ last7dayscounter: Number(place.associatedasset.last7dayscounter) + 1 })
+			.where(eq(assetTable.assetid, placeid))
 	}
 
 	await db

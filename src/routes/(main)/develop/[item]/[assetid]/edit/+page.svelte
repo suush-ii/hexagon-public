@@ -4,8 +4,13 @@
 	import EditClothingFormPrimitive from '$src/components/develop/edit/editClothingFormPrimitive.svelte'
 	import EditGameFormPrimitive from '$src/components/develop/edit/editGameFormPrimitive.svelte'
 	import EditGameImageFormPrimitive from '$src/components/develop/edit/game/editGameImageFormPrimitive.svelte'
+	import GameThumbnail from '$src/components/games/gameThumbnail.svelte'
 	import * as Tabs from '$src/components/ui/tabs/index.js'
+	import { Button } from '$src/components/ui/button'
+	import Separator from '$src/components/ui/separator/separator.svelte'
+	import EmptyCard from '$src/components/emptyCard.svelte'
 	import type { PageData } from './$types'
+	import { page } from '$app/stores'
 
 	export let data: PageData
 
@@ -38,7 +43,12 @@
 			genres={data.genres}
 		/>
 	{:else if data.item === 'games'}
-		<Tabs.Root value="settings">
+		<Tabs.Root
+			value={$page.url.searchParams.get('page') ?? 'settings'}
+			on:onValueChange={() => {
+				console.log('eee')
+			}}
+		>
 			<Tabs.List>
 				<Tabs.Trigger value="settings">Settings</Tabs.Trigger>
 				<Tabs.Trigger value="places">Places</Tabs.Trigger>
@@ -55,7 +65,48 @@
 					serversize={data.serversize}
 				/></Tabs.Content
 			>
-			<Tabs.Content value="places">can't wait to do this :D</Tabs.Content>
+			<Tabs.Content value="places">
+				<div class="flex flex-col space-y-8">
+					{#each data.places as place}
+						<div class="space-y-4">
+							<h1>Start Place</h1>
+
+							{#if place.startplace}
+								<div class="flex gap-x-4 items-center max-w-2xl">
+									<GameThumbnail
+										thumbnailid={place.associatedgame.thumbnailid}
+										gamename={data.assetname}
+										size="xl:h-[120px] h-fit w-fit"
+									/>
+
+									<a href="/develop/games/{data.assetid}/edit/places/{place.placeid}"
+										><h1 class="line-clamp-2 w-full max-w-xl hover:underline">
+											{data.assetname}
+										</h1></a
+									>
+								</div>
+							{/if}
+						</div>
+					{/each}
+					<Separator />
+
+					<div class="space-y-4">
+						<h1>Other Places</h1>
+
+						<a href="/develop/games/{data.assetid}/edit/places/upload"
+							><Button size="sm">Add Place</Button></a
+						>
+
+						<div class="outline-dashed outline-muted-foreground/20 rounded-xl p-4">
+							{#if data.places.length <= 1}
+								<EmptyCard hideDefault={true}>
+									<h5 class="text-center">You can always add places to your game.</h5>
+								</EmptyCard>
+							{/if}
+						</div>
+					</div>
+				</div>
+			</Tabs.Content>
 			<Tabs.Content value="icon">
 				<EditGameImageFormPrimitive
 					data={data.gameImageForm}

@@ -1,12 +1,14 @@
 <script lang="ts">
 	import { pageName } from '$src/stores'
 	import type { PageData } from './$types'
-	pageName.set('Games')
+
 	import GameCard from '$src/components/games/gameCard.svelte'
 	import PaginationWrapper from '$src/components/pagnationWrapper.svelte'
 	import { page } from '$app/stores'
 
 	export let data: PageData
+
+	pageName.set(data.type)
 </script>
 
 <div class="container p-4 flex flex-col gap-y-4">
