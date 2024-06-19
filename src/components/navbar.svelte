@@ -100,7 +100,7 @@
 
 			{#if loggedIn}
 				<div class="flex gap-x-6">
-					<DropdownMenu.Root>
+					<DropdownMenu.Root preventScroll={false}>
 						<DropdownMenu.Trigger asChild let:builder
 							><Button builders={[builder]} variant="minimal" class="text-lg" size="icon">
 								<div class="flex items-center gap-x-3">
@@ -123,7 +123,7 @@
 						</DropdownMenu.Content>
 					</DropdownMenu.Root>
 
-					<DropdownMenu.Root>
+					<DropdownMenu.Root preventScroll={false}>
 						<DropdownMenu.Trigger asChild let:builder
 							><Button builders={[builder]} variant="outline" size="icon">
 								<Cog />
