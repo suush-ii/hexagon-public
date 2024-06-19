@@ -59,5 +59,7 @@
 		<slot />
 	</main>
 
-	<Footer />
+	{#if $page.url.pathname != '/'}
+		<Footer />
+	{/if}
 </div>
