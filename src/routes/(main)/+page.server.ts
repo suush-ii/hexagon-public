@@ -19,7 +19,8 @@ export const load: PageServerLoad = async (event) => {
 	return {
 		form: await superValidate(zod(formSchema)),
 		clicker: config?.[0]?.pageClicker ?? 0,
-		registration: config?.[0]?.registrationEnabled ?? true
+		registration: config?.[0]?.registrationEnabled ?? true,
+		keysEnabled: config?.[0]?.keysEnabled
 	}
 }
 

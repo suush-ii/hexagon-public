@@ -105,7 +105,7 @@
 	}
 </script>
 
-<div class="flex gap-x-1 relative {css}">
+<div class="flex gap-x-1 relative {css} bg-muted-foreground/5">
 	<div class="h-full w-full mx-auto relative" id="int-target">
 		{#if dimension === '2D'}
 			{#if src}

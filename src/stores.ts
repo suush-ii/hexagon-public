@@ -27,3 +27,11 @@ interface Image {
 }
 
 export const loadedImages: Writable<Image[]> = writable([])
+
+export function localStorageStore(key: string, initial: string) {
+	const value = localStorage.getItem(key)
+	const store = writable(value == null ? initial : value)
+	store.subscribe((v) => localStorage.setItem(key, v))
+
+	return store
+}

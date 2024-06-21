@@ -285,18 +285,20 @@
 						<Form.FieldErrors />
 					</Form.Field>
 
-					<Form.Field {form} name="key">
-						<Form.Control let:attrs>
-							<Form.Label>Invite Key</Form.Label>
-							<Input
-								disabled={$submitting}
-								placeholder="(Unique)"
-								{...attrs}
-								bind:value={$formData.key}
-							/>
-						</Form.Control>
-						<Form.FieldErrors />
-					</Form.Field>
+					{#if data.keysEnabled === true}
+						<Form.Field {form} name="key">
+							<Form.Control let:attrs>
+								<Form.Label>Invite Key</Form.Label>
+								<Input
+									disabled={$submitting}
+									placeholder="(Unique)"
+									{...attrs}
+									bind:value={$formData.key}
+								/>
+							</Form.Control>
+							<Form.FieldErrors />
+						</Form.Field>
+					{/if}
 
 					<Form.Field {form} name="gender">
 						<Form.Control let:attrs>

@@ -38,6 +38,7 @@
 			coins={data?.user?.coins}
 			{admin}
 			sitealert={data.sitealert}
+			friendRequests={data.requestCount}
 		/>
 	{:else if $page.url.pathname === '/login'}
 		<Navbar
@@ -46,6 +47,7 @@
 			coins={data?.user?.coins}
 			{admin}
 			sitealert={data.sitealert}
+			friendRequests={data.requestCount}
 		/>
 	{/if}
 

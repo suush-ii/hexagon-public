@@ -12,9 +12,13 @@
 	import { MoonStar } from 'lucide-svelte'
 	import * as DropdownMenu from '$src/components/ui/dropdown-menu'
 	import { formatCompactNumber } from '$lib/utils'
+	import { localStorageStore } from '$src/stores'
 
 	import { currencyName, currencyNamePlural } from '$src/stores'
 	import { browser } from '$app/environment'
+
+	import type { Writable } from 'svelte/store'
+	import { Badge } from './ui/badge'
 
 	export let loggedIn: boolean
 	export let coins: number
@@ -22,6 +26,7 @@
 	export let userId = 0
 	export let admin = false
 	export let sitealert: string
+	export let friendRequests: number
 
 	interface pagePrimitive extends HTMLAnchorAttributes {
 		pageUrl: string
@@ -48,10 +53,10 @@
 		]
 	}
 
-	let storedalert: string = ''
+	let storedalert: Writable<string>
 
 	if (browser) {
-		storedalert = localStorage.getItem('storedalert') ?? ''
+		storedalert = localStorageStore('storedalert', '')
 	}
 </script>
 
@@ -99,13 +104,13 @@
 			{/if}
 
 			{#if loggedIn}
-				<div class="flex gap-x-6">
+				<div class="flex gap-x-2">
 					<DropdownMenu.Root preventScroll={false}>
 						<DropdownMenu.Trigger asChild let:builder
-							><Button builders={[builder]} variant="minimal" class="text-lg" size="icon">
+							><Button builders={[builder]} variant="minimal" class="text-lg w-full" size="icon">
 								<div class="flex items-center gap-x-3">
 									<MoonStar class="h-full" />
-									<h5 class="font-bold">{formatCompactNumber(coins, false)}</h5>
+									<h5 class="hidden sm:block font-bold">{formatCompactNumber(coins, false)}</h5>
 								</div>
 							</Button>
 						</DropdownMenu.Trigger>
@@ -151,7 +156,18 @@
 			<div class="container flex h-10 items-center">
 				<nav class="flex items-center space-x-4 lg:space-x-6">
 					{#each pages.authenticated as navPage}
-						{#if (navPage?.protected === true && admin === true) || !navPage?.protected}
+						{#if navPage.pageUrl === '/friends/requests'}
+							<div class="flex gap-x-2 items-center">
+								<a
+									href={navPage.pageUrl}
+									class="text-xs font-medium text-muted-foreground transition-colors hover:text-primary"
+								>
+									{navPage.friendlyName}
+								</a>
+
+								<Badge class="h-4" variant="secondary">{friendRequests}</Badge>
+							</div>
+						{:else if (navPage?.protected === true && admin === true) || !navPage?.protected}
 							<a
 								href={navPage.pageUrl}
 								class="text-xs font-medium text-muted-foreground transition-colors hover:text-primary"
@@ -163,7 +179,8 @@
 				</nav>
 			</div>
 		</div>
-		{#if sitealert && sitealert !== '' && sitealert !== storedalert}
+
+		{#if sitealert && sitealert !== '' && sitealert !== $storedalert && storedalert}
 			<div
 				class="supports-backdrop-blur:bg-background/60 fixed top-24 z-40 w-full border-b bg-orange shadow-sm backdrop-blur flex"
 			>
@@ -173,7 +190,7 @@
 					</nav>
 					<button
 						on:click={() => {
-							localStorage.setItem('storedalert', sitealert)
+							storedalert.set(sitealert)
 						}}
 						class="ml-auto"><X /></button
 					>

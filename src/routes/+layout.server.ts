@@ -1,5 +1,8 @@
 import { redirect } from '@sveltejs/kit'
 import type { LayoutServerLoad } from './/$types'
+import { relationsTable } from '$lib/server/schema'
+import { and, count, eq } from 'drizzle-orm'
+import { db } from '$lib/server/db'
 const protectedroutes = ['/home', '/catalog', '/develop', '/games']
 
 export const load: LayoutServerLoad = (async ({ url, locals }) => {
@@ -18,8 +21,23 @@ export const load: LayoutServerLoad = (async ({ url, locals }) => {
 
 	const config = locals.config
 
+	let requestCount = 0
+
+	if (user) {
+		const [counter] = await db
+			.select({ count: count() })
+			.from(relationsTable)
+			.where(
+				and(eq(relationsTable.recipient, locals.user.userid), eq(relationsTable.type, 'request'))
+			)
+			.limit(1)
+
+		requestCount = counter.count
+	}
+
 	return {
 		user,
+		requestCount,
 		sitealert: config[0].sitealert
 	}
 }) satisfies LayoutServerLoad
