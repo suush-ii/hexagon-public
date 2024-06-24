@@ -53,5 +53,5 @@
 		class="group-hover:fill-yellow-400 {alreadyFavorited ? 'fill-yellow-400' : ''} "
 		size={28}
 	/>
-	{formatCompactNumber(favorites)}
+	{formatCompactNumber(favorites, false)}
 </button>

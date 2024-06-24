@@ -223,7 +223,7 @@
 						</AlertDialog.Content>
 					</AlertDialog.Root>
 					<Card.Description class="text-lg pt-4"
-						>({formatCompactNumber(data.item.sales)} Sold)</Card.Description
+						>({formatCompactNumber(data.item.sales, false)} Sold)</Card.Description
 					>
 				</Card.Content>
 			</Card.Root>

@@ -21,14 +21,14 @@
 
 	$: summary = [
 		{ friendlyName: 'Username', value: username },
-		{ friendlyName: 'Moderation Status', value: 'Ok' },
+		{ friendlyName: 'Moderation Status', value: data.banid ? 'Moderated' : 'Ok' },
 		{ friendlyName: 'UserId', value: userid },
 		{ friendlyName: 'Membership Type', value: 'N/A' },
 		{ friendlyName: 'Joindate', value: joindate?.toLocaleDateString('en-US') }
 	]
 </script>
 
-<div class="p-8 flex flex-col space-y-4 grow max-w-3xl">
+<div class="p-8 flex flex-col space-y-4 grow max-w-3xl h-full">
 	<h1 class="text-lg">Account Summary</h1>
 
 	<div

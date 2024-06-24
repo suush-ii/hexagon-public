@@ -34,6 +34,8 @@
 <div class="container p-4 flex flex-col gap-y-4">
 	<h1 class="text-4xl leading-none tracking-tight font-semibold">My Settings</h1>
 
+	<h2 class="text-lg font-semibold">Account Settings</h2>
+
 	<div class="flex items-center gap-x-4">
 		<h1>Theme:</h1>
 		<Select.Root bind:selected>

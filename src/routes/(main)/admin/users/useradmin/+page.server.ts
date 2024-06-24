@@ -69,7 +69,8 @@ export const load: PageServerLoad = async ({ url }) => {
 			lastactivetime: user.lastactivetime,
 			joindate: user.joindate,
 			punishments: user.bans,
-			punishmentsCount: punishmentsCount[0].count
+			punishmentsCount: punishmentsCount[0].count,
+			banid: user.banid
 		}
 	}
 

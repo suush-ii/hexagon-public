@@ -2169,7 +2169,7 @@ local createReportAbuseDialog = function()
 
 	submitReportButton.MouseButton1Click:connect(function()
 		if submitReportButton.Active then
-			if abuse and abusingPlayer then
+			if abuse then
 				frame.Visible = false
 				if gameOrPlayer == "Player" then
 					game.Players:ReportAbuse(abusingPlayer, abuse, shortDescriptionBox.Text)

@@ -135,7 +135,7 @@
 	</div>
 	{#if !disable3d}
 		<Button
-			class="absolute right-0"
+			class="absolute right-2 top-2"
 			on:click={() => {
 				dimension === '3D' ? (dimension = '2D') : (dimension = '3D')
 				localStorage.setItem('itemAvatarMode', dimension)

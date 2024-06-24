@@ -157,16 +157,16 @@
 				<nav class="flex items-center space-x-4 lg:space-x-6">
 					{#each pages.authenticated as navPage}
 						{#if navPage.pageUrl === '/friends/requests'}
-							<div class="flex gap-x-2 items-center">
-								<a
-									href={navPage.pageUrl}
-									class="text-xs font-medium text-muted-foreground transition-colors hover:text-primary"
-								>
+							<a
+								class="text-xs font-medium text-muted-foreground transition-colors hover:text-primary"
+								href={navPage.pageUrl}
+							>
+								<div class="flex gap-x-2 items-center">
 									{navPage.friendlyName}
-								</a>
 
-								<Badge class="h-4" variant="secondary">{friendRequests}</Badge>
-							</div>
+									<Badge class="h-4" variant="secondary">{friendRequests}</Badge>
+								</div></a
+							>
 						{:else if (navPage?.protected === true && admin === true) || !navPage?.protected}
 							<a
 								href={navPage.pageUrl}

@@ -198,7 +198,7 @@
 								>{data.place.associatedgame.author.username}</a
 							>
 						</h1>
-						<Separator class="mt-auto" />
+						<Separator class="mt-24" />
 
 						<AlertDialog.Root closeOnOutsideClick={false} bind:open>
 							<AlertDialog.Trigger asChild let:builder>
