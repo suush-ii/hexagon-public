@@ -34,6 +34,13 @@ declare global {
 				sitealert: string
 			}[]
 		}
+		interface PageData {
+			locale: import('$lib/poly-i18n/locales').LocaleCode
+			t: Awaited<ReturnType<typeof import('$lib/poly-i18n').getTranslator>>
+			user: Lucia.DatabaseUserAttributes | undefined
+			requestCount: number | undefined
+			sitealert: string | undefined
+		}
 		// interface PageData {}
 		// interface Platform {}
 	}

@@ -62,6 +62,6 @@
 	</main>
 
 	{#if $page.url.pathname != '/'}
-		<Footer />
+		<Footer locale={data.locale} />
 	{/if}
 </div>

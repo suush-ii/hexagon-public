@@ -7,14 +7,14 @@
 	import { pageName } from '$src/stores'
 	import { MoonStar } from 'lucide-svelte'
 
-	pageName.set('Transactions')
-
 	import type { PageData } from './$types'
 	import { page } from '$app/stores'
 	import { goto } from '$app/navigation'
 	import { browser } from '$app/environment'
 
 	export let data: PageData
+
+	pageName.set('Transactions')
 
 	$: selected = {
 		value: 'purchase',
@@ -35,7 +35,7 @@
 
 <div class="container p-4 flex flex-col gap-y-4">
 	<div class="flex items-center gap-x-2">
-		<h1>Transaction Type:</h1>
+		<h1>{data.t('transactions.transactionType')}</h1>
 
 		<Select.Root bind:selected>
 			<Select.Trigger class="w-[300px]">
@@ -43,9 +43,15 @@
 			</Select.Trigger>
 			<Select.Content>
 				<Select.Group>
-					<Select.Item value={'purchase'} label={'Purchases'}>Purchases</Select.Item>
-					<Select.Item value={'sales'} label={'Sales'}>Sales</Select.Item>
-					<Select.Item value={'stipend'} label={'Stipend'}>Stipend</Select.Item>
+					<Select.Item value={'purchase'} label={data.t('transactions.purchases')}
+						>{data.t('transactions.purchases')}</Select.Item
+					>
+					<Select.Item value={'sales'} label={data.t('catalog.sales')}
+						>{data.t('catalog.sales')}</Select.Item
+					>
+					<Select.Item value={'stipend'} label={data.t('transactions.stipend')}
+						>{data.t('transactions.stipend')}</Select.Item
+					>
 				</Select.Group>
 			</Select.Content>
 			<Select.Input name="category" />
@@ -55,10 +61,10 @@
 	<Table.Root class="">
 		<Table.Header>
 			<Table.Row>
-				<Table.Head class="w-[100px]">Date</Table.Head>
-				<Table.Head class="w-[150px]">Member</Table.Head>
-				<Table.Head>Description</Table.Head>
-				<Table.Head class="text-left w-[150px]">Amount</Table.Head>
+				<Table.Head class="w-[100px]">{data.t('transactions.date')}</Table.Head>
+				<Table.Head class="w-[150px]">{data.t('transactions.member')}</Table.Head>
+				<Table.Head>{data.t('games.description')}</Table.Head>
+				<Table.Head class="text-left w-[150px]">{data.t('transactions.amount')}</Table.Head>
 			</Table.Row>
 		</Table.Header>
 		<Table.Body>
@@ -85,18 +91,20 @@
 						{/if}
 
 						{#if transaction.type === 'stipend'}
-							<Table.Cell>Daily Stipend</Table.Cell>
+							<Table.Cell>{data.t('transactions.dailyStipend')}</Table.Cell>
 						{:else if transaction.type === 'adjustment'}
-							<Table.Cell>Adjustment</Table.Cell>
+							<Table.Cell>{data.t('transactions.adjustment')}</Table.Cell>
 						{:else if transaction.type === 'sales'}
 							<Table.Cell
-								>Sold <a class="hover:underline" href="/catalog/{transaction.itemid ?? 0}"
+								>{data.t('transactions.sold')}
+								<a class="hover:underline" href="/catalog/{transaction.itemid ?? 0}"
 									>{transaction.item?.assetname}</a
 								></Table.Cell
 							>
 						{:else}
 							<Table.Cell
-								>Purchased <a class="hover:underline" href="/catalog/{transaction.itemid ?? 0}"
+								>{data.t('transactions.purchased')}
+								<a class="hover:underline" href="/catalog/{transaction.itemid ?? 0}"
 									>{transaction.item?.assetname}</a
 								></Table.Cell
 							>

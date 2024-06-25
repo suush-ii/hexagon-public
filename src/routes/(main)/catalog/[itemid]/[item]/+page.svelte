@@ -13,6 +13,7 @@
 	import Favorite from '$src/components/favorite.svelte'
 
 	import { toast } from 'svelte-sonner'
+	import { interpolate } from '$lib/poly-i18n/interpolate'
 
 	import RelativeTime from '@yaireo/relative-time'
 
@@ -112,17 +113,18 @@
 
 				<div class="flex flex-col gap-y-2">
 					<h1 class="text-sm text-muted-foreground">
-						Creator: <a href="/users/{data.item.creatoruserid}/profile"
+						{data.t('catalog.creator')}:
+						<a href="/users/{data.item.creatoruserid}/profile"
 							><span class="text-primary hover:underline">{data.item.author.username}</span></a
 						>
 					</h1>
 					<h1 class="text-sm text-muted-foreground">
-						Created: <span class="text-primary"
-							>{data.item.created.toLocaleDateString('en-US')}</span
-						>
+						{data.t('assetGeneric.created')}:
+						<span class="text-primary">{data.item.created.toLocaleDateString('en-US')}</span>
 					</h1>
 					<h1 class="text-sm text-muted-foreground">
-						Updated: <span class="text-primary">{relativeTime.from(data.item.updated)}</span>
+						{data.t('assetGeneric.updated')}:
+						<span class="text-primary">{relativeTime.from(data.item.updated)}</span>
 					</h1>
 				</div>
 			</div>
@@ -132,12 +134,12 @@
 			<ReportButton />
 			<Separator />
 
-			<h1 class="text-sm text-muted-foreground">Genres:</h1>
+			<h1 class="text-sm text-muted-foreground">{data.t('catalog.genres')}:</h1>
 			{#each data.item.genres as genre}
 				<Genre {genre} />
 			{/each}
 			{#if data.item.gearattributes}
-				<h1 class="text-sm text-muted-foreground">Gear Attributes:</h1>
+				<h1 class="text-sm text-muted-foreground">{data.t('catalog.gearAttributes')}:</h1>
 				{#each data.item.gearattributes as attribute}
 					<GearAttributes {attribute} />
 				{/each}
@@ -150,7 +152,7 @@
 			>
 				<Card.Header>
 					<Card.Title class="flex mx-auto"
-						>Price:
+						>{data.t('catalog.price')}:
 						<MoonStar class="h-4 " />
 						{#if data.item.price === 0}
 							Free
@@ -167,28 +169,28 @@
 									<Button
 										builders={[builder]}
 										class="w-full font-semibold text-lg select-none"
-										disabled>Offsale</Button
+										disabled>{data.t('catalog.offsale')}</Button
 									>
 								{:else if data.item.price === 0}
 									<Button builders={[builder]} class="w-full font-semibold text-lg select-none"
-										>Free</Button
+										>{data.t('catalog.free')}</Button
 									>
 								{:else}
 									<Button builders={[builder]} class="w-full font-semibold text-lg select-none"
-										>Buy with <MoonStar class="h-4 " /></Button
+										>{data.t('catalog.buyWith')} <MoonStar class="h-4 " /></Button
 									>
 								{/if}
 							{:else if data.alreadyOwned}
 								<Button
 									builders={[builder]}
 									class="w-full font-semibold text-lg select-none"
-									disabled>Already Owned</Button
+									disabled>{data.t('catalog.alreadyOwned')}</Button
 								>
 							{:else if data.item.price ?? 0 > data.user.coins}
 								<Button
 									builders={[builder]}
 									class="w-full font-semibold text-lg select-none"
-									disabled>Not Enough <MoonStar class="h-4 " /></Button
+									disabled>{data.t('catalog.notEnough')} <MoonStar class="h-4 " /></Button
 								>
 							{/if}
 						</AlertDialog.Trigger>
@@ -223,7 +225,9 @@
 						</AlertDialog.Content>
 					</AlertDialog.Root>
 					<Card.Description class="text-lg pt-4"
-						>({formatCompactNumber(data.item.sales, false)} Sold)</Card.Description
+						>{interpolate(data.t('catalog.sold'), {
+							count: formatCompactNumber(data.item.sales, false)
+						})}</Card.Description
 					>
 				</Card.Content>
 			</Card.Root>
@@ -238,7 +242,9 @@
 	</div>
 
 	<div class="flex flex-col gap-y-4">
-		<h1 class="text-xl leading-none tracking-tight font-semibold">Recommendations</h1>
+		<h1 class="text-xl leading-none tracking-tight font-semibold">
+			{data.t('generic.recommendations')}
+		</h1>
 		<Separator />
 
 		<div class="flex flex-row flex-wrap gap-8">
@@ -260,7 +266,8 @@
 						>
 
 						<h1 class="text-base text-muted-foreground mt-2 line-clamp-2">
-							Creator: <a href="/users/{item.creatoruserid}/profile"
+							{data.t('catalog.creator')}:
+							<a href="/users/{item.creatoruserid}/profile"
 								><span class="text-primary hover:underline">{item.author.username}</span></a
 							>
 						</h1>

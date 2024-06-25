@@ -2,21 +2,34 @@
 	import { Heart, Globe } from 'lucide-svelte'
 	import { Separator } from '$src/components/ui/separator'
 	import * as Select from '$src/components/ui/select'
+	import { changeLocale } from '$src/lib/poly-i18n/changeLocale'
+	import { page } from '$app/stores'
+	import type { locales } from '$lib/types'
+
+	export let locale: locales
 
 	let pages = [
 		{ pageUrl: '/legal/privacy', friendlyName: 'Privacy' },
 		{ pageUrl: '/legal/terms', friendlyName: 'Terms' }
 	]
 
+	function change() {
+		if (selected.value === locale) return
+		changeLocale(selected.value as locales, $page.url)
+	}
+
 	$: selected = {
-		label: 'English',
-		value: 'en'
+		label: languages.find((l) => l.value === locale)?.label,
+		value: locale
 	}
 
 	let languages = [
 		{ value: 'en', label: 'English' },
-		{ value: 'es', label: 'Español' }
+		{ value: 'es', label: 'Español' },
+		{ value: 'pt_br', label: 'Português (Brasil)' }
 	]
+
+	$: selected, change()
 </script>
 
 <footer
@@ -36,9 +49,9 @@
 		<Separator />
 
 		<div class="mx-auto flex gap-x-4 items-center">
-			<Select.Root bind:selected disabled>
+			<Select.Root bind:selected>
 				<Select.Trigger class="w-[120px] gap-x-2 justify-end">
-					<Globe class="w-4 h-4" />
+					<Globe class="w-4 h-4 flex-shrink-0" />
 					<Select.Value />
 				</Select.Trigger>
 				<Select.Content>

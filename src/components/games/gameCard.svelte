@@ -7,6 +7,10 @@
 
 	import { slugify } from '$lib/utils'
 
+	import { page } from '$app/stores'
+
+	import { interpolate } from '$lib/poly-i18n/interpolate'
+
 	export let gameName: string
 
 	export let gameId: number
@@ -34,7 +38,9 @@
 
 		<h1 class="line-clamp-2 tracking-tighter break-words text-xl">{gameName}</h1>
 		<h1 class="tracking-tighter truncate text-xs">
-			{formatCompactNumber(playerCount, false)} Playing
+			{interpolate($page.data.t('games.playing'), {
+				count: formatCompactNumber(playerCount, false)
+			})}
 		</h1>
 	</div></a
 >

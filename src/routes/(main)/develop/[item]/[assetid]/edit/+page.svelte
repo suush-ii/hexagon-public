@@ -19,7 +19,8 @@
 
 <div class="container p-8 flex flex-col gap-y-8">
 	<h1 class="text-4xl leading-none tracking-tight font-semibold">
-		Configure {depluralize(itemName)}
+		{data.t('develop.configure')}
+		{depluralize(itemName)}
 	</h1>
 
 	{#if data.item === 'shirts' || data.item === 'pants'}
@@ -50,10 +51,10 @@
 			}}
 		>
 			<Tabs.List>
-				<Tabs.Trigger value="settings">Settings</Tabs.Trigger>
-				<Tabs.Trigger value="places">Places</Tabs.Trigger>
-				<Tabs.Trigger value="icon">Icon</Tabs.Trigger>
-				<Tabs.Trigger value="thumbnail">Thumbnail</Tabs.Trigger>
+				<Tabs.Trigger value="settings">{data.t('generic.settings')}</Tabs.Trigger>
+				<Tabs.Trigger value="places">{data.t('develop.places')}</Tabs.Trigger>
+				<Tabs.Trigger value="icon">{data.t('develop.icon')}</Tabs.Trigger>
+				<Tabs.Trigger value="thumbnail">{data.t('develop.thumbnail')}</Tabs.Trigger>
 			</Tabs.List>
 			<Tabs.Content value="settings"
 				><EditGameFormPrimitive

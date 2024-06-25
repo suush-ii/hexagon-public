@@ -16,6 +16,8 @@
 	import { Textarea } from '$src/components/ui/textarea'
 	import { zodClient } from 'sveltekit-superforms/adapters'
 	import type { AssetGenreDB } from '$src/lib/types'
+	import { page } from '$app/stores'
+
 	export let data: SuperValidated<Infer<GameSchema>>
 
 	let form = superForm(data, {
@@ -122,5 +124,5 @@
 		<Form.FieldErrors />
 	</Form.Field>
 
-	<Form.Button disabled={$submitting}>Save</Form.Button>
+	<Form.Button disabled={$submitting}>{$page.data.t('develop.save')}</Form.Button>
 </form>

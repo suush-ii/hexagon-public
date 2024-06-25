@@ -19,6 +19,7 @@
 	import { zodClient } from 'sveltekit-superforms/adapters'
 	import { Input } from '$src/components/ui/input'
 	import * as Select from '$src/components/ui/select'
+	import { interpolate } from '$lib/poly-i18n/interpolate'
 
 	export let data: PageData
 
@@ -33,9 +34,9 @@
 	const { form: formData, enhance, submitting, message } = form
 
 	const genders = {
-		male: 'Male',
-		female: 'Female',
-		nonbinary: 'None'
+		male: data.t('genders.male'),
+		female: data.t('genders.female'),
+		nonbinary: data.t('genders.None')
 	}
 
 	$: selectedGender = $formData.gender
@@ -165,10 +166,6 @@
 			clearInterval(interval)
 		}
 	})
-
-	function submit() {
-		emoticon = '(⇀‿‿↼)'
-	}
 </script>
 
 <svelte:head>
@@ -200,7 +197,7 @@
 			on:mouseenter={() => {
 				emoticon = '( ⚆_⚆) ! ! ! !'
 			}}
-			class="ml-auto">Log In</Button
+			class="ml-auto">{data.t('signUpLogin.logIn')}</Button
 		>
 	</div>
 
@@ -247,16 +244,16 @@
 
 			{#if data.registration}
 				<div class="flex flex-col space-y-2 text-center">
-					<h1 class="text-2xl font-semibold tracking-tight">Create an account</h1>
+					<h1 class="text-2xl font-semibold tracking-tight">{data.t('signUpLogin.create')}</h1>
 					<p class="text-sm text-muted-foreground">
-						Enter your details below to create your account
+						{data.t('signUpLogin.details')}
 					</p>
 				</div>
 
 				<form method="POST" use:enhance>
 					<Form.Field {form} name="username">
 						<Form.Control let:attrs>
-							<Form.Label>Username</Form.Label>
+							<Form.Label>{data.t('signUpLogin.username')}</Form.Label>
 							<Input
 								disabled={$submitting}
 								placeholder="(3-20 Characters, no spaces)"
@@ -271,7 +268,7 @@
 
 					<Form.Field {form} name="password">
 						<Form.Control let:attrs>
-							<Form.Label>Password</Form.Label>
+							<Form.Label>{data.t('signUpLogin.password')}</Form.Label>
 							<Input
 								disabled={$submitting}
 								placeholder="(Unique)"
@@ -288,7 +285,7 @@
 					{#if data.keysEnabled === true}
 						<Form.Field {form} name="key">
 							<Form.Control let:attrs>
-								<Form.Label>Invite Key</Form.Label>
+								<Form.Label>{data.t('signUpLogin.invite')}</Form.Label>
 								<Input
 									disabled={$submitting}
 									placeholder="(Unique)"
@@ -302,7 +299,7 @@
 
 					<Form.Field {form} name="gender">
 						<Form.Control let:attrs>
-							<Form.Label>Gender</Form.Label>
+							<Form.Label>{data.t('signUpLogin.gender')}</Form.Label>
 							<Select.Root
 								selected={selectedGender}
 								onSelectedChange={(v) => {
@@ -332,20 +329,16 @@
 						{#if $submitting}
 							<Loader2 class="mr-2 h-4 w-4 animate-spin" />
 						{/if}
-						Sign Up!
+						{data.t('signUpLogin.signUp')}
 					</Form.Button>
 				</form>
 
 				<p class="px-8 text-center text-sm text-muted-foreground">
-					By clicking Sign Up, you agree to our
-					<a href="/legal/terms" class="underline underline-offset-4 hover:text-primary">
-						Terms of Service
-					</a>
-					and
-					<a href="/legal/privacy" class="underline underline-offset-4 hover:text-primary">
-						Privacy Policy
-					</a>
-					.
+					{@html interpolate(data.t('signUpLogin.agreement'), {
+						button: data.t('signUpLogin.signUp'),
+						terms: `<a href="/legal/terms" class="underline underline-offset-4 hover:text-primary">${data.t('signUpLogin.terms')}</a>`,
+						privacy: `<a href="/legal/privacy" class="underline underline-offset-4 hover:text-primary">${data.t('signUpLogin.privacy')}</a>`
+					})}
 				</p>
 			{:else}
 				<h1 class="text-2xl text-center mx-auto pb-96">Sorry! Registration is currently closed.</h1>

@@ -11,13 +11,15 @@
 
 	import { pageName } from '$src/stores'
 	import { Button } from '$src/components/ui/button'
-	pageName.set('Login')
+	import { interpolate } from '$lib/poly-i18n/interpolate'
+
+	export let data: PageData
+
+	pageName.set(data.t('signUpLogin.logIn'))
 
 	import { type SuperValidated, type Infer, superForm } from 'sveltekit-superforms'
 	import { zodClient } from 'sveltekit-superforms/adapters'
 	import { Input } from '$src/components/ui/input'
-
-	export let data: PageData
 
 	const form = superForm(data.form, {
 		validators: zodClient(formSchema)
@@ -43,13 +45,13 @@
 			exagon
 		</div>
 		<div class="flex flex-col space-y-2 text-center">
-			<h1 class="text-2xl font-semibold tracking-tight">Login to Hexagon</h1>
+			<h1 class="text-2xl font-semibold tracking-tight">{data.t('signUpLogin.loginText')}</h1>
 		</div>
 
 		<form method="POST" use:enhance>
 			<Form.Field {form} name="username">
 				<Form.Control let:attrs>
-					<Form.Label>Username</Form.Label>
+					<Form.Label>{data.t('signUpLogin.username')}</Form.Label>
 					<Input
 						disabled={$submitting}
 						placeholder="(Username)"
@@ -63,7 +65,7 @@
 			</Form.Field>
 			<Form.Field {form} name="password">
 				<Form.Control let:attrs>
-					<Form.Label>Password</Form.Label>
+					<Form.Label>{data.t('signUpLogin.password')}</Form.Label>
 					<Input
 						disabled={$submitting}
 						placeholder="(Password)"
@@ -85,22 +87,20 @@
 					{#if $submitting}
 						<Loader2 class="mr-2 h-4 w-4 animate-spin" />
 					{/if}
-					Log in</Form.Button
+					{data.t('signUpLogin.logIn')}</Form.Button
 				>
-				<Button href="/" class="block sm:hidden text-center" variant="outline">Sign Up</Button>
+				<Button href="/" class="block sm:hidden text-center" variant="outline"
+					>{data.t('signUpLogin.signUp')}</Button
+				>
 			</div>
 		</form>
 
 		<p class="px-8 text-center text-sm text-muted-foreground">
-			By clicking Log In, you agree to our
-			<a href="/terms" class="underline underline-offset-4 hover:text-primary">
-				Terms of Service
-			</a>
-			and
-			<a href="/privacy" class="underline underline-offset-4 hover:text-primary">
-				Privacy Policy
-			</a>
-			.
+			{@html interpolate(data.t('signUpLogin.agreement'), {
+				button: data.t('signUpLogin.logIn'),
+				terms: `<a href="/legal/terms" class="underline underline-offset-4 hover:text-primary">${data.t('signUpLogin.terms')}</a>`,
+				privacy: `<a href="/legal/privacy" class="underline underline-offset-4 hover:text-primary">${data.t('signUpLogin.privacy')}</a>`
+			})}
 		</p>
 	</div>
 </div>

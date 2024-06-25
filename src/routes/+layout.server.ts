@@ -5,8 +5,10 @@ import { and, count, eq } from 'drizzle-orm'
 import { db } from '$lib/server/db'
 const protectedroutes = ['/home', '/catalog', '/develop', '/games']
 
-export const load: LayoutServerLoad = (async ({ url, locals }) => {
+export const load: LayoutServerLoad = (async ({ url, locals, request, cookies }) => {
 	const user = locals.user
+	const acceptedLanguage = request.headers.get('accept-language')?.split(',')[0].trim()
+	const chosenLocale = cookies.get('locale')
 
 	if (
 		protectedroutes.includes(url.pathname) === true ||
@@ -38,6 +40,8 @@ export const load: LayoutServerLoad = (async ({ url, locals }) => {
 	return {
 		user,
 		requestCount,
-		sitealert: config[0].sitealert
+		sitealert: config[0].sitealert,
+		acceptedLanguage,
+		chosenLocale
 	}
 }) satisfies LayoutServerLoad

@@ -8,7 +8,9 @@
 	import GameCard from '$src/components/games/gameCard.svelte'
 
 	import { pageName } from '$src/stores'
-	pageName.set('Home')
+	import { interpolate } from '$lib/poly-i18n/interpolate'
+
+	pageName.set(data.t('generic.home'))
 
 	import EmptyCard from '$src/components/emptyCard.svelte'
 	import SeeAll from '$src/components/seeAll.svelte'
@@ -36,7 +38,9 @@
 
 	<div class="pt-24 flex flex-col gap-y-4">
 		<div class="flex flex-row justify-between px-4">
-			<h1 class="text-3xl">Friends ({data.friendCount})</h1>
+			<h1 class="text-3xl">
+				{interpolate(data.t('home.friends'), { count: data.friendCount.toString() })}
+			</h1>
 
 			<SeeAll href="/friends" />
 		</div>
@@ -61,7 +65,7 @@
 		</div>
 
 		<div class="flex flex-row justify-between px-4 mt-6">
-			<h1 class="text-3xl">Recently Played</h1>
+			<h1 class="text-3xl">{data.t('home.recentlyPlayed')}</h1>
 
 			<SeeAll href="/recentlyplayed" />
 		</div>

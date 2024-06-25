@@ -4,6 +4,7 @@
 	import { MoonStar } from 'lucide-svelte'
 	import RelativeTime from '@yaireo/relative-time'
 	import { formatCompactNumber } from '$lib/utils'
+	import { page } from '$app/stores'
 
 	const relativeTime = new RelativeTime()
 
@@ -45,18 +46,20 @@
 	</a>
 	<div class="invisible group-hover:visible flex text-xs pt-2 flex-col gap-y-1">
 		<h5 class="text-muted-foreground line-clamp-2 break-all">
-			Creator: <a class="text-foreground hover:underline" href="/users/{creatorUserId}/profile"
-				>{creator}</a
-			>
+			{$page.data.t('catalog.creator')}:
+			<a class="text-foreground hover:underline" href="/users/{creatorUserId}/profile">{creator}</a>
 		</h5>
 		<h5 class="text-muted-foreground">
-			Updated: <span class="text-foreground">{relativeTime.from(updated)}</span>
+			{$page.data.t('assetGeneric.updated')}:
+			<span class="text-foreground">{relativeTime.from(updated)}</span>
 		</h5>
 		<h5 class="text-muted-foreground">
-			Sales: <span class="text-foreground">{formatCompactNumber(sales, false)}</span>
+			{$page.data.t('catalog.sales')}:
+			<span class="text-foreground">{formatCompactNumber(sales, false)}</span>
 		</h5>
 		<h5 class="text-muted-foreground">
-			Favorited: <span class="text-foreground"
+			{$page.data.t('catalog.favorited')}:
+			<span class="text-foreground"
 				>{formatCompactNumber(favorites, false)} {favorites === 1 ? 'time' : 'times'}</span
 			>
 		</h5>

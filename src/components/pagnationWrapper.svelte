@@ -3,6 +3,7 @@
 	import * as Pagination from '$src/components/ui/pagination'
 	import { getPageNumber } from '$src/lib/utils'
 	import { ChevronLeft, ChevronRight } from 'lucide-svelte'
+	import { page } from '$app/stores'
 
 	export let count: number
 
@@ -55,7 +56,7 @@
 		<Pagination.Item>
 			<Pagination.PrevButton on:click={previousPage}>
 				<ChevronLeft class="h-4 w-4" />
-				<span class="hidden sm:block">Previous</span>
+				<span class="hidden sm:block">{$page.data.t('generic.previous')}</span>
 			</Pagination.PrevButton>
 		</Pagination.Item>
 		{#each pages as page (page.key)}
@@ -75,7 +76,7 @@
 		{/each}
 		<Pagination.Item>
 			<Pagination.NextButton on:click={nextPage}>
-				<span class="hidden sm:block">Next</span>
+				<span class="hidden sm:block">{$page.data.t('generic.next')}</span>
 				<ChevronRight class="h-4 w-4" />
 			</Pagination.NextButton>
 		</Pagination.Item>

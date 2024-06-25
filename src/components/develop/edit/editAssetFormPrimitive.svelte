@@ -17,6 +17,7 @@
 	import { assetGenreZod } from '$lib'
 	import { Checkbox } from '$src/components/ui/checkbox'
 	import type { AssetGenreDB } from '$lib/types'
+	import { page } from '$app/stores'
 
 	export let data: SuperValidated<Infer<AssetSchema>>
 
@@ -140,5 +141,5 @@
 		<Form.FieldErrors />
 	</Form.Field>
 
-	<Form.Button disabled={$submitting}>Save</Form.Button>
+	<Form.Button disabled={$submitting}>{$page.data.t('develop.save')}</Form.Button>
 </form>

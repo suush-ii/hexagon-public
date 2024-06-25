@@ -341,12 +341,13 @@
 					>
 						<Tabs.List class="w-full justify-around">
 							<a href="?page=about" class="w-full"
-								><Tabs.Trigger class="w-full pointer-events-none" value="about">About</Tabs.Trigger
+								><Tabs.Trigger class="w-full pointer-events-none" value="about"
+									>{data.t('games.about')}</Tabs.Trigger
 								></a
 							>
 							<a href="?page=servers" class="w-full"
 								><Tabs.Trigger class="w-full pointer-events-none" value="servers"
-									>Servers</Tabs.Trigger
+									>{data.t('games.servers')}</Tabs.Trigger
 								></a
 							>
 						</Tabs.List>
@@ -360,32 +361,32 @@
 
 								<div class="w-full flex flex-row flex-wrap justify-around text-center">
 									<div>
-										<p class="font-bold text-muted-foreground">Visits</p>
+										<p class="font-bold text-muted-foreground">{data.t('games.visits')}</p>
 										<p>{formatCompactNumber(data.place.associatedgame.visits)}</p>
 									</div>
 
 									<div>
-										<p class="font-bold text-muted-foreground">Created</p>
+										<p class="font-bold text-muted-foreground">{data.t('assetGeneric.created')}</p>
 										<p>{data.place.created.toLocaleDateString('en-US')}</p>
 									</div>
 
 									<div>
-										<p class="font-bold text-muted-foreground">Updated</p>
+										<p class="font-bold text-muted-foreground">{data.t('assetGeneric.updated')}</p>
 										<p>{relativeTime.from(data.place.updated)}</p>
 									</div>
 
 									<div>
-										<p class="font-bold text-muted-foreground">Max Players</p>
+										<p class="font-bold text-muted-foreground">{data.t('games.maxPlayers')}</p>
 										<p>{data.place.associatedgame.serversize}</p>
 									</div>
 
 									<div>
-										<p class="font-bold text-muted-foreground">Genre</p>
+										<p class="font-bold text-muted-foreground">{data.t('games.genre')}</p>
 										<p>{data.place.associatedgame.genre}</p>
 									</div>
 
 									<div>
-										<p class="font-bold text-muted-foreground">Allowed Gear</p>
+										<p class="font-bold text-muted-foreground">{data.t('games.allowedGear')}</p>
 										<AllowedGear
 											allowedGear={data.place.allowedgear ?? []}
 											genreEnforcement={data.place.geargenreenforced}
@@ -400,7 +401,7 @@
 
 						{#if $page.url.searchParams.get('page') === 'servers'}
 							<Tabs.Content value="servers" class="flex flex-col gap-y-4">
-								<h1 class="text-2xl font-semibold">Servers</h1>
+								<h1 class="text-2xl font-semibold">{data.t('games.servers')}</h1>
 								<GameServers
 									servers={data.servers}
 									serverSize={data.place.associatedgame.serversize}
@@ -416,7 +417,7 @@
 				</div>
 			</div>
 
-			<h1 class="text-2xl font-semibold">Recommended Games</h1>
+			<h1 class="text-2xl font-semibold">{data.t('games.recommendedGames')}</h1>
 
 			<div class="flex flex-row flex-wrap gap-x-5 w-full">
 				{#if data.recommendations.length > 0}

@@ -21,6 +21,8 @@
 
 	import RelativeTime from '@yaireo/relative-time'
 
+	import { interpolate } from '$lib/poly-i18n/interpolate'
+
 	const relativeTime = new RelativeTime()
 
 	import type { PageData } from './$types'
@@ -89,7 +91,9 @@
 	<div class="flex flex-row h-full">
 		<div class="w-1/2 flex flex-col gap-y-4 h-full">
 			<Separator class="w-full" />
-			<h1 class="text-3xl font-semibold tracking-tight">About {username}</h1>
+			<h1 class="text-3xl font-semibold tracking-tight">
+				{interpolate(data.t('profile.about'), { name: username })}
+			</h1>
 			<div
 				class="bg-muted-foreground/5 outline-dashed outline-muted-foreground/20 rounded-xl p-6 gap-y-4 flex flex-col"
 			>
@@ -133,12 +137,12 @@
 
 				<div class="w-full flex flex-row flex-wrap justify-around text-center">
 					<div>
-						<p class="font-bold text-muted-foreground">Join Date</p>
+						<p class="font-bold text-muted-foreground">{data.t('profile.joinDate')}</p>
 						<p>{data.joindate.toLocaleDateString('en-US')}</p>
 					</div>
 
 					<div>
-						<p class="font-bold text-muted-foreground">Last Online</p>
+						<p class="font-bold text-muted-foreground">{data.t('profile.lastOnline')}</p>
 						{#if new Date().valueOf() - new Date(data.lastactivetime).valueOf() < 3 * 60 * 1000}
 							<p>Now</p>
 							<!--Less than 3 mins ago-->
@@ -148,7 +152,7 @@
 					</div>
 
 					<div>
-						<p class="font-bold text-muted-foreground">Place Visits</p>
+						<p class="font-bold text-muted-foreground">{data.t('profile.placeVisits')}</p>
 						<p>{data.placeVisits}</p>
 					</div>
 				</div>
@@ -164,7 +168,7 @@
 
 		<div class="w-1/2 flex flex-col gap-y-4 h-full">
 			<Separator class="w-full" />
-			<h1 class="text-3xl font-semibold tracking-tight">Active Places</h1>
+			<h1 class="text-3xl font-semibold tracking-tight">{data.t('profile.activePlaces')}</h1>
 			<div
 				class="h-full bg-muted-foreground/5 outline-dashed outline-muted-foreground/20 rounded-xl p-4 flex flex-col"
 			>
@@ -194,7 +198,9 @@
 				<PaginationWrapper count={data.placeCount} size={40} url={$page.url} queryName={'places'} />
 			</div>
 
-			<h1 class="text-3xl font-semibold tracking-tight">{username}'s Friends!</h1>
+			<h1 class="text-3xl font-semibold tracking-tight">
+				{interpolate(data.t('profile.friends'), { name: username })}
+			</h1>
 
 			<div
 				class="h-full bg-muted-foreground/5 outline-dashed outline-muted-foreground/20 rounded-xl p-4 px-12 flex flex-col"

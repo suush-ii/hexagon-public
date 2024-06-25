@@ -19,6 +19,7 @@
 	import { gearAttributesZod as attributes } from '$lib'
 	import type { AssetGenreDB, GearAttributes } from '$src/lib/types'
 	import { Checkbox } from '$src/components/ui/checkbox'
+	import { page } from '$app/stores'
 
 	export let data: SuperValidated<Infer<GearSchema>>
 
@@ -178,5 +179,5 @@
 		<Form.FieldErrors />
 	</Form.Field>
 
-	<Form.Button disabled={$submitting}>Save</Form.Button>
+	<Form.Button disabled={$submitting}>{$page.data.t('develop.save')}</Form.Button>
 </form>

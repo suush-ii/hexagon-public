@@ -12,9 +12,9 @@
 	import GameCard from '$src/components/games/gameCard.svelte'
 	import PaginationWrapper from '$src/components/pagnationWrapper.svelte'
 
-	pageName.set('Games')
-
 	export let data: PageData
+
+	pageName.set(data.t("generic.games"))
 
 	let searchQuery = $page.url.searchParams.get('search') ?? ''
 
@@ -50,7 +50,7 @@
 		<h1 class="text-4xl leading-none tracking-tight font-semibold">Search Results</h1>
 
 		<div class="flex flex-row flex-wrap md:flex-nowrap gap-x-2 grow items-center">
-			<h5>Genre:</h5>
+			<h5>{data.t('games.genre')}:</h5>
 			<Select.Root bind:selected>
 				<Select.Trigger class="w-[200px]">
 					<Select.Value />

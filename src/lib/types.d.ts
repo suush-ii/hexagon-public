@@ -25,3 +25,5 @@ export type Component = $$Generic<typeof SvelteComponent<any, any, any>>
 import { jobsTable } from '$lib/server/schema/games'
 
 type instances = Pick<typeof jobsTable.$inferSelect, 'jobid' | 'active' | 'players'>[]
+
+type locales = import('$lib/poly-i18n/locales').LocaleCode

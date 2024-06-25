@@ -1,0 +1,117 @@
+{
+	"home": {
+		"recentlyPlayed": "Jogados Recentemente",
+		"friends": "({count}) Amigos"
+	},
+	"games": {
+		"about": "Sobre",
+		"servers": "Servidores",
+		"description": "Descrição",
+		"visits": "Visitas",
+		"maxPlayers": "Máximo de Jogadores",
+		"genre": "Gênero",
+		"allowedGear": "Gears Permitidos",
+		"recommendedGames": "Jogos Recomendados",
+		"playing": "{count} Jogando"
+	},
+	"catalog": {
+		"search": "Pesquisa",
+		"browseBy": "Pesquisar por",
+		"category": "Categoria",
+		"featuredHero": "Itens em destaque no Hexagon",
+		"sales": "Vendas",
+		"favorited": "Favoritos",
+		"creator": "Criador",
+		"price": "Preço",
+		"buyWith": "Comprar com",
+		"sold": "({count} Vendidos)",
+		"genres": "Gêneros",
+		"gearAttributes": "Atributos dos Gears",
+		"offsale": "Esgotado",
+		"free": "Grátis",
+		"alreadyOwned": "Já obtido",
+		"notEnough": "Não há suficiente"
+	},
+	"assetGeneric": {
+		"created": "Criado",
+		"updated": "Atualizado",
+		"report": "Denunciar!"
+	},
+	"develop": {
+		"audio": "Audio",
+		"decals": "Adesivos",
+		"shirts": "Camisas",
+		"pants": "Calças",
+		"uploadHere": "Faça o upload aqui",
+		"edit": "Editar",
+		"totalVistors": "Visitantes totais:",
+		"totalSales": "Vendas totais:",
+		"last7Days": "Últimos 7 dias:",
+		"configure": "Configurar",
+		"places": "Jogo",
+		"icon": "Ícone",
+		"thumbnail": "Capa",
+		"save": "Salvar"
+	},
+	"profile": {
+		"about": "Sobre {name}",
+		"joinDate": "Data de Entrada",
+		"lastOnline": "Último online em",
+		"placeVisits": "Total de Visitas",
+		"activePlaces": "Jogos Ativos",
+		"friends": "Amigos de {name}!"
+	},
+	"signUpLogin": {
+		"create": "Criar uma conta",
+		"loginText": "Entrar no Hexagon",
+		"clicked": "Fomos clicados {count} vezes.",
+		"details": "Digite seus detalhes abaixo para se registrar.",
+		"username": "Nome de Usuário",
+		"password": "Senha",
+		"invite": "Chave Convite",
+		"gender": "Sexo",
+		"signUp": "Registre-se!",
+		"logIn": "Entrar",
+		"terms": "Termos de Serviço",
+		"privacy": "Política de Privacidade",
+		"agreement": "Ao clicar em {button}, você concorda com os nossos {terms} e a nossa {privacy}."
+	},
+	"genders": {
+		"male": "Homem",
+		"female": "Mulher",
+		"None": "Prefiro não dizer"
+	},
+	"transactions": {
+		"myTransactions": "Minhas Transações",
+		"transactionType": "Tipo de transação:",
+		"date": "Data",
+		"member": "Membro",
+		"amount": "Quantia",
+		"stipend": "Estipêndio",
+		"purchases": "Compras",
+		"purchased": "Comprado",
+		"adjustment": "Ajuste",
+		"sold": "Vendido",
+		"dailyStipend": "Estipêndio Diário"
+	},
+	"generic": {
+		"home": "Inicio",
+		"games": "Jogos",
+		"catalog": "Catálogo",
+		"develop": "Criar",
+		"myAccount": "Minha Conta",
+		"settings": "Configurações",
+		"logout": "Sair",
+		"profile": "Perfil",
+		"friends": "Amigos",
+		"customize": "Customizar",
+		"admin": "Administrador",
+		"seeAll": "Ver todos",
+		"recommendations": "Recomendações",
+		"previous": "Anterior",
+		"next": "Próximo"
+	},
+	"emptyCard": {
+		"empty": "Puxa... Parece que não tem ninguém aqui... 😕"
+	}
+}

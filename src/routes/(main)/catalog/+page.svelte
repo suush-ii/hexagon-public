@@ -22,7 +22,7 @@
 
 	export let data: PageData
 
-	pageName.set('Catalog')
+	pageName.set(data.t('generic.catalog'))
 
 	let searchQuery = $page.url.searchParams.get('search')
 
@@ -50,7 +50,7 @@
 
 <div class="container p-4 flex flex-col gap-y-6">
 	<div class="flex flex-row justify-between gap-x-20 md:gap-x-96">
-		<h1 class="text-4xl leading-none tracking-tight font-semibold">Catalog</h1>
+		<h1 class="text-4xl leading-none tracking-tight font-semibold">{data.t('generic.catalog')}</h1>
 
 		<div class="flex flex-row flex-wrap md:flex-nowrap gap-x-2 grow">
 			<Input
@@ -91,8 +91,10 @@
 			class="flex flex-row flex-wrap md:flex-col h-fit bg-muted-foreground/5 rounded-xl w-64 relative"
 		>
 			<h1 class="text-base flex flex-row flex-wrap pb-4 bg-muted-foreground/10 p-4 rounded-xl">
-				Browse by <div class="text-xl w-full flex flex-row justify-between">
-					Category <ChevronDown />
+				{data.t('catalog.browseBy')}
+				<div class="text-xl w-full flex flex-row justify-between">
+					{data.t('catalog.category')}
+					<ChevronDown />
 				</div>
 			</h1>
 			{#each categories as category}
@@ -178,7 +180,7 @@
 
 		<div class="flex flex-col gap-y-4 w-full">
 			{#if data.items?.length !== 0}
-				<h1 class="text-4xl leading-none tracking-tight">Featured Items on Hexagon</h1>
+				<h1 class="text-4xl leading-none tracking-tight">{data.t('catalog.featuredHero')}</h1>
 				<div class="flex flex-row flex-wrap gap-8 mb-auto">
 					{#if data.items}
 						{#each data.items as item}

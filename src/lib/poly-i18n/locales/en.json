@@ -1,0 +1,117 @@
+{
+	"home": {
+		"recentlyPlayed": "Recently Played",
+		"friends": "Friends ({count})"
+	},
+	"games": {
+		"about": "About",
+		"servers": "Servers",
+		"description": "Description",
+		"visits": "Visits",
+		"maxPlayers": "Max Players",
+		"genre": "Genre",
+		"allowedGear": "Allowed Gear",
+		"recommendedGames": "Recommended Games",
+		"playing": "{count} Playing"
+	},
+	"catalog": {
+		"search": "Search",
+		"browseBy": "Browse By",
+		"category": "Category",
+		"featuredHero": "Featured Items on Hexagon",
+		"sales": "Sales",
+		"favorited": "Favorited",
+		"creator": "Creator",
+		"price": "Price",
+		"buyWith": "Buy with",
+		"sold": "({count} Sold)",
+		"genres": "Genres",
+		"gearAttributes": "Gear Attributes",
+		"offsale": "Offsale",
+		"free": "Free",
+		"alreadyOwned": "Already Owned",
+		"notEnough": "Not Enough"
+	},
+	"assetGeneric": {
+		"created": "Created",
+		"updated": "Updated",
+		"report": "Report!"
+	},
+	"develop": {
+		"audio": "Audio",
+		"decals": "Decals",
+		"shirts": "Shirts",
+		"pants": "Pants",
+		"uploadHere": "Upload Here",
+		"edit": "Edit",
+		"totalVistors": "Total Visitors:",
+		"totalSales": "Total Sales:",
+		"last7Days": "Last 7 Days:",
+		"configure": "Configure",
+		"places": "Places",
+		"icon": "Icon",
+		"thumbnail": "Thumbnail",
+		"save": "Save"
+	},
+	"profile": {
+		"about": "About {name}",
+		"joinDate": "Join Date",
+		"lastOnline": "Last Online",
+		"placeVisits": "Place Visits",
+		"activePlaces": "Active Places",
+		"friends": "{name}'s Friends!"
+	},
+	"signUpLogin": {
+		"create": "Create an account",
+		"loginText": "Login to Hexagon",
+		"clicked": "Has been clicked {count} times.",
+		"details": "Enter your details below to create your account",
+		"username": "Username",
+		"password": "Password",
+		"invite": "Invite Key",
+		"gender": "Gender",
+		"signUp": "Sign Up!",
+		"logIn": "Log In",
+		"terms": "Terms of Service",
+		"privacy": "Privacy Policy",
+		"agreement": "By clicking {button}, you agree to our {terms} and {privacy}."
+	},
+	"genders": {
+		"male": "Male",
+		"female": "Female",
+		"None": "None"
+	},
+	"transactions": {
+		"myTransactions": "My Transactions",
+		"transactionType": "Transaction Type:",
+		"date": "Date",
+		"member": "Member",
+		"amount": "Amount",
+		"stipend": "Stipend",
+		"purchases": "Purchases",
+		"purchased": "Purchased",
+		"adjustment": "Adjustment",
+		"sold": "Sold",
+		"dailyStipend": "Daily Stipend"
+	},
+	"generic": {
+		"home": "Home",
+		"games": "Games",
+		"catalog": "Catalog",
+		"develop": "Develop",
+		"myAccount": "My Account",
+		"settings": "Settings",
+		"logout": "Logout",
+		"profile": "Profile",
+		"friends": "Friends",
+		"customize": "Customize",
+		"admin": "Admin",
+		"seeAll": "See All",
+		"recommendations": "Recommendations",
+		"previous": "Previous",
+		"next": "Next"
+	},
+	"emptyCard": {
+		"empty": "There seems to be no one here... 😕"
+	}
+}

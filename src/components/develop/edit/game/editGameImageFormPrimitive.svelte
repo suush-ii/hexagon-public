@@ -8,6 +8,7 @@
 
 	import { defaultClass } from '$src/components/ui/input'
 	import { zodClient } from 'sveltekit-superforms/adapters'
+	import { page } from '$app/stores'
 
 	export let data: SuperValidated<Infer<GameSchema>>
 
@@ -61,5 +62,5 @@
 
 	<input name="type" value={type} hidden />
 
-	<Form.Button disabled={$submitting}>Save</Form.Button>
+	<Form.Button disabled={$submitting}>{$page.data.t('develop.save')}</Form.Button>
 </form>

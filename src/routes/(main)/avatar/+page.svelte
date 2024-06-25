@@ -15,7 +15,9 @@
 
 	$: categoryParams = $page.url.searchParams.get('category') ?? 'hats'
 
-	pageName.set('Avatar')
+	export let data: PageData
+
+	pageName.set(data.t('generic.customize'))
 
 	import type { PageData } from './$types'
 	let open = false
@@ -71,8 +73,6 @@
 	function brickColorToBg(color: number | undefined) {
 		return colorArray.find((x) => x.number === color)?.color
 	}
-
-	export let data: PageData
 </script>
 
 <div class="container p-4 flex flex-col gap-y-4">

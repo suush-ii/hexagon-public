@@ -35,23 +35,20 @@
 		protected?: boolean
 	}
 
-	let pages: {
-		notAuthenticated: pagePrimitive[]
-		authenticated: pagePrimitive[]
-	} = {
+	$: pages = {
 		notAuthenticated: [
-			{ pageUrl: '/home', friendlyName: 'Home', Icon: Home },
-			{ pageUrl: '/games', friendlyName: 'Games', Icon: Gamepad2 },
-			{ pageUrl: '/catalog', friendlyName: 'Catalog', Icon: Wand2 },
-			{ pageUrl: '/develop/games', friendlyName: 'Develop', Icon: Terminal }
+			{ pageUrl: '/home', friendlyName: $page.data.t('generic.home'), Icon: Home },
+			{ pageUrl: '/games', friendlyName: $page.data.t('generic.games'), Icon: Gamepad2 },
+			{ pageUrl: '/catalog', friendlyName: $page.data.t('generic.catalog'), Icon: Wand2 },
+			{ pageUrl: '/develop/games', friendlyName: $page.data.t('generic.develop'), Icon: Terminal }
 		],
 		authenticated: [
-			{ pageUrl: `/users/${userId}/profile`, friendlyName: 'Profile' },
-			{ pageUrl: '/friends/requests', friendlyName: 'Friends' },
-			{ pageUrl: '/avatar', friendlyName: 'Customize' },
-			{ pageUrl: '/admin', friendlyName: 'Admin', protected: true }
+			{ pageUrl: `/users/${userId}/profile`, friendlyName: $page.data.t('generic.profile') },
+			{ pageUrl: '/friends/requests', friendlyName: $page.data.t('generic.friends') },
+			{ pageUrl: '/avatar', friendlyName: $page.data.t('generic.customize') },
+			{ pageUrl: '/admin', friendlyName: $page.data.t('generic.admin'), protected: true }
 		]
-	}
+	} as { notAuthenticated: pagePrimitive[]; authenticated: pagePrimitive[] }
 
 	let storedalert: Writable<string>
 
@@ -98,8 +95,8 @@
 				{/each}
 			</div>
 			{#if signUpButton}
-				<Button href="/" class="absolute right-0 hidden sm:block md:right-4" variant="outline"
-					>Sign Up</Button
+				<Button href="/" class="absolute right-0 hidden sm:block md:right-6" variant="outline"
+					>{$page.data.t('signUpLogin.signUp')}</Button
 				>
 			{/if}
 
@@ -115,10 +112,14 @@
 							</Button>
 						</DropdownMenu.Trigger>
 						<DropdownMenu.Content>
-							<DropdownMenu.Label class="select-none">My Account</DropdownMenu.Label>
+							<DropdownMenu.Label class="select-none"
+								>{$page.data.t('generic.myAccount')}</DropdownMenu.Label
+							>
 							<DropdownMenu.Separator />
 							<a href="/transactions"
-								><DropdownMenu.Item class="cursor-pointer">My Transactions</DropdownMenu.Item></a
+								><DropdownMenu.Item class="cursor-pointer"
+									>{$page.data.t('transactions.myTransactions')}</DropdownMenu.Item
+								></a
 							>
 							<DropdownMenu.Item
 								>{formatCompactNumber(coins)}
@@ -135,13 +136,19 @@
 							</Button>
 						</DropdownMenu.Trigger>
 						<DropdownMenu.Content>
-							<DropdownMenu.Label class="select-none">My Account</DropdownMenu.Label>
+							<DropdownMenu.Label class="select-none"
+								>{$page.data.t('generic.myAccount')}</DropdownMenu.Label
+							>
 							<DropdownMenu.Separator />
 							<a href="/settings"
-								><DropdownMenu.Item class="cursor-pointer">Settings</DropdownMenu.Item></a
+								><DropdownMenu.Item class="cursor-pointer"
+									>{$page.data.t('generic.settings')}</DropdownMenu.Item
+								></a
 							>
 							<a href="/logout"
-								><DropdownMenu.Item class="cursor-pointer">Logout</DropdownMenu.Item></a
+								><DropdownMenu.Item class="cursor-pointer"
+									>{$page.data.t('generic.logout')}</DropdownMenu.Item
+								></a
 							>
 						</DropdownMenu.Content>
 					</DropdownMenu.Root>
