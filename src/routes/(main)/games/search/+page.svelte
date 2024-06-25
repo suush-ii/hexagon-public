@@ -14,7 +14,7 @@
 
 	export let data: PageData
 
-	pageName.set(data.t("generic.games"))
+	pageName.set(data.t('generic.games'))
 
 	let searchQuery = $page.url.searchParams.get('search') ?? ''
 
@@ -78,7 +78,7 @@
 				icon={Search}
 			/>
 
-			<Button size="sm" on:click={search}>Search</Button>
+			<Button size="sm" on:click={search}>{data.t('catalog.search')}</Button>
 		</div>
 	</div>
 

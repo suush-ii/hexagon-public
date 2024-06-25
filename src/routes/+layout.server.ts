@@ -7,7 +7,12 @@ const protectedroutes = ['/home', '/catalog', '/develop', '/games']
 
 export const load: LayoutServerLoad = (async ({ url, locals, request, cookies }) => {
 	const user = locals.user
-	const acceptedLanguage = request.headers.get('accept-language')?.split(',')[0].trim()
+	const acceptedLanguage = request.headers
+		.get('accept-language')
+		?.split(',')[0]
+		.trim()
+		.toLowerCase()
+		.replace('-', '_')
 	const chosenLocale = cookies.get('locale')
 
 	if (

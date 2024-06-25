@@ -82,7 +82,7 @@
 				<Select.Input name="category" />
 			</Select.Root>
 
-			<Button size="sm" on:click={search}>Search</Button>
+			<Button size="sm" on:click={search}>{data.t('catalog.search')}</Button>
 		</div>
 	</div>
 
