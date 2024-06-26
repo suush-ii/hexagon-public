@@ -8,9 +8,9 @@ import { votesTable } from '$lib/server/schema/gamevotes'
 import { jobsTable } from '$lib/server/schema/games'
 import { slugify } from '$lib/utils'
 type jobs = typeof jobsTable.$inferSelect
-import { BASE_URL } from '$env/static/private'
+import { env } from '$env/dynamic/private'
 import { assetFavoritesTable } from '$src/lib/server/schema'
-const joinScriptUrl = `http://${BASE_URL}/game/Join.ashx`
+const joinScriptUrl = `http://${env.BASE_URL}/game/Join.ashx`
 
 export const load: LayoutServerLoad = async ({ params, locals, depends, request, url }) => {
 	const result = await z.number().safeParseAsync(Number(params.gameid))

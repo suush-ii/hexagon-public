@@ -30,7 +30,7 @@
 
 	import RelativeTime from '@yaireo/relative-time'
 
-	import { PUBLIC_setupcdn } from '$env/static/public'
+	import { env } from '$env/dynamic/public'
 
 	import { newLib } from '.'
 	import Favorite from '$src/components/favorite.svelte'
@@ -161,15 +161,15 @@
 	}
 </script>
 
-<div class="container p-4 flex flex-col gap-y-4">
+<div class="container flex flex-col gap-y-4 p-4">
 	<UserImage type="banner" />
 
-	<div class="flex flex-row mx-auto gap-x-4 w-full overflow-hidden">
-		<div class="flex flex-col w-full h-fit gap-y-4">
+	<div class="flex overflow-hidden flex-row gap-x-4 mx-auto w-full">
+		<div class="flex flex-col gap-y-4 w-full h-fit">
 			<div
-				class="supports-backdrop-blur:bg-background/60 bg-muted-foreground/5 p-4 flex flex-col gap-y-4"
+				class="flex flex-col gap-y-4 p-4 supports-backdrop-blur:bg-background/60 bg-muted-foreground/5"
 			>
-				<div class="flex flex-row flex-wrap xl:flex-nowrap gap-x-4">
+				<div class="flex flex-row flex-wrap gap-x-4 xl:flex-nowrap">
 					<GameThumbnail
 						thumbnailid={data.place.associatedgame.thumbnailid}
 						gamename={data.place.associatedgame.gamename}
@@ -177,7 +177,7 @@
 
 					<div class="flex flex-col w-full">
 						<div class="flex">
-							<h1 class="text-5xl leading-none tracking-tight font-semibold mr-auto">
+							<h1 class="mr-auto text-5xl font-semibold tracking-tight leading-none">
 								{data.place.associatedgame.gamename}
 							</h1>
 
@@ -212,7 +212,7 @@
 											variant="minimal"
 											size="lg"
 											builders={[builder]}
-											class="w-full h-16 mt-4 xl:mt-auto hover:shadow-md hover:shadow-white bg-success flex gap-x-4 rounded-xl"
+											class="flex gap-x-4 mt-4 w-full h-16 rounded-xl xl:mt-auto hover:shadow-md hover:shadow-white bg-success"
 										>
 											<Play class="w-full h-10 fill-white" />
 										</Button>
@@ -222,7 +222,7 @@
 										variant="minimal"
 										size="lg"
 										builders={[builder]}
-										class="w-full h-16 mt-4 xl:mt-auto hover:shadow-md hover:shadow-white bg-success flex gap-x-4 rounded-xl"
+										class="flex gap-x-4 mt-4 w-full h-16 rounded-xl xl:mt-auto hover:shadow-md hover:shadow-white bg-success"
 										on:click={() => {
 											cancel = false
 											placeLauncher()
@@ -235,11 +235,11 @@
 							</AlertDialog.Trigger>
 							<AlertDialog.Content class="space-y-8">
 								<AlertDialog.Header>
-									<Loader2 class="h-24 w-24 animate-spin mx-auto" />
-									<h1 class="text-center text-2xl font-semibold">{loadingText}</h1>
+									<Loader2 class="mx-auto w-24 h-24 animate-spin" />
+									<h1 class="text-2xl font-semibold text-center">{loadingText}</h1>
 									<a
-										href={`https://${PUBLIC_setupcdn}/HexagonPlayerLauncher.exe`}
-										class="text-center text-lg hover:underline">Download</a
+										href={`https://${env.PUBLIC_setupcdn}/HexagonPlayerLauncher.exe`}
+										class="text-lg text-center hover:underline">Download</a
 									>
 								</AlertDialog.Header>
 
@@ -262,9 +262,9 @@
 								favorites={data.favorites}
 								game={true}
 							/>
-							<div class="flex flex-col w-full px-4">
+							<div class="flex flex-col px-4 w-full">
 								<div class="flex flex-row justify-around w-full">
-									<div class="text-success flex flex-row">
+									<div class="flex flex-row text-success">
 										<Button
 											variant="minimalcurrent"
 											size="icon"
@@ -281,7 +281,7 @@
 											/>
 										</Button>
 									</div>
-									<div class="text-destructive flex flex-row">
+									<div class="flex flex-row text-destructive">
 										<Button
 											variant="minimalcurrent"
 											size="icon"
@@ -299,7 +299,7 @@
 										</Button>
 									</div>
 								</div>
-								<div class="w-full flex flex-col">
+								<div class="flex flex-col w-full">
 									<div
 										class="w-full h-2 {isNaN(data.likespercentage)
 											? ''
@@ -314,17 +314,17 @@
 									</div>
 
 									<div class="flex flex-row justify-between">
-										<h1 class="text-success mx-8">
+										<h1 class="mx-8 text-success">
 											{formatCompactNumber(data.place.associatedgame.likes)}
 										</h1>
 										{#if submitting}
-											<Loader2 class="h-6 w-6 animate-spin" />
+											<Loader2 class="w-6 h-6 animate-spin" />
 										{/if}
 
 										{#if !isNaN(data.likespercentage) && !submitting}
 											<h1 class="">{data.likespercentage}%</h1>
 										{/if}
-										<h1 class="text-destructive mx-8">
+										<h1 class="mx-8 text-destructive">
 											{formatCompactNumber(data.place.associatedgame.dislikes)}
 										</h1>
 									</div>
@@ -337,9 +337,9 @@
 				<div class="flex flex-row flex-wrap">
 					<Tabs.Root
 						value={$page.url.searchParams.get('page') === 'servers' ? 'servers' : 'about'}
-						class="w-full flex flex-col gap-y-4"
+						class="flex flex-col gap-y-4 w-full"
 					>
-						<Tabs.List class="w-full justify-around">
+						<Tabs.List class="justify-around w-full">
 							<a href="?page=about" class="w-full"
 								><Tabs.Trigger class="w-full pointer-events-none" value="about"
 									>{data.t('games.about')}</Tabs.Trigger
@@ -354,12 +354,12 @@
 						<Tabs.Content value="about">
 							<h1 class="text-2xl font-semibold">Description</h1>
 							<div class="p-4 space-y-4">
-								<h1 class="break-words text-xl whitespace-pre-line">
+								<h1 class="text-xl whitespace-pre-line break-words">
 									{data.place.associatedgame.description}
 								</h1>
 								<Separator class="mt-2" />
 
-								<div class="w-full flex flex-row flex-wrap justify-around text-center">
+								<div class="flex flex-row flex-wrap justify-around w-full text-center">
 									<div>
 										<p class="font-bold text-muted-foreground">{data.t('games.visits')}</p>
 										<p>{formatCompactNumber(data.place.associatedgame.visits)}</p>

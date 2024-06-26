@@ -1,4 +1,4 @@
-import { CLIENT_PRIVATE_KEY } from '$env/static/private'
+import { env } from '$env/dynamic/private'
 import { type RequestHandler, text } from '@sveltejs/kit'
 import { createSign } from 'node:crypto'
 
@@ -24,7 +24,7 @@ export const GET: RequestHandler = async ({ url }) => {
 			`${jobId}\n` /*jobid*/ +
 			timestamp /*timestamp*/
 	)
-	const signature1 = sign1.sign(CLIENT_PRIVATE_KEY, 'base64')
+	const signature1 = sign1.sign(env.CLIENT_PRIVATE_KEY as string, 'base64')
 
 	if (signature1 !== givensig1) {
 		return text('False')
@@ -32,7 +32,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
 	const sign2 = createSign('SHA1')
 	sign2.update(`${Number(userid)}\n` /*userid*/ + `${jobId}\n` /*jobid*/ + timestamp /*timestamp*/)
-	const signature2 = sign2.sign(CLIENT_PRIVATE_KEY, 'base64')
+	const signature2 = sign2.sign(env.CLIENT_PRIVATE_KEY as string, 'base64')
 
 	if (signature2 !== givensig2) {
 		return text('False')

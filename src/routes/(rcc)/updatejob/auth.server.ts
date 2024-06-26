@@ -1,5 +1,5 @@
 import { type Handle, error } from '@sveltejs/kit'
-import { RCC_ACCESS_KEY } from '$env/static/private'
+import { env } from '$env/dynamic/private'
 
 export const rccAuth = (async ({ event, resolve }) => {
 	const pathname = event.url.pathname.toLowerCase()
@@ -17,7 +17,7 @@ export const rccAuth = (async ({ event, resolve }) => {
 		const accessKey =
 			event.url.searchParams.get('accessKey') || event.request.headers.get('accessKey')
 
-		if (!accessKey || RCC_ACCESS_KEY != accessKey) {
+		if (!accessKey || (env.RCC_ACCESS_KEY as string) != accessKey) {
 			return error(403, {
 				success: false,
 				message: 'Invalid session.',

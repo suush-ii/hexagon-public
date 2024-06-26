@@ -3,17 +3,17 @@ import type { RequestHandler } from './$types'
 import { jobsTable, placesTable } from '$lib/server/schema'
 import { db } from '$lib/server/db'
 import { eq, and, lt } from 'drizzle-orm'
-import { GAMESERVER_IP, BASE_URL, CLIENT_PRIVATE_KEY } from '$env/static/private'
+import { env } from '$env/dynamic/private'
 import { auth } from '$lib/server/lucia'
 import { LuciaError } from 'lucia'
 import { z } from 'zod'
 import { createSign } from 'node:crypto'
 import script from './join.lua?raw'
 
-const scriptNew: string = script.replaceAll('www.roblox.com', BASE_URL)
+const scriptNew: string = script.replaceAll('www.roblox.com', env.BASE_URL as string)
 
-const CharacterAppearance = `http://${BASE_URL}/Asset/CharacterFetch.ashx`
-const BaseUrl = `http://${BASE_URL}/`
+const CharacterAppearance = `http://${env.BASE_URL}/Asset/CharacterFetch.ashx`
+const BaseUrl = `http://${env.BASE_URL}/`
 
 export const fallback: RequestHandler = async ({ url, locals }) => {
 	// capture get/post
@@ -175,7 +175,7 @@ export const fallback: RequestHandler = async ({ url, locals }) => {
 			CharacterAppearanceId: 1
 		}
 
-		joinJson.MachineAddress = GAMESERVER_IP
+		joinJson.MachineAddress = env.GAMESERVER_IP as string
 		joinJson.ServerPort = instance.port
 
 		joinJson.UserName = session.username
@@ -204,7 +204,7 @@ export const fallback: RequestHandler = async ({ url, locals }) => {
 				`${instance.jobid}\n` /*jobid*/ +
 				timestamp /*timestamp*/
 		)
-		const signature1 = sign1.sign(CLIENT_PRIVATE_KEY, 'base64')
+		const signature1 = sign1.sign(env.CLIENT_PRIVATE_KEY as string, 'base64')
 		joinJson.ClientTicket += signature1 + ';'
 
 		const sign2 = createSign('SHA1')
@@ -213,7 +213,7 @@ export const fallback: RequestHandler = async ({ url, locals }) => {
 				`${instance.jobid}\n` /*jobid*/ +
 				timestamp /*timestamp*/
 		)
-		const signature2 = sign2.sign(CLIENT_PRIVATE_KEY, 'base64')
+		const signature2 = sign2.sign(env.CLIENT_PRIVATE_KEY as string, 'base64')
 		joinJson.ClientTicket += signature2
 
 		// joinscript signature
@@ -226,7 +226,7 @@ export const fallback: RequestHandler = async ({ url, locals }) => {
 
 		const sign = createSign('SHA1')
 		sign.update('\r\n' + scriptNewArgs)
-		const signature = sign.sign(CLIENT_PRIVATE_KEY, 'base64')
+		const signature = sign.sign(env.CLIENT_PRIVATE_KEY as string, 'base64')
 
 		return text('--rbxsig%' + signature + '%\r\n' + scriptNewArgs)
 	}

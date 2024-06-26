@@ -12,12 +12,7 @@ import { s3BucketName } from '$src/stores'
 import { rccAuth } from './routes/(rcc)/updatejob/auth.server'
 import { themesHandle } from './routes/themes.hook'
 import { get } from '$lib/server/config'
-
-import {
-	CLOUDFLARE_S3_ACCESS_KEY,
-	CLOUDFLARE_S3_ACCESS_KEY_ID,
-	CLOUDFLARE_S3_ACCOUNT_ID
-} from '$env/static/private'
+import { env } from '$env/dynamic/private'
 import { CreateBucketCommand, HeadBucketCommand, S3Client } from '@aws-sdk/client-s3'
 
 Sentry.init({
@@ -27,10 +22,10 @@ Sentry.init({
 
 const S3 = new S3Client({
 	region: 'auto',
-	endpoint: `https://${CLOUDFLARE_S3_ACCOUNT_ID}.r2.cloudflarestorage.com`,
+	endpoint: `https://${env.CLOUDFLARE_S3_ACCOUNT_ID}.r2.cloudflarestorage.com`,
 	credentials: {
-		accessKeyId: CLOUDFLARE_S3_ACCESS_KEY_ID,
-		secretAccessKey: CLOUDFLARE_S3_ACCESS_KEY
+		accessKeyId: env.CLOUDFLARE_S3_ACCESS_KEY_ID as string,
+		secretAccessKey: env.CLOUDFLARE_S3_ACCESS_KEY as string
 	}
 })
 const command = new HeadBucketCommand({ Bucket: s3BucketName })

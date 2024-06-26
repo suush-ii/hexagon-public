@@ -3,16 +3,15 @@ import type { RequestHandler } from './$types'
 import { jobsTable, placesTable } from '$lib/server/schema'
 import { db } from '$lib/server/db'
 import { eq, and, lt } from 'drizzle-orm'
-import { GAMESERVER_IP, ARBITER_PORT } from '$env/static/private'
-import { BASE_URL, JWT_SECRET_KEY } from '$env/static/private'
+import { env } from '$env/dynamic/private'
 import * as jose from 'jose'
 
-const secret = new TextEncoder().encode(JWT_SECRET_KEY)
+const secret = new TextEncoder().encode(env.JWT_SECRET_KEY)
 const alg = 'HS256'
 
-const joinScriptUrl = `http://${BASE_URL}/game/Join.ashx`
-const authenticationUrl = `http://${BASE_URL}/Login/Negotiate.ashx`
-const CharacterAppearance = `http://${BASE_URL}/Asset/CharacterFetch.ashx`
+const joinScriptUrl = `http://${env.BASE_URL}/game/Join.ashx`
+const authenticationUrl = `http://${env.BASE_URL}/Login/Negotiate.ashx`
+const CharacterAppearance = `http://${env.BASE_URL}/Asset/CharacterFetch.ashx`
 
 export const fallback: RequestHandler = async ({ url, locals, fetch, cookies }) => {
 	// capture get/post
@@ -174,7 +173,7 @@ export const fallback: RequestHandler = async ({ url, locals, fetch, cookies }) 
 	placeLauncherJson.status = 1
 
 	const response = await fetch(
-		`http://${GAMESERVER_IP}:${ARBITER_PORT}/opengame2014/${instanceNew.jobid}/${Number(placeid)}/${place.associatedgame.serversize}`
+		`http://${env.GAMESERVER_IP}:${env.ARBITER_PORT}/opengame2014/${instanceNew.jobid}/${Number(placeid)}/${place.associatedgame.serversize}`
 	)
 	const gameresponse = await response.json()
 

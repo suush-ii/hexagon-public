@@ -4,12 +4,13 @@ import { db } from '$lib/server/db'
 import { assetTable, assetCacheTable } from '$lib/server/schema/assets'
 import { eq } from 'drizzle-orm'
 import { s3Url } from '$src/stores'
-import { CLIENT_PRIVATE_KEY, RCC_ACCESS_KEY, BASE_URL } from '$env/static/private'
+import { env } from '$env/dynamic/private'
 //import parse from './meshconvert/index'
 import { createSign } from 'node:crypto'
 import pantsTemplate from './templates/pantsTemplate.xml?raw'
 import shirtTemplate from './templates/shirtTemplate.xml?raw'
 import decalTemplate from './templates/decalTemplate.xml?raw'
+import { building } from '$app/environment'
 
 export const trailingSlash = 'ignore'
 let luas = formatPath(
@@ -20,18 +21,20 @@ let luas = formatPath(
 	})
 )
 
-luas = Object.fromEntries(
-	Object.entries(luas).map(([key, corescript]) => {
-		corescript = `--rbxassetid%${key}%\r` + corescript
-		const sign = createSign('SHA1')
-		sign.update('\r\n' + corescript)
+if (!building) {
+	luas = Object.fromEntries(
+		Object.entries(luas).map(([key, corescript]) => {
+			corescript = `--rbxassetid%${key}%\r` + corescript
+			const sign = createSign('SHA1')
+			sign.update('\r\n' + corescript)
 
-		const signature = sign.sign(CLIENT_PRIVATE_KEY, 'base64')
+			const signature = sign.sign(env.CLIENT_PRIVATE_KEY as string, 'base64')
 
-		corescript = '--rbxsig%' + signature + '%\r\n' + corescript
-		return [key, corescript]
-	})
-)
+			corescript = '--rbxsig%' + signature + '%\r\n' + corescript
+			return [key, corescript]
+		})
+	)
+}
 
 function formatPath(glob: Record<string, unknown>) {
 	return Object.fromEntries(
@@ -134,7 +137,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
 		return text(
 			shirtTemplate.replace(
 				'{1}',
-				'http://' + BASE_URL + '/asset?id=' + existingAsset.associatedimageid
+				'http://' + env.BASE_URL + '/asset?id=' + existingAsset.associatedimageid
 			)
 		)
 	}
@@ -143,7 +146,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
 		return text(
 			pantsTemplate.replace(
 				'{1}',
-				'http://' + BASE_URL + '/asset?id=' + existingAsset.associatedimageid
+				'http://' + env.BASE_URL + '/asset?id=' + existingAsset.associatedimageid
 			)
 		)
 	}
@@ -152,7 +155,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
 		return text(
 			decalTemplate.replace(
 				'{1}',
-				'http://' + BASE_URL + '/asset?id=' + existingAsset.associatedimageid
+				'http://' + env.BASE_URL + '/asset?id=' + existingAsset.associatedimageid
 			)
 		)
 	}
@@ -161,7 +164,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
 		// authenticate this
 		const accessKey = url.searchParams.get('accessKey')
 
-		if (!accessKey || RCC_ACCESS_KEY != accessKey) {
+		if (!accessKey || (env.RCC_ACCESS_KEY as string) != accessKey) {
 			return error(400, {
 				success: false,
 				message: "You don't have permission to access this asset.",
