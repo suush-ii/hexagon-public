@@ -1,9 +1,9 @@
 import { drizzle } from 'drizzle-orm/postgres-js'
 import postgres from 'postgres'
 
-import { DATABASE_URL } from '$env/static/private'
-import { DATABASE_LOGS } from '$env/static/private'
-import * as schema from './schema'
-export const client = postgres(DATABASE_URL)
+import { env } from '$env/dynamic/private'
 
-export const db = drizzle(client, { schema, logger: DATABASE_LOGS === 'true' ? true : false })
+import * as schema from './schema'
+export const client = postgres(env.DATABASE_URL as string)
+
+export const db = drizzle(client, { schema, logger: env.DATABASE_LOGS === 'true' ? true : false })

@@ -1,3 +1,4 @@
+import { building } from '$app/environment'
 import { db } from '$lib/server/db'
 import { configTable } from './schema/config'
 const configPrepared = db.select().from(configTable).limit(1).prepare('configGrab')
@@ -5,25 +6,27 @@ const configPrepared = db.select().from(configTable).limit(1).prepare('configGra
 type Config = typeof configTable.$inferSelect
 let config: Config[]
 
-try {
-	config = await configPrepared.execute()
-} catch {
-	config = [
-		{
-			maintenanceEnabled: true,
-			registrationEnabled: false,
-			gamesEnabled: false,
-			developEnabled: false,
-			keysEnabled: false,
-			pageClicker: 0,
-			sitealert: ''
-		}
-	]
-	console.log('might wanna fix the db')
-}
+if (!building) {
+	try {
+		config = await configPrepared.execute()
+	} catch {
+		config = [
+			{
+				maintenanceEnabled: true,
+				registrationEnabled: false,
+				gamesEnabled: false,
+				developEnabled: false,
+				keysEnabled: false,
+				pageClicker: 0,
+				sitealert: ''
+			}
+		]
+		console.log('might wanna fix the db')
+	}
 
-if (config.length === 0) {
-	await db.insert(configTable).values({})
+	if (config.length === 0) {
+		await db.insert(configTable).values({})
+	}
 }
 
 export function get() {

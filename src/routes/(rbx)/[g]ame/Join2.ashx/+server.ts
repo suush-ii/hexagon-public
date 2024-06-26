@@ -1,15 +1,15 @@
 import { json, text } from '@sveltejs/kit'
 import type { RequestHandler } from './$types'
-import { GAMESERVER_IP, BASE_URL, CLIENT_PRIVATE_KEY, JWT_SECRET_KEY } from '$env/static/private'
+import { env } from '$env/dynamic/private'
 import { createSign } from 'node:crypto'
 
 import * as jose from 'jose'
 
-const secret = new TextEncoder().encode(JWT_SECRET_KEY)
+const secret = new TextEncoder().encode(env.JWT_SECRET_KEY)
 const alg = 'HS256'
 
-const CharacterAppearance = `http://${BASE_URL}/Asset/CharacterFetch.ashx`
-const BaseUrl = `http://${BASE_URL}/`
+const CharacterAppearance = `http://${env.BASE_URL}/Asset/CharacterFetch.ashx`
+const BaseUrl = `http://${env.BASE_URL}/`
 
 /*export const fallback: RequestHandler = async ({ url, locals }) => {
 	let joinJson = {

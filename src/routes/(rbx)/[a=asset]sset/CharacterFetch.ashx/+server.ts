@@ -1,14 +1,14 @@
 import { error, text } from '@sveltejs/kit'
 import type { RequestHandler } from './$types'
 import { z } from 'zod'
-import { BASE_URL } from '$env/static/private'
+import { env } from '$env/dynamic/private'
 import { inventoryTable } from '$lib/server/schema'
 import { db } from '$lib/server/db'
 import { and, eq } from 'drizzle-orm'
 
-const bodyColorsUrl = `http://${BASE_URL}/Asset/BodyColors.ashx`
+const bodyColorsUrl = `http://${env.BASE_URL}/Asset/BodyColors.ashx`
 
-const assetUrl = `http://${BASE_URL}/Asset/`
+const assetUrl = `http://${env.BASE_URL}/Asset/`
 
 const userIdSchema = z.coerce.number().positive()
 

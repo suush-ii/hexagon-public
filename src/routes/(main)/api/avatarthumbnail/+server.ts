@@ -4,7 +4,7 @@ import { db } from '$src/lib/server/db'
 import { jobsTable, usersTable, assetTable } from '$src/lib/server/schema'
 import { and, eq } from 'drizzle-orm'
 import { z } from 'zod'
-import { GAMESERVER_IP, ARBITER_PORT } from '$env/static/private'
+import { env } from '$env/dynamic/private'
 import { PutObjectCommand } from '@aws-sdk/client-s3'
 import { s3BucketName, s3Url } from '$src/stores'
 import { createHash } from 'node:crypto'
@@ -161,7 +161,7 @@ export const POST: RequestHandler = async ({ request }) => {
 				.returning({ jobid: jobsTable.jobid })
 
 			const response = await fetch(
-				`http://${GAMESERVER_IP}:${ARBITER_PORT}/${userRender ? 'openrender2016' : 'openrenderasset2016'}/${instanceNew.jobid}/${assetid}${userRender ? '/false' : ''}${'/false'}${item.length > 0 ? `/${item[0].assetType}` : ''}`
+				`http://${env.GAMESERVER_IP}:${env.ARBITER_PORT}/${userRender ? 'openrender2016' : 'openrenderasset2016'}/${instanceNew.jobid}/${assetid}${userRender ? '/false' : ''}${'/false'}${item.length > 0 ? `/${item[0].assetType}` : ''}`
 			)
 
 			const responseJson = await response.json()
@@ -257,7 +257,7 @@ export const POST: RequestHandler = async ({ request }) => {
 				.returning({ jobid: jobsTable.jobid })
 
 			const response = await fetch(
-				`http://${GAMESERVER_IP}:${ARBITER_PORT}/${userRender ? 'openrender2016' : 'openrenderasset2016'}/${instanceNew.jobid}/${assetid}${userRender ? '/false' : ''}${'/true'}${item.length > 0 ? `/${item[0].assetType}` : ''}`
+				`http://${env.GAMESERVER_IP}:${env.ARBITER_PORT}/${userRender ? 'openrender2016' : 'openrenderasset2016'}/${instanceNew.jobid}/${assetid}${userRender ? '/false' : ''}${'/true'}${item.length > 0 ? `/${item[0].assetType}` : ''}`
 			)
 
 			const responseJson = await response.json()
@@ -434,7 +434,7 @@ export const POST: RequestHandler = async ({ request }) => {
 				.returning({ jobid: jobsTable.jobid })
 
 			const response = await fetch(
-				`http://${GAMESERVER_IP}:${ARBITER_PORT}/openrender2016/${instanceNew.jobid}/${assetid}/true${'/false'}`
+				`http://${env.GAMESERVER_IP}:${env.ARBITER_PORT}/openrender2016/${instanceNew.jobid}/${assetid}/true${'/false'}`
 			)
 
 			const responseJson = await response.json()

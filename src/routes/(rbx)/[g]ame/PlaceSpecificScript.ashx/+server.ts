@@ -1,6 +1,6 @@
 import { error, text } from '@sveltejs/kit'
 import type { RequestHandler } from './$types'
-import { BASE_URL, CLIENT_PRIVATE_KEY } from '$env/static/private'
+import { env } from '$env/dynamic/private'
 import { createSign } from 'node:crypto'
 import script from './placespecificscript.lua?raw'
 import { z } from 'zod'
@@ -12,7 +12,7 @@ const placeInfoSchema = z.object({
 	placeid: z.coerce.number().int().positive()
 })
 
-const scriptNew: string = script.replaceAll('www.roblox.com', BASE_URL)
+const scriptNew: string = script.replaceAll('www.roblox.com', env.BASE_URL as string)
 export const fallback: RequestHandler = async ({ url }) => {
 	const result = await placeInfoSchema.safeParseAsync({
 		placeid: url.searchParams.get('PlaceId')
@@ -47,7 +47,7 @@ export const fallback: RequestHandler = async ({ url }) => {
 
 	const sign = createSign('SHA1')
 	sign.update('\r\n' + scriptNewArgs)
-	const signature = sign.sign(CLIENT_PRIVATE_KEY, 'base64')
+	const signature = sign.sign(env.CLIENT_PRIVATE_KEY as string, 'base64')
 
 	return text('--rbxsig%' + signature + '%\r\n' + scriptNewArgs)
 }
