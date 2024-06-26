@@ -30,15 +30,16 @@ export const load: PageServerLoad = async ({ params, locals, url }) => {
 				columns: {
 					type: true
 				},
-				where: or(
-					and(
-						eq(relationsTable.recipient, locals.user.userid),
-						eq(relationsTable.sender, Number(params.userId))
-					),
-					eq(relationsTable.type, 'friend'),
-					eq(relationsTable.type, 'block'),
-					eq(relationsTable.type, 'request')
+				where: and(
+					eq(relationsTable.recipient, locals.user.userid),
+					eq(relationsTable.sender, Number(params.userId)),
+					or(
+						eq(relationsTable.type, 'friend'),
+						eq(relationsTable.type, 'block'),
+						eq(relationsTable.type, 'request')
+					)
 				),
+
 				limit: 1
 			},
 			activegame: {
