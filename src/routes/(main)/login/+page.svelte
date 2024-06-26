@@ -54,7 +54,7 @@
 					<Form.Label>{data.t('signUpLogin.username')}</Form.Label>
 					<Input
 						disabled={$submitting}
-						placeholder="(Username)"
+						placeholder={`(${data.t('signUpLogin.username')})`}
 						direction="r"
 						icon={UserSquare2}
 						{...attrs}
@@ -68,7 +68,7 @@
 					<Form.Label>{data.t('signUpLogin.password')}</Form.Label>
 					<Input
 						disabled={$submitting}
-						placeholder="(Password)"
+						placeholder={`(${data.t('signUpLogin.password')})`}
 						type="password"
 						direction="r"
 						icon={Key}

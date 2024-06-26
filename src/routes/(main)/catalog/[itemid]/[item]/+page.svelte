@@ -151,7 +151,7 @@
 				class="text-center px-4 mx-4 rounded-xl supports-backdrop-blur:bg-background/60 bg-muted-foreground/5"
 			>
 				<Card.Header>
-					<Card.Title class="flex mx-auto"
+					<Card.Title class="flex mx-auto items-center"
 						>{data.t('catalog.price')}:
 						<MoonStar class="h-4 " />
 						{#if data.item.price === 0}
