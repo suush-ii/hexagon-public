@@ -49,6 +49,10 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 		error(400, { success: false, message: 'Already friends', data: {} })
 	}
 
+	if (alreadyFriends.length === 0 && type === 'unfriend') {
+		error(400, { success: false, message: 'Not friends', data: {} })
+	}
+
 	const alreadyRequested = await db
 		.select({})
 		.from(relationsTable)
