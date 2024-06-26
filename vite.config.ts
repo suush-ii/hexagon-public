@@ -10,7 +10,8 @@ export default defineConfig({
 		sentrySvelteKit({
 			sourceMapsUploadOptions: {
 				org: 'sushi',
-				project: 'hexagon-new'
+				project: 'hexagon-new',
+				authToken: process.env.SENTRY_AUTH_TOKEN
 			}
 		}),
 		arraybuffer(),
