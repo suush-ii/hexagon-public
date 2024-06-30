@@ -13,6 +13,7 @@
 	import * as Table from '$src/components/ui/table'
 	import PaginationWrapper from '$src/components/pagnationWrapper.svelte'
 	import Avatar from '$src/components/users/avatar.svelte'
+	import Dot from '$src/components/people/dot.svelte'
 
 	pageName.set(data.t('generic.people'))
 
@@ -80,8 +81,9 @@
 						<Table.Cell
 							class="flex gap-x-2 items-center truncate w-[150px] hover:underline text-base h-24"
 						>
+							<Dot state={user.status} />
 							<a href="/users/{user.userid}/profile"
-								><h2 class="w-[140px] truncate h-full">{user.username}</h2></a
+								><h2 class="w-[120px] truncate h-full">{user.username}</h2></a
 							>
 						</Table.Cell>
 						<Table.Cell class="items-center truncate w-full text-base h-full">
