@@ -131,7 +131,9 @@
 					type="avatar"
 				/>
 
-				<p class="mx-auto line-clamp-6 break-words">Hi!</p>
+				<p class="mx-auto line-clamp-6 break-words w-full whitespace-pre-line text-center">
+					{data.blurb}
+				</p>
 
 				<Separator class="mt-2" />
 

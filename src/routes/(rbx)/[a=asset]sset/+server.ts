@@ -14,7 +14,7 @@ import { building } from '$app/environment'
 
 export const trailingSlash = 'ignore'
 let luas = formatPath(
-	import.meta.glob(['./common/*.lua', './common/2014L/*.lua'], {
+	import.meta.glob(['./common/*.lua', './common/2014L/*.lua', './common/2013L/*.lua'], {
 		eager: true,
 		query: '?raw',
 		import: 'default'
@@ -23,7 +23,10 @@ let luas = formatPath(
 
 if (!building) {
 	luas = Object.fromEntries(
-		Object.entries(luas).map(([key, corescript]) => {
+		Object.entries(luas).map(([key, _corescript]) => {
+			let corescript: string = _corescript as string
+			corescript = corescript.replaceAll('www.roblox.com', env.BASE_URL as string)
+
 			corescript = `--rbxassetid%${key}%\r` + corescript
 			const sign = createSign('SHA1')
 			sign.update('\r\n' + corescript)

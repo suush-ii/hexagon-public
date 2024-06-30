@@ -47,7 +47,7 @@ export const usersTable = pgTable('users', {
 	registerip: text('registerip'),
 	lastip: text('lastip'),
 	banid: bigint('banid', { mode: 'number' }),
-	blurb: text('blurb'),
+	blurb: text('blurb').notNull().default(''),
 	scrubbedusername: text('scrubbedusername'),
 	activegame: bigint('activegame', { mode: 'number' })
 })

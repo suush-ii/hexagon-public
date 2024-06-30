@@ -94,6 +94,11 @@
 		"sold": "Sold",
 		"dailyStipend": "Daily Stipend"
 	},
+	"people": {
+		"name": "Name",
+		"blurb": "Blurb",
+		"lastSeen": "Last Seen"
+	},
 	"generic": {
 		"home": "Home",
 		"games": "Games",
@@ -105,6 +110,8 @@
 		"profile": "Profile",
 		"friends": "Friends",
 		"customize": "Customize",
+		"people": "People",
+		"avatar": "Avatar",
 		"admin": "Admin",
 		"seeAll": "See All",
 		"recommendations": "Recommendations",
