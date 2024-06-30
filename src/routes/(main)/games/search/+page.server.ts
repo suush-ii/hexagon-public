@@ -16,7 +16,7 @@ export const load: PageServerLoad = async ({ url }) => {
 	const [gamesCount] = await db
 		.select({ count: count() })
 		.from(gamesTable)
-		.where(ilike(gamesTable.gamename, `%${search}%`))
+		.where(and(ilike(gamesTable.gamename, `%${search}%`), eq(gamesTable.genre, genre)))
 		.limit(1)
 
 	if (gamesCount.count < (page - 1) * size) {

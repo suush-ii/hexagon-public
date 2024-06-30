@@ -119,5 +119,7 @@
 		</Table.Body>
 	</Table.Root>
 
-	<PaginationWrapper count={data.transactionsCount ?? 0} size={30} url={$page.url} />
+	<div class="mt-auto">
+		<PaginationWrapper count={data.transactionsCount ?? 0} size={30} url={$page.url} />
+	</div>
 </div>

@@ -2,6 +2,22 @@
 	import * as Select from '$src/components/ui/select/index.js'
 	import { themes } from '$lib/themes'
 	import { browser } from '$app/environment'
+	import { Textarea } from '$src/components/ui/textarea'
+	import { Button } from '$src/components/ui/button'
+	import { type SuperValidated, type Infer, superForm } from 'sveltekit-superforms'
+	import { zodClient } from 'sveltekit-superforms/adapters'
+	import { formSchema } from '$lib/schemas/settingsschema'
+	import type { PageData } from './$types'
+	import * as Form from '$src/components/ui/form'
+
+	export let data: PageData
+
+	const form = superForm(data.form, {
+		validators: zodClient(formSchema),
+		resetForm: false
+	})
+
+	const { form: formData, enhance, submitting } = form
 
 	let current_theme = ''
 	if (browser) {
@@ -29,6 +45,8 @@
 	}
 
 	$: selected, set_theme()
+
+	$formData.blurb = data.blurb
 </script>
 
 <div class="container p-4 flex flex-col gap-y-4">
@@ -36,20 +54,58 @@
 
 	<h2 class="text-lg font-semibold">Account Settings</h2>
 
-	<div class="flex items-center gap-x-4">
-		<h1>Theme:</h1>
-		<Select.Root bind:selected>
-			<Select.Trigger class="w-[180px]">
-				<Select.Value />
-			</Select.Trigger>
-			<Select.Content>
-				<Select.Group>
-					{#each themes as theme}
-						<Select.Item value={theme} label={theme}>{theme}</Select.Item>
-					{/each}
-				</Select.Group>
-			</Select.Content>
-			<Select.Input name="favoriteFruit" />
-		</Select.Root>
-	</div>
+	<table class="table-fixed">
+		<tbody>
+			<tr>
+				<td class="w-32">Password:</td>
+				<td>********** <Button variant="outline" size="sm">Change Password</Button></td>
+			</tr>
+		</tbody>
+	</table>
+
+	<h2 class="text-lg font-semibold mt-4">Other Settings</h2>
+
+	<form method="POST" action="?/other" class="w-full" use:enhance>
+		<table class="table-fixed border-separate border-spacing-y-4 w-full">
+			<tbody>
+				<tr>
+					<td class="w-32">Theme:</td>
+					<td
+						><Select.Root bind:selected>
+							<Select.Trigger class="w-[180px]">
+								<Select.Value />
+							</Select.Trigger>
+							<Select.Content>
+								<Select.Group>
+									{#each themes as theme}
+										<Select.Item value={theme} label={theme}>{theme}</Select.Item>
+									{/each}
+								</Select.Group>
+							</Select.Content>
+							<Select.Input name="favoriteFruit" />
+						</Select.Root></td
+					>
+				</tr>
+				<tr>
+					<td>Blurb:</td>
+					<td>
+						<Form.Field {form} name="blurb">
+							<Form.Control let:attrs>
+								<Textarea
+									{...attrs}
+									placeholder={'No personal info please (1000 character limit)'}
+									maxlength={1000}
+									disabled={$submitting}
+									bind:value={$formData.blurb}
+								/>
+							</Form.Control>
+							<Form.FieldErrors />
+						</Form.Field></td
+					>
+				</tr>
+			</tbody>
+		</table>
+
+		<Form.Button disabled={$submitting}>{data.t('develop.save')}</Form.Button>
+	</form>
 </div>

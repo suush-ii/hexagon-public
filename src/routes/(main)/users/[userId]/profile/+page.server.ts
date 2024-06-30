@@ -22,7 +22,8 @@ export const load: PageServerLoad = async ({ params, locals, url }) => {
 			lastactivetime: true,
 			joindate: true,
 			activegame: true,
-			role: true
+			role: true,
+			blurb: true
 		},
 		where: eq(usersTable.userid, Number(params.userId)),
 		with: {
@@ -72,13 +73,7 @@ export const load: PageServerLoad = async ({ params, locals, url }) => {
 		.select({ count: count() })
 		.from(relationsTable)
 		.where(
-			and(
-				or(
-					eq(relationsTable.recipient, Number(params.userId)),
-					eq(relationsTable.sender, Number(params.userId))
-				),
-				eq(relationsTable.type, 'friend')
-			)
+			and(eq(relationsTable.type, 'friend'), eq(relationsTable.recipient, Number(params.userId)))
 		)
 		.limit(1)
 
@@ -190,6 +185,7 @@ export const load: PageServerLoad = async ({ params, locals, url }) => {
 		placeVisits: placeVisits[0].count ?? 0,
 		places,
 		placeCount: placeVisits[0].amount,
-		friends
+		friends,
+		blurb: user.blurb
 	}
 }

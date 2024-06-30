@@ -6,6 +6,7 @@
 	import { Home } from 'lucide-svelte'
 	import { X } from 'lucide-svelte'
 	import { Terminal } from 'lucide-svelte'
+	import { UsersRound } from 'lucide-svelte'
 	import type { Component } from '$lib/types'
 	import type { HTMLAnchorAttributes } from 'svelte/elements'
 	import { Cog } from 'lucide-svelte'
@@ -40,6 +41,7 @@
 			{ pageUrl: '/home', friendlyName: $page.data.t('generic.home'), Icon: Home },
 			{ pageUrl: '/games', friendlyName: $page.data.t('generic.games'), Icon: Gamepad2 },
 			{ pageUrl: '/catalog', friendlyName: $page.data.t('generic.catalog'), Icon: Wand2 },
+			{ pageUrl: '/people', friendlyName: $page.data.t('generic.people'), Icon: UsersRound },
 			{ pageUrl: '/develop/games', friendlyName: $page.data.t('generic.develop'), Icon: Terminal }
 		],
 		authenticated: [
