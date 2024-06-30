@@ -78,6 +78,13 @@ export const stateOutlineMap = {
 	offline: 'outline-muted-foreground/70'
 }
 
+export const stateBackgroundMap = {
+	online: 'bg-blue-500',
+	game: 'bg-success',
+	studio: 'bg-orange',
+	offline: 'bg-destructive'
+}
+
 export const stateTextMap = {
 	online: 'text-blue-500',
 	game: 'text-success',

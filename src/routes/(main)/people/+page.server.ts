@@ -3,6 +3,7 @@ import { getPageNumber } from '$lib/utils'
 import { db } from '$lib/server/db'
 import { count, asc, ilike } from 'drizzle-orm'
 import { usersTable } from '$lib/server/schema'
+import { getUserState } from '$lib/server/userState'
 
 export const load: PageServerLoad = async ({ url }) => {
 	let search = url.searchParams.get('search') ?? ''
@@ -21,17 +22,23 @@ export const load: PageServerLoad = async ({ url }) => {
 		page = 1
 	}
 
-	const users = await db.query.usersTable.findMany({
+	const user = await db.query.usersTable.findMany({
 		columns: {
 			userid: true,
 			username: true,
 			lastactivetime: true,
-			blurb: true
+			blurb: true,
+			activegame: true
 		},
 		orderBy: asc(usersTable.userid),
 		limit: size,
 		offset: (page - 1) * size,
 		where: ilike(usersTable.username, `%${search}%`)
+	})
+
+	const users = user?.map((user) => {
+		const status = getUserState(user.lastactivetime, user.activegame)
+		return { ...user, status }
 	})
 
 	return {
