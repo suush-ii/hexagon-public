@@ -1,0 +1,163 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>Hexagon Login</title>
+		<script type="text/javascript" src="/ide/jquery-1.7.2.min.js"></script>
+		<script type="text/javascript">
+			window.jQuery ||
+				document.write("<script type='text/javascript' src='/ide/jquery-1.7.2.min.js'><\/script>")
+		</script>
+		<script type="text/javascript" src="/ide/MicrosoftAjax.js"></script>
+		<script type="text/javascript">
+			window.Sys ||
+				document.write("<script type='text/javascript' src='/ide/MicrosoftAjax.js'><\/script>")
+		</script>
+
+		<script type="text/javascript" src="/ide/js/37dc37268b10f1dcd96fd5a8fce71c9b.js"></script>
+		<style>
+			html {
+				background-color: #e1e1e1;
+			}
+		</style>
+	</head>
+	<body
+		style="background: #e1e1e1"
+		data-parent-url="http://www.hexagon.pw/IDE/welcome"
+		data-captchaon="false"
+		data-clientipaddress="207.241.226.232"
+		data-redirecttohttp="true"
+	>
+		<div id="NotLoggedInPanel">
+			<form
+				name="FacebookLoginForm"
+				method="post"
+				action="/Login/iFrameLogin.aspx?loginRedirect=True&amp;parentUrl=http%3a%2f%2fwww.roblox.com%2fUser.aspx%3fID%3d32356445%26ForcePublicView%3dtrue"
+				id="FacebookLoginForm"
+			>
+				<div>
+					<input type="hidden" name="__EVENTTARGET" id="__EVENTTARGET" value="" />
+					<input type="hidden" name="__EVENTARGUMENT" id="__EVENTARGUMENT" value="" />
+					<input
+						type="hidden"
+						name="__VIEWSTATE"
+						id="__VIEWSTATE"
+						value="/wEPDwUKMjA5OTM1NzI4OQ9kFgICAQ9kFgICARAWAh4GYWN0aW9uBYUBL0xvZ2luL2lGcmFtZUxvZ2luLmFzcHg/bG9naW5SZWRpcmVjdD1UcnVlJnBhcmVudFVybD1odHRwJTNhJTJmJTJmd3d3LnJvYmxveC5jb20lMmZVc2VyLmFzcHglM2ZJRCUzZDMyMzU2NDQ1JTI2Rm9yY2VQdWJsaWNWaWV3JTNkdHJ1ZWRkZJIf8UeaL8Ye9olH/S3mN4K3dSjT"
+					/>
+				</div>
+
+				<script type="text/javascript">
+					//<![CDATA[
+					var theForm = document.forms['FacebookLoginForm']
+					if (!theForm) {
+						theForm = document.FacebookLoginForm
+					}
+					function __doPostBack(eventTarget, eventArgument) {
+						if (!theForm.onsubmit || theForm.onsubmit() != false) {
+							theForm.__EVENTTARGET.value = eventTarget
+							theForm.__EVENTARGUMENT.value = eventArgument
+							theForm.submit()
+						}
+					}
+					//]]>
+				</script>
+				<div>
+					<input
+						type="hidden"
+						name="__EVENTVALIDATION"
+						id="__EVENTVALIDATION"
+						value="/wEWAwKLo41UAq+u6rYIAtLF4JEPdwGJ3o6Gz4YiIGokMPGvu1bnxyc="
+					/>
+				</div>
+				<script type="text/javascript">
+					//<![CDATA[
+					Sys.WebForms.PageRequestManager._initialize(
+						'ScriptManager',
+						'FacebookLoginForm',
+						[],
+						[],
+						[],
+						90,
+						''
+					)
+					//]]>
+				</script>
+
+				<div id="LoginForm">
+					<div class="newLogin" id="newLoginContainer">
+						<div class="UserNameDiv">
+							<label class="form-label" for="UserName">Username</label>
+							<br /><input
+								name="UserName"
+								type="text"
+								id="UserName"
+								class="text-box text-box-medium LoginFormInput"
+								name="UserName"
+								style="width: 144px"
+							/>
+						</div>
+						<div class="PasswordDiv">
+							<label class="form-label" for="Password">Password</label>
+							<br /><input
+								name="Password"
+								type="password"
+								id="Password"
+								class="text-box text-box-medium LoginFormInput"
+								style="width: 152px"
+							/>
+						</div>
+						<div style="clear: both"></div>
+						<div id="iFrameCaptchaControl"></div>
+						<div id="ErrorMessage" style="color: Red"></div>
+						<div class="LoginFormFieldSet">
+							<span
+								id="NotAMemberLink"
+								class="footnote"
+								style="position: absolute; top: 50%; margin-top: -8px"
+							>
+								Not a member?
+								<a href="/" target="_blank">Sign up!</a>
+							</span>
+							<span
+								id="ForgotPasswordLink"
+								class="footnote"
+								style="display: none; position: absolute; top: 50%; margin-top: -8px"
+							>
+								<a href="/" target="_blank">Forgot your password?</a>
+							</span>
+							<a
+								class="btn-small btn-neutral"
+								id="LoginButton"
+								tabindex="4"
+								style="float: right; margin-top: 8px"
+								>Login</a
+							>
+
+							<span
+								id="LoggingInStatus"
+								style="display: none; position: absolute; right: 8px; margin-top: -11px; top: 50%"
+							>
+								<img
+									src="/ide/assets/6ec6fa292c1dcdb130dcf316ac050719.gif"
+									style="margin-right: 5px; width: 20px; height: 20px"
+									alt=""
+								/>
+								<span style="top: -5px; position: absolute; position: relative">Logging in...</span>
+							</span>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+		<script type="text/javascript">
+			$(function () {
+				Roblox.iFrameLogin.Resources = {
+					//<sl:translate>
+					invalidCaptchaEntry: 'Invalid Captcha entry'
+					//</sl:translate>
+				}
+				Roblox.iFrameLogin.init()
+			})
+		</script>
+	</body>
+</html>

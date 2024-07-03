@@ -92,7 +92,7 @@ export const stateTextMap = {
 	offline: 'text-muted-foreground/70'
 }
 
-export function getPageNumber(url: URL, query?: string) {
+export function getPageNumber(url: URL, query?: string, count?: number) {
 	let page = Number(url.searchParams.get(query ?? 'page') ?? 1)
 
 	if (page < 1) {

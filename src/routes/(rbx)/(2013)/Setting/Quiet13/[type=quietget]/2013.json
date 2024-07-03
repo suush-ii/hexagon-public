@@ -139,5 +139,6 @@
 	"PhysicsRemoveWorldAssemble_US16512": "True",
 	"SFFlagDisableGuidStringCompression": "True",
 	"SFFlagInfiniteTerrain": "True",
-	"SFFlagUsingTerrainCellIteratorIndicator": "True"
+	"SFFlagUsingTerrainCellIteratorIndicator": "True",
+	"StartPageUrl": "/ide/welcome"
 }

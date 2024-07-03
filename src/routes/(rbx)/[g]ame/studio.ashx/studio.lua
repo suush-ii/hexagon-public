@@ -18,8 +18,6 @@ pcall(function() game:GetService("GamePassService"):SetPlayerHasPassUrl("http://
 pcall(function() game:GetService("MarketplaceService"):SetProductInfoUrl("https://www.roblox.com/marketplace/productinfo?assetId=%d") end)
 pcall(function() game:GetService("MarketplaceService"):SetPlayerOwnsAssetUrl("https://www.roblox.com/ownership/hasasset?userId=%d&assetId=%d") end)
 
-print(game.CoreGui.Version .. " coregui version")
-
 local starterScriptID = 37801172
 
 local success, _ = ypcall(function() Instance.new("ScrollingFrame", nil) end)
