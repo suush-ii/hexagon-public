@@ -3,8 +3,6 @@
 
 	import type { PageData } from './$types'
 
-	import '../../base.postcss'
-
 	export let data: PageData
 </script>
 
@@ -12,6 +10,8 @@
 	<title>Welcome</title>
 	<script type="text/javascript" src="/ide/jquery-1.7.2.min.js"></script>
 	<script type="text/javascript" src="/ide/MicrosoftAjax.js"></script>
+
+	<link rel="stylesheet" href="/ide/base.css" />
 
 	<script type="text/javascript" src="/ide/js/1213b611e48f19954b4b71cc85003f18.js"></script>
 

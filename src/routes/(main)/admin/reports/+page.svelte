@@ -9,7 +9,7 @@
 
 	$: error = $page.url.searchParams.get('error')
 
-	export let data: PageData
+	//export let data: PageData
 </script>
 
 <div class="p-8 flex flex-col space-y-4">Coming soon right lol</div>
