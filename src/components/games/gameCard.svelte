@@ -24,7 +24,7 @@
 	><div class="flex flex-col w-24 2xl:w-32">
 		{#if iconId}
 			<CatalogAvatar
-				css="w-32 h-32 rounded-xl aspect-square"
+				css="w-24 h-24 2xl:w-32 2xl:h-32 rounded-xl aspect-square"
 				itemId={iconId}
 				itemName={gameName}
 				disable3d={true}
