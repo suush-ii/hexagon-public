@@ -57,7 +57,7 @@ let rbxms = formatPath(
 )
 
 let commonAssets = formatPath(
-	import.meta.glob(['./common/*.png', './common/*.midi'], {
+	import.meta.glob(['./common/*.png', './common/*.midi', './common/templates/*.rbxl'], {
 		eager: true,
 		query: '?arraybuffer',
 		import: 'default'
