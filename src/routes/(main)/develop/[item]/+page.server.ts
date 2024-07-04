@@ -29,7 +29,7 @@ async function last7days(universeid: number) {
 	return last7days
 }
 
-export const load: PageServerLoad = async ({ params, locals, url }) => {
+export const load: PageServerLoad = async ({ params, locals, url, cookies }) => {
 	const result = await _assetSchema.safeParseAsync(params.item)
 
 	if (result.success === false) {
@@ -45,6 +45,7 @@ export const load: PageServerLoad = async ({ params, locals, url }) => {
 	let creations: {
 		assetName: string
 		assetid: number
+		placeid?: number
 		assetType: string
 		updated: Date
 		iconUrl?: string | null
@@ -75,6 +76,15 @@ export const load: PageServerLoad = async ({ params, locals, url }) => {
 				iconid: true,
 				updated: true,
 				visits: true
+			},
+			with: {
+				places: {
+					columns: {
+						placeid: true
+					},
+					where: eq(placesTable.startplace, true),
+					limit: 1
+				}
 			}
 		})
 
@@ -82,6 +92,7 @@ export const load: PageServerLoad = async ({ params, locals, url }) => {
 			gamecreations.map(async (game) => ({
 				assetName: game.gamename,
 				assetid: game.universeid,
+				placeid: game.places[0].placeid,
 				iconId: game.iconid,
 				updated: game.updated,
 				assetType: params.item,
@@ -148,5 +159,7 @@ export const load: PageServerLoad = async ({ params, locals, url }) => {
 		}))
 	}
 
-	return { creations, params: params.item, itemcount: itemscount?.[0]?.count ?? 0 }
+	let authBearer = cookies.get('.ROBLOSECURITY')
+
+	return { creations, params: params.item, itemcount: itemscount?.[0]?.count ?? 0, authBearer }
 }

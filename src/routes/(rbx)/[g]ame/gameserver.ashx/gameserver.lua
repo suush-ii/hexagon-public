@@ -312,20 +312,17 @@ end)
 
 -- Now start the connection
 local success, message = pcall(function() ns:Start(port) end)
-if not success then
 local HttpService = game:GetService("HttpService")
-	-- failed job close it
-	local arguments = {
-		["jobid"] = JobId
-	}
-	game:HttpPostAsync(url .. "/updatejob/closejob?accessKey="..accessKey,HttpService:JSONEncode(arguments),"application/json")
-end
+local arguments = {
+	["jobid"] = JobId
+}
 
-local HttpService = game:GetService("HttpService")
-	local arguments = {
-		["jobid"] = JobId
-	}
+if not success then
+	-- failed job close it
+	game:HttpPostAsync(url .. "/updatejob/closejob?accessKey="..accessKey,HttpService:JSONEncode(arguments),"application/json")
+else
 	game:HttpPostAsync(url .. "/updatejob/gameloaded?accessKey="..accessKey,HttpService:JSONEncode(arguments),"application/json")
+end
 
 if timeout then
 	scriptContext:SetTimeout(timeout)

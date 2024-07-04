@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Avatar from '$src/components/catalog/avatar.svelte'
 	import UserAvatar from '$src/components/users/avatar.svelte'
-	import { MoonStar } from 'lucide-svelte'
+	import { MoonStar, X } from 'lucide-svelte'
 
 	import { Button } from '$src/components/ui/button'
 	import { Separator } from '$src/components/ui/separator'
@@ -28,6 +28,8 @@
 	export let data: PageData
 
 	let purchasing = false
+
+	let open = false
 
 	async function purchase() {
 		purchasing = true
@@ -162,7 +164,7 @@
 					</Card.Title>
 				</Card.Header>
 				<Card.Content>
-					<AlertDialog.Root closeOnOutsideClick={true}>
+					<AlertDialog.Root closeOnOutsideClick={true} bind:open>
 						<AlertDialog.Trigger asChild let:builder>
 							{#if !data.alreadyOwned && data.user.coins >= (data.item.price ?? 0)}
 								{#if data.item.onsale === false}
@@ -196,8 +198,17 @@
 						</AlertDialog.Trigger>
 						<AlertDialog.Content>
 							<AlertDialog.Header>
-								<AlertDialog.Title class="text-xl font-semibold"
-									>Buy Item
+								<AlertDialog.Title class="text-xl font-semibold">
+									<div class="flex justify-between">
+										Buy Item
+
+										<button
+											on:click={() => {
+												open = false
+											}}><X /></button
+										>
+									</div>
+
 									<Separator />
 								</AlertDialog.Title>
 								<AlertDialog.Description class="text-lg flex flex-col gap-y-4">

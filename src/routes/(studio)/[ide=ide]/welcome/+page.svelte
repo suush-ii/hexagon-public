@@ -45,7 +45,7 @@
 				RobloxLaunch.StartGame(
 					'http://www.hexagon.pw/Game/edit.ashx?PlaceID=' + play_placeId + '&upload=',
 					'edit.ashx',
-					'https://www.hexagon.pw//Login/Negotiate.ashx',
+					'https://www.hexagon.pw/Login/Negotiate.ashx',
 					'FETCH',
 					true
 				)
@@ -56,29 +56,37 @@
 <body id="StudioWelcomeBody">
 	<div class="header">
 		<div id="header-login-wrapper" class="iframe-login-signup" data-display-opened="">
-			<a href="/" target="_blank" class="btn-control btn-control-large translate" id="header-signup"
-				><span>Sign Up</span></a
-			>
-			<!--
-			<span id="header-or">or</span>
-			<span class="studioiFrameLogin">
-				<span id="login-span">
-					<a id="header-login" class="btn-control btn-control-large"
-						>Login <span class="grey-arrow">▼</span></a
-					>
-				</span>
+			{#if data.username}
+				<span id="userName">Logged in as {data.username}</span>
+			{:else}
+				<a
+					href="/"
+					target="_blank"
+					class="btn-control btn-control-large translate"
+					id="header-signup"><span>Sign Up</span></a
+				>
+				<!--
+		<span id="header-or">or</span>
+		<span class="studioiFrameLogin">
+			<span id="login-span">
+				<a id="header-login" class="btn-control btn-control-large"
+					>Login <span class="grey-arrow">▼</span></a
+				>
+			</span>
 
-				<div id="iFrameLogin" class="studioiFrameLogin" style="display: none">
-					<iframe
-						class="login-frame"
-						src="http://www.hexagon.pw/Login/iFrameLogin.aspx?loginRedirect=True&amp;parentUrl=http%3a%2f%2fwww.hexagon.pw%2fide%2fwelcome"
-						scrolling="no"
-						frameborder="0"
-						title="Login"
-					></iframe>
-				</div>
-			</span>-->
+			<div id="iFrameLogin" class="studioiFrameLogin" style="display: none">
+				<iframe
+					class="login-frame"
+					src="http://www.hexagon.pw/Login/iFrameLogin.aspx?loginRedirect=True&amp;parentUrl=http%3a%2f%2fwww.hexagon.pw%2fide%2fwelcome"
+					scrolling="no"
+					frameborder="0"
+					title="Login"
+				></iframe>
+			</div>
+		</span>-->
+			{/if}
 		</div>
+
 		<!-- This is only after the login stuff because IE7 demands floated elements be before non-floated -->
 		<img src="/ide/img-studio_title.png" alt="Roblox Studio Title" />
 	</div>
@@ -204,15 +212,33 @@
 			<div id="MyProjectsView" class="welcome-content-area" style="display: none">
 				<h2>My Published Projects</h2>
 				<div id="assetList">
-					<div>
-						<span>You must be logged in to view your published projects!</span>
-					</div>
-					<script type="text/javascript">
-						$('#MyProjects').click(function () {
-							$('#header-login').addClass('active')
-							$('#iFrameLogin').css('display', 'block')
-						})
-					</script>
+					{#if data.gamecreations}
+						{#each data.gamecreations as game}
+							<div class="template" placeid={game.places[0].placeid}>
+								<!-- svelte-ignore a11y-invalid-attribute -->
+								<a href="" class="game-image"
+									><img
+										class=""
+										width="197"
+										height="115"
+										src="/ide/assets/b9e7f7d3cf793d3c06f1d5a4f7e4f27a.jpg"
+										alt="Baseplate"
+									/></a
+								>
+								<p>{game.gamename}</p>
+							</div>
+						{/each}
+					{:else}
+						<div>
+							<span>You must be logged in to view your published projects!</span>
+						</div>
+						<script type="text/javascript">
+							$('#MyProjects').click(function () {
+								$('#header-login').addClass('active')
+								$('#iFrameLogin').css('display', 'block')
+							})
+						</script>
+					{/if}
 				</div>
 			</div>
 			<div id="ButtonRow" class="divider-top divider-left divider-bottom">

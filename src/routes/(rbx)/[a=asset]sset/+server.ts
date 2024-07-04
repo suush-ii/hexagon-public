@@ -11,6 +11,7 @@ import pantsTemplate from './templates/pantsTemplate.xml?raw'
 import shirtTemplate from './templates/shirtTemplate.xml?raw'
 import decalTemplate from './templates/decalTemplate.xml?raw'
 import { building } from '$app/environment'
+import { auth } from '$lib/server/lucia'
 
 export const trailingSlash = 'ignore'
 let luas = formatPath(
@@ -71,8 +72,8 @@ function getCdnUrl(hash: string) {
 	return 'https://c'.concat((t % 8).toString(), '.rbxcdn.com/').concat(hash)
 }
 
-export const GET: RequestHandler = async ({ url, request }) => {
-	const result = await assetSchema.safeParseAsync(Number(url.searchParams.get('id')))
+export const GET: RequestHandler = async (event) => {
+	const result = await assetSchema.safeParseAsync(Number(event.url.searchParams.get('id')))
 
 	if (!result.success) {
 		error(400, { success: false, message: 'Malformed ID.', data: {} })
@@ -107,7 +108,8 @@ export const GET: RequestHandler = async ({ url, request }) => {
 			assetType: true,
 			simpleasseturl: true,
 			moderationstate: true,
-			associatedimageid: true
+			associatedimageid: true,
+			creatoruserid: true
 		},
 		with: {
 			place: {
@@ -165,14 +167,20 @@ export const GET: RequestHandler = async ({ url, request }) => {
 
 	if (existingAsset?.assetType === 'games') {
 		// authenticate this
-		const accessKey = url.searchParams.get('accessKey')
+		const accessKey = event.url.searchParams.get('accessKey')
 
-		if (!accessKey || (env.RCC_ACCESS_KEY as string) != accessKey) {
-			return error(400, {
-				success: false,
-				message: "You don't have permission to access this asset.",
-				data: {}
-			})
+		if (!accessKey || (env.RCC_ACCESS_KEY as string) !== accessKey) {
+			event.locals.auth = auth.handleRequest(event)
+
+			const session = await event.locals.auth.validate()
+
+			if (session?.user?.userid != existingAsset.creatoruserid) {
+				return error(403, {
+					success: false,
+					message: "You don't have permission to access this asset.",
+					data: {}
+				})
+			}
 		}
 
 		redirect(302, `https://${s3Url}/${existingAsset?.assetType}/` + existingAsset?.place.placeurl)
