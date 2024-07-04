@@ -2,12 +2,15 @@
 	import * as Tabs from '$src/components/ui/tabs'
 	import * as Avatar from '$src/components/ui/avatar'
 	import CatalogAvatar from '$src/components/catalog/avatar.svelte'
+	import DownloadModal from '$src/components/downloadModal.svelte'
 	import { Button } from '$src/components/ui/button'
-	import { Upload } from 'lucide-svelte'
+	import { Upload, Cog } from 'lucide-svelte'
 
 	import type { PageData } from './$types'
 
 	export let data: PageData
+
+	let downloadOpen = false
 
 	import { pageName } from '$src/stores'
 	import EmptyCard from '$src/components/emptyCard.svelte'
@@ -18,9 +21,21 @@
 	pageName.set(data.t('generic.develop'))
 
 	$: creations = data.creations
+
+	function launchStudio(placeid: number) {
+		downloadOpen = true
+
+		document.location = `hexagon-studio:1+launchmode:ide+gameinfo:${data.authBearer}+script:${encodeURIComponent(`http://www.hexagon.pw/Game/edit.ashx?PlaceID=${placeid}`)}`
+
+		setTimeout(() => {
+			downloadOpen = false
+		}, 5000)
+	}
 </script>
 
 <div class="container p-8 flex flex-col gap-y-8">
+	<DownloadModal bind:downloadOpen type={'studio'} />
+
 	<h1 class="text-4xl leading-none tracking-tight font-semibold">{data.t('generic.develop')}</h1>
 
 	<Tabs.Root value={data.item} class="w-full flex flex-col gap-y-4">
@@ -124,10 +139,25 @@
 								</tr>
 							</tbody>
 						</table>
-						<div class="flex m-auto">
-							<Button href="/develop/{data.item}/{creation.assetid}/edit"
-								>{data.t('develop.edit')}</Button
-							>
+						<div class="flex m-auto gap-x-2">
+							{#if data.params === 'games'}
+								<Button
+									size="sm"
+									on:click={() => {
+										launchStudio(creation.placeid ?? 0)
+									}}>{data.t('develop.edit')}</Button
+								>
+
+								<Button
+									size="icon"
+									variant="outline"
+									href="/develop/{data.item}/{creation.assetid}/edit"><Cog /></Button
+								>
+							{:else}
+								<Button size="sm" href="/develop/{data.item}/{creation.assetid}/edit"
+									>{data.t('develop.edit')}</Button
+								>
+							{/if}
 						</div>
 					</div>
 				</div>

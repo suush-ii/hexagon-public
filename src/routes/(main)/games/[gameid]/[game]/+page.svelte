@@ -12,7 +12,9 @@
 
 	import { Button } from '$src/components/ui/button'
 
-	import { Play, ThumbsUp, ThumbsDown, Loader2, Star } from 'lucide-svelte'
+	import { Play, ThumbsUp, ThumbsDown, Loader2 } from 'lucide-svelte'
+
+	import DownloadModal from '$src/components/downloadModal.svelte'
 
 	import { formatCompactNumber } from '$lib/utils'
 
@@ -50,6 +52,8 @@
 	let submitting = false
 
 	let open = false
+
+	let downloadOpen = false
 
 	let cancel = false
 
@@ -152,6 +156,12 @@
 
 				disableRandom = true
 				loadingText = defaultText
+
+				downloadOpen = true
+
+				setTimeout(() => {
+					downloadOpen = false
+				}, 5000)
 			}
 		}
 	}
@@ -254,6 +264,8 @@
 								</AlertDialog.Cancel>
 							</AlertDialog.Content>
 						</AlertDialog.Root>
+
+						<DownloadModal bind:downloadOpen type={'player'} />
 						<Separator class="mt-auto" />
 						<div class="flex flex-row gap-x-4">
 							<Favorite
