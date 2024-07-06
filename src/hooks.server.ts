@@ -14,6 +14,7 @@ import { themesHandle } from './routes/themes.hook'
 import { get } from '$lib/server/config'
 import { env } from '$env/dynamic/private'
 import { CreateBucketCommand, HeadBucketCommand, S3Client } from '@aws-sdk/client-s3'
+import { csrfHandle } from './routes/csrf.hooks'
 
 Sentry.init({
 	dsn: 'https://c9543d19a6acc39bb47247c97d9fca37@o4506000665542656.ingest.us.sentry.io/4507127264509952',
@@ -98,13 +99,52 @@ export const handle: Handle = sequence(
 	Sentry.sentryHandle(),
 	sequence(
 		rccAuth,
-		sequence(themesHandle, async ({ event, resolve }) => {
-			// Stage 1
-			console.log(event.url.pathname)
+		sequence(
+			csrfHandle,
+			sequence(themesHandle, async ({ event, resolve }) => {
+				// Stage 1
+				console.log(event.url.pathname)
 
-			const config = get()
+				const config = get()
 
-			if (config?.[0]?.maintenanceEnabled === true) {
+				if (config?.[0]?.maintenanceEnabled === true) {
+					event.locals.auth = auth.handleRequest(event)
+
+					event.locals.config = config
+
+					const session = await event.locals.auth.validate()
+
+					const user = session?.user
+
+					if (user) {
+						event.locals.user = user
+
+						const currentPermissionLevel =
+							permissionLevels.find((level) => level.name === user.role)?.level ?? 5
+
+						if (currentPermissionLevel >= 4) {
+							if (event.url.pathname != '/maintenance') {
+								return redirect(302, '/maintenance')
+							}
+						}
+					} else {
+						if (event.url.pathname != '/maintenance') {
+							return redirect(302, '/maintenance')
+						}
+					}
+				}
+
+				if (
+					skipAuth.some((substr) =>
+						event.url.pathname.toLowerCase().startsWith(substr.toLowerCase())
+					) === true
+				) {
+					event.locals.config = config
+
+					const response = await resolve(event)
+					return response
+				}
+
 				event.locals.auth = auth.handleRequest(event)
 
 				event.locals.config = config
@@ -113,156 +153,121 @@ export const handle: Handle = sequence(
 
 				const user = session?.user
 
-				if (user) {
-					event.locals.user = user
+				if (session) {
+					if (user) {
+						event.locals.user = user
+					}
 
-					const currentPermissionLevel =
-						permissionLevels.find((level) => level.name === user.role)?.level ?? 5
+					const currentTime = new Date()
 
-					if (currentPermissionLevel >= 4) {
-						if (event.url.pathname != '/maintenance') {
-							return redirect(302, '/maintenance')
+					if (user.banid) {
+						const [ban] = await db
+							.select({})
+							.from(bansTable)
+							.where(eq(bansTable.banid, user.banid))
+							.limit(1)
+
+						if (ban && event.url.pathname !== '/not-approved') {
+							redirect(302, '/not-approved')
 						}
 					}
-				} else {
-					if (event.url.pathname != '/maintenance') {
-						return redirect(302, '/maintenance')
-					}
-				}
-			}
 
-			if (
-				skipAuth.some((substr) =>
-					event.url.pathname.toLowerCase().startsWith(substr.toLowerCase())
-				) === true
-			) {
-				event.locals.config = config
-
-				const response = await resolve(event)
-				return response
-			}
-
-			event.locals.auth = auth.handleRequest(event)
-
-			event.locals.config = config
-
-			const session = await event.locals.auth.validate()
-
-			const user = session?.user
-
-			if (session) {
-				if (user) {
-					event.locals.user = user
-				}
-
-				const currentTime = new Date()
-
-				if (user.banid) {
-					const [ban] = await db
-						.select({})
-						.from(bansTable)
-						.where(eq(bansTable.banid, user.banid))
-						.limit(1)
-
-					if (ban && event.url.pathname !== '/not-approved') {
-						redirect(302, '/not-approved')
-					}
-				}
-
-				if (currentTime.valueOf() - Date.parse(user.lastactivetime) > 3 * 60 * 1000) {
-					// they haven't visited in over 3 mins
-					// the reason why we don't update last active on every request is to minimize database requests
-					const [newUser] = await db
-						.update(usersTable)
-						.set({ lastactivetime: currentTime })
-						.where(eq(usersTable.userid, user.userid))
-						.returning({ lastip: usersTable.lastip })
-
-					const currentIp = event.getClientAddress()
-
-					if (newUser?.lastip !== currentIp) {
-						await db
+					if (currentTime.valueOf() - Date.parse(user.lastactivetime) > 3 * 60 * 1000) {
+						// they haven't visited in over 3 mins
+						// the reason why we don't update last active on every request is to minimize database requests
+						const [newUser] = await db
 							.update(usersTable)
-							.set({ lastip: currentIp })
+							.set({ lastactivetime: currentTime })
 							.where(eq(usersTable.userid, user.userid))
-					}
-				}
+							.returning({ lastip: usersTable.lastip })
 
-				if (currentTime.valueOf() - Date.parse(user.laststipend) > 24 * 60 * 60 * 1000) {
-					// 24 hours
-					await db.transaction(async (tx) => {
-						try {
-							await tx
+						const currentIp = event.getClientAddress()
+
+						if (newUser?.lastip !== currentIp) {
+							await db
 								.update(usersTable)
-								.set({ laststipend: currentTime, coins: Number(event.locals.user.coins) + 25 })
+								.set({ lastip: currentIp })
 								.where(eq(usersTable.userid, user.userid))
-
-							await tx.insert(transactionsTable).values({
-								userid: user.userid,
-								type: 'stipend',
-								amount: 25
-							})
-						} catch (e) {
-							console.log(e)
-							tx.rollback()
-							return
 						}
-					})
-				}
-			}
+					}
 
-			if (
-				protectedRoutes.includes(event.url.pathname) === true ||
-				protectedRoutes.some((substr) =>
-					event.url.pathname.toLowerCase().startsWith(substr.toLowerCase())
-				) === true
-			) {
-				if (!user) {
-					redirect(302, '/login')
-				}
-			}
+					if (currentTime.valueOf() - Date.parse(user.laststipend) > 24 * 60 * 60 * 1000) {
+						// 24 hours
+						await db.transaction(async (tx) => {
+							try {
+								await tx
+									.update(usersTable)
+									.set({ laststipend: currentTime, coins: Number(event.locals.user.coins) + 25 })
+									.where(eq(usersTable.userid, user.userid))
 
-			if (
-				adminProtectedRoutes.includes(event.url.pathname) === true ||
-				adminProtectedRoutes.some((substr) =>
-					event.url.pathname.toLowerCase().startsWith(substr.toLowerCase())
-				) === true
-			) {
-				if (!user) {
-					redirect(302, '/login')
+								await tx.insert(transactionsTable).values({
+									userid: user.userid,
+									type: 'stipend',
+									amount: 25
+								})
+							} catch (e) {
+								console.log(e)
+								tx.rollback()
+								return
+							}
+						})
+					}
 				}
 
 				if (
-					user.role !== 'owner' &&
-					user.role !== 'admin' &&
-					user.role !== 'mod' &&
-					user.role !== 'uploader'
+					protectedRoutes.includes(event.url.pathname) === true ||
+					protectedRoutes.some((substr) =>
+						event.url.pathname.toLowerCase().startsWith(substr.toLowerCase())
+					) === true
 				) {
-					redirect(302, '/login')
-				} else {
-					const permissionRequired = adminPanelPermissions.find(
-						(permissionRequired) =>
-							event.url.pathname.toLowerCase().startsWith(permissionRequired.path.toLowerCase()) ===
-							true
-					)
+					if (!user) {
+						redirect(302, '/login')
+					}
+				}
 
-					const currentPermissionLevel =
-						permissionLevels.find((level) => level.name === user.role)?.level ?? 5
+				if (
+					adminProtectedRoutes.includes(event.url.pathname) === true ||
+					adminProtectedRoutes.some((substr) =>
+						event.url.pathname.toLowerCase().startsWith(substr.toLowerCase())
+					) === true
+				) {
+					if (!user) {
+						redirect(302, '/login')
+					}
 
-					if (permissionRequired) {
-						if (currentPermissionLevel > permissionRequired.requiredLevel) {
-							redirect(302, '/admin?error=permission')
+					if (
+						user.role !== 'owner' &&
+						user.role !== 'admin' &&
+						user.role !== 'mod' &&
+						user.role !== 'uploader'
+					) {
+						redirect(302, '/login')
+					} else {
+						const permissionRequired = adminPanelPermissions.find(
+							(permissionRequired) =>
+								event.url.pathname
+									.toLowerCase()
+									.startsWith(permissionRequired.path.toLowerCase()) === true
+						)
+
+						const currentPermissionLevel =
+							permissionLevels.find((level) => level.name === user.role)?.level ?? 5
+
+						if (permissionRequired) {
+							if (currentPermissionLevel > permissionRequired.requiredLevel) {
+								redirect(302, '/admin?error=permission')
+							}
 						}
 					}
 				}
-			}
 
-			const response = await resolve(event) // Stage 2
+				const response = await resolve(event) // Stage 2
 
-			// Stage 3
+				// Stage 3
 
-			return response
-		})
+				return response
+			})
+		)
 	)
 )
 export const handleError = Sentry.handleErrorWithSentry()

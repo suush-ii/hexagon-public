@@ -17,7 +17,7 @@ const config = {
 			$src: './src/'
 		},
 		csrf: {
-			checkOrigin: process.env.CSRF === 'false' ? false : true
+			checkOrigin: false // replaced by csrf.hooks.ts
 		}
 	}
 }

@@ -1,4 +1,3 @@
-import { auth } from '$lib/server/lucia'
 import { db } from '$lib/server/db'
 import type { PageServerLoad } from './$types'
 import { gamesTable, placesTable } from '$lib/server/schema'
@@ -14,13 +13,9 @@ export const load: PageServerLoad = async (event) => {
 		files[filepath[i] || 'defaultPath'] = filename[i] || 'defaultName'
 	}
 
-	event.locals.auth = auth.handleRequest(event)
-
-	const session = await event.locals.auth.validate()
+	const session = event.locals
 
 	if (session?.user) {
-		event.locals.user = session.user
-
 		const gamecreations = await db.query.gamesTable.findMany({
 			where: eq(gamesTable.creatoruserid, event.locals.user.userid),
 			orderBy: desc(gamesTable.updated),
