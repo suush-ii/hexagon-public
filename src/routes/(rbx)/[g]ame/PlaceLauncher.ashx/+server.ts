@@ -24,7 +24,7 @@ export const fallback: RequestHandler = async ({ url, locals, fetch, cookies }) 
 		status: 2,
 		joinScriptUrl,
 		authenticationUrl,
-		authenticationTicket: 'ticket',
+		authenticationTicket: authBearer,
 		message: ''
 	}
 
@@ -64,22 +64,22 @@ export const fallback: RequestHandler = async ({ url, locals, fetch, cookies }) 
 			placeLauncherJson.jobId = instance.jobid
 			placeLauncherJson.joinScriptUrl += '?auth=' + authBearer + '&jobid=' + instance.jobid
 
-			let characterAppearance =
-				CharacterAppearance + `?userId=` + locals.user.userid + '&jobId=' + instance.jobid
+			//let characterAppearance =
+			//	CharacterAppearance + `?userId=` + locals.user.userid + '&jobId=' + instance.jobid
 
-			const jwt = await new jose.SignJWT({
-				username: 'username',
-				userId: 3,
-				jobId: 'ass',
-				membershipType: 'None',
-				characterAppearance
-			})
-				.setProtectedHeader({ alg })
-				.setIssuedAt()
-				.setExpirationTime('1min')
-				.sign(secret)
+			//const jwt = await new jose.SignJWT({
+			//	username: locals.user.username,
+			//	userId: locals.user.userid,
+			//	jobId: instance.jobid,
+			//	membershipType: 'None',
+			//	characterAppearance
+			//})
+			//	.setProtectedHeader({ alg })
+			//	.setIssuedAt()
+			//	.setExpirationTime('1min')
+			//	.sign(secret)
 
-			placeLauncherJson.authenticationTicket = jwt
+			//placeLauncherJson.authenticationTicket = jwt
 
 			return json(placeLauncherJson)
 		}
@@ -126,22 +126,22 @@ export const fallback: RequestHandler = async ({ url, locals, fetch, cookies }) 
 			placeLauncherJson.jobId = instance.jobid
 			placeLauncherJson.joinScriptUrl += '?auth=' + authBearer + '&jobid=' + instance.jobid
 
-			let characterAppearance =
-				CharacterAppearance + `?userId=` + locals.user.userid + '&jobId=' + instance.jobid
+			//let characterAppearance =
+			//	CharacterAppearance + `?userId=` + locals.user.userid + '&jobId=' + instance.jobid
 
-			const jwt = await new jose.SignJWT({
-				username: 'username',
-				userId: 3,
-				jobId: 'ass',
-				membershipType: 'None',
-				characterAppearance
-			})
-				.setProtectedHeader({ alg })
-				.setIssuedAt()
-				.setExpirationTime('1min')
-				.sign(secret)
+			//const jwt = await new jose.SignJWT({
+			//	username: locals.user.username,
+			//	userId: locals.user.userid,
+			//	jobId: instance.jobid,
+			//	membershipType: 'None',
+			//	characterAppearance
+			//})
+			//	.setProtectedHeader({ alg })
+			//	.setIssuedAt()
+			//	.setExpirationTime('1min')
+			//	.sign(secret)
 
-			placeLauncherJson.authenticationTicket = jwt
+			//placeLauncherJson.authenticationTicket = jwt
 
 			return json(placeLauncherJson)
 		}

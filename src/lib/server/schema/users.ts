@@ -7,7 +7,8 @@ import {
 	text,
 	timestamp,
 	varchar,
-	boolean
+	boolean,
+	primaryKey
 } from 'drizzle-orm/pg-core'
 import type { userState, userRole, userGenders, AssetTypes } from '$lib/types'
 import { relations } from 'drizzle-orm'
@@ -112,6 +113,19 @@ export const recentlyPlayedTable = pgTable('recentlyplayed', {
 	gameid: bigint('gameid', { mode: 'number' }).notNull(),
 	time: timestamp('time', { mode: 'date', withTimezone: true }).notNull().defaultNow()
 })
+
+export const macAddressesTable = pgTable(
+	'macaddresses',
+	{
+		userid: bigint('userid', { mode: 'number' }).notNull(),
+		macAddress: text('macaddress').notNull(),
+		banned: boolean('banned').notNull().default(false),
+		time: timestamp('time', { mode: 'date', withTimezone: true }).notNull().defaultNow()
+	},
+	(table) => {
+		return { pk: primaryKey({ columns: [table.userid, table.macAddress] }) }
+	}
+)
 
 export const transactionsRelations = relations(transactionsTable, ({ one }) => ({
 	member: one(usersTable, {

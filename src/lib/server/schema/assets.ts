@@ -1,5 +1,14 @@
 import { relations, sql } from 'drizzle-orm'
-import { bigint, integer, bigserial, pgTable, text, timestamp, boolean } from 'drizzle-orm/pg-core'
+import {
+	bigint,
+	integer,
+	bigserial,
+	pgTable,
+	text,
+	timestamp,
+	boolean,
+	primaryKey
+} from 'drizzle-orm/pg-core'
 import { placesTable } from './games'
 import type { assetStates, AssetTypes, AssetGenreDB, GearAttributes } from '$lib/types'
 import { usersTable } from './users'
@@ -64,3 +73,15 @@ export const assetCacheTable = pgTable('assetcache', {
 	assettypeid: integer('assettypeid').notNull().default(0),
 	filehash: text('filehash')
 })
+
+export const assetVersionsTable = pgTable(
+	'assetversions',
+	{
+		assetid: bigint('assetid', { mode: 'number' }).notNull(),
+		filehash: text('filehash'),
+		time: timestamp('time', { mode: 'date', withTimezone: true }).notNull().defaultNow()
+	},
+	(table) => {
+		return { pk: primaryKey({ columns: [table.assetid, table.time] }) }
+	}
+)
