@@ -1,20 +1,23 @@
 <script lang="ts">
 	//@ts-nocheck
 	import './toolbox.postcss'
+
+	import type { PageData } from './$types'
+
+	export let data: PageData
 </script>
 
-<svelte:head>
-	<script id="Functions" type="text/jscript">
+{@html `<script id="Functions" type="text/jscript">
 		function insertContent(id) {
 			try {
-				window.external.Insert('http://hexagon.pw/asset?id=' + id)
+				window.external.Insert('http://${data.baseurl}/asset?id=' + id)
 			} catch (x) {
 				alert('Could not insert the requested item')
 			}
 		}
 		function dragRBX(id) {
 			try {
-				window.external.StartDrag('http://hexagon.pw/asset?id=' + id)
+				window.external.StartDrag('http://${data.baseurl}/asset?id=' + id)
 			} catch (x) {
 				alert('Sorry Could not drag the requested item')
 			}
@@ -36,8 +39,8 @@
 				}
 			}
 		}
-	</script>
-</svelte:head>
+</script>`}
+
 <body class="Page">
 	<div id="ToolboxContainer">
 		<div id="ToolboxControls">

@@ -1021,7 +1021,6 @@ Type.registerNamespace('Roblox.Client'),
 						Roblox.Client._ontimer()
 					}, 1e3))
 	}) // jquery.simplemodal-1.3.5.js
-
 ;(function (n) {
 	var i =
 			n.browser.msie &&
@@ -1714,7 +1713,7 @@ $(function () {
 				? window.external.OpenRecentFile($(this).attr('js-data-file'))
 				: Roblox.GenericModal.open(
 						Roblox.IDEWelcome.Resources.openProject,
-						'/images/Icons/img-alert.png',
+						'/ide/assets/img-alert.png',
 						Roblox.IDEWelcome.Resources.openProjectText +
 							" <a target='_blank' href='http://wiki.roblox.com/index.php/Studio'>" +
 							Roblox.IDEWelcome.Resources.robloxStudio +
@@ -1744,7 +1743,7 @@ $(function () {
 			n.hasClass('app-place') &&
 				Roblox.GenericModal.open(
 					Roblox.IDEWelcome.Resources.appStudioTitle,
-					'/images/Icons/img-alert.png',
+					'/ide/assets/img-alert.png',
 					Roblox.IDEWelcome.Resources.appStudioBody
 				),
 				n.hasClass('place-selected')
@@ -1765,7 +1764,7 @@ $(function () {
 					? ((n = t.attr('data-placeid')), (window.play_placeId = n), window.editGameInStudio(n))
 					: Roblox.GenericModal.open(
 							Roblox.IDEWelcome.Resources.editPlace,
-							'/images/Icons/img-alert.png',
+							'/ide/assets/img-alert.png',
 							Roblox.IDEWelcome.Resources.toEdit +
 								t.find('p').text() +
 								Roblox.IDEWelcome.Resources.openPage +
@@ -1790,14 +1789,14 @@ $(function () {
 							? ((t = n.attr('data-placeid')), (window.play_placeId = t), buildGameInStudio(t))
 							: Roblox.GenericModal.open(
 									Roblox.IDEWelcome.Resources.placeInactive,
-									'/images/Icons/img-alert.png',
+									'/ide/assets/img-alert.png',
 									Roblox.IDEWelcome.Resources.toBuild +
 										n.find('p').text() +
 										Roblox.IDEWelcome.Resources.activate
 								))
 					: Roblox.GenericModal.open(
 							Roblox.IDEWelcome.Resources.buildPlace,
-							'/images/Icons/img-alert.png',
+							'/ide/assets/img-alert.png',
 							Roblox.IDEWelcome.Resources.toBuild +
 								n.find('p').text() +
 								Roblox.IDEWelcome.Resources.openPage +
@@ -1851,7 +1850,7 @@ $(function () {
 				? window.editTemplateInStudio($(this).attr('placeid'))
 				: Roblox.GenericModal.open(
 						'New Project',
-						'/images/Icons/img-alert.png',
+						'/ide/assets/img-alert.png',
 						"To build using this template, open to this page in <a target='_blank' href='http://wiki.roblox.com/index.php/Studio'>Hexagon Studio</a>."
 					)
 		}),

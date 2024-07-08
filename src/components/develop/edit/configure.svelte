@@ -1,8 +1,12 @@
 <script lang="ts">
 	import { Button } from '$src/components/ui/button'
 	import * as DropdownMenu from '$src/components/ui/dropdown-menu'
+	import DownloadModal from '$src/components/downloadModal.svelte'
+	import { launchStudio } from '$lib/develop/studio'
 	import { depluralize } from '$src/lib/utils'
 	import { Menu } from 'lucide-svelte'
+
+	let downloadModal: DownloadModal
 
 	export let itemid: number
 
@@ -11,7 +15,15 @@
 	export let itemName: string
 
 	export let adminAsset: boolean
+
+	export let authBearer: string | undefined = undefined
+
+	export let baseurl: string | undefined = undefined
+
+	export let placeid: number | undefined = undefined
 </script>
+
+<DownloadModal bind:this={downloadModal} type={'studio'} />
 
 <DropdownMenu.Root>
 	<DropdownMenu.Trigger asChild let:builder
@@ -20,6 +32,14 @@
 		</Button>
 	</DropdownMenu.Trigger>
 	<DropdownMenu.Content align="end">
+		{#if assetType === 'games'}
+			<DropdownMenu.Item
+				on:click={() => {
+					launchStudio(placeid ?? 0, authBearer ?? '', baseurl ?? '', downloadModal)
+				}}
+				class="cursor-pointer">Edit</DropdownMenu.Item
+			>
+		{/if}
 		<a href="/{adminAsset === false ? 'develop' : 'admin/catalog/upload'}/{assetType}/{itemid}/edit"
 			><DropdownMenu.Item class="cursor-pointer"
 				>Configure this {depluralize(itemName)}</DropdownMenu.Item

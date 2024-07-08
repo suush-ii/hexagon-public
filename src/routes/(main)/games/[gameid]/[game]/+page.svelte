@@ -194,6 +194,9 @@
 									assetType={'games'}
 									itemid={data.place.associatedgame.universeid}
 									itemName={'Games'}
+									authBearer={data.authBearer}
+									baseurl={data.baseurl}
+									placeid={data.place.placeid}
 								/>
 							{/if}
 						</div>

@@ -31,6 +31,9 @@
 		Roblox.config.paths['Widgets.Suggestions'] = '/ide/js/a63d457706dfbc230cf66a9674a1ca8b.js'
 		Roblox.config.paths['Widgets.SurveyModal'] = '/ide/js/d6e979598c460090eafb6d38231159f6.js'
 	</script>
+</svelte:head>
+{@html `
+<!-- ugly hack but whatever -->
 	<script type="text/javascript">
 		function editTemplateInStudio(play_placeId) {
 			RobloxLaunch._GoogleAnalyticsCallback = function () {
@@ -43,16 +46,16 @@
 			}
 			Roblox.Client.WaitForRoblox(function () {
 				RobloxLaunch.StartGame(
-					'http://www.hexagon.pw/Game/edit.ashx?PlaceID=' + play_placeId + '&upload=',
+					'http://www.${data.baseurl}/Game/edit.ashx?PlaceID=' + play_placeId + '&upload=',
 					'edit.ashx',
-					'https://www.hexagon.pw/Login/Negotiate.ashx',
+					'https://www.${data.baseurl}/Login/Negotiate.ashx',
 					'FETCH',
 					true
 				)
 			})
 		}
 	</script>
-</svelte:head>
+`}
 <body id="StudioWelcomeBody">
 	<div class="header">
 		<div id="header-login-wrapper" class="iframe-login-signup" data-display-opened="">

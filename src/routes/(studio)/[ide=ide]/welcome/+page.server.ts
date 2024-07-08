@@ -2,6 +2,7 @@ import { db } from '$lib/server/db'
 import type { PageServerLoad } from './$types'
 import { gamesTable, placesTable } from '$lib/server/schema'
 import { desc, eq } from 'drizzle-orm'
+import { env } from '$env/dynamic/private'
 export const csr = false
 
 export const load: PageServerLoad = async (event) => {
@@ -38,11 +39,13 @@ export const load: PageServerLoad = async (event) => {
 		return {
 			files,
 			username: event.locals.user.username,
-			gamecreations
+			gamecreations,
+			baseurl: env.BASE_URL
 		}
 	}
 
 	return {
-		files
+		files,
+		baseurl: env.BASE_URL
 	}
 }

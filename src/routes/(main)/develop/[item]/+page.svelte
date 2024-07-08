@@ -5,6 +5,7 @@
 	import DownloadModal from '$src/components/downloadModal.svelte'
 	import { Button } from '$src/components/ui/button'
 	import { Upload, Cog } from 'lucide-svelte'
+	import { launchStudio } from '$lib/develop/studio'
 
 	import type { PageData } from './$types'
 
@@ -21,14 +22,6 @@
 	pageName.set(data.t('generic.develop'))
 
 	$: creations = data.creations
-
-	function launchStudio(placeid: number) {
-		const uri = `hexagon-studio:1+launchmode:ide+gameinfo:${data.authBearer}+script:${encodeURIComponent(`http://www.hexagon.pw/Game/edit.ashx?PlaceID=${placeid}`)}`
-
-		downloadModal.open(uri)
-
-		document.location = uri
-	}
 </script>
 
 <div class="container p-8 flex flex-col gap-y-8">
@@ -142,7 +135,12 @@
 								<Button
 									size="sm"
 									on:click={() => {
-										launchStudio(creation.placeid ?? 0)
+										launchStudio(
+											creation.placeid ?? 0,
+											data.authBearer,
+											data.baseurl,
+											downloadModal
+										)
 									}}>{data.t('develop.edit')}</Button
 								>
 
