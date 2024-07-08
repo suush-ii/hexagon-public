@@ -3,13 +3,14 @@ import { _assetSchema } from './+layout.server'
 import { db } from '$lib/server/db'
 import { gamesTable, placesTable } from '$lib/server/schema/games'
 import { assetTable } from '$lib/server/schema/assets'
-import { eq, and, desc, count, sum } from 'drizzle-orm'
+import { eq, and, desc, count } from 'drizzle-orm'
 import { error } from '@sveltejs/kit'
 import { s3Url } from '$src/stores'
 import pending from '$lib/icons/iconpending.png'
 import rejected from '$lib/icons/iconrejected.png'
 import audio from '$lib/icons/audio.png'
 import { getPageNumber } from '$lib/utils'
+import { env } from '$env/dynamic/private'
 
 async function last7days(universeid: number) {
 	const places = await db.query.placesTable.findMany({
@@ -159,7 +160,13 @@ export const load: PageServerLoad = async ({ params, locals, url, cookies }) => 
 		}))
 	}
 
-	let authBearer = cookies.get('.ROBLOSECURITY')
+	let authBearer = cookies.get('.ROBLOSECURITY') ?? ''
 
-	return { creations, params: params.item, itemcount: itemscount?.[0]?.count ?? 0, authBearer }
+	return {
+		creations,
+		params: params.item,
+		itemcount: itemscount?.[0]?.count ?? 0,
+		authBearer,
+		baseurl: env.BASE_URL
+	}
 }

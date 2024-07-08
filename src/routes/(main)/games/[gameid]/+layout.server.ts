@@ -12,7 +12,14 @@ import { env } from '$env/dynamic/private'
 import { assetFavoritesTable } from '$src/lib/server/schema'
 const joinScriptUrl = `http://${env.BASE_URL}/game/Join.ashx`
 
-export const load: LayoutServerLoad = async ({ params, locals, depends, request, url }) => {
+export const load: LayoutServerLoad = async ({
+	params,
+	locals,
+	depends,
+	request,
+	url,
+	cookies
+}) => {
 	const result = await z.number().safeParseAsync(Number(params.gameid))
 
 	if (result.success === false) {
@@ -125,6 +132,8 @@ export const load: LayoutServerLoad = async ({ params, locals, depends, request,
 		.sort((a, b) => a.sort - b.sort)
 		.map(({ value }) => value)
 
+	let authBearer = cookies.get('.ROBLOSECURITY') ?? ''
+
 	return {
 		place: place,
 		likespercentage: Math.round(
@@ -141,6 +150,8 @@ export const load: LayoutServerLoad = async ({ params, locals, depends, request,
 		joinScriptUrl,
 		canEdit,
 		userAgent: request.headers.get('user-agent'),
-		recommendations
+		recommendations,
+		authBearer,
+		baseurl: env.BASE_URL
 	}
 }
