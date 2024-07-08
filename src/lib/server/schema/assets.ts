@@ -65,6 +65,10 @@ export const assetRelations = relations(assetTable, ({ one }) => ({
 	associatedImage: one(assetTable, {
 		fields: [assetTable.associatedimageid],
 		references: [assetTable.assetid]
+	}),
+	assetversions: one(assetVersionsTable, {
+		fields: [assetTable.assetid],
+		references: [assetVersionsTable.assetid]
 	})
 }))
 

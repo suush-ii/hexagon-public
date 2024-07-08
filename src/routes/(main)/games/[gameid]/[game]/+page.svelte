@@ -53,7 +53,7 @@
 
 	let open = false
 
-	let downloadOpen = false
+	let downloadModal: DownloadModal
 
 	let cancel = false
 
@@ -150,18 +150,15 @@
 				}, 3000)
 			} else if (json.status === 2) {
 				loadingText = 'The server is ready. Joining the game...'
-				document.location = `hexagon-player:1+launchmode:play+gameinfo:${json.authenticationTicket}+placelauncherurl:${encodeURIComponent(json.joinScriptUrl)}`
+				const uri = `hexagon-player:1+launchmode:play+gameinfo:${json.authenticationTicket}+placelauncherurl:${encodeURIComponent(json.joinScriptUrl)}`
+				document.location = uri
 
 				open = false
 
 				disableRandom = true
 				loadingText = defaultText
 
-				downloadOpen = true
-
-				setTimeout(() => {
-					downloadOpen = false
-				}, 5000)
+				downloadModal.open(uri)
 			}
 		}
 	}
@@ -243,14 +240,10 @@
 									</Button>
 								{/if}
 							</AlertDialog.Trigger>
-							<AlertDialog.Content class="space-y-8">
+							<AlertDialog.Content>
 								<AlertDialog.Header>
 									<Loader2 class="mx-auto w-24 h-24 animate-spin" />
 									<h1 class="text-2xl font-semibold text-center">{loadingText}</h1>
-									<a
-										href={`https://${env.PUBLIC_setupcdn}/HexagonPlayerLauncher.exe`}
-										class="text-lg text-center hover:underline">Download</a
-									>
 								</AlertDialog.Header>
 
 								<AlertDialog.Cancel asChild let:builder>
@@ -265,7 +258,7 @@
 							</AlertDialog.Content>
 						</AlertDialog.Root>
 
-						<DownloadModal bind:downloadOpen type={'player'} />
+						<DownloadModal bind:this={downloadModal} type={'player'} />
 						<Separator class="mt-auto" />
 						<div class="flex flex-row gap-x-4">
 							<Favorite
