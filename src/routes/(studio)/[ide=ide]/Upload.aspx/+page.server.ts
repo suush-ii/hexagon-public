@@ -1,4 +1,5 @@
 import type { PageServerLoad } from './$types'
+export const csr = false
 
 import page from './upload.html?raw'
 

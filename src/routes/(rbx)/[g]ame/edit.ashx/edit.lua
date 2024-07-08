@@ -62,9 +62,9 @@ message.Text = "Loading Place. Please wait..."
 coroutine.yield() 
 game:Load("http://www.roblox.com/asset/?id={PlaceId}") 
 
-if #"" > 0 then
-	visit:SetUploadUrl("")
-end
+--if #"" > 0 then
+	visit:SetUploadUrl("{UploadUrl}")
+--end
 
 message.Parent = nil
 

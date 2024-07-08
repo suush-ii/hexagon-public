@@ -10,7 +10,7 @@
 
 	export let data: PageData
 
-	let downloadOpen = false
+	let downloadModal: DownloadModal
 
 	import { pageName } from '$src/stores'
 	import EmptyCard from '$src/components/emptyCard.svelte'
@@ -23,18 +23,16 @@
 	$: creations = data.creations
 
 	function launchStudio(placeid: number) {
-		downloadOpen = true
+		const uri = `hexagon-studio:1+launchmode:ide+gameinfo:${data.authBearer}+script:${encodeURIComponent(`http://www.hexagon.pw/Game/edit.ashx?PlaceID=${placeid}`)}`
 
-		document.location = `hexagon-studio:1+launchmode:ide+gameinfo:${data.authBearer}+script:${encodeURIComponent(`http://www.hexagon.pw/Game/edit.ashx?PlaceID=${placeid}`)}`
+		downloadModal.open(uri)
 
-		setTimeout(() => {
-			downloadOpen = false
-		}, 5000)
+		document.location = uri
 	}
 </script>
 
 <div class="container p-8 flex flex-col gap-y-8">
-	<DownloadModal bind:downloadOpen type={'studio'} />
+	<DownloadModal bind:this={downloadModal} type={'studio'} />
 
 	<h1 class="text-4xl leading-none tracking-tight font-semibold">{data.t('generic.develop')}</h1>
 
