@@ -67,6 +67,7 @@
 		"jose": "^5.2.4",
 		"lucia": "^2.7.7",
 		"lucide-svelte": "^0.372.0",
+		"meshconvert": "file:meshconvert",
 		"mode-watcher": "^0.3.1",
 		"pako": "^2.1.0",
 		"postgres": "^3.4.3",

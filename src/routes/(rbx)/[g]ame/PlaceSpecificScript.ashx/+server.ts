@@ -43,7 +43,9 @@ export const fallback: RequestHandler = async ({ url }) => {
 		return error(404, { success: false, message: 'Place not found', data: {} })
 	}
 
-	scriptNewArgs = scriptNewArgs.replaceAll('{placeId}', placeid.toString())
+	scriptNewArgs = scriptNewArgs
+		.replaceAll('{placeId}', placeid.toString())
+		.replaceAll('{}', env.RCC_ACCESS_KEY as string)
 
 	const sign = createSign('SHA1')
 	sign.update('\r\n' + scriptNewArgs)

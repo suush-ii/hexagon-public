@@ -1,11 +1,11 @@
-import { type RequestHandler, error, redirect, json, text } from '@sveltejs/kit'
+import { type RequestHandler, error, redirect, text } from '@sveltejs/kit'
 import { z } from 'zod'
 import { db } from '$lib/server/db'
 import { assetTable, assetCacheTable } from '$lib/server/schema/assets'
 import { eq } from 'drizzle-orm'
 import { s3Url } from '$src/stores'
 import { env } from '$env/dynamic/private'
-//import parse from './meshconvert/index'
+import parse from 'meshconvert'
 import { createSign } from 'node:crypto'
 import pantsTemplate from './templates/pantsTemplate.xml?raw'
 import shirtTemplate from './templates/shirtTemplate.xml?raw'
@@ -207,14 +207,14 @@ export const GET: RequestHandler = async (event) => {
 				const url = data.locations[0].location
 				const filehash = url.substring(22)
 
-				/*if (data.assetTypeId === meshAssetId) {
+				if (data.assetTypeId === meshAssetId) {
 					const assetResponse = await fetch(url, {
 						headers: { 'User-Agent': 'Roblox/WinInet' }
 					})
 					const assetData = await assetResponse.arrayBuffer()
 
 					return new Response(
-						parse(Buffer.from(assetData)) ?? assetData /* parse returns nothing if mesh is old ,
+						parse(Buffer.from(assetData)) ?? assetData /* parse returns nothing if mesh is old */,
 						{
 							status: 200,
 							headers: {
@@ -222,7 +222,9 @@ export const GET: RequestHandler = async (event) => {
 								'Content-Disposition': `attachment; filename*=UTF-8''${filehash}`
 							}
 						}
-					)*/
+					)
+				}
+
 				if (cachedAsset.length === 0) {
 					await db.insert(assetCacheTable).values({
 						assetid: assetId,
@@ -234,7 +236,7 @@ export const GET: RequestHandler = async (event) => {
 				redirect(302, url)
 			}
 		}
-	}
 
-	redirect(302, 'https://assetdelivery.roblox.com/v1/asset/?id=' + assetId)
+		redirect(302, 'https://assetdelivery.roblox.com/v1/asset/?id=' + assetId)
+	}
 }

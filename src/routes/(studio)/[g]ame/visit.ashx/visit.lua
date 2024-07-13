@@ -8,7 +8,7 @@ end
 
 ifSeleniumThenSetCookie("SeleniumTest1", "Inside the visit lua script")
 
-pcall(function() game:SetPlaceID(0) end)
+pcall(function() game:SetPlaceID({PlaceId}) end)
 pcall(function() game:SetUniverseId(0) end)
 
 visit = game:GetService("Visit")
@@ -99,14 +99,14 @@ function doVisit()
 
 	message.Text = "Creating Player"
 	if false or false then
-		player = game:GetService("Players"):CreateLocalPlayer(0)
+		player = game:GetService("Players"):CreateLocalPlayer({UserID})
 		if not inStudio then
 			player.Name = [====[Guest 1473]====]
 		end
 	else
-		player = game:GetService("Players"):CreateLocalPlayer(0)
+		player = game:GetService("Players"):CreateLocalPlayer({UserID})
 	end
-	player.CharacterAppearance = "http://www.roblox.com/Asset/CharacterFetch.ashx?userId=1&placeId=0"
+	player.CharacterAppearance = "http://www.roblox.com/Asset/CharacterFetch.ashx?userId={UserId}&placeId={PlaceId}"
 	local propExists, canAutoLoadChar = false
 	propExists = pcall(function()  canAutoLoadChar = game.Players.CharacterAutoLoads end)
 
@@ -117,14 +117,14 @@ function doVisit()
 	message.Text = "Setting GUI"
 	player:SetSuperSafeChat(true)
 ---@diagnostic disable-next-line: undefined-global
-	pcall(function() player:SetUnder13(True) end)
+	pcall(function() player:SetUnder13(false) end)
 ---@diagnostic disable-next-line: undefined-global
 	pcall(function() player:SetMembershipType(None) end)
 	pcall(function() player:SetAccountAge(0) end)
 	
 	if not inStudio and false then
 		message.Text = "Setting Ping"
-		visit:SetPing("https://www.roblox.com/Game/ClientPresence.ashx?version=old&PlaceID=0", 120)
+		visit:SetPing("https://www.roblox.com/Game/ClientPresence.ashx?version=old&PlaceID={PlaceId}", 120)
 
 		message.Text = "Sending Stats"
 		game:HttpGet("")
