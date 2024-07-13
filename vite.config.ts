@@ -24,7 +24,8 @@ export default defineConfig({
 		rollupOptions: {
 			output: {
 				sourcemap: 'hidden' // hide inline source maps
-			}
+			},
+			external: ['meshconvert']
 		}
 	},
 	ssr: {
