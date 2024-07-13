@@ -41,4 +41,8 @@ function isFormContentType(request: Request) {
 	return isContentType(request, 'application/x-www-form-urlencoded', 'multipart/form-data')
 }
 
-export const csrfHandle = csrf(['/game/validate-machine', '/Game/validate-machine'])
+export const csrfHandle = csrf([
+	'/game/validate-machine',
+	'/Game/validate-machine',
+	'/persistence/set'
+])
