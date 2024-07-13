@@ -12,6 +12,8 @@ export const rccAuth = (async ({ event, resolve }) => {
 		pathname === '/game/clientpresence.ashx' ||
 		pathname === '/game/placevisit.ashx' ||
 		pathname === '/game/placespecificscript.ashx' ||
+		pathname === '/persistence/getbloburl.ashx' ||
+		pathname === '/persistence/setblob.ashx' ||
 		pathname === '/verify-player'
 	) {
 		const accessKey =
