@@ -192,11 +192,7 @@ switch (platform) {
 						join(__dirname, 'meshconvert.linux-x64-musl.node')
 					)
 					try {
-						if (existsX64Musl) {
-							nativeBinding = require('./meshconvert.linux-x64-musl.node')
-						} else {
-							nativeBinding = require('meshconvert-linux-x64-musl')
-						}
+						nativeBinding = require('./meshconvert.linux-x64-musl.node') // hack but idgaf
 					} catch (e) {
 						loadError = e
 					}
