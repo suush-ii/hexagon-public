@@ -13,21 +13,62 @@ import { getPageNumber } from '$lib/utils'
 import { env } from '$env/dynamic/private'
 
 async function last7days(universeid: number) {
-	const places = await db.query.placesTable.findMany({
+	let places = await db.query.placesTable.findMany({
 		where: eq(placesTable.universeid, universeid),
 		columns: {},
 		with: {
 			associatedasset: {
 				columns: {
-					last7dayscounter: true
+					last7dayscounter: true,
+					lastweekreset: true,
+					assetid: true
 				}
 			}
 		}
 	})
 
+	const now = new Date().valueOf()
+	for (const _place of places) {
+		const place = _place.associatedasset
+		if (
+			now - place.lastweekreset.valueOf() >
+			7 * 24 * 60 * 60 * 1000 // 7 days
+		) {
+			await db
+				.update(assetTable)
+				.set({ last7dayscounter: 0 })
+				.where(eq(assetTable.assetid, place.assetid))
+
+			await db
+				.update(assetTable)
+				.set({ lastweekreset: new Date() })
+				.where(eq(assetTable.assetid, place.assetid))
+		}
+	} // force stats to update here as well
+
 	const last7days = places.reduce((acc, place) => acc + place.associatedasset.last7dayscounter, 0)
 
 	return last7days
+}
+
+async function last7daysasset(last7dayscounter: number, lastweekreset: Date, assetid: number) {
+	const now = new Date().valueOf()
+
+	if (
+		now - lastweekreset.valueOf() >
+		7 * 24 * 60 * 60 * 1000 // 7 days
+	) {
+		await db.update(assetTable).set({ last7dayscounter: 0 }).where(eq(assetTable.assetid, assetid))
+
+		await db
+			.update(assetTable)
+			.set({ lastweekreset: new Date() })
+			.where(eq(assetTable.assetid, assetid))
+
+		return 0
+	}
+
+	return last7dayscounter
 }
 
 export const load: PageServerLoad = async ({ params, locals, url, cookies }) => {
@@ -131,7 +172,8 @@ export const load: PageServerLoad = async ({ params, locals, url, cookies }) => 
 				associatedImage: {
 					columns: {
 						simpleasseturl: true,
-						last7dayscounter: true
+						last7dayscounter: true,
+						lastweekreset: true
 					}
 				}
 			},
@@ -140,24 +182,30 @@ export const load: PageServerLoad = async ({ params, locals, url, cookies }) => 
 			offset: (page - 1) * size
 		})
 
-		creations = assetcreations.map((asset) => ({
-			assetName: asset.assetname,
-			assetid: asset.assetid,
-			iconUrl:
-				asset.moderationstate === 'pending'
-					? pending
-					: asset.moderationstate === 'rejected'
-						? rejected
-						: asset.assetType === 'decals'
-							? `https://${s3Url}/images/` + asset?.associatedImage?.simpleasseturl
-							: asset.assetType === 'audio'
-								? audio
-								: null, //TODO: make an audio default icon
-			updated: asset.created,
-			assetType: params.item,
-			totalStat: asset.sales,
-			last7DaysStat: asset.last7dayscounter
-		}))
+		creations = await Promise.all(
+			assetcreations.map(async (asset) => ({
+				assetName: asset.assetname,
+				assetid: asset.assetid,
+				iconUrl:
+					asset.moderationstate === 'pending'
+						? pending
+						: asset.moderationstate === 'rejected'
+							? rejected
+							: asset.assetType === 'decals'
+								? `https://${s3Url}/images/` + asset?.associatedImage?.simpleasseturl
+								: asset.assetType === 'audio'
+									? audio
+									: null, //TODO: make an audio default icon
+				updated: asset.created,
+				assetType: params.item,
+				totalStat: asset.sales,
+				last7DaysStat: await last7daysasset(
+					asset.last7dayscounter,
+					asset.lastweekreset,
+					asset.assetid
+				)
+			}))
+		)
 	}
 
 	let authBearer = cookies.get('.ROBLOSECURITY') ?? ''
