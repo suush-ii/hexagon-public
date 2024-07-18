@@ -1715,7 +1715,7 @@ $(function () {
 						Roblox.IDEWelcome.Resources.openProject,
 						'/ide/assets/img-alert.png',
 						Roblox.IDEWelcome.Resources.openProjectText +
-							" <a target='_blank' href='http://wiki.roblox.com/index.php/Studio'>" +
+							" <a target='_blank' href='http://wiki.hexagon.pw/index.php/Studio'>" +
 							Roblox.IDEWelcome.Resources.robloxStudio +
 							'</a>.'
 					)
@@ -1768,7 +1768,7 @@ $(function () {
 							Roblox.IDEWelcome.Resources.toEdit +
 								t.find('p').text() +
 								Roblox.IDEWelcome.Resources.openPage +
-								"<a target='_blank' href='http://wiki.roblox.com/index.php/Studio'>" +
+								"<a target='_blank' href='http://wiki.hexagon.pw/index.php/Studio'>" +
 								Roblox.IDEWelcome.Resources.robloxStudio +
 								'</a>.'
 						),
@@ -1800,7 +1800,7 @@ $(function () {
 							Roblox.IDEWelcome.Resources.toBuild +
 								n.find('p').text() +
 								Roblox.IDEWelcome.Resources.openPage +
-								"<a target='_blank' href='http://wiki.roblox.com/index.php/Studio'>" +
+								"<a target='_blank' href='http://wiki.hexagon.pw/index.php/Studio'>" +
 								Roblox.IDEWelcome.Resources.robloxStudio +
 								'</a>.'
 						),
@@ -1851,7 +1851,7 @@ $(function () {
 				: Roblox.GenericModal.open(
 						'New Project',
 						'/ide/assets/img-alert.png',
-						"To build using this template, open to this page in <a target='_blank' href='http://wiki.roblox.com/index.php/Studio'>Hexagon Studio</a>."
+						"To build using this template, open to this page in <a target='_blank' href='http://wiki.roblox.com/hexagon.pw/Studio'>Hexagon Studio</a>."
 					)
 		}),
 		$('.template a').removeAttr('href')

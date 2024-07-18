@@ -8,5 +8,5 @@ export const GET: RequestHandler = async ({ url, cookies }) => {
 		secure: false
 	})
 
-	return text(url.searchParams.get('suggest') ?? '') // 1: logged in null: logged out
+	return text(url.searchParams.get('suggest') ?? '')
 }
