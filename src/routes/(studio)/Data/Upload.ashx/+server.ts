@@ -11,8 +11,8 @@ import { s3BucketName } from '$src/stores'
 import { createHash } from 'node:crypto'
 import pako from 'pako'
 
-export const POST: RequestHandler = async ({ request, url }) => {
-	let authBearer = url.searchParams.get('auth') ?? ''
+export const POST: RequestHandler = async ({ request, url, cookies }) => {
+	let authBearer = url.searchParams.get('auth') ?? cookies.get('.ROBLOSECURITY') ?? ''
 
 	const result = await z.coerce
 		.number()

@@ -1,20 +1,16 @@
 <script lang="ts">
-	//@ts-nocheck
-
 	import type { PageData } from './$types'
 
 	export let data: PageData
 
-	import './post.postcss'
-	import './assetlist.postcss'
+	import '../Upload.aspx/post.postcss'
+	import './upload.postcss'
 </script>
 
 <svelte:head>
-	<head data-machine-id="WEB1185">
-		<!-- MachineID: WEB1185 -->
-		<title>Publish Place As</title>
-
-		<link rel="stylesheet" href="/ide/base.css" />
+	<head data-machine-id="WEB1262">
+		<!-- MachineID: WEB1262 -->
+		<title>Uploading</title>
 
 		<script>
 			//Set if it browser's do not track flag is enabled
@@ -36,14 +32,15 @@
 			data-bundlename="studio"
 			type="text/javascript"
 			src="/ide/js/3719f3fb35135d05cf6b72d5b0f46333.js"
-		></script>
-
+		>
+		</script>
 		<script
 			data-monitor="true"
 			data-bundlename="page"
 			type="text/javascript"
-			src="/ide/js/79e749bac5810474fd3195d27f63e209.js"
-		></script>
+			src="/ide/js/8954c11526342f34c1d4684694cd84de.js"
+		>
+		</script>
 
 		<script type="text/javascript">
 			if (typeof Roblox === 'undefined') {
@@ -52,81 +49,66 @@
 			Roblox.Endpoints = Roblox.Endpoints || {}
 			Roblox.Endpoints.Urls = Roblox.Endpoints.Urls || {}
 		</script>
+
+		<script type="text/javascript">
+			if (typeof Roblox === 'undefined') {
+				Roblox = {}
+			}
+			if (typeof Roblox.Studio === 'undefined') {
+				Roblox.Studio = {}
+			}
+			Roblox.Studio.Resources = {
+				errorMSG: 'Error: Upload Failed. Please try publishing again.',
+				inappropriateTextError: 'Error: Inappropriate name or description.'
+			}
+		</script>
 	</head>
 </svelte:head>
 
 <body>
 	<div class="boxed-body">
-		<h3>Choose an existing place to overwrite, or create a new place.</h3>
-
-		<div>
-			<div id="assetList" class="content asset-list tab-active">
-				<!--
-				<div
-					class="asset"
-					id="newasset"
-					onclick="document.location.href ='http://www.{data.baseurl}/ide/newplace';"
-				>
-					<a class="game-image">
-						<img
-							class="placeThumbnail"
-							src="/ide/assets/0a3736a37c742ad071c3e573897b752c354e9f92.png"
-							alt="Create New"
-						/>
-					</a>
-					<p class="item-name-container ellipsis-overflow">(Create New)</p>
-				</div>
-				-->
-				{#if data.gamecreations}
-					{#each data.gamecreations as game}
-						<!-- svelte-ignore a11y-missing-attribute -->
-						<div
-							class="asset"
-							id="newasset"
-							onclick="document.location.href ='http://www.{data.baseurl}/ide/publishing?PlaceID={game
-								.places[0].placeid}';"
-						>
-							<a class="game-image">
-								<img
-									class="placeThumbnail"
-									src="/ide/assets/b9e7f7d3cf793d3c06f1d5a4f7e4f27a.jpg"
-									alt="Create New"
-								/>
-							</a>
-							<p class="item-name-container ellipsis-overflow">{game.gamename}</p>
-						</div>
-					{/each}
-				{/if}
+		<h3>Uploading to {data.placeName}</h3>
+		<div id="progressBarWrapper">
+			<div
+				id="uploadProgressBar"
+				data-upload-url="http://www.{data.baseurl}/Data/Upload.ashx?assetid={data.placeId}"
+				data-previous-url="http://www.{data.baseurl}/ide/publish/newplace"
+				data-newupload="False"
+				data-assetid={data.placeId}
+				data-isplace="True"
+				data-ispackage="False"
+			>
+				<div id="progressAmount" class="progress-blue-bar" style="width:0%;"></div>
 			</div>
+			<a class="btn-medium btn-negative uploadCancel" id="cancelButton">Cancel</a>
+			<a style="display: none;" class="btn-medium btn-neutral uploadOK" id="okButton">OK</a>
+			<a style="display: none;" class="btn-medium blue-arrow uploadNext" id="nextButton">Next</a>
 		</div>
+		<p id="errorMessageContainer"><span id="uploadProgressCounter">0%</span> Completed</p>
 
-		<div id="Close" class="footer-button-container divider-top">
-			<a class="btn-medium btn-negative" id="closeButton">Cancel</a>
+		<div id="shareWithFriends" class="divider-top">
+			<h3>Share your Place with friends</h3>
+			<input
+				class="form-text-box"
+				id="gameLink"
+				name="gameLink"
+				type="text"
+				value="http://www.{data.baseurl}/games/{data.placeId}"
+			/>
 		</div>
 	</div>
-	<script type="text/javascript">
-		$(function () {
-			Roblox.PublishAs.Resources = {
-				accept: 'Verify',
-				decline: 'Cancel'
-			}
-
-			Roblox.PublishAs.Initialize()
-		})
-	</script>
 
 	<script type="text/javascript">
 		function urchinTracker() {}
 	</script>
 
-	<!-- svelte-ignore a11y-missing-attribute -->
+	<!-- svelte-ignore a11y-missing-content -->
 	<div
 		class="ConfirmationModal modalPopup unifiedModal smallModal"
 		data-modal-handle="confirmation"
-		style="display: none"
+		style="display:none;"
 	>
 		<!-- svelte-ignore a11y-missing-attribute -->
-		<!-- svelte-ignore a11y-missing-content -->
 		<a class="genericmodal-close ImageButton closeBtnCircle_20h"></a>
 		<div class="Title"></div>
 		<div class="GenericModalBody">

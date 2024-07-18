@@ -54,6 +54,30 @@
 				)
 			})
 		}
+
+		function editGameInStudio(play_placeId) {
+			Roblox.Client.WaitForRoblox(function () {
+				RobloxLaunch.StartGame(
+					'http://www.${data.baseurl}/Game/edit.ashx?PlaceID=' + play_placeId + '&upload=',
+					'edit.ashx',
+					'https://www.${data.baseurl}/Login/Negotiate.ashx',
+					'FETCH',
+					true
+				)
+			})
+		}
+
+		function buildGameInStudio(play_placeId) {
+			Roblox.Client.WaitForRoblox(function () {
+				RobloxLaunch.StartGame(
+					'http://www.${data.baseurl}/Game/edit.ashx?PlaceID=' + play_placeId + '&upload=',
+					'edit.ashx',
+					'https://www.${data.baseurl}/Login/Negotiate.ashx',
+					'FETCH',
+					true
+				)
+			})
+		}
 	</script>
 `}
 <body id="StudioWelcomeBody">
@@ -217,7 +241,7 @@
 				<div id="assetList">
 					{#if data.gamecreations}
 						{#each data.gamecreations as game}
-							<div class="template" placeid={game.places[0].placeid}>
+							<div class="place" data-active="True" data-placeid={game.places[0].placeid}>
 								<!-- svelte-ignore a11y-invalid-attribute -->
 								<a href="" class="game-image"
 									><img
@@ -287,7 +311,7 @@
 				//<sl:translate>
 				openProject: 'Open Project',
 				openProjectText: 'To open your project, open to this page in ',
-				robloxStudio: 'ROBLOX Studio',
+				robloxStudio: 'Hexagon Studio',
 				editPlace: 'Edit Place',
 				toEdit: 'To edit ',
 				openPage: ', open to this page in ',
