@@ -39,6 +39,11 @@ function assetTypeFromEnum(value: number): AssetTypes {
 		case 41:
 		case 8:
 			return 'hats'
+		case 17:
+		case 79:
+			return 'heads'
+		case 19:
+			return 'gears'
 		case 27:
 			return 'torsos'
 		case 28:
@@ -149,38 +154,46 @@ export const actions: Actions = {
 
 		const assetids: number[] = []
 
+		let userOutfit = false
+
 		await db.transaction(async (tx) => {
 			for (const item of bundleInfoJson.items ?? []) {
-				if (item.type === 'Asset') {
-					const response = await fetch(
-						`https://assetdelivery.roblox.com/v2/asset?id=${item.id}&version=${form.data.assetversion}`,
-						{
-							headers: { 'User-Agent': 'Roblox/WinInet' }
-						}
-					)
+				if (item.type === 'UserOutfit' && !userOutfit) {
+					const outfit = await fetch(`https://avatar.roblox.com/v1/outfits/${item.id}/details`)
 
-					if (response.status !== 200) {
+					if (outfit.status !== 200) {
 						tx.rollback()
-						return setError(form, 'bundleid', 'error')
+
+						return setError(form, 'bundleid', 'Ratelimited')
 					}
 
-					const data = await response.json()
+					userOutfit = true
 
-					if (data) {
-						if (data.locations?.length > 0) {
-							const url = data.locations[0].location
+					const outfitJson = await outfit.json()
 
-							const assetResponse = await fetch(url, {
+					for (const item of outfitJson.assets) {
+						const response = await fetch(
+							`https://assetdelivery.roblox.com/v1/asset/?id=${item.id}&version=${form.data.assetversion}`,
+							{
 								headers: { 'User-Agent': 'Roblox/WinInet' }
-							})
+							}
+						)
 
-							const assetData = Buffer.from(await assetResponse.arrayBuffer())
+						if (response.status !== 200) {
+							tx.rollback()
+							return setError(form, 'bundleid', 'error')
+						}
 
-							const fileName = Buffer.from(
-								createHash('sha512').update(assetData).digest('hex')
-							).toString()
+						const assetData = Buffer.from(await response.arrayBuffer())
 
-							let Key = assetTypeFromEnum(data.assetTypeId) === 'hats' ? 'hats' : 'packages'
+						const fileName = Buffer.from(
+							createHash('sha512').update(assetData).digest('hex')
+						).toString()
+
+						try {
+							let assetType = assetTypeFromEnum(item.assetType.id)
+
+							let Key = assetType === 'hats' ? 'hats' : assetType === 'gears' ? 'gears' : 'packages'
 
 							const command = new PutObjectCommand({
 								Bucket: s3BucketName,
@@ -203,7 +216,7 @@ export const actions: Actions = {
 								.insert(assetTable)
 								.values({
 									assetname: item.name ?? '',
-									assetType: assetTypeFromEnum(data.assetTypeId),
+									assetType: assetType,
 									creatoruserid: locals.user.userid,
 									simpleasseturl: fileName,
 									moderationstate: 'approved',
@@ -215,7 +228,7 @@ export const actions: Actions = {
 								.returning({ assetid: assetTable.assetid })
 
 							assetids.push(asset.assetid)
-						}
+						} catch {}
 					}
 				}
 			}
