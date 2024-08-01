@@ -5,6 +5,8 @@
 
 	import GearFormPrimitive from '$src/components/develop/gearFormPrimitive.svelte'
 
+	import PackageFormPrimitive from '$src/components/develop/packageFormPrimitive.svelte'
+
 	export let data: PageData
 </script>
 
@@ -23,5 +25,7 @@
 			data={data.gearForm}
 			friendlyName={data.friendlyName}
 		/>
+	{:else if data.item === 'packages'}
+		<PackageFormPrimitive data={data.packageForm} />
 	{/if}
 </div>

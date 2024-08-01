@@ -103,6 +103,21 @@ export const legacyPersistenceTable = pgTable(
 	}
 )
 
+export const persistenceTable = pgTable(
+	'persistence',
+	{
+		placeid: bigint('placeid', { mode: 'number' }).notNull(),
+		key: text('key').notNull(),
+		type: text('type').$type<'standard' | 'sorted'>().notNull(),
+		scope: text('scope').notNull(),
+		target: text('target').notNull(),
+		value: text('value').notNull()
+	},
+	(table) => {
+		return { pk: primaryKey({ columns: [table.placeid, table.target, table.scope] }) } // there should only exist one placeid with that key
+	}
+)
+
 export const jobsRelations = relations(jobsTable, ({ one, many }) => ({
 	associatedplace: one(placesTable, {
 		// games

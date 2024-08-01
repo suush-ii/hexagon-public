@@ -2,7 +2,7 @@ import { error, json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types'
 import { db } from '$src/lib/server/db'
 import { assetTable } from '$lib/server/schema/assets'
-import { transactionsTable, inventoryTable, usersTable } from '$lib/server/schema/users'
+import { transactionsTable, inventoryTable, usersTable, outfitsTable } from '$lib/server/schema'
 import { and, eq, ne } from 'drizzle-orm'
 import { z } from 'zod'
 
@@ -118,6 +118,38 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 				await tx
 					.insert(inventoryTable)
 					.values({ itemid, userid: user.userid, wearing: false, itemtype: item.assetType })
+
+				if (item.assetType === 'packages') {
+					const outfit = await tx.query.outfitsTable.findFirst({
+						where: eq(outfitsTable.associatedpackageid, itemid),
+						columns: {
+							assets: true
+						}
+					})
+
+					if (!outfit) {
+						tx.rollback() // shouldn't be possible?
+						return
+					}
+
+					if (outfit) {
+						for (const item of outfit.assets) {
+							const bodyPart = await tx.query.assetTable.findFirst({
+								where: eq(assetTable.assetid, item),
+								columns: { assetType: true }
+							})
+
+							if (bodyPart) {
+								await tx.insert(inventoryTable).values({
+									itemid: item,
+									userid: user.userid,
+									wearing: false,
+									itemtype: bodyPart.assetType
+								})
+							}
+						}
+					}
+				}
 
 				await tx.insert(transactionsTable).values({
 					userid: user.userid,

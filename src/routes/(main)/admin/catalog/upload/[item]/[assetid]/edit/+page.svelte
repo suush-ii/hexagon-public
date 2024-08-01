@@ -25,7 +25,7 @@
 			genres={data.genres}
 			gearattributes={data.gearattributes}
 		/>
-	{:else if data.item === 'hats' || data.item === 'faces'}
+	{:else}
 		<EditAssetFormPrimitive
 			data={data.assetForm}
 			friendlyName={data.friendlyName}

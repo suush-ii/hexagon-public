@@ -177,10 +177,19 @@
 				class="flex flex-col gap-y-4 p-4 supports-backdrop-blur:bg-background/60 bg-muted-foreground/5"
 			>
 				<div class="flex flex-row flex-wrap gap-x-4 xl:flex-nowrap">
-					<GameThumbnail
-						thumbnailid={data.place.associatedgame.thumbnailid}
-						gamename={data.place.associatedgame.gamename}
-					/>
+					<div class="relative">
+						<GameThumbnail
+							thumbnailid={data.place.associatedgame.thumbnailid}
+							gamename={data.place.associatedgame.gamename}
+						/>
+						{#if data.place.associatedgame.serversize > 20}
+							<img
+								class="absolute right-0 bottom-0 w-56 pointer-events-none"
+								src="/Images/megaplace.png"
+								alt="Mega"
+							/>
+						{/if}
+					</div>
 
 					<div class="flex flex-col w-full">
 						<div class="flex">
