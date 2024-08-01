@@ -42,6 +42,8 @@ function assetTypeFromEnum(value: number): AssetTypes {
 		case 17:
 		case 79:
 			return 'heads'
+		case 18:
+			return 'faces'
 		case 19:
 			return 'gears'
 		case 27:
@@ -193,7 +195,7 @@ export const actions: Actions = {
 						try {
 							let assetType = assetTypeFromEnum(item.assetType.id)
 
-							let Key = assetType === 'hats' ? 'hats' : assetType === 'gears' ? 'gears' : 'packages'
+							let Key = ['hats', 'gears', 'faces'].includes(assetType) ? assetType : 'packages'
 
 							const command = new PutObjectCommand({
 								Bucket: s3BucketName,
