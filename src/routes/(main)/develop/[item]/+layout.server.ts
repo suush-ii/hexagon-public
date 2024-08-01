@@ -50,6 +50,11 @@ export let _uploadableAssets: Record<string, assetPrimitive> = {
 	faces: {
 		friendlyName: 'Face',
 		...accessoryPrimitive
+	},
+	packages: {
+		friendlyName: 'Package',
+		fileTypes: [],
+		mimeTypes: []
 	}
 }
 

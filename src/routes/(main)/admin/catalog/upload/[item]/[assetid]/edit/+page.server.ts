@@ -9,7 +9,7 @@ import { assetTable } from '$lib/server/schema'
 import { db } from '$lib/server/db'
 import { eq } from 'drizzle-orm'
 import { _assetSchema } from '../../+layout.server'
-import type { AssetGenreDB, GearAttributes } from '$lib/types'
+import type { AssetGenreDB } from '$lib/types'
 
 export const load: PageServerLoad = async ({ params, locals }) => {
 	const result = await z.number().safeParseAsync(Number(params.assetid))
@@ -18,45 +18,36 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 		error(400, { success: false, message: 'Malformed input.' })
 	}
 
-	let name = ''
-	let description = ''
-	let onsale = true
-	let price = 0
-	let genres: AssetGenreDB[] = []
-	let gearattributes: GearAttributes[] = []
+	const asset = await db
+		.select({
+			assetname: assetTable.assetname,
+			description: assetTable.description,
+			creatoruserid: assetTable.creatoruserid,
+			moderationstate: assetTable.moderationstate,
+			onsale: assetTable.onsale,
+			price: assetTable.price,
+			genres: assetTable.genres,
+			assettype: assetTable.assetType,
+			gearattributes: assetTable.gearattributes
+		})
+		.from(assetTable)
+		.where(eq(assetTable.assetid, result.data))
+		.limit(1)
 
-	if (params.item === 'gears' || params.item === 'faces' || params.item === 'hats') {
-		const asset = await db
-			.select({
-				assetname: assetTable.assetname,
-				description: assetTable.description,
-				creatoruserid: assetTable.creatoruserid,
-				moderationstate: assetTable.moderationstate,
-				onsale: assetTable.onsale,
-				price: assetTable.price,
-				genres: assetTable.genres,
-				assettype: assetTable.assetType,
-				gearattributes: assetTable.gearattributes
-			})
-			.from(assetTable)
-			.where(eq(assetTable.assetid, result.data))
-			.limit(1)
-
-		if (asset.length === 0 || asset[0].assettype !== params.item) {
-			error(404, { success: false, message: 'Asset not found.' })
-		}
-
-		if (asset[0].moderationstate === 'rejected') {
-			error(403, { success: false, message: 'This asset has been moderated.' })
-		}
-
-		name = asset[0].assetname
-		description = asset[0].description ?? ''
-		onsale = asset[0].onsale
-		price = asset[0].price ?? 0
-		genres = asset[0].genres
-		gearattributes = asset[0].gearattributes ?? []
+	if (asset.length === 0 || asset[0].assettype !== params.item) {
+		error(404, { success: false, message: 'Asset not found.' })
 	}
+
+	if (asset[0].moderationstate === 'rejected') {
+		error(403, { success: false, message: 'This asset has been moderated.' })
+	}
+
+	let name = asset[0].assetname
+	let description = asset[0].description ?? ''
+	let onsale = asset[0].onsale
+	let price = asset[0].price ?? 0
+	let genres = asset[0].genres
+	let gearattributes = asset[0].gearattributes ?? []
 	const assetForm = await superValidate(zod(assetSchema))
 	const gearForm = await superValidate(zod(gearSchema))
 

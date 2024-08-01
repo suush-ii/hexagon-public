@@ -15,7 +15,7 @@ export const load: LayoutServerLoad = async ({ params }) => {
 
 	return {
 		item: params.item,
-		friendlyName: _uploadableAssets[params.item].friendlyName,
-		fileTypes: _uploadableAssets[params.item].fileTypes
+		friendlyName: _uploadableAssets[params.item]?.friendlyName ?? params.item,
+		fileTypes: _uploadableAssets[params.item]?.fileTypes
 	}
 }

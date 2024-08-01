@@ -407,6 +407,20 @@
       "when": 1720306235505,
       "tag": "0057_left_iron_man",
       "breakpoints": true
+    },
+    {
+      "idx": 58,
+      "version": "5",
+      "when": 1720469948534,
+      "tag": "0058_hard_bloodstrike",
+      "breakpoints": true
+    },
+    {
+      "idx": 59,
+      "version": "5",
+      "when": 1722451037529,
+      "tag": "0059_public_secret_warriors",
+      "breakpoints": true
     }
   ]
 }

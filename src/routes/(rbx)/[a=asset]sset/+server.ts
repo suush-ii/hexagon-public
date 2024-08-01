@@ -186,6 +186,25 @@ export const GET: RequestHandler = async (event) => {
 		redirect(302, `https://${s3Url}/${existingAsset?.assetType}/` + existingAsset?.place.placeurl)
 	}
 
+	if (existingAsset?.assetType === 'packages') {
+		return error(403, {
+			success: false,
+			message: "You don't have permission to access this asset.",
+			data: {}
+		})
+	}
+
+	if (
+		existingAsset?.assetType === 'heads' ||
+		existingAsset?.assetType === 'l arms' ||
+		existingAsset?.assetType === 'l legs' ||
+		existingAsset?.assetType === 'r arms' ||
+		existingAsset?.assetType === 'r legs' ||
+		existingAsset?.assetType === 'torsos'
+	) {
+		redirect(302, `https://${s3Url}/${'packages'}/` + existingAsset?.simpleasseturl)
+	}
+
 	const cachedAsset = await db
 		.select({ filehash: assetCacheTable.filehash, assettypeid: assetCacheTable.assettypeid })
 		.from(assetCacheTable)

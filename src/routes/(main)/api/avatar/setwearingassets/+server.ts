@@ -2,7 +2,7 @@ import { error, json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types'
 import { db } from '$src/lib/server/db'
 import { z } from 'zod'
-import { inventoryTable, usersTable } from '$lib/server/schema'
+import { inventoryTable, outfitsTable, usersTable } from '$lib/server/schema'
 import { eq, and } from 'drizzle-orm'
 import type { AssetTypes } from '$lib/types'
 
@@ -102,6 +102,38 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 
 	if (item.asset.moderationstate !== 'approved') {
 		return error(400, { success: false, message: 'This asset is not approved.', data: {} })
+	}
+
+	if (item.asset.assetType === 'packages') {
+		await db.transaction(async (tx) => {
+			await tx
+				.update(inventoryTable)
+				.set({ wearing: false })
+				.where(eq(inventoryTable.userid, user.userid))
+
+			const assets = await tx.query.outfitsTable.findFirst({
+				where: eq(outfitsTable.associatedpackageid, result.data.itemId),
+				columns: {
+					assets: true
+				}
+			})
+
+			if (assets) {
+				for (const item of assets.assets) {
+					await tx
+						.update(inventoryTable)
+						.set({ wearing: true })
+						.where(and(eq(inventoryTable.userid, user.userid), eq(inventoryTable.itemid, item)))
+				}
+			}
+		})
+
+		await db
+			.update(usersTable)
+			.set({ _3dmanifest: null, avatarbody: null, avatarheadshot: null })
+			.where(eq(usersTable.userid, user.userid))
+
+		return json({ success: true, message: '', data: {} })
 	}
 
 	if (canOnlyWearOne.includes(item.asset.assetType)) {

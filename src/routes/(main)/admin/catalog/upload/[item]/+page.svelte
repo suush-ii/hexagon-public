@@ -1,8 +1,7 @@
 <script lang="ts">
-	import AssetFormPrimitive from '$src/components/develop/assetFormPrimitive.svelte'
-	import EmptyCard from '$src/components/emptyCard.svelte'
 	import * as Tabs from '$src/components/ui/tabs'
 	import { Upload } from 'lucide-svelte'
+	import { adminAssets } from '.'
 
 	import type { PageData } from './$types'
 
@@ -20,6 +19,10 @@
 			>
 			<a href="/admin/catalog/upload/faces" class="w-full"
 				><Tabs.Trigger class="w-full pointer-events-none" value="faces">Faces</Tabs.Trigger></a
+			>
+			<a href="/admin/catalog/upload/packages" class="w-full"
+				><Tabs.Trigger class="w-full pointer-events-none" value="packages">Packages</Tabs.Trigger
+				></a
 			>
 		</Tabs.List>
 		<Tabs.Content value={data.item}>
