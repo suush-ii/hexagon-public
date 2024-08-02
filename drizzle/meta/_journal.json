@@ -421,6 +421,13 @@
       "when": 1722451037529,
       "tag": "0059_public_secret_warriors",
       "breakpoints": true
+    },
+    {
+      "idx": 60,
+      "version": "5",
+      "when": 1722561738068,
+      "tag": "0060_sticky_riptide",
+      "breakpoints": true
     }
   ]
 }

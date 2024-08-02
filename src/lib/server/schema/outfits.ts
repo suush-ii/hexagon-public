@@ -4,6 +4,7 @@ export const outfitsTable = pgTable('outfits', {
 	outfitid: bigserial('outfitid', { mode: 'number' }).notNull().primaryKey(),
 	assets: bigint('assets', { mode: 'number' }).array().$type<number[]>().notNull(),
 	associatedpackageid: bigint('associatedpackageid', { mode: 'number' }),
+	ownerid: bigint('ownerid', { mode: 'number' }),
 	headcolor: smallint('headcolor'),
 	leftarmcolor: smallint('leftarmcolor'), // unused for packages
 	leftlegcolor: smallint('leftlegcolor'),
