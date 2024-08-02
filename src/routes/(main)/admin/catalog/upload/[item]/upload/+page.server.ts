@@ -1,6 +1,6 @@
 import type { PageServerLoad, Actions } from './$types'
 import { fail } from 'sveltekit-superforms'
-import { setError, superValidate, type SuperValidated } from 'sveltekit-superforms/server'
+import { setError, superValidate } from 'sveltekit-superforms/server'
 import { zod } from 'sveltekit-superforms/adapters'
 import { formSchema as assetSchema } from '$lib/schemas/assetschema'
 import { formSchema as gearSchema } from '$lib/schemas/gearschema'
@@ -11,12 +11,13 @@ import { z } from 'zod'
 import { adminLogsTable, assetTable } from '$lib/server/schema'
 import { db } from '$lib/server/db'
 import type { RobloxCatalogApiBundleDetailsModel } from '$lib/server/catalogApi'
+import type { RobloxApiAvatarModelsOutfitDetailsModel } from '$lib/server/avatarApi'
 import { createHash } from 'node:crypto'
 import { PutObjectCommand } from '@aws-sdk/client-s3'
 import { s3BucketName } from '$src/stores'
-import { S3 } from '$src/lib/server/s3'
+import { S3 } from '$lib/server/s3'
 import type { AssetTypes } from '$lib/types'
-import { outfitsTable } from '$src/lib/server/schema/outfits'
+import { outfitsTable } from '$lib/server/schema/outfits'
 
 const _assetSchema = z.enum(['hats', 'faces', 'gears', 'packages'])
 
@@ -34,7 +35,7 @@ export const load: PageServerLoad = async () => {
 	}
 }
 
-function assetTypeFromEnum(value: number): AssetTypes {
+function assetTypeFromEnum(value: number | undefined): AssetTypes {
 	switch (value) {
 		case 41:
 		case 8:
@@ -171,9 +172,9 @@ export const actions: Actions = {
 
 					userOutfit = true
 
-					const outfitJson = await outfit.json()
+					const outfitJson: RobloxApiAvatarModelsOutfitDetailsModel = await outfit.json()
 
-					for (const item of outfitJson.assets) {
+					for (const item of outfitJson.assets ?? []) {
 						const response = await fetch(
 							`https://assetdelivery.roblox.com/v1/asset/?id=${item.id}&version=${form.data.assetversion}`,
 							{
@@ -193,7 +194,7 @@ export const actions: Actions = {
 						).toString()
 
 						try {
-							let assetType = assetTypeFromEnum(item.assetType.id)
+							let assetType = assetTypeFromEnum(item?.assetType?.id)
 
 							let Key = ['hats', 'gears', 'faces'].includes(assetType) ? assetType : 'packages'
 

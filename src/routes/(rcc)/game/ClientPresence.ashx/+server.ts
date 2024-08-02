@@ -45,9 +45,7 @@ export const POST: RequestHandler = async ({ url }) => {
 
 	let active = instance?.players?.length ?? 0
 
-	let playerCountUniverse = (
-		await db.select({ active: gamesTable.active }).from(gamesTable).limit(1)
-	)[0].active
+	let playerCountUniverse = instance?.associatedplace?.associatedgame?.active ?? 0
 
 	if (action === 'connect') {
 		instance?.players?.push(userid)
