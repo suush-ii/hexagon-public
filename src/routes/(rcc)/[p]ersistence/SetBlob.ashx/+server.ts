@@ -3,6 +3,7 @@ import { z } from 'zod'
 import { legacyPersistenceTable } from '$lib/server/schema'
 import { db } from '$lib/server/db'
 import { eq, and } from 'drizzle-orm'
+import pako from 'pako'
 
 const setBlobSchema = z.object({
 	placeid: z.coerce.number().int().positive(),
@@ -22,7 +23,7 @@ export const POST: RequestHandler = async ({ url, request }) => {
 
 	const { placeid, userid } = result.data
 
-	const data = (await request.text()).replaceAll('\u0000', '')
+	const data = new TextDecoder().decode(pako.inflate(Buffer.from(await request.arrayBuffer()))) // gzip shit
 
 	const where = and(
 		eq(legacyPersistenceTable.placeid, placeid),

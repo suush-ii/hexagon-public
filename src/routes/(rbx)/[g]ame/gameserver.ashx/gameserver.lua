@@ -197,6 +197,7 @@ game:GetService("Players").PlayerRemoving:connect(function(player)
 
 	if url and access and placeId and player and player.userId then
 		game:HttpPost(url .. "/game/ClientPresence.ashx?action=disconnect&accessKey=" .. accessKey .. "&PlaceID=" .. placeId .. "&JobID=" .. JobId .. "&UserID=" .. player.userId, "")
+		wait(5)
 		check()
 
 	end
