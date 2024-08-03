@@ -22,7 +22,7 @@ export const POST: RequestHandler = async ({ url, request }) => {
 
 	const { placeid, userid } = result.data
 
-	const data = await request.text()
+	const data = (await request.text()).replaceAll('\u0000', '')
 
 	const where = and(
 		eq(legacyPersistenceTable.placeid, placeid),
