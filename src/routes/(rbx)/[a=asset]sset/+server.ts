@@ -9,6 +9,7 @@ import parse from 'meshconvert'
 import { createSign } from 'node:crypto'
 import pantsTemplate from './templates/pantsTemplate.xml?raw'
 import shirtTemplate from './templates/shirtTemplate.xml?raw'
+import tshirtTemplate from './templates/tshirtTemplate.xml?raw'
 import decalTemplate from './templates/decalTemplate.xml?raw'
 import { building } from '$app/environment'
 import { auth } from '$lib/server/lucia'
@@ -159,6 +160,15 @@ export const GET: RequestHandler = async (event) => {
 	if (existingAsset?.assetType === 'decals') {
 		return text(
 			decalTemplate.replace(
+				'{1}',
+				'http://' + env.BASE_URL + '/asset?id=' + existingAsset.associatedimageid
+			)
+		)
+	}
+
+	if (existingAsset?.assetType === 't-shirts') {
+		return text(
+			tshirtTemplate.replace(
 				'{1}',
 				'http://' + env.BASE_URL + '/asset?id=' + existingAsset.associatedimageid
 			)

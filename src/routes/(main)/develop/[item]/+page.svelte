@@ -56,6 +56,10 @@
 					>{data.t('develop.pants')}</Tabs.Trigger
 				></a
 			>
+			<a href="/develop/t-shirts" class="w-full"
+				><Tabs.Trigger class="w-full pointer-events-none" value="t-shirts">T-Shirts</Tabs.Trigger
+				></a
+			>
 		</Tabs.List>
 		<Tabs.Content value={data.item}>
 			<a href="/develop/{data.item}/upload">
@@ -76,7 +80,7 @@
 			{#each creations as creation}
 				<div class="flex flex-row gap-x-2 w-full justify-center">
 					<a href="/catalog/{creation.assetid}/{slugify(creation.assetName)}">
-						{#if data.params === 'shirts' || data.params === 'pants'}
+						{#if data.params === 'shirts' || data.params === 'pants' || data.params === 't-shirts'}
 							<CatalogAvatar
 								css="w-24 h-24 rounded-xl aspect-square"
 								itemId={creation.assetid}

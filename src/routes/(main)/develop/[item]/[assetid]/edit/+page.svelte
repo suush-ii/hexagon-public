@@ -33,7 +33,7 @@
 			price={data.price}
 			genres={data.genres}
 		/>
-	{:else if data.item === 'audio' || data.item === 'decals'}
+	{:else if data.item === 'audio' || data.item === 'decals' || data.item === 't-shirts'}
 		<EditAssetFormPrimitive
 			data={data.assetForm}
 			friendlyName={data.friendlyName}

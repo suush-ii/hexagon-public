@@ -98,7 +98,9 @@
 							? true
 							: data.item.assetType === 'faces'
 								? true
-								: false}
+								: data.item.assetType === 't-shirts'
+									? true
+									: false}
 		/>
 
 		<div class="flex flex-col gap-y-4 w-1/3">

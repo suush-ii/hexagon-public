@@ -58,20 +58,28 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 
 	const item =
 		asset === 'item'
-			? await db
-					.select({
-						moderationstate: assetTable.moderationstate,
-						assetType: assetTable.assetType,
-						simpleasseturl: assetTable.simpleasseturl,
-						assetrender: assetTable.assetrender,
-						_3dmanifest: assetTable._3dmanifest
-					})
-					.from(assetTable)
-					.where(eq(assetTable.assetid, assetid))
-					.limit(1)
-			: []
+			? await db.query.assetTable.findFirst({
+					where: eq(assetTable.assetid, assetid),
+					columns: {
+						moderationstate: true,
+						assetType: true,
+						simpleasseturl: true,
+						assetrender: true,
+						_3dmanifest: true
+					},
+					with: {
+						associatedImage: {
+							columns: {
+								assetid: true,
+								assetType: true,
+								simpleasseturl: true
+							}
+						}
+					}
+				})
+			: null
 
-	if (user.length === 0 && item.length === 0) {
+	if (user.length === 0 && !item) {
 		return error(404, {
 			success: true,
 			message: "This asset doesn't exist!",
@@ -83,21 +91,23 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 
 	const renderType = userRender ? 'user' : 'asset'
 
-	const packageRender = item?.[0]?.assetType === 'packages'
+	const packageRender = item?.assetType === 'packages'
+
+	const tshirtRender = item?.assetType === 't-shirts'
 
 	if (
 		asset === 'item' &&
 		type === 'obj' &&
-		(item?.[0]?.assetType === 'faces' ||
-			item?.[0]?.assetType === 'decals' ||
-			item?.[0]?.assetType === 'images' ||
-			item?.[0]?.assetType === 'audio')
+		(item?.assetType === 'faces' ||
+			item?.assetType === 'decals' ||
+			item?.assetType === 'images' ||
+			item?.assetType === 'audio')
 	) {
 		error(400, { success: false, message: 'Malformed JSON.', data: {} })
 	}
 
-	if (item?.[0]?.moderationstate !== 'approved' && asset === 'item') {
-		if (item?.[0].moderationstate === 'rejected') {
+	if (item?.moderationstate !== 'approved' && asset === 'item') {
+		if (item?.moderationstate === 'rejected') {
 			return json({
 				success: true,
 				message: '',
@@ -112,19 +122,30 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 		})
 	}
 
-	if (item.length > 0 && asset === 'item') {
-		if (item[0].assetType === 'images') {
+	if (item && asset === 'item') {
+		if (item.assetType === 'images') {
 			return json({
 				success: true,
 				message: '',
 				data: {
-					url: `https://${s3Url}/${item[0].assetType}/${item[0].simpleasseturl}`,
+					url: `https://${s3Url}/${item.assetType}/${item.simpleasseturl}`,
 					status: 'completed'
 				}
 			})
 		}
 
-		if (item[0].assetType === 'audio') {
+		if (item.assetType === 'decals') {
+			return json({
+				success: true,
+				message: '',
+				data: {
+					url: `https://${s3Url}/${item.associatedImage?.assetType}/${item.associatedImage?.simpleasseturl}`,
+					status: 'completed'
+				}
+			})
+		}
+
+		if (item.assetType === 'audio') {
 			return json({
 				success: true,
 				message: '',
@@ -136,23 +157,23 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 		}
 	}
 
-	if ((user?.[0]?.avatarbody || item?.[0]?.assetrender) && type === 'avatar') {
+	if ((user?.[0]?.avatarbody || item?.assetrender) && type === 'avatar') {
 		return json({
 			success: true,
 			message: '',
 			data: {
-				url: `https://${s3Url}/${Key}/${user?.[0]?.avatarbody ?? item[0].assetrender}`,
+				url: `https://${s3Url}/${Key}/${user?.[0]?.avatarbody ?? item?.assetrender}`,
 				status: 'completed'
 			}
 		})
 	}
 
-	if ((user?.[0]?._3dmanifest || item?.[0]?._3dmanifest) && type === 'obj') {
+	if ((user?.[0]?._3dmanifest || item?._3dmanifest) && type === 'obj') {
 		return json({
 			success: true,
 			message: '',
 			data: {
-				url: `https://${s3Url}/${Key}/${user?.[0]?._3dmanifest ?? item[0]._3dmanifest}`,
+				url: `https://${s3Url}/${Key}/${user?.[0]?._3dmanifest ?? item?._3dmanifest}`,
 				status: 'completed'
 			}
 		})
@@ -209,7 +230,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 
 	if (type === 'avatar') {
 		const response = await fetch(
-			`http://${env.GAMESERVER_IP}:${env.ARBITER_PORT}/${userRender ? 'openrender2016' : 'openrenderasset2016'}/${instanceNew.jobid}/${packageRender ? encodeURIComponent(assets) : assetid}${userRender ? '/false' : ''}${'/false'}${item.length > 0 ? `/${item[0].assetType}` : ''}`
+			`http://${env.GAMESERVER_IP}:${env.ARBITER_PORT}/${userRender ? 'openrender2016' : 'openrenderasset2016'}/${instanceNew.jobid}/${packageRender ? encodeURIComponent(assets) : tshirtRender ? item.associatedImage?.assetid : assetid}${userRender ? '/false' : ''}${'/false'}${item ? `/${item.assetType}` : ''}`
 		)
 
 		const responseJson = await response.json()
@@ -267,7 +288,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 
 	if (type === 'obj') {
 		const response = await fetch(
-			`http://${env.GAMESERVER_IP}:${env.ARBITER_PORT}/${userRender ? 'openrender2016' : 'openrenderasset2016'}/${instanceNew.jobid}/${packageRender ? encodeURIComponent(assets) : assetid}${userRender ? '/false' : ''}${'/true'}${item.length > 0 ? `/${item[0].assetType}` : ''}`
+			`http://${env.GAMESERVER_IP}:${env.ARBITER_PORT}/${userRender ? 'openrender2016' : 'openrenderasset2016'}/${instanceNew.jobid}/${packageRender ? encodeURIComponent(assets) : assetid}${userRender ? '/false' : ''}${'/true'}${item ? `/${item.assetType}` : ''}`
 		)
 
 		const responseJson = await response.json()
