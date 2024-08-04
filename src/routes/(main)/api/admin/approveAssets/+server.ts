@@ -63,16 +63,10 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 		const punish = assets.find((a) => a.assetId === asset.assetId)?.punish
 
 		if (newModerationState !== 'pending') {
-			// avoid unnecessary updates
 			await db
 				.update(assetTable)
 				.set({
-					moderationstate: newModerationState,
-					topunish: punish,
-					assetname: '[ Content Deleted ]',
-					scrubbedassetname: asset.assetname,
-					description: '[ Content Deleted ]',
-					onsale: false
+					moderationstate: newModerationState
 				})
 				.where(eq(assetTable.assetid, asset.assetId))
 
@@ -80,6 +74,19 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 				const Key = asset.assetType
 
 				const fileName = asset.simpleAssetUrl
+
+				// avoid unnecessary updates
+				await db
+					.update(assetTable)
+					.set({
+						moderationstate: newModerationState,
+						topunish: punish,
+						assetname: '[ Content Deleted ]',
+						scrubbedassetname: asset.assetname,
+						description: '[ Content Deleted ]',
+						onsale: false
+					})
+					.where(eq(assetTable.assetid, asset.assetId))
 
 				if (punish === false) {
 					// we want to show this in user queue
@@ -111,6 +118,20 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 					associatedidtype: 'item',
 					action
 				})
+
+				if (newModerationState === 'rejected') {
+					await db
+						.update(assetTable)
+						.set({
+							moderationstate: newModerationState,
+							topunish: punish,
+							assetname: '[ Content Deleted ]',
+							scrubbedassetname: asset.assetname,
+							description: '[ Content Deleted ]',
+							onsale: false
+						})
+						.where(eq(assetTable.associatedimageid, asset.assetId))
+				}
 			} else {
 				await db.insert(adminLogsTable).values({
 					userid: locals.user.userid,

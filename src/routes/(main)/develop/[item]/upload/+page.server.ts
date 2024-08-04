@@ -9,6 +9,27 @@ import { _uploadableAssets } from '../+layout.server'
 import { _assetSchema } from '../+layout.server'
 import { zod } from 'sveltekit-superforms/adapters'
 import { uploadAsset } from '$lib/server/develop/uploadasset'
+import { assetTable, inventoryTable } from '$lib/server/schema'
+import { db } from '$src/lib/server/db'
+import { eq } from 'drizzle-orm'
+
+async function giveItem(assetid: number, userid: number) {
+	const item = await db.query.assetTable.findFirst({
+		where: eq(assetTable.assetid, assetid),
+		columns: {
+			assetType: true
+		}
+	})
+
+	if (assetid && item) {
+		await db.insert(inventoryTable).values({
+			itemid: assetid,
+			userid: userid,
+			wearing: false,
+			itemtype: item.assetType
+		})
+	}
+}
 
 export const load: PageServerLoad = async () => {
 	const gameForm = await superValidate(zod(gameSchema))
@@ -42,7 +63,7 @@ export const actions: Actions = {
 		}
 
 		const file = form.data.asset
-		uploadAsset(file, params.item, form, locals.user.userid)
+		await uploadAsset(file, params.item, form, locals.user.userid)
 		return redirect(302, '/develop/' + params.item)
 	},
 	clothing: async ({ request, params, locals }) => {
@@ -64,7 +85,10 @@ export const actions: Actions = {
 		}
 
 		const file = form.data.asset
-		uploadAsset(file, params.item, form, locals.user.userid)
+		const assetid = await uploadAsset(file, params.item, form, locals.user.userid)
+
+		await giveItem(Number(assetid), locals.user.userid)
+
 		return redirect(302, '/develop/' + params.item)
 	},
 	asset: async ({ request, params, locals }) => {
@@ -86,7 +110,9 @@ export const actions: Actions = {
 		}
 
 		const file = form.data.asset
-		uploadAsset(file, params.item, form, locals.user.userid)
+		const assetid = await uploadAsset(file, params.item, form, locals.user.userid)
+
+		await giveItem(Number(assetid), locals.user.userid)
 
 		return redirect(302, '/develop/' + params.item)
 	}

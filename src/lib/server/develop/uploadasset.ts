@@ -54,7 +54,7 @@ export async function uploadAsset(
 
 		let Key = item
 
-		if (Key === 'shirts' || Key === 'pants' || Key === 'decals') {
+		if (Key === 'shirts' || Key === 'pants' || Key === 't-shirts' || Key === 'decals') {
 			Key = 'images'
 		}
 
@@ -209,9 +209,9 @@ export async function uploadAsset(
 			return assetResponse.assetid
 		}
 
-		if (item === 'shirts' || item === 'pants' || item === 'decals') {
+		if (item === 'shirts' || item === 'pants' || item === 't-shirts' || item === 'decals') {
 			// these are all handled the same which is through image and xml
-			await db.transaction(async (tx) => {
+			const assetResponse = await db.transaction(async (tx) => {
 				try {
 					let [imageResponse] = await tx
 						.insert(assetTable)
@@ -226,16 +226,21 @@ export async function uploadAsset(
 						})
 						.returning({ assetid: assetTable.assetid })
 
-					await tx.insert(assetTable).values({
-						assetname: form.data.name,
-						assetType: item,
-						creatoruserid: userid,
-						moderationstate: moderationState,
-						associatedimageid: imageResponse.assetid,
-						price: form.data.price,
-						description: form.data.description,
-						genres: form.data.genres
-					})
+					let [assetResponse] = await tx
+						.insert(assetTable)
+						.values({
+							assetname: form.data.name,
+							assetType: item,
+							creatoruserid: userid,
+							moderationstate: moderationState,
+							associatedimageid: imageResponse.assetid,
+							price: form.data.price,
+							description: form.data.description,
+							genres: form.data.genres
+						})
+						.returning({ assetid: assetTable.assetid })
+
+					return assetResponse.assetid
 				} catch {
 					tx.rollback()
 					return fail(500, {
@@ -243,6 +248,8 @@ export async function uploadAsset(
 					})
 				}
 			})
+
+			return assetResponse
 		}
 	} catch (err) {
 		console.log(err)

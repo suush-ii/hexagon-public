@@ -37,6 +37,8 @@
 	}
 
 	$: selectedGenre = $formData.genres.map((c) => ({ label: c, value: c }))
+
+	$formData.price = 5
 </script>
 
 <form method="POST" action="?/clothing" enctype="multipart/form-data" class="max-w-4xl" use:enhance>
