@@ -5,6 +5,8 @@
 
 	import { Separator } from '$src/components/ui/separator'
 
+	import EmptyCard from '$src/components/emptyCard.svelte'
+
 	import type { instances } from '$lib/types'
 
 	import { createEventDispatcher } from 'svelte'
@@ -22,6 +24,11 @@
 	export let serverSize: number
 </script>
 
+{#if servers.length === 0}
+	<EmptyCard
+		><h5 class="text-center mx-auto select-none">Maybe join to create a server!</h5></EmptyCard
+	>
+{/if}
 {#each servers as server}
 	<div
 		class="w-full supports-backdrop-blur:bg-background/60 bg-muted-foreground/5 backdrop-blur flex flex-row gap-x-2"
