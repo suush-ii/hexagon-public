@@ -1,9 +1,9 @@
 -- Start Game Script Arguments
 --local placeId, port, gameId, sleeptime, access, url, killID, deathID, timeout, machineAddress, gsmInterval, gsmUrl, maxPlayers, maxSlotsUpperLimit, maxSlotsLowerLimit, maxGameInstances, injectScriptAssetID, apiKey, libraryRegistrationScriptAssetID = ...
 
-local sleeptime, url, timeout, access = 0, "http://www.roblox.com", 0, "8169b38d-abbc-480f-8971-14d8fd560aad"
+local sleeptime, url, timeout = 0, "http://www.roblox.com", 0
 
-local accessKey, placeId, port, JobId, maxPlayers = {1}
+local access, placeId, port, JobId, maxPlayers = {1}
 --defining jobid here is a hack for now
 
 
@@ -128,7 +128,7 @@ if url~=nil then
 
 	pcall(function()
 				if access then
-					loadfile(url .. "/Game/PlaceSpecificScript.ashx?PlaceId=" .. placeId .. "&accessKey=" .. accessKey)()
+					loadfile(url .. "/Game/PlaceSpecificScript.ashx?PlaceId=" .. placeId .. "&" .. access)()
 				end
 			end)
 end
@@ -187,7 +187,7 @@ local function check()
 		local arguments = {
 			["jobid"] = JobId
 		}
-		game:HttpPostAsync(url .. "/updatejob/closejob?accessKey=" .. accessKey,HttpService:JSONEncode(arguments),"application/json")
+		game:HttpPostAsync(url .. "/updatejob/closejob?" .. access,HttpService:JSONEncode(arguments),"application/json")
 	end
 end
 
@@ -196,7 +196,7 @@ game:GetService("Players").PlayerRemoving:connect(function(player)
 	print("Player " .. player.userId .. " leaving")
 
 	if url and access and placeId and player and player.userId then
-		game:HttpPost(url .. "/game/ClientPresence.ashx?action=disconnect&accessKey=" .. accessKey .. "&PlaceID=" .. placeId .. "&JobID=" .. JobId .. "&UserID=" .. player.userId, "")
+		game:HttpPost(url .. "/game/ClientPresence.ashx?action=disconnect&" .. access .. "&PlaceID=" .. placeId .. "&JobID=" .. JobId .. "&UserID=" .. player.userId, "")
 		wait(5)
 		check()
 
@@ -214,7 +214,7 @@ if placeId~=nil and url~=nil then
 	wait()
 
 	-- load the game
-	game:Load(url .. "/asset/?id=" .. placeId .. "&accessKey=" .. accessKey)
+	game:Load(url .. "/asset/?id=" .. placeId .. "&" .. access)
 end
 
 local function char_to_hex(c)
@@ -251,10 +251,10 @@ ns.ChildAdded:connect(function(replicator) -- mostly from polygon tbh with some 
 
 		replicator:DisableProcessPackets()
 
-        if player.CharacterAppearance ~= url .. "/Asset/CharacterFetch.ashx?userId=" ..player.userId.. "&jobId=" .. JobId then
+        if player.CharacterAppearance ~= url .. "/Asset/CharacterFetch.ashx?userId=" ..player.userId.. "&jobId=" .. JobId .. "&placeId=" .. placeId then
             replicator:CloseConnection()
             print("[paclib] kicked " .. player.Name .. " because player does not have correct character appearance for this server")
-            print("[paclib] correct character appearance url: " .. url .. "/Asset/CharacterFetch.ashx?userId=" .. player.userId .. "&jobId=" .. JobId)
+            print("[paclib] correct character appearance url: " .. url .. "/Asset/CharacterFetch.ashx?userId=" .. player.userId .. "&jobId=" .. JobId .. "&placeId=" .. placeId)
             print("[paclib] appearance that the server received: " .. player.CharacterAppearance)
             return
         end
@@ -278,7 +278,7 @@ ns.ChildAdded:connect(function(replicator) -- mostly from polygon tbh with some 
 		player.HexagonTicket:Remove()
 
 
-        local response = game:HttpGet(url .. "/verify-player?Username=" .. player.Name .. "&UserID=" .. player.userId .. "&Ticket=" .. urlencode(HexagonTicket) .. "&JobID=" .. JobId .. "&MembershipType=" .. player.MembershipType.Name .. "&CharacterAppearance=".. player.CharacterAppearance .. "&accessKey=" .. accessKey, true)
+        local response = game:HttpGet(url .. "/verify-player?Username=" .. player.Name .. "&UserID=" .. player.userId .. "&Ticket=" .. urlencode(HexagonTicket) .. "&JobID=" .. JobId .. "&PlaceID=" .. placeId .. "&MembershipType=" .. player.MembershipType.Name .. "&CharacterAppearance=".. player.CharacterAppearance .. "&" .. access, true)
         if response ~= "True" then
             replicator:CloseConnection()
             print("[paclib] kicked " .. player.Name .. " because could not validate player")
@@ -292,9 +292,8 @@ ns.ChildAdded:connect(function(replicator) -- mostly from polygon tbh with some 
 		--print("[paclib] " .. player.Name .. " has been authenticated")
 
 		if url and access and placeId and player and player.userId then
-			game:HttpPost(url .. "/game/ClientPresence.ashx?action=connect&accessKey=" .. accessKey .. "&PlaceID=" .. placeId .. "&JobID=" .. JobId .. "&UserID=" .. player.userId, "")
-			game:HttpPost(url .. "/game/PlaceVisit.ashx?UserID=" .. player.userId .. "&AssociatedPlaceID=" .. placeId .. "&accessKey=" .. accessKey, "")
-			
+			game:HttpPost(url .. "/game/ClientPresence.ashx?action=connect&" .. access .. "&PlaceID=" .. placeId .. "&JobID=" .. JobId .. "&UserID=" .. player.userId, "")
+			game:HttpPost(url .. "/game/PlaceVisit.ashx?UserID=" .. player.userId .. "&AssociatedPlaceID=" .. placeId .. "&" .. access, "")
 		end
     end)
 
@@ -320,9 +319,9 @@ local arguments = {
 
 if not success then
 	-- failed job close it
-	game:HttpPostAsync(url .. "/updatejob/closejob?accessKey="..accessKey,HttpService:JSONEncode(arguments),"application/json")
+	game:HttpPostAsync(url .. "/updatejob/closejob?"..access,HttpService:JSONEncode(arguments),"application/json")
 else
-	game:HttpPostAsync(url .. "/updatejob/gameloaded?accessKey="..accessKey,HttpService:JSONEncode(arguments),"application/json")
+	game:HttpPostAsync(url .. "/updatejob/gameloaded?"..access,HttpService:JSONEncode(arguments),"application/json")
 end
 
 if timeout then
@@ -336,7 +335,7 @@ delay(1, function()
 end)
 
 
-if accessKey then
+if access then
   game.Close:connect(function()
     reportCdn(true)
   end)

@@ -16,8 +16,7 @@ export const rccAuth = (async ({ event, resolve }) => {
 		pathname === '/persistence/setblob.ashx' ||
 		pathname === '/verify-player'
 	) {
-		const accessKey =
-			event.url.searchParams.get('accessKey') || event.request.headers.get('accessKey')
+		const accessKey = event.url.searchParams.get('apikey') || event.request.headers.get('accessKey')
 
 		if (!accessKey || (env.RCC_ACCESS_KEY as string) != accessKey) {
 			return error(403, {

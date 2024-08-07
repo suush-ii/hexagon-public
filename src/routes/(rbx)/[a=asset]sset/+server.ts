@@ -177,7 +177,7 @@ export const GET: RequestHandler = async (event) => {
 
 	if (existingAsset?.assetType === 'games') {
 		// authenticate this
-		const accessKey = event.url.searchParams.get('accessKey')
+		const accessKey = event.url.searchParams.get('apikey')
 
 		if (!accessKey || (env.RCC_ACCESS_KEY as string) !== accessKey) {
 			event.locals.auth = auth.handleRequest(event)

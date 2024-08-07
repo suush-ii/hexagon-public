@@ -45,7 +45,7 @@ export const fallback: RequestHandler = async ({ url }) => {
 
 	scriptNewArgs = scriptNewArgs
 		.replaceAll('{placeId}', placeid.toString())
-		.replaceAll('{}', env.RCC_ACCESS_KEY as string)
+		.replaceAll('{}', `apikey=${env.RCC_ACCESS_KEY as string}`)
 
 	const sign = createSign('SHA1')
 	sign.update('\r\n' + scriptNewArgs)
