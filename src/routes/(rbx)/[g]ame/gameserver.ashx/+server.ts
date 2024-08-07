@@ -8,7 +8,7 @@ const scriptNew: string = script.replaceAll('www.roblox.com', env.BASE_URL as st
 export const GET: RequestHandler = async ({ url }) => {
 	const scriptNewArgs = scriptNew.replace(
 		'{1}',
-		`"${url.searchParams.get('accessKey')}", ${url.searchParams.get('placeId')}, ${url.searchParams.get('port')}, "${url.searchParams.get('jobId')}", ${url.searchParams.get('maxPlayers')}`
+		`"apikey=${url.searchParams.get('apikey')}", ${url.searchParams.get('placeId')}, ${url.searchParams.get('port')}, "${url.searchParams.get('jobId')}", ${url.searchParams.get('maxPlayers')}`
 	)
 
 	const sign = createSign('SHA1')
