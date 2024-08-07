@@ -180,7 +180,7 @@ export const fallback: RequestHandler = async ({ url, locals }) => {
 
 		joinJson.UserName = session.username
 		joinJson.UserId = Number(session.userid)
-		joinJson.CharacterAppearance += `?userId=${session.userid}&jobId=${instance.jobid}`
+		joinJson.CharacterAppearance += `?userId=${session.userid}&jobId=${instance.jobid}&placeId=${instance.placeid}`
 
 		joinJson.GameId = Number(place.associatedgame.universeid)
 		joinJson.PlaceId = Number(place.placeid)
