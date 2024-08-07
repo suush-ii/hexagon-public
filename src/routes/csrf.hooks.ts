@@ -44,5 +44,8 @@ function isFormContentType(request: Request) {
 export const csrfHandle = csrf([
 	'/game/validate-machine',
 	'/Game/validate-machine',
-	'/persistence/set'
+	'/persistence/set',
+	'/persistence/getV2',
+	'/persistence/increment',
+	'/persistence/getSortedValues'
 ])
