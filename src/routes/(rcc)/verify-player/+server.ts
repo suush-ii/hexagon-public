@@ -7,8 +7,10 @@ export const GET: RequestHandler = async ({ url }) => {
 	const userid = url.searchParams.get('UserID')
 	const ticket = url.searchParams.get('Ticket')
 	const jobId = url.searchParams.get('JobID')
+	const placeId = url.searchParams.get('PlaceID')
 	const membershipType = url.searchParams.get('MembershipType')
-	const CharacterAppearance = url.searchParams.get('CharacterAppearance') + `&jobId=${jobId}`
+	const CharacterAppearance =
+		url.searchParams.get('CharacterAppearance') + `&jobId=${jobId}` + `&placeId=${placeId}`
 
 	const timestamp = ticket?.split(';')?.[0] ?? ''
 
