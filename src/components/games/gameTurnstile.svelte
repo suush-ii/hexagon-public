@@ -8,6 +8,7 @@
 	import EmptyCard from '$src/components/emptyCard.svelte'
 
 	import SeeAll from '$src/components/seeAll.svelte'
+	import { getImage } from '$lib/games/getImage'
 
 	let listElement: any
 
@@ -77,7 +78,7 @@
 						gameId={game.places[0].placeid}
 						gameName={game.gamename}
 						playerCount={game.active}
-						iconId={game.iconid ?? 0}
+						iconUrl={getImage(game.icon?.simpleasseturl, game.icon?.moderationstate)}
 					/>
 				{/each}
 			{:else}

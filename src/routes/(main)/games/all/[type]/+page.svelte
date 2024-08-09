@@ -5,6 +5,7 @@
 	import GameCard from '$src/components/games/gameCard.svelte'
 	import PaginationWrapper from '$src/components/pagnationWrapper.svelte'
 	import { page } from '$app/stores'
+	import { getImage } from '$lib/games/getImage'
 
 	export let data: PageData
 
@@ -19,7 +20,7 @@
 				gameId={game.places[0].placeid}
 				gameName={game.gamename}
 				playerCount={game.active}
-				iconId={game.iconid ?? 0}
+				iconUrl={getImage(game.icon?.simpleasseturl, game.icon?.moderationstate)}
 			/>
 		{/each}
 	</div>
