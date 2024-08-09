@@ -11,6 +11,7 @@ type jobs = typeof jobsTable.$inferSelect
 import { env } from '$env/dynamic/private'
 import { assetFavoritesTable } from '$src/lib/server/schema'
 const joinScriptUrl = `http://${env.BASE_URL}/game/Join.ashx`
+import { gameCardSearch } from '$lib/server/games/gamecard'
 
 export const load: LayoutServerLoad = async ({
 	params,
@@ -107,24 +108,9 @@ export const load: LayoutServerLoad = async ({
 		)
 		.limit(1)
 
-	let recommendations = await db.query.gamesTable.findMany({
-		where: ne(gamesTable.universeid, place.associatedgame.universeid),
-		columns: {
-			gamename: true,
-			active: true,
-			iconid: true
-		},
-		with: {
-			places: {
-				where: eq(placesTable.startplace, true),
-				limit: 1,
-				columns: {
-					placeid: true
-				}
-			}
-		},
-		limit: 8,
-		orderBy: desc(gamesTable.active) // first order by active players, then randomize that
+	let recommendations = await gameCardSearch({
+		orderBy: desc(gamesTable.active),
+		limit: 8
 	})
 
 	recommendations = recommendations

@@ -38,6 +38,7 @@
 	import Favorite from '$src/components/favorite.svelte'
 	import GameCard from '$src/components/games/gameCard.svelte'
 	import EmptyCard from '$src/components/emptyCard.svelte'
+	import { getImage } from '$lib/games/getImage'
 
 	const defaultText = 'A server is loading the game...'
 
@@ -443,7 +444,7 @@
 							gameId={game.places[0].placeid}
 							gameName={game.gamename}
 							playerCount={game.active}
-							iconId={game.iconid ?? 0}
+							iconUrl={getImage(game.icon?.simpleasseturl, game.icon?.moderationstate)}
 						/>
 					{/each}
 				{:else}

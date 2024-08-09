@@ -4,6 +4,7 @@ import { getPageNumber } from '$lib/utils'
 import { db } from '$lib/server/db'
 import { and, count, desc, eq, ilike } from 'drizzle-orm'
 import { gamesTable, placesTable } from '$lib/server/schema'
+import { gameCardSearch } from '$lib/server/games/gamecard'
 
 export const load: PageServerLoad = async ({ url }) => {
 	let search = url.searchParams.get('search') ?? ''
@@ -23,25 +24,11 @@ export const load: PageServerLoad = async ({ url }) => {
 		page = 1
 	}
 
-	const games = await db.query.gamesTable.findMany({
-		columns: {
-			gamename: true,
-			active: true,
-			iconid: true
-		},
+	const games = await gameCardSearch({
 		orderBy: [desc(gamesTable.active)],
 		limit: size,
 		offset: (page - 1) * size,
-		where: and(ilike(gamesTable.gamename, `%${search}%`), eq(gamesTable.genre, genre)),
-		with: {
-			places: {
-				columns: {
-					placeid: true
-				},
-				where: eq(placesTable.startplace, true),
-				limit: 1
-			}
-		}
+		where: and(ilike(gamesTable.gamename, `%${search}%`), eq(gamesTable.genre, genre))
 	})
 
 	return {

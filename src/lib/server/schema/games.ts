@@ -38,6 +38,10 @@ export const gamesRelations = relations(gamesTable, ({ one, many }) => ({
 	author: one(usersTable, {
 		fields: [gamesTable.creatoruserid],
 		references: [usersTable.userid]
+	}),
+	icon: one(assetTable, {
+		fields: [gamesTable.iconid],
+		references: [assetTable.assetid]
 	})
 }))
 

@@ -103,7 +103,7 @@ const welcomeMessages = [
 ]
 
 export const load: PageServerLoad = async ({ locals }) => {
-	const recentlyPlayed = await db.query.recentlyPlayedTable.findMany({
+	let recentlyPlayed = await db.query.recentlyPlayedTable.findMany({
 		where: eq(recentlyPlayedTable.userid, locals.user.userid),
 		orderBy: desc(recentlyPlayedTable.time),
 		limit: 9,
@@ -122,10 +122,24 @@ export const load: PageServerLoad = async ({ locals }) => {
 						columns: {
 							placeid: true
 						}
+					},
+					icon: {
+						columns: {
+							simpleasseturl: true,
+							moderationstate: true
+						}
 					}
 				}
 			}
 		}
+	})
+
+	recentlyPlayed = recentlyPlayed.map((game) => {
+		// strip the asseturl from the client if not approved
+		if (game.game.icon && game.game.icon.moderationstate !== 'approved') {
+			game.game.icon.simpleasseturl = null
+		}
+		return game
 	})
 
 	const friendCount = await db

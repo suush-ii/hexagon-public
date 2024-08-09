@@ -4,6 +4,7 @@ import { gamesTable, placesTable } from '$lib/server/schema/games'
 import { desc, eq, count } from 'drizzle-orm'
 import { redirect } from '@sveltejs/kit'
 import { getPageNumber } from '$lib/utils'
+import { gameCardSearch } from '$lib/server/games/gamecard'
 
 export const load: PageServerLoad = async ({ params, url }) => {
 	if (params.type !== 'popular' && params.type !== 'newest') {
@@ -23,24 +24,10 @@ export const load: PageServerLoad = async ({ params, url }) => {
 	let friendlyType = params.type.charAt(0).toUpperCase() + params.type.slice(1)
 
 	if (params.type === 'popular') {
-		const popularGames = await db.query.gamesTable.findMany({
-			columns: {
-				gamename: true,
-				active: true,
-				iconid: true
-			},
+		const popularGames = await gameCardSearch({
 			orderBy: [desc(gamesTable.active)],
 			limit: size,
-			offset: (page - 1) * size,
-			with: {
-				places: {
-					columns: {
-						placeid: true
-					},
-					where: eq(placesTable.startplace, true),
-					limit: 1
-				}
-			}
+			offset: (page - 1) * size
 		})
 
 		return {
@@ -52,24 +39,10 @@ export const load: PageServerLoad = async ({ params, url }) => {
 	}
 
 	if (params.type === 'newest') {
-		const newestGames = await db.query.gamesTable.findMany({
-			columns: {
-				gamename: true,
-				active: true,
-				iconid: true
-			},
+		const newestGames = await gameCardSearch({
 			orderBy: [desc(gamesTable.updated)],
 			limit: size,
-			offset: (page - 1) * size,
-			with: {
-				places: {
-					columns: {
-						placeid: true
-					},
-					where: eq(placesTable.startplace, true),
-					limit: 1
-				}
-			}
+			offset: (page - 1) * size
 		})
 
 		return { games: newestGames, name: 'Newest', gamesCount: gamesCount.count, type: friendlyType }
