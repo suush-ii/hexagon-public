@@ -39,6 +39,7 @@
 
 	import { pageName } from '$src/stores'
 	import { invalidateAll } from '$app/navigation'
+	import { getImage } from '$lib/games/getImage'
 
 	$: pageName.set(username)
 
@@ -183,7 +184,8 @@
 									<h1 class="text-base">Visited {place.visits} times</h1>
 									<a href="/games/{place.places?.[0].placeid}">
 										<GameThumbnail
-											thumbnailid={place.thumbnailid}
+											assetUrl={place.thumbnail?.simpleasseturl}
+											moderationState={place.thumbnail?.moderationstate}
 											gamename={place.gamename}
 											size=" h-fit w-fit"
 										/>

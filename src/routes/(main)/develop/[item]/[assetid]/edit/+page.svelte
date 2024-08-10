@@ -11,6 +11,7 @@
 	import EmptyCard from '$src/components/emptyCard.svelte'
 	import type { PageData } from './$types'
 	import { page } from '$app/stores'
+	import { getImage } from '$lib/games/getImage'
 
 	export let data: PageData
 
@@ -75,7 +76,8 @@
 							{#if place.startplace}
 								<div class="flex gap-x-4 items-center max-w-2xl">
 									<GameThumbnail
-										thumbnailid={place.associatedgame.thumbnailid}
+										assetUrl={place.associatedgame.thumbnail?.simpleasseturl}
+										moderationState={place.associatedgame.thumbnail?.moderationstate}
 										gamename={data.assetname}
 										size="xl:h-[120px] h-fit w-fit"
 									/>

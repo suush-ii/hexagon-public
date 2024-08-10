@@ -1,23 +1,29 @@
-import type { assetStates } from '$lib/types'
+import type { assetStates, AssetTypes } from '$lib/types'
 import { s3Url } from '$src/stores'
-import pending from '$lib/icons/iconpending.png'
-import rejected from '$lib/icons/iconrejected.png'
+import pendingIcon from '$lib/icons/iconpending.png'
+import rejectedIcon from '$lib/icons/iconrejected.png'
 
 export function getImage(
-	assetUrl: string | undefined | null,
-	moderationState: assetStates | undefined
+	assetUrl: string | undefined | null | unknown,
+	moderationState: assetStates | undefined | null,
+	size: 'thumbnail' | 'icon'
 ) {
-	if (moderationState === 'pending') {
-		return pending
+	// TODO: dedicated thumbnail sized icons for pending and rejected states
+	if (moderationState === 'pending' /*&& size === 'icon*/) {
+		return pendingIcon
 	}
 
-	if (moderationState === 'rejected') {
-		return rejected
+	if (moderationState === 'rejected' /*&& size === 'icon'*/) {
+		return rejectedIcon
 	}
 
 	if (assetUrl) {
 		return `https://${s3Url}/images/${assetUrl}`
 	}
 
-	return '/Images/iconplaceholder.png'
+	if (size === 'icon') {
+		return '/Images/iconplaceholder.png'
+	}
+
+	return '/Images/thumbnailplaceholder.png'
 }

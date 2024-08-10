@@ -180,7 +180,8 @@
 				<div class="flex flex-row flex-wrap gap-x-4 xl:flex-nowrap">
 					<div class="relative">
 						<GameThumbnail
-							thumbnailid={data.place.associatedgame.thumbnailid}
+							assetUrl={data.place.associatedgame.thumbnail?.simpleasseturl}
+							moderationState={data.place.associatedgame.thumbnail?.moderationstate}
 							gamename={data.place.associatedgame.gamename}
 						/>
 						{#if data.place.associatedgame.serversize > 20}
@@ -444,7 +445,8 @@
 							gameId={game.places[0].placeid}
 							gameName={game.gamename}
 							playerCount={game.active}
-							iconUrl={getImage(game.icon?.simpleasseturl, game.icon?.moderationstate)}
+							assetUrl={game.icon?.simpleasseturl}
+							moderationState={game.icon?.moderationstate}
 						/>
 					{/each}
 				{:else}

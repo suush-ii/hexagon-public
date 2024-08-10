@@ -1,23 +1,19 @@
 <script lang="ts">
 	import * as Avatar from '$src/components/ui/avatar'
-	import CatalogAvatar from '$src/components/catalog/avatar.svelte'
+	import { getImage } from '$lib/games/getImage'
+	import type { assetStates } from '$lib/types'
 
-	export let thumbnailid: number | null
 	export let gamename: string
 
 	export let size = 'xl:h-[360px] h-fit w-full max-w-[640px] shrink-0'
+
+	export let assetUrl: string | undefined | null | unknown
+	export let moderationState: assetStates | undefined | null
+
+	let thumbnailUrl = getImage(assetUrl, moderationState, 'thumbnail')
 </script>
 
-{#if thumbnailid}
-	<CatalogAvatar
-		css="{size} rounded-xl aspect-video"
-		itemId={thumbnailid}
-		itemName={gamename}
-		disable3d={true}
-	/>
-{:else}
-	<Avatar.Root class="{size} rounded-xl aspect-video">
-		<Avatar.Image src={'/Images/thumbnailplaceholder.png'} alt={gamename} loading="lazy" />
-		<Avatar.Fallback />
-	</Avatar.Root>
-{/if}
+<Avatar.Root class="{size} rounded-xl aspect-video">
+	<Avatar.Image src={thumbnailUrl} alt={gamename} loading="lazy" />
+	<Avatar.Fallback />
+</Avatar.Root>
