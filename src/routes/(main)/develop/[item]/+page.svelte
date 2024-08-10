@@ -6,6 +6,7 @@
 	import { Button } from '$src/components/ui/button'
 	import { Upload, Cog } from 'lucide-svelte'
 	import { launchStudio } from '$lib/develop/studio'
+	import { getImage } from '$lib/games/getImage'
 
 	import type { PageData } from './$types'
 
@@ -90,17 +91,21 @@
 								itemName={creation.assetName}
 								disable3d={true}
 							/>
-						{:else if data.params === 'games' && creation.iconId}
-							<CatalogAvatar
-								css="w-24 h-24 rounded-xl aspect-square"
-								itemId={creation.iconId}
-								itemName={creation.assetName}
-								disable3d={true}
-							/>
+						{:else if data.params === 'games'}
+							<Avatar.Root class="w-24 h-24 rounded-xl aspect-square">
+								<Avatar.Image
+									src={getImage(creation.iconUrl, creation.iconModerationState, 'icon')}
+									alt={creation.assetName}
+									loading="lazy"
+								/>
+								<Avatar.Fallback />
+							</Avatar.Root>
 						{:else}
 							<Avatar.Root class="w-24 h-24 rounded-xl">
 								<Avatar.Image
-									src={creation.iconUrl ? creation.iconUrl : '/Images/iconplaceholder.png'}
+									src={creation.iconUrl
+										? creation.iconUrl.toString()
+										: '/Images/iconplaceholder.png'}
 									alt={creation.assetName}
 									loading="lazy"
 								/>

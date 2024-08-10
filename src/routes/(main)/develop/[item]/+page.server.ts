@@ -11,6 +11,8 @@ import rejected from '$lib/icons/iconrejected.png'
 import audio from '$lib/icons/audio.png'
 import { getPageNumber } from '$lib/utils'
 import { env } from '$env/dynamic/private'
+import { imageSql } from '$lib/server/games/getImage'
+import type { assetStates } from '$lib/types'
 
 async function last7days(universeid: number) {
 	let places = await db.query.placesTable.findMany({
@@ -90,8 +92,8 @@ export const load: PageServerLoad = async ({ params, locals, url, cookies }) => 
 		placeid?: number
 		assetType: string
 		updated: Date
-		iconUrl?: string | null
-		iconId?: number | null
+		iconUrl?: string | null | unknown
+		iconModerationState?: assetStates
 		totalStat: number
 		last7DaysStat: number
 	}[] = []
@@ -115,7 +117,6 @@ export const load: PageServerLoad = async ({ params, locals, url, cookies }) => 
 			columns: {
 				gamename: true,
 				universeid: true,
-				iconid: true,
 				updated: true,
 				visits: true
 			},
@@ -126,6 +127,14 @@ export const load: PageServerLoad = async ({ params, locals, url, cookies }) => 
 					},
 					where: eq(placesTable.startplace, true),
 					limit: 1
+				},
+				icon: {
+					columns: {
+						moderationstate: true
+					},
+					extras: {
+						simpleasseturl: imageSql
+					}
 				}
 			}
 		})
@@ -135,7 +144,8 @@ export const load: PageServerLoad = async ({ params, locals, url, cookies }) => 
 				assetName: game.gamename,
 				assetid: game.universeid,
 				placeid: game.places[0].placeid,
-				iconId: game.iconid,
+				iconUrl: game.icon?.simpleasseturl,
+				iconModerationState: game.icon?.moderationstate,
 				updated: game.updated,
 				assetType: params.item,
 				totalStat: game.visits,
