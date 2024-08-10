@@ -79,7 +79,10 @@
 		<div class="flex flex-col gap-y-4 mb-auto">
 			{#each creations as creation}
 				<div class="flex flex-row gap-x-2 w-full justify-center">
-					<a href="/catalog/{creation.assetid}/{slugify(creation.assetName)}">
+					<a
+						href="/{creation.placeid ? 'games' : 'catalog'}/{creation.placeid ??
+							creation.assetid}/{slugify(creation.assetName)}"
+					>
 						{#if data.params === 'shirts' || data.params === 'pants' || data.params === 't-shirts'}
 							<CatalogAvatar
 								css="w-24 h-24 rounded-xl aspect-square"

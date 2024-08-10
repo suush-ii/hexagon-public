@@ -17,7 +17,7 @@ export const load: LayoutServerLoad = async ({ params, locals }) => {
 	}
 
 	const item = await db.query.assetTable.findFirst({
-		where: and(eq(assetTable.assetid, Number(params.itemid)), ne(assetTable.assetType, 'games')),
+		where: eq(assetTable.assetid, Number(params.itemid)),
 		columns: {
 			assetname: true,
 			price: true,
@@ -49,8 +49,12 @@ export const load: LayoutServerLoad = async ({ params, locals }) => {
 
 	const slugItemName = slugify(item.assetname)
 
+	if (item.assetType === 'games') {
+		return redirect(302, '/games/' + Number(params.itemid) + '/' + slugItemName)
+	}
+
 	if (params?.item !== slugItemName && slugItemName !== '') {
-		redirect(302, '/catalog/' + Number(params.itemid) + '/' + slugItemName)
+		return redirect(302, '/catalog/' + Number(params.itemid) + '/' + slugItemName)
 	}
 
 	const alreadyOwned = await db
