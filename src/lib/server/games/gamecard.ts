@@ -1,6 +1,7 @@
-import { eq } from 'drizzle-orm'
+import { eq, sql } from 'drizzle-orm'
 import { placesTable } from '$lib/server/schema'
-import { db } from '../db'
+import { db } from '$lib/server/db'
+import { imageSql } from './getImage'
 
 export async function gameCardSearch(params: {}) {
 	let games = await db.query.gamesTable.findMany({
@@ -19,20 +20,14 @@ export async function gameCardSearch(params: {}) {
 			},
 			icon: {
 				columns: {
-					simpleasseturl: true,
 					moderationstate: true
+				},
+				extras: {
+					simpleasseturl: imageSql
 				}
 			}
 		},
 		...params
-	})
-
-	games = games.map((game) => {
-		// strip the asseturl from the client if not approved
-		if (game.icon && game.icon.moderationstate !== 'approved') {
-			game.icon.simpleasseturl = null
-		}
-		return game
 	})
 
 	return games

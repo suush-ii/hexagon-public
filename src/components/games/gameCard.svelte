@@ -8,6 +8,8 @@
 	import { page } from '$app/stores'
 
 	import { interpolate } from '$lib/poly-i18n/interpolate'
+	import type { assetStates } from '$lib/types'
+	import { getImage } from '$lib/games/getImage'
 
 	export let gameName: string
 
@@ -15,7 +17,10 @@
 
 	export let playerCount: number
 
-	export let iconUrl: string
+	export let assetUrl: string | undefined | null | unknown
+	export let moderationState: assetStates | undefined | null
+
+	let iconUrl = getImage(assetUrl, moderationState, 'icon')
 </script>
 
 <a href="/games/{gameId}/{slugify(gameName)}"

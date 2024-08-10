@@ -42,6 +42,10 @@ export const gamesRelations = relations(gamesTable, ({ one, many }) => ({
 	icon: one(assetTable, {
 		fields: [gamesTable.iconid],
 		references: [assetTable.assetid]
+	}),
+	thumbnail: one(assetTable, {
+		fields: [gamesTable.thumbnailid],
+		references: [assetTable.assetid]
 	})
 }))
 

@@ -1,12 +1,19 @@
 import { error } from '@sveltejs/kit'
 import type { PageServerLoad } from './$types'
 import { db } from '$src/lib/server/db'
-import { relationsTable, usersTable, gamesTable, placesTable } from '$src/lib/server/schema'
-import { and, count, desc, eq, or, sum } from 'drizzle-orm'
+import {
+	relationsTable,
+	usersTable,
+	gamesTable,
+	placesTable,
+	assetTable
+} from '$src/lib/server/schema'
+import { and, count, desc, eq, or, sql, sum } from 'drizzle-orm'
 import { z } from 'zod'
 import type { userState } from '$lib/types'
 import { getUserState } from '$lib/server/userState'
 import { getPageNumber } from '$lib/utils'
+import { imageSql } from '$lib/server/games/getImage'
 
 export const load: PageServerLoad = async ({ params, locals, url }) => {
 	const result = await z.number().safeParseAsync(Number(params.userId))
@@ -146,7 +153,6 @@ export const load: PageServerLoad = async ({ params, locals, url }) => {
 	const places = await db.query.gamesTable.findMany({
 		columns: {
 			gamename: true,
-			thumbnailid: true,
 			visits: true,
 			description: true
 		},
@@ -160,6 +166,14 @@ export const load: PageServerLoad = async ({ params, locals, url }) => {
 				},
 				where: eq(placesTable.startplace, true),
 				limit: 1
+			},
+			thumbnail: {
+				columns: {
+					moderationstate: true
+				},
+				extras: {
+					simpleasseturl: imageSql
+				}
 			}
 		},
 		where: eq(gamesTable.creatoruserid, Number(params.userId))

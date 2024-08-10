@@ -12,6 +12,7 @@ import { env } from '$env/dynamic/private'
 import { assetFavoritesTable } from '$src/lib/server/schema'
 const joinScriptUrl = `http://${env.BASE_URL}/game/Join.ashx`
 import { gameCardSearch } from '$lib/server/games/gamecard'
+import { imageSql } from '$lib/server/games/getImage'
 
 export const load: LayoutServerLoad = async ({
 	params,
@@ -28,6 +29,14 @@ export const load: LayoutServerLoad = async ({
 	}
 
 	const place = await db.query.placesTable.findFirst({
+		columns: {
+			placeid: true,
+			universeid: true,
+			updated: true,
+			created: true,
+			geargenreenforced: true,
+			allowedgear: true
+		},
 		where: eq(placesTable.placeid, Number(params.gameid)),
 		with: {
 			associatedgame: {
@@ -39,7 +48,6 @@ export const load: LayoutServerLoad = async ({
 					updated: true,
 					creatoruserid: true,
 					description: true,
-					thumbnailid: true,
 					genre: true,
 					likes: true,
 					dislikes: true,
@@ -49,6 +57,14 @@ export const load: LayoutServerLoad = async ({
 					author: {
 						columns: {
 							username: true
+						}
+					},
+					thumbnail: {
+						columns: {
+							moderationstate: true
+						},
+						extras: {
+							simpleasseturl: imageSql
 						}
 					}
 				}

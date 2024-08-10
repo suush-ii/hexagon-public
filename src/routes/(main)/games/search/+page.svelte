@@ -11,7 +11,6 @@
 	import { Button } from '$src/components/ui/button'
 	import GameCard from '$src/components/games/gameCard.svelte'
 	import PaginationWrapper from '$src/components/pagnationWrapper.svelte'
-	import { getImage } from '$lib/games/getImage'
 
 	export let data: PageData
 
@@ -89,7 +88,8 @@
 				gameId={game.places[0].placeid}
 				gameName={game.gamename}
 				playerCount={game.active}
-				iconUrl={getImage(game.icon?.simpleasseturl, game.icon?.moderationstate)}
+				assetUrl={game.icon?.simpleasseturl}
+				moderationState={game.icon?.moderationstate}
 			/>
 		{/each}
 	</div>

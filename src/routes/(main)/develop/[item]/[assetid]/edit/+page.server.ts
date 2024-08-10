@@ -11,8 +11,9 @@ import { assetTable, gamesTable, placesTable } from '$lib/server/schema'
 import { db } from '$lib/server/db'
 import { and, eq } from 'drizzle-orm'
 import { _assetSchema } from '../../+layout.server'
-import type { AssetGenreDB, GearAttributes } from '$lib/types'
+import type { AssetGenreDB, assetStates, GearAttributes } from '$lib/types'
 import { uploadAsset } from '$lib/server/develop/uploadasset'
+import { imageSql } from '$lib/server/games/getImage'
 
 export const load: PageServerLoad = async ({ params, locals }) => {
 	const result = await z.number().safeParseAsync(Number(params.assetid))
@@ -32,7 +33,10 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 		placeid: number
 		startplace: boolean
 		associatedgame: {
-			thumbnailid: number | null
+			thumbnail: {
+				simpleasseturl: string | null
+				moderationstate: assetStates | null
+			} | null
 		}
 	}[] = []
 
@@ -54,8 +58,17 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 					orderBy: placesTable.startplace,
 					with: {
 						associatedgame: {
-							columns: {
-								thumbnailid: true
+							columns: {},
+							with: {
+								thumbnail: {
+									columns: {
+										simpleasseturl: true,
+										moderationstate: true
+									},
+									extras: {
+										simpleasseturl: imageSql
+									}
+								}
 							}
 						}
 					}

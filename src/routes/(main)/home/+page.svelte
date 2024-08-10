@@ -15,7 +15,6 @@
 	import EmptyCard from '$src/components/emptyCard.svelte'
 	import SeeAll from '$src/components/seeAll.svelte'
 	import Avatar from '$src/components/users/avatar.svelte'
-	import { getImage } from '$lib/games/getImage'
 
 	$: recentlyPlayed = data.recentlyPlayed
 </script>
@@ -78,7 +77,8 @@
 						gameId={game.game.places[0].placeid}
 						gameName={game.game.gamename}
 						playerCount={game.game.active}
-						iconUrl={getImage(game.game.icon?.simpleasseturl, game.game.icon?.moderationstate)}
+						assetUrl={game.game.icon?.simpleasseturl}
+						moderationState={game.game.icon?.moderationstate}
 					/>
 				{/each}
 			{:else}

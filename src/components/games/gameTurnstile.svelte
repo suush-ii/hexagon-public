@@ -78,7 +78,8 @@
 						gameId={game.places[0].placeid}
 						gameName={game.gamename}
 						playerCount={game.active}
-						iconUrl={getImage(game.icon?.simpleasseturl, game.icon?.moderationstate)}
+						assetUrl={game.icon?.simpleasseturl}
+						moderationState={game.icon?.moderationstate}
 					/>
 				{/each}
 			{:else}
