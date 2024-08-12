@@ -194,7 +194,7 @@
 						{/each}
 					</div>
 
-					<PaginationWrapper count={data.count} size={8} url={$page.url} />
+					<PaginationWrapper count={data.count} size={10} url={$page.url} />
 
 					<Separator />
 
@@ -215,7 +215,7 @@
 
 					<PaginationWrapper
 						count={data.countWearing}
-						size={8}
+						size={10}
 						url={$page.url}
 						queryName={'pagewearing'}
 					/>

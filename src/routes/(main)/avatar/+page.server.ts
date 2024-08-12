@@ -9,11 +9,12 @@ import { assetTypes } from '$lib'
 
 export const load: PageServerLoad = async ({ locals, url }) => {
 	let page = getPageNumber(url)
+	let pageWearing = getPageNumber(url, 'pagewearing')
 	const result = await z.enum(assetTypes).safeParseAsync(url.searchParams.get('category'))
 
 	let categoryParams = result.success ? result.data : 'hats'
 
-	let size = 8
+	let size = 10
 
 	const user = await db.query.usersTable.findFirst({
 		columns: {
@@ -24,42 +25,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 			rightlegcolor: true,
 			torsocolor: true
 		},
-		where: eq(usersTable.userid, locals.user.userid),
-		with: {
-			inventory: {
-				columns: {
-					itemid: true,
-					wearing: true
-				},
-				with: {
-					asset: { columns: { assetname: true } }
-				},
-				orderBy: desc(inventoryTable.obatineddate),
-				limit: size,
-				offset: (page - 1) * size,
-				where: and(eq(inventoryTable.wearing, false), eq(inventoryTable.itemtype, categoryParams))
-			}
-		}
-	})
-
-	const userWearing = await db.query.usersTable.findFirst({
-		columns: {},
-		where: eq(usersTable.userid, locals.user.userid),
-		with: {
-			inventory: {
-				columns: {
-					itemid: true,
-					wearing: true
-				},
-				with: {
-					asset: { columns: { assetname: true } }
-				},
-				orderBy: desc(inventoryTable.obatineddate),
-				limit: size,
-				offset: (page - 1) * size,
-				where: eq(inventoryTable.wearing, true)
-			}
-		}
+		where: eq(usersTable.userid, locals.user.userid)
 	})
 
 	const assetCount = await db
@@ -80,6 +46,46 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 		.where(and(eq(inventoryTable.userid, locals.user.userid), eq(inventoryTable.wearing, true)))
 		.limit(1)
 
+	if (assetCount[0].count < (page - 1) * size) {
+		page = 1
+	}
+
+	if (assetWearingCount[0].count < (page - 1) * size) {
+		pageWearing = 1
+	}
+
+	const inventory = await db.query.inventoryTable.findMany({
+		columns: {
+			itemid: true,
+			wearing: true
+		},
+		with: {
+			asset: { columns: { assetname: true } }
+		},
+		orderBy: desc(inventoryTable.obatineddate),
+		limit: size,
+		offset: (page - 1) * size,
+		where: and(
+			eq(inventoryTable.wearing, false),
+			eq(inventoryTable.itemtype, categoryParams),
+			eq(inventoryTable.userid, locals.user.userid)
+		)
+	})
+
+	const inventoryWearing = await db.query.inventoryTable.findMany({
+		columns: {
+			itemid: true,
+			wearing: true
+		},
+		with: {
+			asset: { columns: { assetname: true } }
+		},
+		orderBy: desc(inventoryTable.obatineddate),
+		limit: size,
+		offset: (pageWearing - 1) * size,
+		where: and(eq(inventoryTable.wearing, true), eq(inventoryTable.userid, locals.user.userid))
+	})
+
 	return {
 		colors: {
 			headColor: user?.headcolor,
@@ -89,8 +95,8 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 			rightLegColor: user?.rightlegcolor,
 			torsoColor: user?.torsocolor
 		},
-		inventory: user?.inventory,
-		inventoryWearing: userWearing?.inventory,
+		inventory,
+		inventoryWearing,
 		count: assetCount[0].count,
 		countWearing: assetWearingCount[0].count
 	}
