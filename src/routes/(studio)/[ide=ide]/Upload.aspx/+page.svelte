@@ -7,6 +7,8 @@
 
 	import './post.postcss'
 	import './assetlist.postcss'
+
+	import { getImage } from '$lib/games/getImage'
 </script>
 
 <svelte:head>
@@ -89,8 +91,12 @@
 							<a class="game-image">
 								<img
 									class="placeThumbnail"
-									src="/ide/assets/b9e7f7d3cf793d3c06f1d5a4f7e4f27a.jpg"
-									alt="Create New"
+									src={getImage(
+										game.thumbnail?.simpleasseturl,
+										game.thumbnail?.moderationstate,
+										'thumbnail'
+									)}
+									alt={game.gamename}
 								/>
 							</a>
 							<p class="item-name-container ellipsis-overflow">{game.gamename}</p>
