@@ -3,6 +3,7 @@ import type { PageServerLoad } from './$types'
 import { gamesTable, placesTable } from '$lib/server/schema'
 import { desc, eq } from 'drizzle-orm'
 import { env } from '$env/dynamic/private'
+import { imageSql } from '$lib/server/games/getImage'
 export const csr = false
 
 export const load: PageServerLoad = async (event) => {
@@ -32,6 +33,14 @@ export const load: PageServerLoad = async (event) => {
 					},
 					where: eq(placesTable.startplace, true),
 					limit: 1
+				},
+				thumbnail: {
+					columns: {
+						moderationstate: true
+					},
+					extras: {
+						simpleasseturl: imageSql
+					}
 				}
 			}
 		})
