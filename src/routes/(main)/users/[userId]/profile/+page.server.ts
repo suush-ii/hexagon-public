@@ -6,14 +6,16 @@ import {
 	usersTable,
 	gamesTable,
 	placesTable,
+	assetFavoritesTable,
 	assetTable
 } from '$src/lib/server/schema'
-import { and, count, desc, eq, or, sql, sum } from 'drizzle-orm'
+import { and, count, desc, eq, or, sum } from 'drizzle-orm'
 import { z } from 'zod'
 import type { userState } from '$lib/types'
 import { getUserState } from '$lib/server/userState'
 import { getPageNumber } from '$lib/utils'
-import { imageSql } from '$lib/server/games/getImage'
+import { imageSql, aliasedimageSql } from '$lib/server/games/getImage'
+import { alias, union } from 'drizzle-orm/pg-core'
 
 export const load: PageServerLoad = async ({ params, locals, url }) => {
 	const result = await z.number().safeParseAsync(Number(params.userId))
@@ -156,7 +158,7 @@ export const load: PageServerLoad = async ({ params, locals, url }) => {
 			visits: true,
 			description: true
 		},
-		orderBy: [desc(gamesTable.active)],
+		orderBy: [desc(gamesTable.visits), desc(gamesTable.active)],
 		limit: size,
 		offset: (page - 1) * size,
 		with: {
@@ -179,6 +181,46 @@ export const load: PageServerLoad = async ({ params, locals, url }) => {
 		where: eq(gamesTable.creatoruserid, Number(params.userId))
 	})
 
+	let favoritePage = getPageNumber(url, 'favorites')
+
+	let favoriteSize = 6
+
+	const favoritesCount = await db
+		.select({ count: count() })
+		.from(assetFavoritesTable)
+		.leftJoin(assetTable, eq(assetTable.assetid, assetFavoritesTable.assetid))
+		.where(
+			and(eq(assetFavoritesTable.userid, Number(params.userId)), eq(assetTable.assetType, 'games'))
+		)
+		.limit(1)
+
+	const icon = alias(assetTable, 'icon')
+
+	const favorites = await db // i would of rather done all of this in a query but drizzle doesnt have aggregations supported yet
+		.select({
+			assetid: assetFavoritesTable.assetid,
+			assetname: assetTable.assetname,
+			creatoruserid: assetTable.creatoruserid,
+			creatorusername: usersTable.username,
+			simpleasseturl: aliasedimageSql(icon),
+			moderationstate: icon.moderationstate
+		})
+		.from(assetFavoritesTable)
+		.leftJoin(assetTable, eq(assetTable.assetid, assetFavoritesTable.assetid))
+		.leftJoin(placesTable, eq(placesTable.placeid, assetTable.assetid))
+		.leftJoin(gamesTable, eq(gamesTable.universeid, placesTable.universeid))
+		.leftJoin(icon, eq(icon.assetid, gamesTable.iconid))
+		.leftJoin(usersTable, eq(usersTable.userid, assetTable.creatoruserid))
+		.where(
+			and(eq(assetFavoritesTable.userid, Number(params.userId)), eq(assetTable.assetType, 'games'))
+		)
+		.limit(favoriteSize)
+		.offset((favoritePage - 1) * favoriteSize)
+
+	if (favoritesCount[0].count < (page - 1) * size) {
+		favoritePage = 1
+	}
+
 	const status: userState = getUserState(user.lastactivetime, user.activegame)
 
 	const relation = user.received
@@ -200,6 +242,8 @@ export const load: PageServerLoad = async ({ params, locals, url }) => {
 		places,
 		placeCount: placeVisits[0].amount,
 		friends,
-		blurb: user.blurb
+		blurb: user.blurb,
+		favorites,
+		favoritesCount: favoritesCount[0].count
 	}
 }

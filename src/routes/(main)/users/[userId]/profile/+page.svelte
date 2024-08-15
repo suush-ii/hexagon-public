@@ -1,6 +1,8 @@
 <script lang="ts">
 	import Avatar from '$src/components/users/avatar.svelte'
 
+	import * as ImageAvatar from '$src/components/ui/avatar'
+
 	import FriendAvatar from '$src/components/home/friendAvatar.svelte'
 
 	import GameThumbnail from '$src/components/games/gameThumbnail.svelte'
@@ -15,7 +17,7 @@
 
 	import { page } from '$app/stores'
 
-	import { stateTextMap } from '$lib/utils'
+	import { formatCompactNumber, slugify, stateTextMap } from '$lib/utils'
 
 	import { Separator } from '$src/components/ui/separator'
 
@@ -89,7 +91,7 @@
 		{/if}
 	</div>
 
-	<div class="flex flex-row h-full">
+	<div class="flex flex-row h-[105rem]">
 		<div class="w-1/2 flex flex-col gap-y-4 h-full">
 			<Separator class="w-full" />
 			<h1 class="text-3xl font-semibold tracking-tight">
@@ -156,7 +158,7 @@
 
 					<div>
 						<p class="font-bold text-muted-foreground">{data.t('profile.placeVisits')}</p>
-						<p>{data.placeVisits}</p>
+						<p>{formatCompactNumber(Number(data.placeVisits), false)}</p>
 					</div>
 				</div>
 
@@ -207,7 +209,7 @@
 			</h1>
 
 			<div
-				class="h-full bg-muted-foreground/5 outline-dashed outline-muted-foreground/20 rounded-xl p-4 px-12 flex flex-col"
+				class="h-full bg-muted-foreground/5 outline-dashed outline-muted-foreground/20 rounded-xl p-4 px-14 flex flex-col"
 			>
 				<div class="flex flex-wrap gap-x-12 gap-y-4 mb-auto p-4">
 					{#if data.friends}
@@ -228,6 +230,50 @@
 					size={8}
 					url={$page.url}
 					queryName={'friends'}
+				/>
+			</div>
+
+			<h1 class="text-3xl font-semibold tracking-tight">Favorites</h1>
+
+			<div
+				class="h-full bg-muted-foreground/5 outline-dashed outline-muted-foreground/20 rounded-xl p-4 px-12 flex flex-col"
+			>
+				<div class="flex flex-wrap gap-x-16 gap-y-16 mb-auto p-4">
+					{#if data.favorites.length > 0}
+						{#each data.favorites as item}
+							<div class="w-24 h-24 2xl:w-32 2xl:h-32">
+								<a href="/games/{item.assetid}/{slugify(item.assetname ?? '')}">
+									<ImageAvatar.Root class="w-full h-full rounded-xl aspect-square">
+										<ImageAvatar.Image
+											src={getImage(item.simpleasseturl, item.moderationstate, 'icon')}
+											alt={item.assetname}
+											loading="lazy"
+										/>
+										<ImageAvatar.Fallback />
+									</ImageAvatar.Root>
+								</a>
+								<a href="/catalog/{item.assetid}/{slugify(item.assetname ?? '')}">
+									<h1 class="line-clamp-2 tracking-tighter break-words text-base hover:underline">
+										{item.assetname}
+									</h1></a
+								>
+
+								<h1 class="text-sm text-muted-foreground mt-2 line-clamp-2">
+									{data.t('catalog.creator')}:
+									<a href="/users/{item.creatoruserid}/profile"
+										><span class="text-primary hover:underline">{item.creatorusername}</span></a
+									>
+								</h1>
+							</div>
+						{/each}
+					{/if}
+				</div>
+
+				<PaginationWrapper
+					count={data.favoritesCount}
+					size={6}
+					url={$page.url}
+					queryName={'favorites'}
 				/>
 			</div>
 
