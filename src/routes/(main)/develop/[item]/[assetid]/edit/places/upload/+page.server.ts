@@ -10,6 +10,11 @@ import { uploadAsset } from '$lib/server/develop/uploadasset'
 import { db } from '$src/lib/server/db'
 import { placesTable } from '$src/lib/server/schema'
 import { count, eq } from 'drizzle-orm'
+import { RateLimiter } from 'sveltekit-rate-limiter/server'
+
+const limiter = new RateLimiter({
+	IP: [1, '15s']
+})
 
 export const load: PageServerLoad = async () => {
 	const placeForm = await superValidate(zod(placeSchema))
@@ -20,7 +25,9 @@ export const load: PageServerLoad = async () => {
 }
 
 export const actions: Actions = {
-	default: async ({ request, params, locals }) => {
+	default: async (event) => {
+		const { request, params, locals } = event
+
 		const formData = await request.formData()
 		const form = await superValidate(formData, zod(placeSchema))
 
@@ -50,6 +57,10 @@ export const actions: Actions = {
 				'geargenreenforced',
 				'You have reached the maximum number of places for this game!'
 			)
+		}
+
+		if (await limiter.isLimited(event)) {
+			return setError(form, 'asset', 'Your uploading too fast!')
 		}
 
 		const file = form.data.asset

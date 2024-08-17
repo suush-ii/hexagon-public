@@ -10,8 +10,15 @@ import { PutObjectCommand } from '@aws-sdk/client-s3'
 import { s3BucketName } from '$src/stores'
 import { createHash } from 'node:crypto'
 import pako from 'pako'
+import { RateLimiter } from 'sveltekit-rate-limiter/server'
 
-export const POST: RequestHandler = async ({ request, url, cookies }) => {
+const limiter = new RateLimiter({
+	IP: [1, '15s']
+})
+
+export const POST: RequestHandler = async (event) => {
+	const { request, url, cookies } = event
+
 	let authBearer = url.searchParams.get('auth') ?? cookies.get('.ROBLOSECURITY') ?? ''
 
 	const result = await z.coerce
@@ -49,6 +56,14 @@ export const POST: RequestHandler = async ({ request, url, cookies }) => {
 				data: {}
 			})
 		}
+	}
+
+	if (await limiter.isLimited(event)) {
+		return error(429, {
+			success: false,
+			message: 'Your uploading too fast!',
+			data: {}
+		})
 	}
 
 	const place = await db.query.placesTable.findFirst({
