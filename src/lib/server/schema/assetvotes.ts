@@ -1,4 +1,6 @@
-import { pgTable, bigint, bigserial, primaryKey } from 'drizzle-orm/pg-core'
+import { relations } from 'drizzle-orm'
+import { pgTable, bigint, primaryKey } from 'drizzle-orm/pg-core'
+import { assetTable } from './assets'
 
 export const assetFavoritesTable = pgTable(
 	'assetfavorites',
@@ -10,3 +12,10 @@ export const assetFavoritesTable = pgTable(
 		return { pk: primaryKey({ columns: [table.userid, table.assetid] }) }
 	}
 )
+
+export const favoritesRelations = relations(assetFavoritesTable, ({ one }) => ({
+	asset: one(assetTable, {
+		fields: [assetFavoritesTable.assetid],
+		references: [assetTable.assetid]
+	})
+}))

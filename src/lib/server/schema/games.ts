@@ -141,6 +141,6 @@ export const jobsRelations = relations(jobsTable, ({ one, many }) => ({
 		// user renders
 		fields: [jobsTable.associatedid],
 		references: [usersTable.userid]
-	}),
-	activeusers: many(usersTable) // so we can fetch all the users in a job
+	})
+	//activeusers: many(usersTable) // so we can fetch all the users in a job
 }))
