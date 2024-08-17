@@ -20,7 +20,7 @@ const accessoryPrimitive = {
 	mimeTypes: ['application/octet-stream']
 }
 
-export let _uploadableAssets: Record<string, assetPrimitive> = {
+export const _uploadableAssets: Record<string, assetPrimitive> = {
 	games: { friendlyName: 'Game', fileTypes: ['.rbxl'], mimeTypes: ['application/octet-stream'] },
 	audio: { friendlyName: 'Audio', fileTypes: ['.mp3'], mimeTypes: ['audio/mpeg'] },
 	decals: {

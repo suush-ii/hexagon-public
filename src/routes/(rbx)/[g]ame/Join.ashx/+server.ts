@@ -17,8 +17,8 @@ const BaseUrl = `http://${env.BASE_URL}/`
 
 export const fallback: RequestHandler = async ({ url, locals }) => {
 	// capture get/post
-	let jobid = url.searchParams.get('jobid')
-	let authBearer = url.searchParams.get('auth') ?? ''
+	const jobid = url.searchParams.get('jobid')
+	const authBearer = url.searchParams.get('auth') ?? ''
 
 	const result = await z.string().uuid().safeParseAsync(jobid)
 
@@ -52,7 +52,7 @@ export const fallback: RequestHandler = async ({ url, locals }) => {
 		}
 	}
 
-	let enabled = locals.config[0].gamesEnabled
+	const enabled = locals.config[0].gamesEnabled
 
 	if (!enabled) {
 		return error(403, {
@@ -133,7 +133,7 @@ export const fallback: RequestHandler = async ({ url, locals }) => {
 
 	if (instance && instance.port && instance.status === 2) {
 		// an instance is available\
-		let joinJson: { [key: string]: string | number | boolean } = {
+		const joinJson: { [key: string]: string | number | boolean } = {
 			ClientPort: 0,
 			MachineAddress: 'localhost',
 			ServerPort: 53640,
@@ -220,7 +220,7 @@ export const fallback: RequestHandler = async ({ url, locals }) => {
 
 		let scriptNewArgs = scriptNew
 
-		for (let key in joinJson) {
+		for (const key in joinJson) {
 			scriptNewArgs = scriptNewArgs.replaceAll(`{${key}}`, joinJson[key].toString())
 		}
 

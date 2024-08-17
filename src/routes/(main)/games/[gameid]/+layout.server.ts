@@ -105,7 +105,7 @@ export const load: LayoutServerLoad = async ({
 			.limit(40) // TODO: ADD PAGINATION
 	}
 
-	let canEdit = Number(locals.user.userid) === place.associatedgame.creatoruserid
+	const canEdit = Number(locals.user.userid) === place.associatedgame.creatoruserid
 
 	const favorites = await db
 		.select({ count: count() })
@@ -134,7 +134,7 @@ export const load: LayoutServerLoad = async ({
 		.sort((a, b) => a.sort - b.sort)
 		.map(({ value }) => value)
 
-	let authBearer = cookies.get('.ROBLOSECURITY') ?? ''
+	const authBearer = cookies.get('.ROBLOSECURITY') ?? ''
 
 	return {
 		place: place,

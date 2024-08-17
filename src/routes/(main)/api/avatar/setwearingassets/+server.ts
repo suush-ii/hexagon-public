@@ -35,7 +35,7 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 
 	let result
 	try {
-		let item = await request.json()
+		const item = await request.json()
 
 		result = await itemSchema.safeParseAsync(item)
 	} catch (e) {

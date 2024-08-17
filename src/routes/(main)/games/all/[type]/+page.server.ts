@@ -15,13 +15,13 @@ export const load: PageServerLoad = async ({ params, url }) => {
 
 	let page = getPageNumber(url)
 
-	let size = 40
+	const size = 40
 
 	if (gamesCount.count < (page - 1) * size) {
 		page = 1
 	}
 
-	let friendlyType = params.type.charAt(0).toUpperCase() + params.type.slice(1)
+	const friendlyType = params.type.charAt(0).toUpperCase() + params.type.slice(1)
 
 	if (params.type === 'popular') {
 		const popularGames = await gameCardSearch({

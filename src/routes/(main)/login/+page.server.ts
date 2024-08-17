@@ -35,7 +35,7 @@ export const actions: Actions = {
 				userId: user.userId,
 				attributes: {}
 			})
-			let sessionCookie = auth.createSessionCookie(session)
+			const sessionCookie = auth.createSessionCookie(session)
 
 			const path = sessionCookie.attributes.path || '/'
 

@@ -10,7 +10,7 @@
 
 	export let genreEnforcement: boolean
 
-	export let gameGenre: String
+	export let gameGenre: string
 </script>
 
 <div class="flex flex-wrap gap-x-2 justify-center w-24">

@@ -59,7 +59,7 @@ export const flyAndScale = (
 	}
 }
 
-export function slugify(text: String) {
+export function slugify(text: string) {
 	return text
 		.toString()
 		.normalize('NFD') // split an accented letter in the base letter and the acent

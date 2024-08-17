@@ -19,7 +19,7 @@ export const load: PageServerLoad = async ({ url }) => {
 
 	let page = getPageNumber(url)
 
-	let size = 5
+	const size = 5
 
 	const punishmentsCount = await db
 		.select({ count: count() })

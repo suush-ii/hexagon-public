@@ -194,9 +194,9 @@ export const actions: Actions = {
 						).toString()
 
 						try {
-							let assetType = assetTypeFromEnum(item?.assetType?.id)
+							const assetType = assetTypeFromEnum(item?.assetType?.id)
 
-							let Key = ['hats', 'gears', 'faces'].includes(assetType) ? assetType : 'packages'
+							const Key = ['hats', 'gears', 'faces'].includes(assetType) ? assetType : 'packages'
 
 							const command = new PutObjectCommand({
 								Bucket: s3BucketName,

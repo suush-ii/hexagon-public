@@ -22,14 +22,14 @@ export const actions: Actions = {
 			})
 		}
 
-		let keys = []
+		const keys = []
 
 		for (let i = 0; i < form.data.amount; i++) {
 			const expiration = new Date()
 
 			expiration.setDate(expiration.getDate() + 365) // 1 year
 
-			let [key] = await db
+			const [key] = await db
 				.insert(keyTable)
 				.values({
 					key:

@@ -42,12 +42,12 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 		error(403, { success: false, message: 'This asset has been moderated.' })
 	}
 
-	let name = asset[0].assetname
-	let description = asset[0].description ?? ''
-	let onsale = asset[0].onsale
-	let price = asset[0].price ?? 0
-	let genres = asset[0].genres
-	let gearattributes = asset[0].gearattributes ?? []
+	const name = asset[0].assetname
+	const description = asset[0].description ?? ''
+	const onsale = asset[0].onsale
+	const price = asset[0].price ?? 0
+	const genres = asset[0].genres
+	const gearattributes = asset[0].gearattributes ?? []
 	const assetForm = await superValidate(zod(assetSchema))
 	const gearForm = await superValidate(zod(gearSchema))
 

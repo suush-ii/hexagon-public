@@ -311,7 +311,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 
 		//console.log(_3dManifest.AABB)
 
-		let newManifest: {
+		const newManifest: {
 			camera: { position: axis; direction: axis; fov: number }
 			aabb: { min: axis; max: axis }
 			mtl: string
@@ -331,7 +331,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 
 		//console.log(Object.keys(_3dManifest.files).reverse())
 
-		let mtlAssets: Record<string, string> = {}
+		const mtlAssets: Record<string, string> = {}
 
 		for (const [key, value] of Object.entries(_3dManifest.files).reverse()) {
 			// reverse is important here so we can list the files first then change them to their hash in the mtl file as the mtl file comes before the textures

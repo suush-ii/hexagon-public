@@ -15,7 +15,7 @@ import { imageSql } from '$lib/server/games/getImage'
 import type { assetStates } from '$lib/types'
 
 async function last7days(universeid: number) {
-	let places = await db.query.placesTable.findMany({
+	const places = await db.query.placesTable.findMany({
 		where: eq(placesTable.universeid, universeid),
 		columns: {},
 		with: {
@@ -82,7 +82,7 @@ export const load: PageServerLoad = async ({ params, locals, url, cookies }) => 
 
 	let page = getPageNumber(url)
 
-	let size = 28
+	const size = 28
 
 	let itemscount
 
@@ -219,7 +219,7 @@ export const load: PageServerLoad = async ({ params, locals, url, cookies }) => 
 		)
 	}
 
-	let authBearer = cookies.get('.ROBLOSECURITY') ?? ''
+	const authBearer = cookies.get('.ROBLOSECURITY') ?? ''
 
 	return {
 		creations,

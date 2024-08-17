@@ -6,11 +6,11 @@ import { usersTable } from '$lib/server/schema'
 import { getUserState } from '$lib/server/userState'
 
 export const load: PageServerLoad = async ({ url }) => {
-	let search = url.searchParams.get('search') ?? ''
+	const search = url.searchParams.get('search') ?? ''
 
 	let page = getPageNumber(url)
 
-	let size = 10
+	const size = 10
 
 	const [usersCount] = await db
 		.select({ count: count() })

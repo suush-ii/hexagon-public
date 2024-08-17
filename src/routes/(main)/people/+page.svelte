@@ -67,16 +67,18 @@
 				{#each data.users as user}
 					<Table.Row class="items-center h-full">
 						<Table.Cell class=""
-							><a href="/users/{user.userid}/profile"
-								><Avatar
-									state={'offline'}
-									userid={user.userid}
-									css="w-[68px] h-[68px]"
-									type="avatar"
-									disableoutline={true}
-									disable3d={true}
-								/></a
-							>
+							><a href="/users/{user.userid}/profile">
+								{#key user}
+									<Avatar
+										state={'offline'}
+										userid={user.userid}
+										css="w-[68px] h-[68px]"
+										type="avatar"
+										disableoutline={true}
+										disable3d={true}
+									/>
+								{/key}
+							</a>
 						</Table.Cell>
 						<Table.Cell
 							class="flex gap-x-2 items-center truncate w-[150px] hover:underline text-base h-24"

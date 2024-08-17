@@ -19,7 +19,7 @@ export async function uploadAsset(
 	assetname?: string,
 	universeid?: number // for places
 ) {
-	let mimeTypes = _uploadableAssets[item].mimeTypes
+	const mimeTypes = _uploadableAssets[item].mimeTypes
 
 	if (file.size > 10485760) {
 		// 10mb
@@ -27,7 +27,7 @@ export async function uploadAsset(
 	}
 
 	try {
-		let fileBuffer = Buffer.from(await file.arrayBuffer())
+		const fileBuffer = Buffer.from(await file.arrayBuffer())
 
 		const fileName = Buffer.from(createHash('sha512').update(fileBuffer).digest('hex')).toString()
 
@@ -90,7 +90,7 @@ export async function uploadAsset(
 		if (item === 'places' && universeid) {
 			await db.transaction(async (tx) => {
 				try {
-					let [assetResponse] = await tx
+					const [assetResponse] = await tx
 						.insert(assetTable)
 						.values({
 							assetname: form.data.name,
@@ -118,7 +118,7 @@ export async function uploadAsset(
 		if (item === 'games' || item === 'places') {
 			await db.transaction(async (tx) => {
 				try {
-					let [gameResponse] = await tx
+					const [gameResponse] = await tx
 						.insert(gamesTable)
 						.values({
 							gamename: form.data.name,
@@ -129,7 +129,7 @@ export async function uploadAsset(
 						})
 						.returning({ universeid: gamesTable.universeid })
 
-					let [assetResponse] = await tx
+					const [assetResponse] = await tx
 						.insert(assetTable)
 						.values({
 							assetname: form.data.name,
@@ -213,7 +213,7 @@ export async function uploadAsset(
 			// these are all handled the same which is through image and xml
 			const assetResponse = await db.transaction(async (tx) => {
 				try {
-					let [imageResponse] = await tx
+					const [imageResponse] = await tx
 						.insert(assetTable)
 						.values({
 							assetname: form.data.name,
@@ -226,7 +226,7 @@ export async function uploadAsset(
 						})
 						.returning({ assetid: assetTable.assetid })
 
-					let [assetResponse] = await tx
+					const [assetResponse] = await tx
 						.insert(assetTable)
 						.values({
 							assetname: form.data.name,

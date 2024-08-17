@@ -2,9 +2,9 @@ import { json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types'
 
 export const GET: RequestHandler = async ({ url }) => {
-	let executableType = url.searchParams.get('type') ?? 'player'
+	const executableType = url.searchParams.get('type') ?? 'player'
 
-	let executableVersion = url.searchParams.get('version') ?? '2016'
+	const executableVersion = url.searchParams.get('version') ?? '2016'
 
 	console.log(url.searchParams)
 

@@ -7,7 +7,7 @@ import { getPageNumber } from '$lib/utils'
 export const load: PageServerLoad = async ({ url, locals }) => {
 	let page = getPageNumber(url)
 
-	let size = 30
+	const size = 30
 
 	let category = url.searchParams.get('category') ?? 'purchase'
 
@@ -28,7 +28,7 @@ export const load: PageServerLoad = async ({ url, locals }) => {
 			page = 1
 		}
 
-		let transactions = await db.query.transactionsTable.findMany({
+		const transactions = await db.query.transactionsTable.findMany({
 			with: {
 				member: {
 					columns: {
