@@ -20,7 +20,7 @@
 	export let assetUrl: string | undefined | null | unknown
 	export let moderationState: assetStates | undefined | null
 
-	let iconUrl = getImage(assetUrl, moderationState, 'icon')
+	$: iconUrl = getImage(assetUrl, moderationState, 'icon')
 </script>
 
 <a href="/games/{gameId}/{slugify(gameName)}"

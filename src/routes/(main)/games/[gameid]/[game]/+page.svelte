@@ -32,13 +32,10 @@
 
 	import RelativeTime from '@yaireo/relative-time'
 
-	import { env } from '$env/dynamic/public'
-
 	import { newLib } from '.'
 	import Favorite from '$src/components/favorite.svelte'
 	import GameCard from '$src/components/games/gameCard.svelte'
 	import EmptyCard from '$src/components/emptyCard.svelte'
-	import { getImage } from '$lib/games/getImage'
 
 	const defaultText = 'A server is loading the game...'
 
