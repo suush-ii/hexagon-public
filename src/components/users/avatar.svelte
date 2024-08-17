@@ -41,6 +41,8 @@
 
 	$: trig, refresh()
 
+	let srcOveride: string
+
 	function refresh() {
 		const foundImage = $loadedImages.find(
 			(img) => img.assetid === userid && img.asset === 'user' && img.type === type
@@ -83,6 +85,10 @@
 					asset: 'user',
 					time: new Date()
 				})
+
+				// fixes bug where users can quickly change avatars and the old one tries to load
+
+				srcOveride = thumbnail.data.url
 
 				return thumbnail.data.url
 			}
@@ -150,7 +156,7 @@
 					<Loader2 class="w-full h-full animate-spin text-secondary" />
 				{:then src}
 					<Avatar.Root class="w-28 h-28 {css} mx-auto ">
-						<Avatar.Image {src} alt={username} {...$$restProps} />
+						<Avatar.Image src={srcOveride ? srcOveride : src} alt={username} {...$$restProps} />
 						<Avatar.Fallback />
 					</Avatar.Root>
 				{/await}
