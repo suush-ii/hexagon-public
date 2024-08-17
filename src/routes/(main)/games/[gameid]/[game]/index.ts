@@ -1,4 +1,4 @@
-let MadStatusNames = {
+const MadStatusNames = {
 	accelerating: 'Accelerating',
 	aggregating: 'Aggregating',
 	allocating: 'Allocating',
@@ -90,7 +90,7 @@ let MadStatusNames = {
 	tubes: 'Tubes'
 }
 
-let participle = [
+const participle = [
 	MadStatusNames.accelerating,
 	MadStatusNames.aggregating,
 	MadStatusNames.allocating,
@@ -124,7 +124,7 @@ let participle = [
 	MadStatusNames.updating,
 	MadStatusNames.writing
 ]
-let modifier = [
+const modifier = [
 	MadStatusNames.blox,
 	MadStatusNames.countzero,
 	MadStatusNames.cylon,
@@ -151,7 +151,7 @@ let modifier = [
 	MadStatusNames.tardis,
 	MadStatusNames.virtual
 ]
-let subject = [
+const subject = [
 	MadStatusNames.analogs,
 	MadStatusNames.blocks,
 	MadStatusNames.cannon,

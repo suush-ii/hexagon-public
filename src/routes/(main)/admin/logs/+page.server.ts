@@ -7,7 +7,7 @@ import { getPageNumber } from '$lib/utils'
 export const load: PageServerLoad = async ({ url }) => {
 	let page = getPageNumber(url)
 
-	let size = 30
+	const size = 30
 
 	const logsCount = await db.select({ count: count() }).from(adminLogsTable).limit(1)
 
@@ -15,7 +15,7 @@ export const load: PageServerLoad = async ({ url }) => {
 		page = 1
 	}
 
-	let logs = await db.query.adminLogsTable.findMany({
+	const logs = await db.query.adminLogsTable.findMany({
 		with: {
 			admin: {
 				columns: {

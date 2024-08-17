@@ -7,12 +7,12 @@ import { gamesTable, placesTable } from '$lib/server/schema'
 import { gameCardSearch } from '$lib/server/games/gamecard'
 
 export const load: PageServerLoad = async ({ url }) => {
-	let search = url.searchParams.get('search') ?? ''
-	let genre = genres.find((o) => o === url.searchParams.get('genre')) ?? genres[0]
+	const search = url.searchParams.get('search') ?? ''
+	const genre = genres.find((o) => o === url.searchParams.get('genre')) ?? genres[0]
 
 	let page = getPageNumber(url)
 
-	let size = 40
+	const size = 40
 
 	const [gamesCount] = await db
 		.select({ count: count() })

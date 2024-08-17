@@ -12,9 +12,9 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 	let pageWearing = getPageNumber(url, 'pagewearing')
 	const result = await z.enum(assetTypes).safeParseAsync(url.searchParams.get('category'))
 
-	let categoryParams = result.success ? result.data : 'hats'
+	const categoryParams = result.success ? result.data : 'hats'
 
-	let size = 10
+	const size = 10
 
 	const user = await db.query.usersTable.findFirst({
 		columns: {

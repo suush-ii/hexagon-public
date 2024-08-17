@@ -19,7 +19,7 @@ const limiter = new RateLimiter({
 export const POST: RequestHandler = async (event) => {
 	const { request, url, cookies } = event
 
-	let authBearer = url.searchParams.get('auth') ?? cookies.get('.ROBLOSECURITY') ?? ''
+	const authBearer = url.searchParams.get('auth') ?? cookies.get('.ROBLOSECURITY') ?? ''
 
 	const result = await z.coerce
 		.number()
@@ -96,7 +96,7 @@ export const POST: RequestHandler = async (event) => {
 		return error(400, { message: 'File is too large!', success: false, data: {} })
 	}
 
-	let Key = 'games'
+	const Key = 'games'
 
 	const fileName = Buffer.from(createHash('sha512').update(file).digest('hex')).toString()
 

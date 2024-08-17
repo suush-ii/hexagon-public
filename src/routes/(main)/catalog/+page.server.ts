@@ -8,7 +8,7 @@ import { commonWhere } from '$lib/server/catalog'
 import { getPageNumber } from '$lib/utils'
 
 export const load: PageServerLoad = async ({ url }) => {
-	let category =
+	const category =
 		categories.find((o) => o.value === url.searchParams.get('category')) ??
 		categories
 			.map((category) => category.types)
@@ -17,14 +17,14 @@ export const load: PageServerLoad = async ({ url }) => {
 		categories[0]
 
 	let gearAttribute = false
-	let gearsCategory = categories[5]
+	const gearsCategory = categories[5]
 
-	let categoryExists = gearsCategory?.types?.find((type) => type.value === category.value)
+	const categoryExists = gearsCategory?.types?.find((type) => type.value === category.value)
 	if (categoryExists && category.value !== 'gears') {
 		gearAttribute = true
 	}
 
-	let search = url.searchParams.get('search') ?? ''
+	const search = url.searchParams.get('search') ?? ''
 
 	let items
 	let itemscount
@@ -35,7 +35,7 @@ export const load: PageServerLoad = async ({ url }) => {
 
 	let page = getPageNumber(url)
 
-	let size = 28
+	const size = 28
 
 	if (category.value === 'all' || category.value === '') {
 		itemscount = await db

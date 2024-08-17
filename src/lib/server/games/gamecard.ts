@@ -4,7 +4,7 @@ import { db } from '$lib/server/db'
 import { imageSql } from './getImage'
 
 export async function gameCardSearch(params: {}) {
-	let games = await db.query.gamesTable.findMany({
+	const games = await db.query.gamesTable.findMany({
 		columns: {
 			gamename: true,
 			active: true,

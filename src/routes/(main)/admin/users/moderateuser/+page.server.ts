@@ -28,9 +28,9 @@ export const load: PageServerLoad = async ({ url }) => {
 
 	let page = getPageNumber(url)
 
-	let size = 5
+	const size = 5
 
-	let queue = url.searchParams.get('queue') === 'true' ? true : false
+	const queue = url.searchParams.get('queue') === 'true' ? true : false
 
 	let userid
 
@@ -149,7 +149,7 @@ export const actions: Actions = {
 			redirect(302, '/admin/users/find?redirect=moderateuser')
 		}
 
-		let queue = event.url.searchParams.get('queue') === 'true' ? true : false
+		const queue = event.url.searchParams.get('queue') === 'true' ? true : false
 
 		const result = await z
 			.number()
@@ -244,7 +244,7 @@ export const actions: Actions = {
 					.where(eq(usersTable.userid, result.data))
 					.limit(1)
 
-				let poisoned = await db
+				const poisoned = await db
 					.select({ userid: usersTable.userid })
 					.from(usersTable)
 					.where(

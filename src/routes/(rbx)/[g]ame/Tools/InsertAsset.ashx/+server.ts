@@ -29,7 +29,7 @@ export const GET: RequestHandler = async ({ url }) => {
 		return text('<List></List>')
 	}
 
-	let id = result.data
+	const id = result.data
 
 	if (luas[id]) {
 		return text(luas[id])

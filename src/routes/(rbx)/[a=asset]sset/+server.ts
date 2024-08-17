@@ -50,7 +50,7 @@ function formatPath(glob: Record<string, unknown>) {
 	)
 }
 
-let rbxms = formatPath(
+const rbxms = formatPath(
 	import.meta.glob(['./common/*.rbxm', './common/2014L/*.rbxm'], {
 		eager: true,
 		query: '?raw',
@@ -58,7 +58,7 @@ let rbxms = formatPath(
 	})
 )
 
-let commonAssets = formatPath(
+const commonAssets = formatPath(
 	import.meta.glob(['./common/*.png', './common/*.midi', './common/templates/*.rbxl'], {
 		eager: true,
 		query: '?arraybuffer',

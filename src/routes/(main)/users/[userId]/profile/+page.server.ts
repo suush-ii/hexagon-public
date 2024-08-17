@@ -88,7 +88,7 @@ export const load: PageServerLoad = async ({ params, locals, url }) => {
 
 	let pageFriends = getPageNumber(url, 'friends')
 
-	let sizeFriends = 8
+	const sizeFriends = 8
 
 	if (friendsCount[0].count < (pageFriends - 1) * sizeFriends) {
 		pageFriends = 1
@@ -146,7 +146,7 @@ export const load: PageServerLoad = async ({ params, locals, url }) => {
 
 	let page = getPageNumber(url, 'places')
 
-	let size = 10
+	const size = 10
 
 	if (placeVisits[0].amount < (page - 1) * size) {
 		page = 1
@@ -183,7 +183,7 @@ export const load: PageServerLoad = async ({ params, locals, url }) => {
 
 	let favoritePage = getPageNumber(url, 'favorites')
 
-	let favoriteSize = 6
+	const favoriteSize = 6
 
 	const favoritesCount = await db
 		.select({ count: count() })

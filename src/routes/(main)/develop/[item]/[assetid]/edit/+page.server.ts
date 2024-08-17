@@ -292,7 +292,7 @@ export const actions: Actions = {
 
 		const file = form.data.asset
 
-		let game = await db
+		const game = await db
 			.select({ gamename: gamesTable.gamename })
 			.from(gamesTable)
 			.where(eq(gamesTable.universeid, Number(params.assetid)))

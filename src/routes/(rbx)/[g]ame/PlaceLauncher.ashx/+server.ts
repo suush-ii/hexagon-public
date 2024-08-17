@@ -22,11 +22,11 @@ export const fallback: RequestHandler = async (event) => {
 	// capture get/post
 	const { url, locals, fetch, cookies } = event
 
-	let placeid = url.searchParams.get('placeid') ?? url.searchParams.get('placeId')
-	let jobid = url.searchParams.get('jobid') ?? url.searchParams.get('jobId')
-	let authBearer = cookies.get('.ROBLOSECURITY')
+	const placeid = url.searchParams.get('placeid') ?? url.searchParams.get('placeId')
+	const jobid = url.searchParams.get('jobid') ?? url.searchParams.get('jobId')
+	const authBearer = cookies.get('.ROBLOSECURITY')
 
-	let placeLauncherJson = {
+	const placeLauncherJson = {
 		jobId: '',
 		status: 2,
 		joinScriptUrl,
@@ -35,7 +35,7 @@ export const fallback: RequestHandler = async (event) => {
 		message: ''
 	}
 
-	let enabled = locals.config[0].gamesEnabled
+	const enabled = locals.config[0].gamesEnabled
 
 	if (!enabled) {
 		return error(403, {

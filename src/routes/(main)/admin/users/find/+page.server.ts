@@ -8,7 +8,7 @@ import { eq, ilike } from 'drizzle-orm'
 import { usersTable } from '$lib/server/schema/users'
 
 export const load: PageServerLoad = async ({ url }) => {
-	let redirectString = url.searchParams.get('redirect')
+	const redirectString = url.searchParams.get('redirect')
 
 	if (redirectString && redirectString != 'useradmin' && redirectString != 'moderateuser') {
 		redirect(302, url.pathname)
