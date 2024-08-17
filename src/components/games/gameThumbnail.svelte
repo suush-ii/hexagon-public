@@ -10,7 +10,7 @@
 	export let assetUrl: string | undefined | null | unknown
 	export let moderationState: assetStates | undefined | null
 
-	let thumbnailUrl = getImage(assetUrl, moderationState, 'thumbnail')
+	$: thumbnailUrl = getImage(assetUrl, moderationState, 'thumbnail')
 </script>
 
 <Avatar.Root class="{size} rounded-xl aspect-video">
