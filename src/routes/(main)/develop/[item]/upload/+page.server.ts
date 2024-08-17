@@ -12,6 +12,11 @@ import { uploadAsset } from '$lib/server/develop/uploadasset'
 import { assetTable, inventoryTable } from '$lib/server/schema'
 import { db } from '$src/lib/server/db'
 import { eq } from 'drizzle-orm'
+import { RateLimiter } from 'sveltekit-rate-limiter/server'
+
+const limiter = new RateLimiter({
+	IP: [1, '15s']
+})
 
 async function giveItem(assetid: number, userid: number) {
 	const item = await db.query.assetTable.findFirst({
@@ -44,7 +49,9 @@ export const load: PageServerLoad = async () => {
 }
 
 export const actions: Actions = {
-	game: async ({ request, params, locals }) => {
+	game: async (event) => {
+		const { request, params, locals } = event
+
 		const formData = await request.formData()
 		const form = await superValidate(formData, zod(gameSchema))
 
@@ -62,11 +69,17 @@ export const actions: Actions = {
 			})
 		}
 
+		if (await limiter.isLimited(event)) {
+			return setError(form, 'asset', 'Your uploading too fast!')
+		}
+
 		const file = form.data.asset
 		await uploadAsset(file, params.item, form, locals.user.userid)
 		return redirect(302, '/develop/' + params.item)
 	},
-	clothing: async ({ request, params, locals }) => {
+	clothing: async (event) => {
+		const { request, params, locals } = event
+
 		const formData = await request.formData()
 		const form = await superValidate(formData, zod(clothingSchema))
 
@@ -84,6 +97,10 @@ export const actions: Actions = {
 			})
 		}
 
+		if (await limiter.isLimited(event)) {
+			return setError(form, 'asset', 'Your uploading too fast!')
+		}
+
 		const file = form.data.asset
 		const assetid = await uploadAsset(file, params.item, form, locals.user.userid)
 
@@ -91,7 +108,9 @@ export const actions: Actions = {
 
 		return redirect(302, '/develop/' + params.item)
 	},
-	asset: async ({ request, params, locals }) => {
+	asset: async (event) => {
+		const { request, params, locals } = event
+
 		const formData = await request.formData()
 		const form = await superValidate(formData, zod(assetSchema))
 
@@ -107,6 +126,10 @@ export const actions: Actions = {
 			return fail(400, {
 				form
 			})
+		}
+
+		if (await limiter.isLimited(event)) {
+			return setError(form, 'asset', 'Your uploading too fast!')
 		}
 
 		const file = form.data.asset

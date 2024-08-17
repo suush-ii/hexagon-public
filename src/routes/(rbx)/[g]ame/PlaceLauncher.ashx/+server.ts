@@ -5,6 +5,11 @@ import { db } from '$lib/server/db'
 import { eq, and, lt } from 'drizzle-orm'
 import { env } from '$env/dynamic/private'
 import * as jose from 'jose'
+import { RateLimiter } from 'sveltekit-rate-limiter/server'
+
+const limiter = new RateLimiter({
+	IP: [2, '10s']
+})
 
 const secret = new TextEncoder().encode(env.JWT_SECRET_KEY)
 const alg = 'HS256'
@@ -13,8 +18,10 @@ const joinScriptUrl = `http://${env.BASE_URL}/game/Join.ashx`
 const authenticationUrl = `http://${env.BASE_URL}/Login/Negotiate.ashx`
 const CharacterAppearance = `http://${env.BASE_URL}/Asset/CharacterFetch.ashx`
 
-export const fallback: RequestHandler = async ({ url, locals, fetch, cookies }) => {
+export const fallback: RequestHandler = async (event) => {
 	// capture get/post
+	const { url, locals, fetch, cookies } = event
+
 	let placeid = url.searchParams.get('placeid') ?? url.searchParams.get('placeId')
 	let jobid = url.searchParams.get('jobid') ?? url.searchParams.get('jobId')
 	let authBearer = cookies.get('.ROBLOSECURITY')
@@ -157,6 +164,14 @@ export const fallback: RequestHandler = async ({ url, locals, fetch, cookies }) 
 
 	// create a new instance
 
+	if (await limiter.isLimited(event)) {
+		return error(429, {
+			success: false,
+			message: 'Your launching games too fast!',
+			data: {}
+		})
+	}
+
 	const [instanceNew] = await db
 		.insert(jobsTable)
 		.values({
@@ -181,7 +196,7 @@ export const fallback: RequestHandler = async ({ url, locals, fetch, cookies }) 
 		// error maybe retry or something but for now just kill the instance
 		await db.delete(jobsTable).where(eq(jobsTable.jobid, instanceNew.jobid))
 
-		throw json({ success: false, message: 'Error.', data: {} })
+		return error(400, { success: false, message: 'Error.', data: {} })
 	}
 
 	await db
