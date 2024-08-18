@@ -8,7 +8,7 @@
 
 	import * as Select from '$src/components/ui/select'
 
-	import { assetGenreZod } from '$lib'
+	import { assetGenreZod as genres } from '$lib'
 
 	import type { FormTextareaEvent } from '$src/components/ui/textarea'
 	import { BookText } from 'lucide-svelte'
@@ -115,11 +115,12 @@
 					<Select.Value />
 				</Select.Trigger>
 				<Select.Content>
-					{#each assetGenreZod as value}
+					{#each genres as value}
 						<Select.Item {value} label={value} />
 					{/each}
 				</Select.Content>
 			</Select.Root>
+			<input hidden bind:value={$formData.genre} name={attrs.name} />
 		</Form.Control>
 		<Form.FieldErrors />
 	</Form.Field>

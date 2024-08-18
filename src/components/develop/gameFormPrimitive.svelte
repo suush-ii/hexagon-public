@@ -110,6 +110,7 @@
 					{/each}
 				</Select.Content>
 			</Select.Root>
+			<input hidden bind:value={$formData.genre} name={attrs.name} />
 		</Form.Control>
 		<Form.FieldErrors />
 	</Form.Field>
