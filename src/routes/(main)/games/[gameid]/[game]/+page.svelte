@@ -45,7 +45,7 @@
 
 	export let data: PageData
 
-	pageName.set(data.place.associatedgame.gamename)
+	pageName.set(data.place.placename)
 
 	let submitting = false
 
@@ -179,7 +179,7 @@
 						<GameThumbnail
 							assetUrl={data.place.associatedgame.thumbnail?.simpleasseturl}
 							moderationState={data.place.associatedgame.thumbnail?.moderationstate}
-							gamename={data.place.associatedgame.gamename}
+							gamename={data.place.placename}
 						/>
 						{#if data.place.associatedgame.serversize > 20}
 							<img
@@ -193,7 +193,7 @@
 					<div class="flex flex-col w-full">
 						<div class="flex">
 							<h1 class="mr-auto text-5xl font-semibold tracking-tight leading-none">
-								{data.place.associatedgame.gamename}
+								{data.place.placename}
 							</h1>
 
 							{#if data.canEdit}
@@ -375,7 +375,7 @@
 								</h1>
 								<Separator class="mt-2" />
 
-								<div class="flex flex-row flex-wrap justify-around w-full text-center">
+								<div class="flex flex-row flex-wrap justify-around w-full text-center items-center">
 									<div>
 										<p class="font-bold text-muted-foreground">{data.t('games.visits')}</p>
 										<p>{formatCompactNumber(data.place.associatedgame.visits)}</p>
@@ -440,7 +440,7 @@
 					{#each data.recommendations as game}
 						<GameCard
 							gameId={game.places[0].placeid}
-							gameName={game.gamename}
+							gameName={game.places[0].placename}
 							playerCount={game.active}
 							assetUrl={game.icon?.simpleasseturl}
 							moderationState={game.icon?.moderationstate}

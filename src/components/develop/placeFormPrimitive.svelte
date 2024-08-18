@@ -8,10 +8,11 @@
 
 	import * as Select from '$src/components/ui/select'
 
-	import { assetGenreZod as genres } from '$lib'
+	import { gearAttributesZod as attributes } from '$lib'
 
+	import { BookText } from 'lucide-svelte'
 	import * as RadioGroup from '$src/components/ui/radio-group'
-	import { defaultClass } from '$src/components/ui/input'
+	import { Input, defaultClass } from '$src/components/ui/input'
 	import { zodClient } from 'sveltekit-superforms/adapters'
 
 	export let data: SuperValidated<Infer<PlaceSchema>>
@@ -42,6 +43,21 @@
 </script>
 
 <form method="POST" enctype="multipart/form-data" class="max-w-4xl" use:enhance>
+	<Form.Field {form} name="name">
+		<Form.Control let:attrs>
+			<Form.Label>{friendlyName} Name</Form.Label>
+			<Input
+				disabled={$submitting}
+				icon={BookText}
+				direction="r"
+				{...attrs}
+				bind:value={$formData.name}
+			/>
+			<Form.Description>Up to {$constraints.name?.maxlength} characters.</Form.Description>
+		</Form.Control>
+		<Form.FieldErrors />
+	</Form.Field>
+
 	<Form.Fieldset {form} name="geargenreenforced" class="space-y-3">
 		<Form.Legend>Allowed Genre</Form.Legend>
 		<RadioGroup.Root bind:value={geargenreenforced} class="flex flex-col space-y-1">
@@ -84,7 +100,7 @@
 					<Select.Value />
 				</Select.Trigger>
 				<Select.Content>
-					{#each genres as value}
+					{#each attributes as value}
 						<Select.Item {value} label={value} />
 					{/each}
 				</Select.Content>

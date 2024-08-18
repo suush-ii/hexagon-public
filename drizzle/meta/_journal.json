@@ -428,6 +428,27 @@
       "when": 1722561738068,
       "tag": "0060_sticky_riptide",
       "breakpoints": true
+    },
+    {
+      "idx": 61,
+      "version": "7",
+      "when": 1723945213174,
+      "tag": "0061_large_scarlet_spider",
+      "breakpoints": true
+    },
+    {
+      "idx": 62,
+      "version": "7",
+      "when": 1723945805484,
+      "tag": "0062_nappy_iron_man",
+      "breakpoints": true
+    },
+    {
+      "idx": 63,
+      "version": "7",
+      "when": 1723945865843,
+      "tag": "0063_quiet_master_mold",
+      "breakpoints": true
     }
   ]
 }

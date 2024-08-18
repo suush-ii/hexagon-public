@@ -22,14 +22,7 @@ export const load: PageServerLoad = async ({ url }) => {
 
 	const place = await db.query.placesTable.findFirst({
 		where: eq(placesTable.placeid, placeId),
-		columns: {},
-		with: {
-			associatedgame: {
-				columns: {
-					gamename: true
-				}
-			}
-		}
+		columns: { placename: true }
 	})
 
 	if (!place) {
@@ -39,6 +32,6 @@ export const load: PageServerLoad = async ({ url }) => {
 	return {
 		baseurl: env.BASE_URL,
 		placeId,
-		placeName: place.associatedgame.gamename
+		placeName: place.placename
 	}
 }

@@ -10,9 +10,10 @@
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"lint": "prettier --plugin-search-dir . --check . && eslint .",
 		"format": "prettier --plugin-search-dir . --write .",
-		"generate": "drizzle-kit generate:pg",
-		"push": "drizzle-kit push:pg",
+		"generate": "drizzle-kit generate",
+		"push": "drizzle-kit push",
 		"drop": "drizzle-kit drop",
+		"up": "drizzle-kit up",
 		"prod": "cross-env PROTOCOL_HEADER=x-forwarded-proto HOST_HEADER=x-forwarded-host PORT=9000 HOST=127.0.0.1 ADDRESS_HEADER=cf-connecting-ip BODY_SIZE_LIMIT=Infinity node build",
 		"prodpm2": "cross-env PROTOCOL_HEADER=x-forwarded-proto HOST_HEADER=x-forwarded-host PORT=9000 HOST=127.0.0.1 ADDRESS_HEADER=cf-connecting-ip BODY_SIZE_LIMIT=Infinity pm2 start build/index.js",
 		"prodpm2reload": "cross-env PROTOCOL_HEADER=x-forwarded-proto HOST_HEADER=x-forwarded-host PORT=9000 HOST=127.0.0.1 ADDRESS_HEADER=cf-connecting-ip BODY_SIZE_LIMIT=Infinity pm2 reload build/index.js"

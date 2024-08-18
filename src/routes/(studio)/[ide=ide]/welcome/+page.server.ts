@@ -1,6 +1,6 @@
 import { db } from '$lib/server/db'
 import type { PageServerLoad } from './$types'
-import { gamesTable, placesTable } from '$lib/server/schema'
+import { assetTable, gamesTable, placesTable } from '$lib/server/schema'
 import { desc, eq } from 'drizzle-orm'
 import { env } from '$env/dynamic/private'
 import { imageSql } from '$lib/server/games/getImage'
@@ -18,32 +18,18 @@ export const load: PageServerLoad = async (event) => {
 	const session = event.locals
 
 	if (session?.user) {
-		const gamecreations = await db.query.gamesTable.findMany({
-			where: eq(gamesTable.creatoruserid, event.locals.user.userid),
-			orderBy: desc(gamesTable.updated),
-			limit: 10,
-			columns: {
-				gamename: true,
-				thumbnailid: true
-			},
-			with: {
-				places: {
-					columns: {
-						placeid: true
-					},
-					where: eq(placesTable.startplace, true),
-					limit: 1
-				},
-				thumbnail: {
-					columns: {
-						moderationstate: true
-					},
-					extras: {
-						simpleasseturl: imageSql
-					}
-				}
-			}
-		})
+		const gamecreations = await db
+			.select({
+				placeid: placesTable.placeid,
+				placename: placesTable.placename,
+				thumbnail: { moderationstate: assetTable.moderationstate, simpleasseturl: imageSql }
+			})
+			.from(placesTable)
+			.leftJoin(gamesTable, eq(gamesTable.universeid, placesTable.universeid))
+			.leftJoin(assetTable, eq(assetTable.assetid, gamesTable.iconid))
+			.where(eq(gamesTable.creatoruserid, event.locals.user.userid))
+			.limit(20)
+			.orderBy(desc(gamesTable.updated))
 
 		return {
 			files,

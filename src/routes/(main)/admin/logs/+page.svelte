@@ -97,7 +97,7 @@
 											log.associatedid,
 											log?.asset?.assetType ?? '',
 											log?.asset?.assetname ?? '',
-											log?.game?.gamename ?? '',
+											log?.game?.places[0].placename ?? '',
 											log.banlength ?? '',
 											log.newrole ?? ''
 										)}</a

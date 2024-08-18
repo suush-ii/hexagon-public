@@ -9,7 +9,7 @@ import { zod } from 'sveltekit-superforms/adapters'
 import { uploadAsset } from '$lib/server/develop/uploadasset'
 import { db } from '$src/lib/server/db'
 import { placesTable } from '$src/lib/server/schema'
-import { count, eq } from 'drizzle-orm'
+import { count, eq, sql } from 'drizzle-orm'
 import { RateLimiter } from 'sveltekit-rate-limiter/server'
 
 const limiter = new RateLimiter({
@@ -45,13 +45,17 @@ export const actions: Actions = {
 			})
 		}
 
-		const placeCount = await db
+		const [placeCount] = await db
 			.select({ count: count() })
 			.from(placesTable)
 			.where(eq(placesTable.universeid, Number(params.assetid)))
 			.limit(1)
 
-		if (placeCount[0].count >= 5) {
+		if (!placeCount) {
+			return setError(form, 'asset', 'Place not found!')
+		}
+
+		if (placeCount.count >= 5) {
 			return setError(
 				form,
 				'geargenreenforced',
@@ -64,7 +68,14 @@ export const actions: Actions = {
 		}
 
 		const file = form.data.asset
-		uploadAsset(file, params.item, form, locals.user.userid, undefined, Number(params.assetid))
+		await uploadAsset(
+			file,
+			params.item,
+			form,
+			locals.user.userid,
+			undefined,
+			Number(params.assetid)
+		)
 		return redirect(302, '/develop/' + params.item)
 	}
 }

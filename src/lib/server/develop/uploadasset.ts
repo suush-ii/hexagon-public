@@ -87,7 +87,9 @@ export async function uploadAsset(
 			}
 		}
 
-		if (item === 'places' && universeid) {
+		if (item === 'games' && universeid) {
+			//place upload that is part of a "universe"
+
 			await db.transaction(async (tx) => {
 				try {
 					const [assetResponse] = await tx
@@ -104,24 +106,27 @@ export async function uploadAsset(
 						placeid: assetResponse.assetid,
 						universeid: universeid,
 						placeurl: fileName,
-						startplace: true
+						startplace: false,
+						placename: form.data.name
 					})
-				} catch {
+				} catch (err) {
+					console.log(err)
 					tx.rollback()
 					return fail(500, {
 						form
 					})
 				}
 			})
+
+			return
 		}
 
-		if (item === 'games' || item === 'places') {
+		if (item === 'games') {
 			await db.transaction(async (tx) => {
 				try {
 					const [gameResponse] = await tx
 						.insert(gamesTable)
 						.values({
-							gamename: form.data.name,
 							description: form.data.description,
 							creatoruserid: userid,
 							genre: form.data.genre,
@@ -143,7 +148,8 @@ export async function uploadAsset(
 						placeid: assetResponse.assetid,
 						universeid: gameResponse.universeid,
 						placeurl: fileName,
-						startplace: true
+						startplace: true,
+						placename: form.data.name
 					})
 				} catch {
 					tx.rollback()

@@ -17,7 +17,7 @@
 		{#each data.games as game}
 			<GameCard
 				gameId={game.places[0].placeid}
-				gameName={game.gamename}
+				gameName={game.places[0].placename}
 				playerCount={game.active}
 				assetUrl={game.icon?.simpleasseturl}
 				moderationState={game.icon?.moderationstate}

@@ -1,4 +1,4 @@
-import { error, fail, redirect } from '@sveltejs/kit'
+import { error, fail } from '@sveltejs/kit'
 import type { PageServerLoad, Actions } from './$types'
 import { message, superValidate } from 'sveltekit-superforms/server'
 import { formSchema as gameSchema } from '$src/lib/schemas/edit/editgameschema'
@@ -9,7 +9,7 @@ import { zod } from 'sveltekit-superforms/adapters'
 import { z } from 'zod'
 import { assetTable, gamesTable, placesTable } from '$lib/server/schema'
 import { db } from '$lib/server/db'
-import { and, eq } from 'drizzle-orm'
+import { and, desc, eq } from 'drizzle-orm'
 import { _assetSchema } from '../../+layout.server'
 import type { AssetGenreDB, assetStates, GearAttributes } from '$lib/types'
 import { uploadAsset } from '$lib/server/develop/uploadasset'
@@ -32,6 +32,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 	let places: {
 		placeid: number
 		startplace: boolean
+		placename: string
 		associatedgame: {
 			thumbnail: {
 				simpleasseturl: string | null
@@ -43,7 +44,6 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 	if (params.item === 'games') {
 		const game = await db.query.gamesTable.findFirst({
 			columns: {
-				gamename: true,
 				description: true,
 				creatoruserid: true,
 				genre: true,
@@ -53,9 +53,10 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 				places: {
 					columns: {
 						placeid: true,
-						startplace: true
+						startplace: true,
+						placename: true
 					},
-					orderBy: placesTable.startplace,
+					orderBy: desc(placesTable.startplace),
 					with: {
 						associatedgame: {
 							columns: {},
@@ -85,7 +86,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 			error(403, { success: false, message: 'You do not have permission to edit this game.' })
 		}
 
-		name = game.gamename
+		name = game.places[0].placename
 		description = game.description
 		genres[0] = game.genre
 		serversize = game.serversize
@@ -204,10 +205,16 @@ export const actions: Actions = {
 			.set({
 				description: data.description,
 				serversize: data.serversize,
-				gamename: data.name,
 				genre: data.genre
 			})
 			.where(eq(gamesTable.universeid, Number(params.assetid)))
+
+		await db
+			.update(placesTable)
+			.set({ placename: data.name })
+			.where(
+				and(eq(placesTable.universeid, Number(params.assetid)), eq(placesTable.startplace, true))
+			)
 
 		return { form }
 	},
@@ -293,8 +300,12 @@ export const actions: Actions = {
 		const file = form.data.asset
 
 		const game = await db
-			.select({ gamename: gamesTable.gamename })
+			.select({ gamename: placesTable.placename })
 			.from(gamesTable)
+			.leftJoin(
+				placesTable,
+				and(eq(placesTable.universeid, gamesTable.universeid), eq(placesTable.startplace, true))
+			)
 			.where(eq(gamesTable.universeid, Number(params.assetid)))
 			.limit(1)
 

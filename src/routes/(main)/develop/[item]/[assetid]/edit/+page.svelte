@@ -11,7 +11,6 @@
 	import EmptyCard from '$src/components/emptyCard.svelte'
 	import type { PageData } from './$types'
 	import { page } from '$app/stores'
-	import { getImage } from '$lib/games/getImage'
 
 	export let data: PageData
 
@@ -45,17 +44,28 @@
 			genres={data.genres}
 		/>
 	{:else if data.item === 'games'}
-		<Tabs.Root
-			value={$page.url.searchParams.get('page') ?? 'settings'}
-			on:onValueChange={() => {
-				console.log('eee')
-			}}
-		>
+		<Tabs.Root value={$page.url.searchParams.get('page') ?? 'settings'}>
 			<Tabs.List>
-				<Tabs.Trigger value="settings">{data.t('generic.settings')}</Tabs.Trigger>
-				<Tabs.Trigger value="places">{data.t('develop.places')}</Tabs.Trigger>
-				<Tabs.Trigger value="icon">{data.t('develop.icon')}</Tabs.Trigger>
-				<Tabs.Trigger value="thumbnail">{data.t('develop.thumbnail')}</Tabs.Trigger>
+				<a href="?page=settings" class="w-full"
+					><Tabs.Trigger value="settings" class="pointer-events-none"
+						>{data.t('generic.settings')}</Tabs.Trigger
+					></a
+				>
+				<a href="?page=places" class="w-full"
+					><Tabs.Trigger value="places" class="pointer-events-none"
+						>{data.t('develop.places')}</Tabs.Trigger
+					></a
+				>
+				<a href="?page=icon" class="w-full"
+					><Tabs.Trigger value="icon" class="pointer-events-none"
+						>{data.t('develop.icon')}</Tabs.Trigger
+					>
+				</a>
+				<a href="?page=thumbnail" class="w-full"
+					><Tabs.Trigger value="thumbnail" class="pointer-events-none"
+						>{data.t('develop.thumbnail')}</Tabs.Trigger
+					></a
+				>
 			</Tabs.List>
 			<Tabs.Content value="settings"
 				><EditGameFormPrimitive
@@ -70,10 +80,9 @@
 			<Tabs.Content value="places">
 				<div class="flex flex-col space-y-8">
 					{#each data.places as place}
-						<div class="space-y-4">
-							<h1>Start Place</h1>
-
-							{#if place.startplace}
+						{#if place.startplace}
+							<div class="space-y-4">
+								<h1>Start Place</h1>
 								<div class="flex gap-x-4 items-center max-w-2xl">
 									<GameThumbnail
 										assetUrl={place.associatedgame.thumbnail?.simpleasseturl}
@@ -88,8 +97,8 @@
 										</h1></a
 									>
 								</div>
-							{/if}
-						</div>
+							</div>
+						{/if}
 					{/each}
 					<Separator />
 
@@ -100,11 +109,32 @@
 							><Button size="sm">Add Place</Button></a
 						>
 
-						<div class="outline-dashed outline-muted-foreground/20 rounded-xl p-4">
+						<div
+							class="outline-dashed outline-muted-foreground/20 rounded-xl p-4 flex flex-col gap-y-8"
+						>
 							{#if data.places.length <= 1}
 								<EmptyCard hideDefault={true}>
 									<h5 class="text-center">You can always add places to your game.</h5>
 								</EmptyCard>
+							{:else}
+								{#each data.places as place}
+									{#if place.startplace === false}
+										<div class="flex gap-x-4 items-center max-w-2xl">
+											<GameThumbnail
+												assetUrl={place.associatedgame.thumbnail?.simpleasseturl}
+												moderationState={place.associatedgame.thumbnail?.moderationstate}
+												gamename={place.placename}
+												size="xl:h-[120px] h-fit w-fit"
+											/>
+
+											<a href="/develop/games/{data.assetid}/edit/places/{place.placeid}"
+												><h1 class="line-clamp-2 w-full max-w-xl hover:underline">
+													{place.placename}
+												</h1></a
+											>
+										</div>
+									{/if}
+								{/each}
 							{/if}
 						</div>
 					</div>
