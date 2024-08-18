@@ -17,7 +17,6 @@ import { assetTable } from './assets'
 
 export const gamesTable = pgTable('games', {
 	universeid: bigserial('universeid', { mode: 'number' }).unique().notNull().primaryKey(),
-	gamename: text('gamename').notNull(),
 	description: text('description').notNull(),
 	creatoruserid: bigint('creatoruserid', { mode: 'number' }).notNull(),
 	active: bigint('active', { mode: 'number' }).notNull().default(0),
@@ -67,7 +66,8 @@ export const placesTable = pgTable('places', {
 		.$type<string[]>()
 		.array()
 		.$type<string[]>()
-		.default(sql`'{}'::text[]`)
+		.default(sql`'{}'::text[]`),
+	placename: text('placename').notNull()
 })
 
 export const placesRelations = relations(placesTable, ({ one, many }) => ({

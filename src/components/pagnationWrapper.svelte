@@ -15,7 +15,11 @@
 
 	export let queryName = 'page'
 
-	$: pageNumber = getPageNumber(url)
+	$: pageNumber = getPageNumber(url, queryName)
+
+	$: if (count < (pageNumber - 1) * size) {
+		pageNumber = 1
+	}
 
 	export let size: number
 
@@ -49,6 +53,7 @@
 	{count}
 	perPage={size}
 	siblingCount={1}
+	bind:page={pageNumber}
 	let:pages
 	let:currentPage
 >

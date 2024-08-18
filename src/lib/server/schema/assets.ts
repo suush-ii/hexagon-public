@@ -87,7 +87,7 @@ export const assetVersionsTable = pgTable(
 	'assetversions',
 	{
 		assetid: bigint('assetid', { mode: 'number' }).notNull(),
-		filehash: text('filehash'),
+		filehash: text('filehash').notNull(),
 		time: timestamp('time', { mode: 'date', withTimezone: true }).notNull().defaultNow()
 	},
 	(table) => {

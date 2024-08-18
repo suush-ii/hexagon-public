@@ -115,7 +115,6 @@ export const load: PageServerLoad = async ({ params, locals, url, cookies }) => 
 			limit: size,
 			offset: (page - 1) * size,
 			columns: {
-				gamename: true,
 				universeid: true,
 				updated: true,
 				visits: true
@@ -123,7 +122,8 @@ export const load: PageServerLoad = async ({ params, locals, url, cookies }) => 
 			with: {
 				places: {
 					columns: {
-						placeid: true
+						placeid: true,
+						placename: true
 					},
 					where: eq(placesTable.startplace, true),
 					limit: 1
@@ -141,7 +141,7 @@ export const load: PageServerLoad = async ({ params, locals, url, cookies }) => 
 
 		creations = await Promise.all(
 			gamecreations.map(async (game) => ({
-				assetName: game.gamename,
+				assetName: game.places[0].placename,
 				assetid: game.universeid,
 				placeid: game.places[0].placeid,
 				iconUrl: game.icon?.simpleasseturl,

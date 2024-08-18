@@ -242,8 +242,8 @@
 				<h2>My Published Projects</h2>
 				<div id="assetList">
 					{#if data.gamecreations}
-						{#each data.gamecreations as game}
-							<div class="place" data-active="True" data-placeid={game.places[0].placeid}>
+						{#each data.gamecreations as place}
+							<div class="place" data-active="True" data-placeid={place.placeid}>
 								<!-- svelte-ignore a11y-invalid-attribute -->
 								<a href="" class="game-image"
 									><img
@@ -251,14 +251,14 @@
 										width="197"
 										height="115"
 										src={getImage(
-											game.thumbnail?.simpleasseturl,
-											game.thumbnail?.moderationstate,
+											place.thumbnail?.simpleasseturl,
+											place.thumbnail?.moderationstate,
 											'thumbnail'
 										)}
-										alt={game.gamename}
+										alt={place.placename}
 									/></a
 								>
-								<p>{game.gamename}</p>
+								<p>{place.placename}</p>
 							</div>
 						{/each}
 					{:else}

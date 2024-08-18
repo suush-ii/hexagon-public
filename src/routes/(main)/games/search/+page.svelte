@@ -85,8 +85,8 @@
 	<div class="flex gap-4 mb-auto">
 		{#each data.games as game}
 			<GameCard
-				gameId={game.places[0].placeid}
-				gameName={game.gamename}
+				gameId={game?.places.placeid}
+				gameName={game?.places.placename}
 				playerCount={game.active}
 				assetUrl={game.icon?.simpleasseturl}
 				moderationState={game.icon?.moderationstate}

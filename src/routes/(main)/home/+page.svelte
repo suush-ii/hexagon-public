@@ -75,7 +75,7 @@
 				{#each recentlyPlayed as game}
 					<GameCard
 						gameId={game.game.places[0].placeid}
-						gameName={game.game.gamename}
+						gameName={game.game.places[0].placename}
 						playerCount={game.game.active}
 						assetUrl={game.game.icon?.simpleasseturl}
 						moderationState={game.game.icon?.moderationstate}

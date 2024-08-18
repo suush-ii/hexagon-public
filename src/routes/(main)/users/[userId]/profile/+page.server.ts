@@ -53,14 +53,8 @@ export const load: PageServerLoad = async ({ params, locals, url }) => {
 			},
 			activegame: {
 				columns: {
-					placeid: true
-				},
-				with: {
-					associatedgame: {
-						columns: {
-							gamename: true
-						}
-					}
+					placeid: true,
+					placename: true
 				}
 			}
 		}
@@ -154,7 +148,6 @@ export const load: PageServerLoad = async ({ params, locals, url }) => {
 
 	const places = await db.query.gamesTable.findMany({
 		columns: {
-			gamename: true,
 			visits: true,
 			description: true
 		},
@@ -164,7 +157,8 @@ export const load: PageServerLoad = async ({ params, locals, url }) => {
 		with: {
 			places: {
 				columns: {
-					placeid: true
+					placeid: true,
+					placename: true
 				},
 				where: eq(placesTable.startplace, true),
 				limit: 1

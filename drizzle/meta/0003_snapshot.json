@@ -1,10 +1,8 @@
 {
-  "version": "5",
-  "dialect": "pg",
-  "id": "7bc1f519-177f-4a45-81e0-a7f1891d3c74",
-  "prevId": "9bf5ed2d-9f2d-43f1-8093-0424a256fcd3",
+  "version": "7",
+  "dialect": "postgresql",
   "tables": {
-    "assets": {
+    "public.assets": {
       "name": "assets",
       "schema": "",
       "columns": {
@@ -56,7 +54,7 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "config": {
+    "public.config": {
       "name": "config",
       "schema": "",
       "columns": {
@@ -94,7 +92,7 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "games": {
+    "public.games": {
       "name": "games",
       "schema": "",
       "columns": {
@@ -168,14 +166,14 @@
       "uniqueConstraints": {
         "games_universeid_unique": {
           "name": "games_universeid_unique",
-          "nullsNotDistinct": false,
           "columns": [
             "universeid"
-          ]
+          ],
+          "nullsNotDistinct": false
         }
       }
     },
-    "jobs": {
+    "public.jobs": {
       "name": "jobs",
       "schema": "",
       "columns": {
@@ -221,7 +219,7 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "places": {
+    "public.places": {
       "name": "places",
       "schema": "",
       "columns": {
@@ -261,7 +259,7 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "keys": {
+    "public.keys": {
       "name": "keys",
       "schema": "",
       "columns": {
@@ -313,7 +311,7 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "user_key": {
+    "public.user_key": {
       "name": "user_key",
       "schema": "",
       "columns": {
@@ -341,21 +339,21 @@
         "user_key_user_id_users_id_fk": {
           "name": "user_key_user_id_users_id_fk",
           "tableFrom": "user_key",
-          "tableTo": "users",
           "columnsFrom": [
             "user_id"
           ],
+          "tableTo": "users",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "no action"
         }
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "user_session": {
+    "public.user_session": {
       "name": "user_session",
       "schema": "",
       "columns": {
@@ -389,21 +387,21 @@
         "user_session_user_id_users_id_fk": {
           "name": "user_session_user_id_users_id_fk",
           "tableFrom": "user_session",
-          "tableTo": "users",
           "columnsFrom": [
             "user_id"
           ],
+          "tableTo": "users",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "no action"
         }
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "users": {
+    "public.users": {
       "name": "users",
       "schema": "",
       "columns": {
@@ -488,10 +486,10 @@
       "uniqueConstraints": {
         "users_username_unique": {
           "name": "users_username_unique",
-          "nullsNotDistinct": false,
           "columns": [
             "username"
-          ]
+          ],
+          "nullsNotDistinct": false
         }
       }
     }
@@ -504,5 +502,8 @@
     "columns": {
       "\"places\".\"gameid\"": "\"places\".\"placeid\""
     }
-  }
+  },
+  "id": "7bc1f519-177f-4a45-81e0-a7f1891d3c74",
+  "prevId": "9bf5ed2d-9f2d-43f1-8093-0424a256fcd3",
+  "sequences": {}
 }

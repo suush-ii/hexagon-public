@@ -1,10 +1,8 @@
 {
-  "version": "5",
-  "dialect": "pg",
-  "id": "16a5fabe-fb84-4d1b-ac44-9a6c0ee25ca5",
-  "prevId": "962cc937-76a2-4fa0-9abb-5a7ac3f9689f",
+  "version": "7",
+  "dialect": "postgresql",
   "tables": {
-    "assets": {
+    "public.assets": {
       "name": "assets",
       "schema": "",
       "columns": {
@@ -64,7 +62,7 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "config": {
+    "public.config": {
       "name": "config",
       "schema": "",
       "columns": {
@@ -102,7 +100,7 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "games": {
+    "public.games": {
       "name": "games",
       "schema": "",
       "columns": {
@@ -195,14 +193,14 @@
       "uniqueConstraints": {
         "games_universeid_unique": {
           "name": "games_universeid_unique",
-          "nullsNotDistinct": false,
           "columns": [
             "universeid"
-          ]
+          ],
+          "nullsNotDistinct": false
         }
       }
     },
-    "jobs": {
+    "public.jobs": {
       "name": "jobs",
       "schema": "",
       "columns": {
@@ -249,7 +247,7 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "places": {
+    "public.places": {
       "name": "places",
       "schema": "",
       "columns": {
@@ -298,7 +296,7 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "user_key": {
+    "public.user_key": {
       "name": "user_key",
       "schema": "",
       "columns": {
@@ -326,21 +324,21 @@
         "user_key_user_id_users_id_fk": {
           "name": "user_key_user_id_users_id_fk",
           "tableFrom": "user_key",
-          "tableTo": "users",
           "columnsFrom": [
             "user_id"
           ],
+          "tableTo": "users",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "no action"
         }
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "user_session": {
+    "public.user_session": {
       "name": "user_session",
       "schema": "",
       "columns": {
@@ -374,21 +372,21 @@
         "user_session_user_id_users_id_fk": {
           "name": "user_session_user_id_users_id_fk",
           "tableFrom": "user_session",
-          "tableTo": "users",
           "columnsFrom": [
             "user_id"
           ],
+          "tableTo": "users",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "no action"
         }
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "users": {
+    "public.users": {
       "name": "users",
       "schema": "",
       "columns": {
@@ -473,14 +471,14 @@
       "uniqueConstraints": {
         "users_username_unique": {
           "name": "users_username_unique",
-          "nullsNotDistinct": false,
           "columns": [
             "username"
-          ]
+          ],
+          "nullsNotDistinct": false
         }
       }
     },
-    "keys": {
+    "public.keys": {
       "name": "keys",
       "schema": "",
       "columns": {
@@ -541,5 +539,8 @@
     "columns": {
       "\"jobs\".\"universeid\"": "\"jobs\".\"associatedid\""
     }
-  }
+  },
+  "id": "16a5fabe-fb84-4d1b-ac44-9a6c0ee25ca5",
+  "prevId": "962cc937-76a2-4fa0-9abb-5a7ac3f9689f",
+  "sequences": {}
 }

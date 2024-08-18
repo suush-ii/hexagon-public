@@ -4,6 +4,8 @@ import { db } from '$src/lib/server/db'
 import { and, count, desc, eq } from 'drizzle-orm'
 import { error } from '@sveltejs/kit'
 import { getUserState } from '$lib/server/userState'
+import { imageSql } from '$lib/server/games/getImage'
+
 const welcomeMessages = [
 	'Welkom',
 	'Mirëseerdhët',
@@ -111,7 +113,6 @@ export const load: PageServerLoad = async ({ locals }) => {
 		with: {
 			game: {
 				columns: {
-					gamename: true,
 					active: true,
 					iconid: true
 				},
@@ -120,26 +121,21 @@ export const load: PageServerLoad = async ({ locals }) => {
 						where: eq(placesTable.startplace, true),
 						limit: 1,
 						columns: {
-							placeid: true
+							placeid: true,
+							placename: true
 						}
 					},
 					icon: {
 						columns: {
-							simpleasseturl: true,
 							moderationstate: true
+						},
+						extras: {
+							simpleasseturl: imageSql
 						}
 					}
 				}
 			}
 		}
-	})
-
-	recentlyPlayed = recentlyPlayed.map((game) => {
-		// strip the asseturl from the client if not approved
-		if (game.game.icon && game.game.icon.moderationstate !== 'approved') {
-			game.game.icon.simpleasseturl = null
-		}
-		return game
 	})
 
 	const friendCount = await db

@@ -1,8 +1,9 @@
 import type { PageServerLoad, Actions } from './$types.js'
 import { db } from '$lib/server/db'
-import { count, desc } from 'drizzle-orm'
+import { count, desc, eq } from 'drizzle-orm'
 import { adminLogsTable } from '$lib/server/schema/users'
 import { getPageNumber } from '$lib/utils'
+import { placesTable } from '$lib/server/schema/games.js'
 
 export const load: PageServerLoad = async ({ url }) => {
 	let page = getPageNumber(url)
@@ -23,8 +24,14 @@ export const load: PageServerLoad = async ({ url }) => {
 				}
 			},
 			game: {
-				columns: {
-					gamename: true
+				columns: {},
+				with: {
+					places: {
+						columns: {
+							placename: true
+						},
+						where: eq(placesTable.startplace, true)
+					}
 				}
 			},
 			asset: {

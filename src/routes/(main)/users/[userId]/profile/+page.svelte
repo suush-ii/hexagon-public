@@ -107,9 +107,8 @@
 						<h1 class="text-lg {textColor} mx-auto">[ Offline ]</h1>
 					{:else if status == 'game'}
 						<h1 class="text-lg {textColor} mx-auto hover:underline">
-							[ Online: <a href="/games/{data.activegame?.placeid}"
-								>{data.activegame?.associatedgame.gamename}</a
-							> ]
+							[ Online: <a href="/games/{data.activegame?.placeid}">{data.activegame?.placename}</a>
+							]
 						</h1>
 					{:else if status == 'studio'}
 						<h1 class="text-lg {textColor} mx-auto">[ Online: Studio ]</h1>
@@ -180,7 +179,7 @@
 				<Accordion.Root class="w-full mb-auto">
 					{#each data.places as place, i}
 						<Accordion.Item value="item-{i}">
-							<Accordion.Trigger>{place.gamename}</Accordion.Trigger>
+							<Accordion.Trigger>{place.places?.[0].placename}</Accordion.Trigger>
 							<Accordion.Content class="p-4">
 								<div class="space-y-2">
 									<h1 class="text-base">Visited {place.visits} times</h1>
@@ -188,7 +187,7 @@
 										<GameThumbnail
 											assetUrl={place.thumbnail?.simpleasseturl}
 											moderationState={place.thumbnail?.moderationstate}
-											gamename={place.gamename}
+											gamename={place.places?.[0].placename}
 											size=" h-fit w-fit"
 										/>
 									</a>

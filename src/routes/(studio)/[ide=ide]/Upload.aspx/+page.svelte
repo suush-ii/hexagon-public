@@ -80,26 +80,25 @@
 				</div>
 				-->
 				{#if data.gamecreations}
-					{#each data.gamecreations as game}
+					{#each data.gamecreations as place}
 						<!-- svelte-ignore a11y-missing-attribute -->
 						<div
 							class="asset"
 							id="newasset"
-							onclick="document.location.href ='http://www.{data.baseurl}/ide/publishing?PlaceID={game
-								.places[0].placeid}';"
+							onclick="document.location.href ='http://www.{data.baseurl}/ide/publishing?PlaceID={place.placeid}';"
 						>
 							<a class="game-image">
 								<img
 									class="placeThumbnail"
 									src={getImage(
-										game.thumbnail?.simpleasseturl,
-										game.thumbnail?.moderationstate,
+										place.thumbnail?.simpleasseturl,
+										place.thumbnail?.moderationstate,
 										'thumbnail'
 									)}
-									alt={game.gamename}
+									alt={place.placename}
 								/>
 							</a>
-							<p class="item-name-container ellipsis-overflow">{game.gamename}</p>
+							<p class="item-name-container ellipsis-overflow">{place.placename}</p>
 						</div>
 					{/each}
 				{/if}

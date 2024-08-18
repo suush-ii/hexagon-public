@@ -7,7 +7,8 @@ const { shape } = gameSchema
 export const formSchema = z.object({
 	asset: shape.asset,
 	allowedgear: z.array(z.enum(gearAttributesZod)).default([]),
-	geargenreenforced: z.boolean().default(true)
+	geargenreenforced: z.boolean().default(true),
+	name: shape.name
 })
 
 export type FormSchema = typeof formSchema

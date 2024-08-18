@@ -8,7 +8,6 @@
 	import EmptyCard from '$src/components/emptyCard.svelte'
 
 	import SeeAll from '$src/components/seeAll.svelte'
-	import { getImage } from '$lib/games/getImage'
 
 	let listElement: any
 
@@ -76,7 +75,7 @@
 				{#each games as game}
 					<GameCard
 						gameId={game.places[0].placeid}
-						gameName={game.gamename}
+						gameName={game.places[0].placename}
 						playerCount={game.active}
 						assetUrl={game.icon?.simpleasseturl}
 						moderationState={game.icon?.moderationstate}

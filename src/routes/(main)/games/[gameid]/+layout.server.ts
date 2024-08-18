@@ -35,13 +35,13 @@ export const load: LayoutServerLoad = async ({
 			updated: true,
 			created: true,
 			geargenreenforced: true,
-			allowedgear: true
+			allowedgear: true,
+			placename: true
 		},
 		where: eq(placesTable.placeid, Number(params.gameid)),
 		with: {
 			associatedgame: {
 				columns: {
-					gamename: true,
 					active: true,
 					visits: true,
 					serversize: true,
@@ -76,7 +76,7 @@ export const load: LayoutServerLoad = async ({
 		error(404, { success: false, message: 'Game not found.', data: {} })
 	}
 
-	const slugGameName = slugify(place.associatedgame.gamename)
+	const slugGameName = slugify(place.placename)
 
 	if (params?.game !== slugGameName && slugGameName !== '') {
 		redirect(302, '/games/' + Number(params.gameid) + '/' + slugGameName)
