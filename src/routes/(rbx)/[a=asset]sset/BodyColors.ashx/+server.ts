@@ -9,7 +9,7 @@ import bodyColors from './bodyColors.xml?raw'
 const userIdSchema = z.coerce.number().positive()
 
 export const fallback: RequestHandler = async ({ url }) => {
-	const result = userIdSchema.safeParse(
+	const result = await userIdSchema.safeParseAsync(
 		url.searchParams.get('userId') ?? url.searchParams.get('userid')
 	)
 

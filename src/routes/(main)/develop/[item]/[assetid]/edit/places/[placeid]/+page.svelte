@@ -53,7 +53,7 @@
 	<h1 class="text-4xl leading-none tracking-tight font-semibold">
 		{data.t('develop.configure')} Place
 	</h1>
-	<Tabs.Root value={$page.url.searchParams.get('page') ?? 'settings'}>
+	<Tabs.Root value={$page.url.searchParams.get('page') ?? 'settings'} class="h-full">
 		<Tabs.List>
 			<a href="?page=settings" class="w-full"
 				><Tabs.Trigger value="settings" class="pointer-events-none">Settings</Tabs.Trigger></a

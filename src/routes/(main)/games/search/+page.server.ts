@@ -24,8 +24,6 @@ export const load: PageServerLoad = async ({ url }) => {
 		.where(and(ilike(placesTable.placename, `%${search}%`), eq(gamesTable.genre, genre)))
 		.limit(1)
 
-	console.log(gamesCount)
-
 	if (gamesCount.count < (page - 1) * size) {
 		page = 1
 	}

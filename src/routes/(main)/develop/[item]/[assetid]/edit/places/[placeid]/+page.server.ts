@@ -23,7 +23,9 @@ export const load: PageServerLoad = async ({ params, locals, url }) => {
 			allowedgear: true,
 			geargenreenforced: true,
 			placename: true,
-			universeid: true
+			universeid: true,
+			created: true,
+			placeurl: true
 		},
 		where: eq(placesTable.placeid, Number(params.placeid)),
 		with: {
@@ -58,7 +60,7 @@ export const load: PageServerLoad = async ({ params, locals, url }) => {
 			page = 1
 		}
 
-		const versions = await db.query.assetVersionsTable.findMany({
+		let versions = await db.query.assetVersionsTable.findMany({
 			where: eq(assetVersionsTable.assetid, Number(params.placeid)),
 			columns: {
 				filehash: true,
@@ -71,6 +73,10 @@ export const load: PageServerLoad = async ({ params, locals, url }) => {
 				rank: sql<string>`rank() over (order by ${assetVersionsTable.time} asc)`.as('rank')
 			}
 		})
+
+		if (versions.length === 0) {
+			versions.push({ time: place.created, filehash: place.placeurl, rank: '1' }) // legacy
+		}
 
 		return {
 			placeForm,
