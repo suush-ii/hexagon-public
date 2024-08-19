@@ -89,7 +89,20 @@ export const load: PageServerLoad = async ({ params, locals, url }) => {
 		}
 	}
 
-	if (user.role === 'admin' || user.role === 'mod' || user.role === 'owner') {
+	const admin = user.role === 'admin' || user.role === 'mod' || user.role === 'owner'
+
+	if (user.sitebadges.includes('admin') && !admin) {
+		// remove they badge
+
+		user.sitebadges = user.sitebadges.filter((badge) => badge !== 'admin')
+
+		await db
+			.update(usersTable)
+			.set({ sitebadges: user.sitebadges })
+			.where(eq(usersTable.userid, Number(params.userId)))
+	}
+
+	if (admin) {
 		await addBadge(Number(params.userId), 'admin', user.sitebadges)
 	}
 
