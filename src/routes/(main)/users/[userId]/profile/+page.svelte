@@ -25,6 +25,8 @@
 
 	import { interpolate } from '$lib/poly-i18n/interpolate'
 
+	import { badgeImages, friendlyBadgeNames } from '$lib'
+
 	const relativeTime = new RelativeTime()
 
 	import type { PageData } from './$types'
@@ -91,14 +93,14 @@
 		{/if}
 	</div>
 
-	<div class="flex flex-row h-[105rem]">
+	<div class="flex flex-row h-full">
 		<div class="w-1/2 flex flex-col gap-y-4 h-full">
 			<Separator class="w-full" />
 			<h1 class="text-3xl font-semibold tracking-tight">
 				{interpolate(data.t('profile.about'), { name: username })}
 			</h1>
 			<div
-				class="bg-muted-foreground/5 outline-dashed outline-muted-foreground/20 rounded-xl p-6 gap-y-4 flex flex-col"
+				class="bg-muted-foreground/5 outline-dashed outline-muted-foreground/20 rounded-xl p-6 gap-y-4 flex flex-col min-h-[40rem]"
 			>
 				<div class="mx-auto flex flex-col">
 					{#if status == 'online'}
@@ -164,7 +166,33 @@
 				<Separator class="mt-2" />
 			</div>
 
-			<Separator class="w-full" />
+			<h1 class="text-3xl font-semibold tracking-tight">Hexagon Badges</h1>
+
+			<div
+				class="min-h-[28rem] bg-muted-foreground/5 outline-dashed outline-muted-foreground/20 rounded-xl p-9 flex flex-col"
+			>
+				<div class="flex flex-wrap gap-y-16 gap-x-12 w-full">
+					{#each data.badges as badge}
+						<div class="text-center w-28 h-28 my-auto">
+							<ImageAvatar.Root class="w-full h-full rounded-xl aspect-square">
+								<ImageAvatar.Image src={badgeImages[badge]} alt={badge} loading="lazy" />
+								<ImageAvatar.Fallback />
+							</ImageAvatar.Root>
+
+							<h2>{friendlyBadgeNames[badge]}</h2>
+						</div>
+					{/each}
+				</div>
+			</div>
+
+			<h1 class="text-3xl font-semibold tracking-tight">Player Badges</h1>
+
+			<div
+				class="min-h-[30rem] bg-muted-foreground/5 outline-dashed outline-muted-foreground/20 rounded-xl p-4 px-8 flex flex-col"
+			></div>
+
+			<div class="flex flex-wrap"></div>
+
 			<div />
 		</div>
 
@@ -174,7 +202,7 @@
 			<Separator class="w-full" />
 			<h1 class="text-3xl font-semibold tracking-tight">{data.t('profile.activePlaces')}</h1>
 			<div
-				class="h-full bg-muted-foreground/5 outline-dashed outline-muted-foreground/20 rounded-xl p-4 flex flex-col"
+				class="min-h-[40rem] bg-muted-foreground/5 outline-dashed outline-muted-foreground/20 rounded-xl p-4 flex flex-col"
 			>
 				<Accordion.Root class="w-full mb-auto">
 					{#each data.places as place, i}
@@ -208,7 +236,7 @@
 			</h1>
 
 			<div
-				class="h-full bg-muted-foreground/5 outline-dashed outline-muted-foreground/20 rounded-xl p-4 px-14 flex flex-col"
+				class="min-h-[28rem] bg-muted-foreground/5 outline-dashed outline-muted-foreground/20 rounded-xl p-4 px-14 flex flex-col"
 			>
 				<div class="flex flex-wrap gap-x-12 gap-y-4 mb-auto p-4">
 					{#if data.friends}
@@ -235,7 +263,7 @@
 			<h1 class="text-3xl font-semibold tracking-tight">Favorites</h1>
 
 			<div
-				class="h-full bg-muted-foreground/5 outline-dashed outline-muted-foreground/20 rounded-xl p-4 px-12 flex flex-col"
+				class="min-h-[30rem] bg-muted-foreground/5 outline-dashed outline-muted-foreground/20 rounded-xl p-4 px-12 flex flex-col"
 			>
 				<div class="flex flex-wrap gap-x-16 gap-y-16 mb-auto p-4">
 					{#if data.favorites.length > 0}
@@ -275,8 +303,6 @@
 					queryName={'favorites'}
 				/>
 			</div>
-
-			<Separator class="w-full" />
 		</div>
 	</div>
 </div>

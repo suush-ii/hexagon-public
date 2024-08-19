@@ -1,4 +1,5 @@
-import { assetGenreZod, assetTypes, gearAttributesZod } from '.'
+import { assetGenreZod, assetTypes, gearAttributesZod, hexagonBadges } from '.'
+import type { SvelteComponent } from 'svelte'
 
 export type userState = 'offline' | 'online' | 'game' | 'studio'
 export type userRole = 'owner' | 'admin' | 'mod' | 'uploader' | 'normal'
@@ -14,12 +15,14 @@ export type AssetTypes = (typeof assetTypes)[number]
 
 export type GearAttributes = (typeof gearAttributesZod)[number]
 
+export type HexagonBadges = (typeof hexagonBadges)[number]
+
 export type renderStatus = 'pending' | 'completed'
 
 export type clientVersions = '2014' | '2013'
 
 export type assetStates = 'pending' | 'approved' | 'rejected'
-import type { SvelteComponent } from 'svelte'
+
 export type Component = $$Generic<typeof SvelteComponent<any, any, any>>
 
 import { jobsTable } from '$lib/server/schema/games'

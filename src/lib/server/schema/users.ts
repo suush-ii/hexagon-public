@@ -10,8 +10,8 @@ import {
 	boolean,
 	primaryKey
 } from 'drizzle-orm/pg-core'
-import type { userState, userRole, userGenders, AssetTypes } from '$lib/types'
-import { relations } from 'drizzle-orm'
+import type { userState, userRole, userGenders, AssetTypes, HexagonBadges } from '$lib/types'
+import { relations, sql } from 'drizzle-orm'
 import { keyTable } from './keys'
 import { gamesTable, jobsTable, placesTable } from './games'
 import type { ActionTypes } from '../admin'
@@ -50,7 +50,14 @@ export const usersTable = pgTable('users', {
 	banid: bigint('banid', { mode: 'number' }),
 	blurb: text('blurb').notNull().default(''),
 	scrubbedusername: text('scrubbedusername'),
-	activegame: bigint('activegame', { mode: 'number' })
+	activegame: bigint('activegame', { mode: 'number' }),
+	sitebadges: text('sitebadges')
+		.$type<HexagonBadges>()
+		.array()
+		.notNull()
+		.default(sql`'{}'::text[]`),
+	knockouts: bigint('knockouts', { mode: 'number' }).notNull().default(0),
+	wipeouts: bigint('wipeouts', { mode: 'number' }).notNull().default(0)
 })
 
 export const relationsTable = pgTable('relations', {

@@ -145,7 +145,7 @@ settings().Diagnostics.LuaRamLimit = 0
 
 
 
-if placeId~=nil and killID~=nil and deathID~=nil and url~=nil then
+if placeId~=nil --[[ and killID~=nil and deathID~=nil --]] and url~=nil then
 	-- listen for the death of a Player
 	function createDeathMonitor(player)
 		-- we don't need to clean up old monitors or connections since the Character will be destroyed soon

@@ -1,0 +1,1 @@
+ALTER TABLE "users" ADD COLUMN "sitebadges" text[] DEFAULT '{}'::text[] NOT NULL;

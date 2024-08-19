@@ -11,11 +11,21 @@ import {
 } from '$src/lib/server/schema'
 import { and, count, desc, eq, or, sum } from 'drizzle-orm'
 import { z } from 'zod'
-import type { userState } from '$lib/types'
+import type { HexagonBadges, userState } from '$lib/types'
 import { getUserState } from '$lib/server/userState'
 import { getPageNumber } from '$lib/utils'
 import { imageSql, aliasedimageSql } from '$lib/server/games/getImage'
-import { alias, union } from 'drizzle-orm/pg-core'
+import { alias } from 'drizzle-orm/pg-core'
+
+async function addBadge(userId: number, badge: HexagonBadges, badges: string[]) {
+	if (badges.includes(badge)) {
+		return
+	}
+
+	badges.push(badge)
+
+	await db.update(usersTable).set({ sitebadges: badges }).where(eq(usersTable.userid, userId))
+}
 
 export const load: PageServerLoad = async ({ params, locals, url }) => {
 	const result = await z.number().safeParseAsync(Number(params.userId))
@@ -32,7 +42,10 @@ export const load: PageServerLoad = async ({ params, locals, url }) => {
 			joindate: true,
 			activegame: true,
 			role: true,
-			blurb: true
+			blurb: true,
+			sitebadges: true,
+			wipeouts: true,
+			knockouts: true
 		},
 		where: eq(usersTable.userid, Number(params.userId)),
 		with: {
@@ -64,6 +77,27 @@ export const load: PageServerLoad = async ({ params, locals, url }) => {
 		error(404, { success: false, message: 'User not found!' })
 	}
 
+	if (user.knockouts >= 10) {
+		await addBadge(Number(params.userId), 'combat initiation', user.sitebadges)
+
+		if (user.knockouts >= 100) {
+			await addBadge(Number(params.userId), 'warrior', user.sitebadges)
+
+			if (user.knockouts >= 250 && user.knockouts > user.wipeouts) {
+				await addBadge(Number(params.userId), 'bloxxer', user.sitebadges)
+			}
+		}
+	}
+
+	if (user.joindate) {
+		const oneYearAgo = new Date()
+		oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1)
+
+		if (user.joindate <= oneYearAgo) {
+			await addBadge(Number(params.userId), 'veteran', user.sitebadges)
+		}
+	}
+
 	const followersCount = await db
 		.select({ count: count() })
 		.from(relationsTable)
@@ -86,6 +120,10 @@ export const load: PageServerLoad = async ({ params, locals, url }) => {
 
 	if (friendsCount[0].count < (pageFriends - 1) * sizeFriends) {
 		pageFriends = 1
+	}
+
+	if (friendsCount[0].count >= 20) {
+		await addBadge(Number(params.userId), 'friendship', user.sitebadges)
 	}
 
 	const friendsUser = await db.query.relationsTable.findMany({
@@ -137,6 +175,14 @@ export const load: PageServerLoad = async ({ params, locals, url }) => {
 		.from(gamesTable)
 		.where(eq(gamesTable.creatoruserid, Number(params.userId)))
 		.limit(1)
+
+	if (Number(placeVisits[0].count) >= 100) {
+		await addBadge(Number(params.userId), 'homestead', user.sitebadges)
+
+		if (Number(placeVisits[0].count) >= 1000) {
+			await addBadge(Number(params.userId), 'bricksmith', user.sitebadges)
+		}
+	}
 
 	let page = getPageNumber(url, 'places')
 
@@ -225,6 +271,7 @@ export const load: PageServerLoad = async ({ params, locals, url }) => {
 		lastactivetime: user.lastactivetime,
 		joindate: user.joindate,
 		role: user.role,
+		badges: user.sitebadges,
 		status,
 		activegame: user.activegame,
 		relation: relation,
