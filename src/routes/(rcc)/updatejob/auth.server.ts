@@ -14,7 +14,9 @@ export const rccAuth = (async ({ event, resolve }) => {
 		pathname === '/game/placespecificscript.ashx' ||
 		pathname === '/persistence/getbloburl.ashx' ||
 		pathname === '/persistence/setblob.ashx' ||
-		pathname === '/verify-player'
+		pathname === '/verify-player' ||
+		pathname === '/game/knockouts.ashx' ||
+		pathname === '/game/wipeouts.ashx'
 	) {
 		const accessKey = event.url.searchParams.get('apikey') || event.request.headers.get('accessKey')
 

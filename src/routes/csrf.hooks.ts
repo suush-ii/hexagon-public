@@ -47,5 +47,7 @@ export const csrfHandle = csrf([
 	'/persistence/set',
 	'/persistence/getV2',
 	'/persistence/increment',
-	'/persistence/getSortedValues'
+	'/persistence/getSortedValues',
+	'/Game/Knockouts.ashx',
+	'/Game/Wipeouts.ashx'
 ])

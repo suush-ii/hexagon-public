@@ -79,8 +79,8 @@
 							: 'text-muted-foreground'} transition-colors hover:text-primary group relative"
 					>
 						<div class="flex flex-row space-x-1 sm:space-x-2">
-							<svelte:component this={navPage.Icon} class="h-6" />
-							<h1 class="ml-1 mr-0 sm:ml-2">
+							<svelte:component this={navPage.Icon} class="h-6 ml-2 sm:ml-0" />
+							<h1 class="ml-1 mr-0 hidden sm:ml-2 sm:block">
 								{navPage.friendlyName}
 							</h1>
 						</div>
