@@ -89,6 +89,10 @@ export const load: PageServerLoad = async ({ params, locals, url }) => {
 		}
 	}
 
+	if (user.role === 'admin' || user.role === 'mod' || user.role === 'owner') {
+		await addBadge(Number(params.userId), 'admin', user.sitebadges)
+	}
+
 	if (user.joindate) {
 		const oneYearAgo = new Date()
 		oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1)
