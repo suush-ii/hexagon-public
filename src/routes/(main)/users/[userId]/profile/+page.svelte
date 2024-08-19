@@ -176,7 +176,7 @@
 						<a href="/badges#{badge}"
 							><div class="text-center w-28 h-28 my-auto">
 								<ImageAvatar.Root class="w-full h-full rounded-xl aspect-square">
-									<ImageAvatar.Image src={badgeImages[badge]} alt={badge} loading="lazy" />
+									<ImageAvatar.Image src={badgeImages[badge]} alt={badge} />
 									<ImageAvatar.Fallback />
 								</ImageAvatar.Root>
 
@@ -276,7 +276,6 @@
 										<ImageAvatar.Image
 											src={getImage(item.simpleasseturl, item.moderationstate, 'icon')}
 											alt={item.assetname}
-											loading="lazy"
 										/>
 										<ImageAvatar.Fallback />
 									</ImageAvatar.Root>

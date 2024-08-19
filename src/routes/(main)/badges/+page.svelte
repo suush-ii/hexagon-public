@@ -42,7 +42,7 @@
 					>
 						<div class="w-24 h-24">
 							<Avatar.Root class="w-full h-full rounded-xl aspect-square">
-								<Avatar.Image src={badgeImages[badge]} alt={badge} loading="lazy" />
+								<Avatar.Image src={badgeImages[badge]} alt={badge} />
 								<Avatar.Fallback />
 							</Avatar.Root>
 						</div>
