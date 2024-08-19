@@ -63,6 +63,8 @@
 
 					$loadedImages = $loadedImages.filter((img) => img !== foundImage)
 				} else {
+					srcOveride = foundImage.url
+
 					return foundImage.url
 				}
 			}

@@ -236,7 +236,7 @@
 			</h1>
 
 			<div
-				class="min-h-[28rem] bg-muted-foreground/5 outline-dashed outline-muted-foreground/20 rounded-xl p-4 px-14 flex flex-col"
+				class="min-h-96 bg-muted-foreground/5 outline-dashed outline-muted-foreground/20 rounded-xl p-4 px-12 flex flex-col"
 			>
 				<div class="flex flex-wrap gap-x-12 gap-y-4 mb-auto p-4">
 					{#if data.friends}
