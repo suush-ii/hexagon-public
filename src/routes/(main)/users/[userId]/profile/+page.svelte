@@ -173,7 +173,7 @@
 			>
 				<div class="flex flex-wrap gap-y-16 gap-x-12 w-full">
 					{#each data.badges as badge}
-						<a href="/badges#{badge}"
+						<a href="/badges?badge={badge}"
 							><div class="text-center w-28 h-28 my-auto">
 								<ImageAvatar.Root class="w-full h-full rounded-xl aspect-square">
 									<ImageAvatar.Image src={badgeImages[badge]} alt={badge} />
