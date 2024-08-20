@@ -3,8 +3,8 @@
 
 	import { badgeImages, friendlyBadgeNames, hexagonBadges } from '$lib'
 	import { badgeDescriptions } from './badges'
+	import type { PageData } from './$types'
 	import { browser } from '$app/environment'
-	import { page } from '$app/stores'
 
 	let badgeCategories = {
 		'Community Badges': [hexagonBadges[0], hexagonBadges[1]], // admin and veteran
@@ -13,14 +13,17 @@
 		'Combat Badges': [hexagonBadges[5], hexagonBadges[6], hexagonBadges[7]]
 	}
 
-	if (browser) {
-		const anchorId = window.location.hash.replace('#', '')
-		const anchor = document.getElementById(anchorId)
+	export let data: PageData
 
-		window.scrollTo({
-			top: anchor?.offsetTop,
-			behavior: 'smooth'
-		})
+	if (browser) {
+		const anchor = document.getElementById(data.badge ?? '')
+
+		if (data.badge !== 'admin' && data.badge !== 'veteran') {
+			window.scrollTo({
+				top: anchor?.offsetTop,
+				behavior: 'smooth'
+			})
+		}
 	}
 </script>
 
@@ -34,8 +37,7 @@
 
 				{#each badges as badge}
 					<div
-						class="flex gap-x-8 p-4 rounded-xl {browser &&
-						decodeURIComponent(window?.location?.hash?.replace('#', '')) === badge
+						class="flex gap-x-8 p-4 rounded-xl {data.badge === badge
 							? 'bg-muted-foreground/10'
 							: ''}"
 						id={badge}
