@@ -9,6 +9,7 @@
 
 	import type { PageData } from './$types'
 	import { appName, pageName } from '$src/stores'
+	import { env } from '$env/dynamic/public'
 
 	export let data: PageData
 
@@ -28,6 +29,13 @@
 <svelte:head>
 	<title>{newPageName} {appName}</title>
 	<link rel="icon" type="image/png" href="/hexagon128.png" />
+	{#if env?.PUBLIC_ANALYTICS === 'true'}
+		<script
+			defer
+			src="https://umami.hexagon.pw/script.js"
+			data-website-id={env.PUBLIC_ANALYTICS_WEBSITEID}
+		></script>
+	{/if}
 </svelte:head>
 
 <div class="flex flex-col min-h-screen justify-between">
