@@ -1,4 +1,6 @@
-export const adminAssets = [
+import type { AssetTypes } from '$src/lib/types'
+
+export const adminAssets: AssetTypes[] = [
 	'hats',
 	'faces',
 	'gears',

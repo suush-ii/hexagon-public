@@ -205,6 +205,7 @@
 									authBearer={data.authBearer}
 									baseurl={data.baseurl}
 									placeid={data.place.placeid}
+									canModerate={data.canModerate}
 								/>
 							{/if}
 						</div>
@@ -218,56 +219,60 @@
 						</h1>
 						<Separator class="mt-24" />
 
-						<AlertDialog.Root closeOnOutsideClick={false} bind:open>
-							<AlertDialog.Trigger asChild let:builder>
-								{#if data.userAgent?.includes('Android') === true || data.userAgent?.includes('iPhone') === true}
-									<a
-										data-sveltekit-reload
-										href="/games/start?placeid={data.place.placeid}"
-										class="mt-auto"
-									>
+						{#if data.place.associatedasset.moderationstate === 'approved'}
+							<AlertDialog.Root closeOnOutsideClick={false} bind:open>
+								<AlertDialog.Trigger asChild let:builder>
+									{#if data.userAgent?.includes('Android') === true || data.userAgent?.includes('iPhone') === true}
+										<a
+											data-sveltekit-reload
+											href="/games/start?placeid={data.place.placeid}"
+											class="mt-auto"
+										>
+											<Button
+												variant="minimal"
+												size="lg"
+												builders={[builder]}
+												class="flex gap-x-4 mt-4 w-full h-16 rounded-xl xl:mt-auto hover:shadow-md hover:shadow-white bg-success"
+											>
+												<Play class="w-full h-10 fill-white" />
+											</Button>
+										</a>
+									{:else}
 										<Button
 											variant="minimal"
 											size="lg"
 											builders={[builder]}
 											class="flex gap-x-4 mt-4 w-full h-16 rounded-xl xl:mt-auto hover:shadow-md hover:shadow-white bg-success"
+											on:click={() => {
+												cancel = false
+												placeLauncher()
+												disableLoadingText = false
+											}}
 										>
 											<Play class="w-full h-10 fill-white" />
 										</Button>
-									</a>
-								{:else}
-									<Button
-										variant="minimal"
-										size="lg"
-										builders={[builder]}
-										class="flex gap-x-4 mt-4 w-full h-16 rounded-xl xl:mt-auto hover:shadow-md hover:shadow-white bg-success"
-										on:click={() => {
-											cancel = false
-											placeLauncher()
-											disableLoadingText = false
-										}}
-									>
-										<Play class="w-full h-10 fill-white" />
-									</Button>
-								{/if}
-							</AlertDialog.Trigger>
-							<AlertDialog.Content>
-								<AlertDialog.Header>
-									<Loader2 class="mx-auto w-24 h-24 animate-spin" />
-									<h1 class="text-2xl font-semibold text-center">{loadingText}</h1>
-								</AlertDialog.Header>
+									{/if}
+								</AlertDialog.Trigger>
+								<AlertDialog.Content>
+									<AlertDialog.Header>
+										<Loader2 class="mx-auto w-24 h-24 animate-spin" />
+										<h1 class="text-2xl font-semibold text-center">{loadingText}</h1>
+									</AlertDialog.Header>
 
-								<AlertDialog.Cancel asChild let:builder>
-									<Button
-										size="sm"
-										builders={[builder]}
-										on:click={() => {
-											cancel = true
-										}}>Cancel</Button
-									>
-								</AlertDialog.Cancel>
-							</AlertDialog.Content>
-						</AlertDialog.Root>
+									<AlertDialog.Cancel asChild let:builder>
+										<Button
+											size="sm"
+											builders={[builder]}
+											on:click={() => {
+												cancel = true
+											}}>Cancel</Button
+										>
+									</AlertDialog.Cancel>
+								</AlertDialog.Content>
+							</AlertDialog.Root>
+						{:else}
+							<h1 class="text-lg">Sorry, this place is currently under review. Try again later.</h1>
+						{/if}
 
 						<DownloadModal bind:this={downloadModal} type={'player'} />
 						<Separator class="mt-auto" />
