@@ -21,6 +21,8 @@
 	export let baseurl: string | undefined = undefined
 
 	export let placeid: number | undefined = undefined
+
+	export let canModerate: boolean
 </script>
 
 <DownloadModal bind:this={downloadModal} type={'studio'} />
@@ -45,5 +47,10 @@
 				>Configure this {depluralize(itemName)}</DropdownMenu.Item
 			></a
 		>
+		{#if canModerate}
+			<a href="/admin/catalog/assetadmin/{placeid ?? itemid}"
+				><DropdownMenu.Item class="cursor-pointer">Asset Admin</DropdownMenu.Item></a
+			>
+		{/if}
 	</DropdownMenu.Content>
 </DropdownMenu.Root>

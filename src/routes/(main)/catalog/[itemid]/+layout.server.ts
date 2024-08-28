@@ -115,6 +115,7 @@ export const load: LayoutServerLoad = async ({ params, locals }) => {
 		alreadyFavorited: alreadyFavorited.length > 0,
 		recommendations,
 		canEdit,
-		adminAsset
+		adminAsset,
+		canModerate: locals.user.role !== 'normal' && locals.user.role !== 'uploader'
 	}
 }

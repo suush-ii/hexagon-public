@@ -68,6 +68,11 @@ export const load: LayoutServerLoad = async ({
 						}
 					}
 				}
+			},
+			associatedasset: {
+				columns: {
+					moderationstate: true
+				}
 			}
 		}
 	})
@@ -151,6 +156,7 @@ export const load: LayoutServerLoad = async ({
 		servers,
 		joinScriptUrl,
 		canEdit,
+		canModerate: locals.user.role !== 'normal' && locals.user.role !== 'uploader',
 		userAgent: request.headers.get('user-agent'),
 		recommendations,
 		authBearer,

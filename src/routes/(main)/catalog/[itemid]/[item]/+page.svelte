@@ -72,6 +72,7 @@
 				<Configure
 					adminAsset={data.adminAsset}
 					assetType={data.item.assetType}
+					canModerate={data.canModerate}
 					{itemid}
 					{itemName}
 				/>

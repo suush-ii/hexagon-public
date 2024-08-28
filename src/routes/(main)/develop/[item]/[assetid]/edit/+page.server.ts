@@ -35,7 +35,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 		placename: string
 		associatedgame: {
 			thumbnail: {
-				simpleasseturl: string | null
+				simpleasseturl: unknown
 				moderationstate: assetStates | null
 			} | null
 		}
@@ -63,7 +63,6 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 							with: {
 								thumbnail: {
 									columns: {
-										simpleasseturl: true,
 										moderationstate: true
 									},
 									extras: {

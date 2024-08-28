@@ -101,12 +101,21 @@ export const fallback: RequestHandler = async (event) => {
 					serversize: true,
 					universeid: true
 				}
+			},
+			associatedasset: {
+				columns: {
+					moderationstate: true
+				}
 			}
 		}
 	})
 
 	if (!place) {
 		throw json({ success: false, message: 'Game not found.', data: {} })
+	}
+
+	if (place.associatedasset.moderationstate !== 'approved') {
+		return json({ success: false, message: 'Game under review. Try again later.', data: {} })
 	}
 
 	const instance = await db.query.jobsTable.findFirst({
