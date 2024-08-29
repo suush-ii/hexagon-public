@@ -5,6 +5,7 @@ import { and, count, desc, eq } from 'drizzle-orm'
 import { error } from '@sveltejs/kit'
 import { getUserState } from '$lib/server/userState'
 import { imageSql } from '$lib/server/games/getImage'
+import { alias } from 'drizzle-orm/pg-core'
 
 const welcomeMessages = [
 	'Welkom',
@@ -144,35 +145,27 @@ export const load: PageServerLoad = async ({ locals }) => {
 		.where(and(eq(relationsTable.recipient, locals.user.userid), eq(relationsTable.type, 'friend')))
 		.limit(1)
 
-	const user = await db.query.usersTable.findFirst({
-		columns: {},
-		where: eq(usersTable.userid, locals.user.userid),
-		with: {
-			received: {
-				columns: {},
-				with: {
-					sender: {
-						columns: {
-							username: true,
-							userid: true,
-							lastactivetime: true,
-							activegame: true
-						}
-					}
-				},
-				where: eq(relationsTable.type, 'friend'),
-				limit: 9,
-				orderBy: desc(relationsTable.time)
-			}
-		}
-	})
+	const sender = alias(usersTable, 'sender')
 
-	if (!user) {
-		error(404, { success: false, message: 'User not found!' })
-	}
+	const user = await db
+		.select({
+			username: sender.username,
+			userid: sender.userid,
+			lastactivetime: sender.lastactivetime,
+			activegame: sender.activegame
+		})
+		.from(usersTable)
+		.innerJoin(
+			relationsTable,
+			and(eq(relationsTable.type, 'friend'), eq(relationsTable.recipient, locals.user.userid))
+		)
+		.innerJoin(sender, eq(sender.userid, relationsTable.sender))
+		.where(eq(usersTable.userid, locals.user.userid))
+		.limit(9)
+		.orderBy(desc(sender.lastactivetime), desc(sender.activegame))
 
-	const friends = user.received.map((request) => {
-		const status = getUserState(request.sender.lastactivetime, request.sender.activegame)
+	const friends = user.map((request) => {
+		const status = getUserState(request.lastactivetime, request.activegame)
 		return { ...request, status }
 	})
 

@@ -52,12 +52,8 @@
 				<EmptyCard />
 			{:else}
 				{#each data.friends as friend}
-					<a href="/users/{friend.sender.userid}/profile">
-						<FriendAvatar
-							state={friend.status}
-							username={friend.sender.username}
-							userid={friend.sender.userid}
-						/>
+					<a href="/users/{friend.userid}/profile">
+						<FriendAvatar state={friend.status} username={friend.username} userid={friend.userid} />
 					</a>
 				{/each}
 			{/if}
