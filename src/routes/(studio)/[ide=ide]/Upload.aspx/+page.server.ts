@@ -26,7 +26,7 @@ export const load: PageServerLoad = async (event) => {
 			})
 			.from(placesTable)
 			.leftJoin(gamesTable, eq(gamesTable.universeid, placesTable.universeid))
-			.leftJoin(assetTable, eq(assetTable.assetid, gamesTable.iconid))
+			.leftJoin(assetTable, eq(assetTable.assetid, gamesTable.thumbnailid))
 			.where(eq(gamesTable.creatoruserid, event.locals.user.userid))
 			.limit(20)
 			.orderBy(desc(gamesTable.updated))
