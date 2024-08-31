@@ -9,7 +9,6 @@ export const rccAuth = (async ({ event, resolve }) => {
 		pathname === '/getallowedmd5hashes' ||
 		pathname === '/getallowedsecurityversions' ||
 		pathname === '/game/gameserver.ashx' ||
-		pathname === '/game/clientpresence.ashx' ||
 		pathname === '/game/placevisit.ashx' ||
 		pathname === '/game/placespecificscript.ashx' ||
 		pathname === '/persistence/getbloburl.ashx' ||

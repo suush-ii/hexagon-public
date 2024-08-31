@@ -18,7 +18,9 @@ export const load: PageServerLoad = async ({ locals }) => {
 							username: true,
 							userid: true,
 							lastactivetime: true,
-							activegame: true
+							activegame: true,
+							studiopresencelocation: true,
+							studiopresenceping: true
 						}
 					}
 				},
@@ -42,7 +44,12 @@ export const load: PageServerLoad = async ({ locals }) => {
 	}
 
 	const requests = user.received.map((request) => {
-		const status = getUserState(request.sender.lastactivetime, request.sender.activegame)
+		const status = getUserState(
+			request.sender.lastactivetime,
+			request.sender.activegame,
+			request.sender.studiopresencelocation,
+			request.sender.studiopresenceping
+		)
 		return { ...request, status }
 	})
 

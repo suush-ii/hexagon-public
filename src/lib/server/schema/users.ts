@@ -28,7 +28,8 @@ export const usersTable = pgTable('users', {
 	discordid: integer('discordid'),
 	joindate: timestamp('joindate', { mode: 'date', withTimezone: true }).defaultNow().notNull(),
 	role: text('role').$type<userRole>().notNull(),
-	state: text('state').$type<userState>().notNull().default('offline'),
+	studiopresencelocation: bigint('studiopresencelocation', { mode: 'number' }),
+	studiopresenceping: timestamp('studiopresenceping', { mode: 'date', withTimezone: true }),
 	gender: text('gender').$type<userGenders>().notNull().default('nonbinary'),
 	lastactivetime: timestamp('lastactivetime', { mode: 'date', withTimezone: true })
 		.notNull()

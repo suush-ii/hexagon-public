@@ -108,12 +108,15 @@
 					{:else if status == 'offline'}
 						<h1 class="text-lg {textColor} mx-auto">[ Offline ]</h1>
 					{:else if status == 'game'}
-						<h1 class="text-lg {textColor} mx-auto hover:underline">
-							[ Online: <a href="/games/{data.activegame?.placeid}">{data.activegame?.placename}</a>
-							]
-						</h1>
+						<a href="/games/{data.activegame?.placeid}" class="mx-auto"
+							><h1 class="text-lg {textColor} hover:underline">
+								[ Online: {data.activegame?.placename} ]
+							</h1></a
+						>
 					{:else if status == 'studio'}
-						<h1 class="text-lg {textColor} mx-auto">[ Online: Studio ]</h1>
+						<a href="/games/{data.studiopresencelocation}" class="mx-auto"
+							><h1 class="text-lg {textColor} hover:underline">[ Online: Studio ]</h1></a
+						>
 					{/if}
 
 					<h1 class="text-lg {textColor} mx-auto hover:underline">
