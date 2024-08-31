@@ -1,23 +1,25 @@
-import { error, json, type RequestHandler } from '@sveltejs/kit'
+import { error, json, text, type RequestHandler } from '@sveltejs/kit'
 import { db } from '$lib/server/db'
-import { gamesTable, jobsTable, usersTable } from '$lib/server/schema'
+import { gamesTable, jobsTable, placesTable, usersTable } from '$lib/server/schema'
 import { eq } from 'drizzle-orm'
-
+import { env } from '$env/dynamic/private'
 import { z } from 'zod'
 
 const presenceSchema = z.object({
-	action: z.enum(['connect', 'disconnect']),
+	action: z.enum(['connect', 'disconnect']).nullable(),
 	placeid: z.coerce.number().int().positive(),
-	jobId: z.string().uuid(),
-	userid: z.coerce.number().int().positive()
+	jobId: z.string().uuid().nullable(),
+	userid: z.coerce.number().int().positive().nullable(),
+	locationType: z.enum(['Studio']).nullable()
 })
 
-export const POST: RequestHandler = async ({ url }) => {
+export const fallback: RequestHandler = async ({ url, request, locals }) => {
 	const result = await presenceSchema.safeParseAsync({
 		action: url.searchParams.get('action'),
 		placeid: url.searchParams.get('PlaceID'),
 		jobId: url.searchParams.get('JobID'),
-		userid: url.searchParams.get('UserID')
+		userid: url.searchParams.get('UserID'),
+		locationType: url.searchParams.get('LocationType')
 	})
 
 	if (!result.success) {
@@ -26,6 +28,69 @@ export const POST: RequestHandler = async ({ url }) => {
 	}
 
 	const { action, placeid, jobId, userid } = result.data
+
+	if (result.data.locationType !== 'Studio') {
+		const accessKey = url.searchParams.get('apikey') || request.headers.get('accessKey')
+
+		if (!accessKey || (env.RCC_ACCESS_KEY as string) != accessKey) {
+			return error(403, {
+				success: false,
+				message: 'Invalid session.',
+				data: {}
+			})
+		}
+	}
+
+	if (result.data.locationType === 'Studio') {
+		const user = locals.user
+
+		if (!user) {
+			error(401, { success: false, message: 'No session.', data: {} })
+		}
+
+		const place = await db.query.placesTable.findFirst({
+			where: eq(placesTable.placeid, placeid),
+			columns: {},
+			with: {
+				associatedgame: {
+					columns: {
+						creatoruserid: true
+					}
+				}
+			}
+		})
+
+		if (!place) {
+			return error(404, {
+				success: false,
+				message: 'Place not found',
+				data: {}
+			})
+		}
+
+		if (place.associatedgame.creatoruserid != user.userid) {
+			return error(403, {
+				success: false,
+				message: 'Unauthorized',
+				data: {}
+			})
+		}
+
+		await db
+			.update(usersTable)
+			.set({ studiopresencelocation: placeid, studiopresenceping: new Date() })
+			.where(eq(usersTable.userid, user.userid))
+
+		return text('')
+	}
+
+	if (!jobId || !userid || !placeid || !action) {
+		return error(400, {
+			success: false,
+			message: 'Missing parameters for rcc.',
+			data: {}
+		})
+	}
 
 	const instance = await db.query.jobsTable.findFirst({
 		columns: { players: true, associatedid: true },

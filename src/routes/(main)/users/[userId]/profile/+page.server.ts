@@ -45,7 +45,9 @@ export const load: PageServerLoad = async ({ params, locals, url }) => {
 			blurb: true,
 			sitebadges: true,
 			wipeouts: true,
-			knockouts: true
+			knockouts: true,
+			studiopresencelocation: true,
+			studiopresenceping: true
 		},
 		where: eq(usersTable.userid, Number(params.userId)),
 		with: {
@@ -151,7 +153,9 @@ export const load: PageServerLoad = async ({ params, locals, url }) => {
 					username: true,
 					userid: true,
 					lastactivetime: true,
-					activegame: true
+					activegame: true,
+					studiopresencelocation: true,
+					studiopresenceping: true
 				}
 			}
 		},
@@ -165,7 +169,12 @@ export const load: PageServerLoad = async ({ params, locals, url }) => {
 	})
 
 	const friends = friendsUser?.map((request) => {
-		const status = getUserState(request.sender.lastactivetime, request.sender.activegame)
+		const status = getUserState(
+			request.sender.lastactivetime,
+			request.sender.activegame,
+			request.sender.studiopresencelocation,
+			request.sender.studiopresenceping
+		)
 		return { ...request, status }
 	})
 
@@ -278,7 +287,12 @@ export const load: PageServerLoad = async ({ params, locals, url }) => {
 		favoritePage = 1
 	}
 
-	const status: userState = getUserState(user.lastactivetime, user.activegame)
+	const status: userState = getUserState(
+		user.lastactivetime,
+		user.activegame,
+		user.studiopresencelocation,
+		user.studiopresenceping
+	)
 
 	const relation = user.received
 
@@ -290,6 +304,7 @@ export const load: PageServerLoad = async ({ params, locals, url }) => {
 		role: user.role,
 		badges: user.sitebadges,
 		status,
+		studiopresencelocation: user.studiopresencelocation,
 		activegame: user.activegame,
 		relation: relation,
 		followersCount: followersCount[0].count,

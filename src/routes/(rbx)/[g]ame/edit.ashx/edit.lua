@@ -70,5 +70,5 @@ message.Parent = nil
 
 game:GetService("ChangeHistoryService"):SetEnabled(true)
 
-visit:SetPing("http://www.roblox.com/Game/ClientPresence.ashx?version=old&PlaceID={PlaceId}&LocationType=Studio", 120)
+visit:SetPing("http://www.roblox.com/game/ClientPresence.ashx?version=old&PlaceID={PlaceId}&LocationType=Studio", 120)
 game:HttpGet("http://www.roblox.com/Game/Statistics.ashx?TypeID=6&UserID=0&AssociatedCreatorID=0&AssociatedCreatorType=User&AssociatedPlaceID={PlaceId}")

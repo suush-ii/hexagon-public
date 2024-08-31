@@ -152,7 +152,9 @@ export const load: PageServerLoad = async ({ locals }) => {
 			username: sender.username,
 			userid: sender.userid,
 			lastactivetime: sender.lastactivetime,
-			activegame: sender.activegame
+			activegame: sender.activegame,
+			studiopresencelocation: sender.studiopresencelocation,
+			studiopresenceping: sender.studiopresenceping
 		})
 		.from(usersTable)
 		.innerJoin(
@@ -165,7 +167,12 @@ export const load: PageServerLoad = async ({ locals }) => {
 		.orderBy(desc(sender.lastactivetime), desc(sender.activegame))
 
 	const friends = user.map((request) => {
-		const status = getUserState(request.lastactivetime, request.activegame)
+		const status = getUserState(
+			request.lastactivetime,
+			request.activegame,
+			request.studiopresencelocation,
+			request.studiopresenceping
+		)
 		return { ...request, status }
 	})
 

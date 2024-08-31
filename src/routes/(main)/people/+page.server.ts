@@ -28,7 +28,9 @@ export const load: PageServerLoad = async ({ url }) => {
 			username: true,
 			lastactivetime: true,
 			blurb: true,
-			activegame: true
+			activegame: true,
+			studiopresencelocation: true,
+			studiopresenceping: true
 		},
 		orderBy: asc(usersTable.userid),
 		limit: size,
@@ -37,7 +39,12 @@ export const load: PageServerLoad = async ({ url }) => {
 	})
 
 	const users = user?.map((user) => {
-		const status = getUserState(user.lastactivetime, user.activegame)
+		const status = getUserState(
+			user.lastactivetime,
+			user.activegame,
+			user.studiopresencelocation,
+			user.studiopresenceping
+		)
 		return { ...user, status }
 	})
 
