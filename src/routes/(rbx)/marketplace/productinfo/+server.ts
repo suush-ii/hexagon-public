@@ -34,6 +34,11 @@ export const GET: RequestHandler = async ({ url }) => {
 					userid: true,
 					username: true
 				}
+			},
+			place: {
+				columns: {
+					placename: true
+				}
 			}
 		},
 		where: eq(assetTable.assetid, assetId)
@@ -44,7 +49,7 @@ export const GET: RequestHandler = async ({ url }) => {
 	}
 
 	return json({
-		Name: asset.assetname,
+		Name: asset?.place?.placename ?? asset.assetname,
 		Description: asset.description,
 		Created: asset.created,
 		Updated: asset.updated,

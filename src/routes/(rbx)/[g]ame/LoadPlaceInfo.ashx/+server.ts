@@ -12,7 +12,7 @@ const placeInfoSchema = z.object({
 	placeid: z.coerce.number().int().positive()
 })
 
-const scriptNew: string = script.replaceAll('www.roblox.com', env.BASE_URL as string)
+const scriptNew: string = script.replaceAll('roblox.com', env.BASE_URL as string)
 export const fallback: RequestHandler = async ({ url }) => {
 	const result = await placeInfoSchema.safeParseAsync({
 		placeid: url.searchParams.get('PlaceId')

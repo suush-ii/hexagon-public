@@ -3,7 +3,7 @@ import { env } from '$env/dynamic/private'
 import script from './gameserver.lua?raw'
 import { createSign } from 'node:crypto'
 
-const scriptNew: string = script.replaceAll('www.roblox.com', env.BASE_URL as string)
+const scriptNew: string = script.replaceAll('roblox.com', env.BASE_URL as string)
 
 export const GET: RequestHandler = async ({ url }) => {
 	const scriptNewArgs = scriptNew.replace(

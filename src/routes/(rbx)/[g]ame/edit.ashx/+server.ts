@@ -8,7 +8,7 @@ import { placesTable } from '$src/lib/server/schema'
 import { eq } from 'drizzle-orm'
 import { auth } from '$lib/server/lucia'
 
-const scriptNew: string = script.replaceAll('www.roblox.com', env.BASE_URL as string)
+const scriptNew: string = script.replaceAll('roblox.com', env.BASE_URL as string)
 
 const UploadUrl = `http://${env.BASE_URL}/Data/Upload.ashx`
 
