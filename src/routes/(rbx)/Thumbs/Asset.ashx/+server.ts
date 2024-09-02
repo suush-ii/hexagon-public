@@ -1,12 +1,16 @@
 import { db } from '$lib/server/db'
-import { assetThumbnailCacheTable } from '$lib/server/schema'
+import { assetThumbnailCacheTable, placesTable } from '$lib/server/schema'
+import { getImage } from '$lib/games/getImage'
+import { imageSql } from '$lib/server/games/getImage'
 import { type RequestHandler, redirect, error } from '@sveltejs/kit'
 import { eq } from 'drizzle-orm'
 import { z } from 'zod'
 const assetSchema = z.number().int().positive()
 
 export const GET: RequestHandler = async ({ url }) => {
-	const result = await assetSchema.safeParseAsync(Number(url.searchParams.get('AssetID')))
+	const result = await assetSchema.safeParseAsync(
+		Number(url.searchParams.get('AssetID') ?? url.searchParams.get('assetId'))
+	)
 
 	if (!result.success) {
 		error(400, { success: false, message: 'Malformed ID.', data: {} })
@@ -22,6 +26,37 @@ export const GET: RequestHandler = async ({ url }) => {
 
 	if (cachedAsset.length > 0) {
 		redirect(302, `https://tr.rbxcdn.com/${cachedAsset[0].filehash}/700/700/Model/Png`)
+	}
+
+	const place = await db.query.placesTable.findFirst({
+		where: eq(placesTable.placeid, assetId),
+		columns: {},
+		with: {
+			associatedgame: {
+				columns: {},
+				with: {
+					thumbnail: {
+						columns: {
+							moderationstate: true
+						},
+						extras: {
+							simpleasseturl: imageSql
+						}
+					}
+				}
+			}
+		}
+	})
+
+	if (place) {
+		return redirect(
+			302,
+			getImage(
+				place.associatedgame.thumbnail?.simpleasseturl,
+				place.associatedgame.thumbnail?.moderationstate,
+				'thumbnail'
+			)
+		)
 	}
 
 	const res = await fetch(
