@@ -10,9 +10,9 @@ import { z } from 'zod'
 import { createSign } from 'node:crypto'
 import script from './join.lua?raw'
 
-const scriptNew: string = script.replaceAll('www.roblox.com', env.BASE_URL as string)
+const scriptNew: string = script.replaceAll('roblox.com', env.BASE_URL as string)
 
-const CharacterAppearance = `http://${env.BASE_URL}/Asset/CharacterFetch.ashx`
+const CharacterAppearance = `http://www.${env.BASE_URL}/Asset/CharacterFetch.ashx`
 const BaseUrl = `http://${env.BASE_URL}/`
 
 export const fallback: RequestHandler = async ({ url, locals }) => {

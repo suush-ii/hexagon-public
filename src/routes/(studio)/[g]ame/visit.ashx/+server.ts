@@ -9,7 +9,7 @@ const visitSchema = z.object({
 	placeId: z.coerce.number().int().min(0)
 })
 
-const scriptNew: string = script.replaceAll('www.roblox.com', env.BASE_URL as string)
+const scriptNew: string = script.replaceAll('roblox.com', env.BASE_URL as string)
 
 export const GET: RequestHandler = async ({ url }) => {
 	const result = await visitSchema.safeParseAsync({
