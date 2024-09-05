@@ -42,6 +42,18 @@ export async function uploadAsset(
 			.from(assetTable)
 			.where(eq(assetTable.simpleasseturl, fileName))
 
+		const alreadyModeratedPlace = await db.query.placesTable.findFirst({
+			where: eq(placesTable.placeurl, fileName),
+			columns: {},
+			with: {
+				associatedasset: {
+					columns: {
+						moderationstate: true
+					}
+				}
+			}
+		})
+
 		let moderationState: assetStates = 'pending'
 
 		if (item === 'hats' || item === 'faces' || item === 'gears') {

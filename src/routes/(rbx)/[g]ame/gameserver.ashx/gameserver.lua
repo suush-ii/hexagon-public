@@ -215,6 +215,8 @@ if placeId~=nil and url~=nil then
 
 	-- load the game
 	game:Load(url .. "/asset/?id=" .. placeId .. "&" .. access)
+
+	print("DataModel Loading http://www.hexagon.pw/asset/?id=" .. placeId)
 end
 
 local function char_to_hex(c)

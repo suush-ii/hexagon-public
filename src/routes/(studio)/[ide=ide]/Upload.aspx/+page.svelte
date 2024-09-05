@@ -63,12 +63,12 @@
 
 		<div>
 			<div id="assetList" class="content asset-list tab-active">
-				<!--
 				<div
 					class="asset"
 					id="newasset"
 					onclick="document.location.href ='http://www.{data.baseurl}/ide/newplace';"
 				>
+					<!-- svelte-ignore a11y-missing-attribute -->
 					<a class="game-image">
 						<img
 							class="placeThumbnail"
@@ -78,7 +78,7 @@
 					</a>
 					<p class="item-name-container ellipsis-overflow">(Create New)</p>
 				</div>
-				-->
+
 				{#if data.gamecreations}
 					{#each data.gamecreations as place}
 						<!-- svelte-ignore a11y-missing-attribute -->

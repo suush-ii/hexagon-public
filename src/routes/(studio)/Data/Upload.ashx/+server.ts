@@ -74,6 +74,11 @@ export const POST: RequestHandler = async (event) => {
 				columns: {
 					creatoruserid: true
 				}
+			},
+			associatedasset: {
+				columns: {
+					moderationstate: true
+				}
 			}
 		}
 	})
@@ -85,6 +90,14 @@ export const POST: RequestHandler = async (event) => {
 	if (place.associatedgame.creatoruserid != session.userid) {
 		return error(403, {
 			message: 'You do not have permission to upload files to this place.',
+			success: false,
+			data: {}
+		})
+	}
+
+	if (place.associatedasset.moderationstate !== 'approved') {
+		return error(403, {
+			message: 'This place is not approved.',
 			success: false,
 			data: {}
 		})
@@ -128,7 +141,7 @@ export const POST: RequestHandler = async (event) => {
 				.set({ placeurl: fileName, updated: new Date() })
 				.where(eq(placesTable.placeid, assetId))
 
-			if (assetVersionsCount.count <= 0) {
+			if (assetVersionsCount.count <= 0 && place.placeurl) {
 				await tx.insert(assetVersionsTable).values({
 					assetid: assetId,
 					filehash: place.placeurl,

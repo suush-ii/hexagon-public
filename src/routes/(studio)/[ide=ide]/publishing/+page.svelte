@@ -71,7 +71,7 @@
 		<div id="progressBarWrapper">
 			<div
 				id="uploadProgressBar"
-				data-upload-url="http://www.{data.baseurl}/Data/Upload.ashx?assetid={data.placeId}"
+				data-upload-url={`http://www.${data.baseurl}/Data/Upload.ashx?assetid=${data.placeId}`}
 				data-previous-url="http://www.{data.baseurl}/ide/publish/newplace"
 				data-newupload="False"
 				data-assetid={data.placeId}
