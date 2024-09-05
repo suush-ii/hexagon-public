@@ -7,7 +7,7 @@ import { assetTable } from '$lib/server/schema/assets'
 import { error, redirect } from '@sveltejs/kit'
 import { zod } from 'sveltekit-superforms/adapters'
 import { RateLimiter } from 'sveltekit-rate-limiter/server'
-import { adminLogsTable } from '$src/lib/server/schema/users.js'
+import { adminLogsTable, gamesTable, placesTable } from '$lib/server/schema'
 
 const limiter = new RateLimiter({
 	IP: [1, '2m']
@@ -55,13 +55,12 @@ export const actions: Actions = {
 			return setError(form, 'scrubassetname', 'Your deleting too fast!')
 		}
 
-		//TODO: LOGS AND COMPLETE
-
 		const asset = await db.query.assetTable.findFirst({
 			where: eq(assetTable.assetid, Number(params.assetid)),
 			columns: {
 				assetname: true,
-				assetid: true
+				assetid: true,
+				assetType: true
 			}
 		})
 
@@ -90,6 +89,24 @@ export const actions: Actions = {
 					description: '[ Content Deleted ]'
 				})
 				.where(eq(assetTable.assetid, asset.assetid))
+
+			if (asset.assetType === 'games') {
+				const [game] = await db
+					.update(placesTable)
+					.set({
+						placename: '[ Content Deleted ]'
+					})
+					.where(eq(placesTable.placeid, asset.assetid))
+					.returning({ universeid: placesTable.universeid })
+
+				await db
+					.update(gamesTable)
+					.set({
+						description: '[ Content Deleted ]',
+						updated: new Date()
+					})
+					.where(eq(gamesTable.universeid, game.universeid))
+			}
 		}
 
 		await db.insert(adminLogsTable).values({
