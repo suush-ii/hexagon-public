@@ -54,7 +54,7 @@ export const placesTable = pgTable('places', {
 	universeid: bigint('universeid', { mode: 'number' }).notNull(),
 	created: timestamp('created', { mode: 'date', withTimezone: true }).notNull().defaultNow(),
 	updated: timestamp('updated', { mode: 'date', withTimezone: true }).notNull().defaultNow(),
-	placeurl: text('placeurl').notNull(),
+	placeurl: text('placeurl'),
 	allowedgear: text('allowedgear')
 		.notNull()
 		.$type<GearAttributes>()

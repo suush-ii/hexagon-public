@@ -1,0 +1,1 @@
+ALTER TABLE "places" ALTER COLUMN "placeurl" DROP NOT NULL;
