@@ -84,4 +84,8 @@
 	<h1 class="text-2xl leading-none tracking-tight font-semibold">Newest</h1>
 
 	<GameTurnstile games={data.newest} type="newest" />
+
+	<h1 class="text-2xl leading-none tracking-tight font-semibold">Top Rated</h1>
+
+	<GameTurnstile games={data.topRated} type="toprated" />
 </div>
