@@ -1,7 +1,7 @@
 import type { PageServerLoad, Actions } from './$types.js'
 import { db } from '$lib/server/db'
 import { eq, count, ne, and } from 'drizzle-orm'
-import { assetTable } from '$lib/server/schema/assets'
+import { assetTable, usersTable } from '$lib/server/schema'
 
 import { filter } from '.'
 
@@ -13,11 +13,13 @@ export const load: PageServerLoad = async ({ depends }) => {
 			creatorUserId: assetTable.creatoruserid,
 			assetType: assetTable.assetType,
 			assetName: assetTable.assetname,
-			moderationState: assetTable.moderationstate
+			moderationState: assetTable.moderationstate,
+			creatorusername: usersTable.username
 		})
 		.from(assetTable)
 		.limit(20)
 		.where(filter)
+		.innerJoin(usersTable, eq(usersTable.userid, assetTable.creatoruserid))
 
 	const assetCount = await db.select({ count: count() }).from(assetTable).where(filter) // images are moderated not the clothes themselves
 

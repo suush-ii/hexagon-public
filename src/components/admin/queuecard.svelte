@@ -9,6 +9,8 @@
 	export let assetType: string
 	export let assetName: string
 	export let assetUrl: string | null
+	export let username: string
+	export let userId: number
 
 	export let moderationState: assetStates
 
@@ -16,7 +18,7 @@
 </script>
 
 <Card.Root class="w-[350px] flex flex-col">
-	<Assetcardprimitive {assetName} {assetType} {assetUrl} />
+	<Assetcardprimitive {assetName} {assetType} {assetUrl} {username} {userId} />
 
 	<Card.Footer class="flex justify-between gap-x-2 mt-auto">
 		<Button

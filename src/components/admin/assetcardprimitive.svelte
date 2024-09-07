@@ -9,6 +9,8 @@
 	export let assetType: string
 	export let assetName: string
 	export let assetUrl: string | null
+	export let username: string | null
+	export let userId: number | null
 
 	let imageFilter = ''
 
@@ -61,11 +63,32 @@
 		>
 			<Avatar.Image src={`https://${s3Url}/${assetType}/${assetUrl}`} loading="lazy" />
 		</Avatar.Root>
-		<h1 class="text-md mx-auto line-clamp-1 tracking-tighter break-words">{assetName}</h1>
+
+		<div class="mx-auto text-center">
+			<h1 class="text-md mx-auto line-clamp-1 tracking-tighter break-words">{assetName}</h1>
+
+			{#if username && userId}
+				<a href="/users/{userId}/profile" target="_blank"
+					><h1 class="text-md mx-auto line-clamp-1 tracking-tighter break-words">
+						Uploaded: by {username}
+					</h1></a
+				>
+			{/if}
+		</div>
 	</Card.Content>
 {:else if assetType === 'audio'}
 	<Card.Content class="flex flex-col gap-y-4">
-		<h1 class="text-md mx-auto line-clamp-1 tracking-tighter break-words">{assetName}</h1>
+		<div class="mx-auto text-center">
+			<h1 class="text-md mx-auto line-clamp-1 tracking-tighter break-words">{assetName}</h1>
+
+			{#if username && userId}
+				<a href="/users/{userId}/profile" target="_blank"
+					><h1 class="text-md mx-auto line-clamp-1 tracking-tighter break-words">
+						Uploaded: by {username}
+					</h1></a
+				>
+			{/if}
+		</div>
 
 		<h1 class="mx-auto">Temporary</h1>
 		<audio

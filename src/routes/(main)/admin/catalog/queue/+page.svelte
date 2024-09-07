@@ -62,6 +62,8 @@
 					assetType={asset.assetType}
 					assetName={asset.assetName}
 					assetUrl={asset.assetUrl}
+					username={asset.creatorusername}
+					userId={asset.creatorUserId}
 				/>
 			{/each}
 			{#if data?.assets?.length === 0}
