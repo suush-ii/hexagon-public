@@ -214,7 +214,14 @@ if placeId~=nil and url~=nil then
 	wait()
 
 	-- load the game
-	game:Load(url .. "/asset/?id=" .. placeId .. "&" .. access)
+	local success, result = pcall(function()
+		game:Load(url .. "/asset/?id=" .. placeId .. "&" .. access)
+	end)
+
+	if not success then
+    	local msg = Instance.new("Message", workspace)
+    	msg.Text = "place failed to load."
+	end
 
 	print("DataModel Loading http://www.hexagon.pw/asset/?id=" .. placeId)
 end
