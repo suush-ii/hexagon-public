@@ -26,7 +26,8 @@
 	let languages = [
 		{ value: 'en', label: 'English' },
 		{ value: 'es', label: 'Español' },
-		{ value: 'pt_br', label: 'Português (Brasil)' }
+		{ value: 'pt_br', label: 'Português (Brasil)' },
+		{ value: 'ru', label: 'Русский' }
 	]
 
 	$: selected, change()
