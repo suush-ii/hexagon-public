@@ -68,7 +68,7 @@
 				{data.item.assetname}
 			</h1>
 
-			{#if data.canEdit}
+			{#if data.canEdit || data.canModerate}
 				<Configure
 					adminAsset={data.adminAsset}
 					assetType={data.item.assetType}

@@ -196,7 +196,7 @@
 								{data.place.placename}
 							</h1>
 
-							{#if data.canEdit}
+							{#if data.canEdit || data.canModerate}
 								<Configure
 									adminAsset={false}
 									assetType={'games'}
