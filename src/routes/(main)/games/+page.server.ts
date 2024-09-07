@@ -14,5 +14,10 @@ export const load: PageServerLoad = async ({}) => {
 		limit: 40
 	})
 
-	return { popular: popularGames, newest: newestGames }
+	const topRatedGames = await gameCardSearch({
+		orderBy: [desc(gamesTable.likes)],
+		limit: 40
+	})
+
+	return { popular: popularGames, newest: newestGames, topRated: topRatedGames }
 }

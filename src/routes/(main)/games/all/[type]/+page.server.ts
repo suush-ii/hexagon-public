@@ -7,7 +7,7 @@ import { getPageNumber } from '$lib/utils'
 import { gameCardSearch } from '$lib/server/games/gamecard'
 
 export const load: PageServerLoad = async ({ params, url }) => {
-	if (params.type !== 'popular' && params.type !== 'newest') {
+	if (params.type !== 'popular' && params.type !== 'newest' && params.type !== 'toprated') {
 		redirect(302, '/games')
 	}
 
@@ -46,6 +46,21 @@ export const load: PageServerLoad = async ({ params, url }) => {
 		})
 
 		return { games: newestGames, name: 'Newest', gamesCount: gamesCount.count, type: friendlyType }
+	}
+
+	if (params.type === 'toprated') {
+		const topRatedGames = await gameCardSearch({
+			orderBy: [desc(gamesTable.likes)],
+			limit: size,
+			offset: (page - 1) * size
+		})
+
+		return {
+			games: topRatedGames,
+			name: 'Top Rated',
+			gamesCount: gamesCount.count,
+			type: friendlyType
+		}
 	}
 
 	return { games: [], name: '', gamesCount: gamesCount.count, type: friendlyType }
