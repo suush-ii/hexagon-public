@@ -1,7 +1,7 @@
 import { type RequestHandler, error, redirect, text } from '@sveltejs/kit'
 import { z } from 'zod'
 import { db } from '$lib/server/db'
-import { assetTable, assetCacheTable } from '$lib/server/schema/assets'
+import { assetTable, assetCacheTable, assetVersionCacheTable } from '$lib/server/schema/assets'
 import { eq } from 'drizzle-orm'
 import { s3Url } from '$src/stores'
 import { env } from '$env/dynamic/private'
@@ -66,7 +66,7 @@ const commonAssets = formatPath(
 	})
 )
 
-const assetSchema = z.number().int().positive()
+const assetSchema = z.coerce.number().int().positive()
 
 function getCdnUrl(hash: string) {
 	for (var t = 31, n = 0; n < hash.length; n++) t ^= hash[n].charCodeAt(0)
@@ -74,9 +74,57 @@ function getCdnUrl(hash: string) {
 }
 
 export const GET: RequestHandler = async (event) => {
-	const result = await assetSchema.safeParseAsync(Number(event.url.searchParams.get('id')))
+	const result = await assetSchema.safeParseAsync(event.url.searchParams.get('id'))
 
 	if (!result.success) {
+		const assetVersionResult = await assetSchema.safeParseAsync(
+			event.url.searchParams.get('assetversionid') ?? event.url.searchParams.get('versionid')
+		)
+
+		if (assetVersionResult.success) {
+			const versionId = assetVersionResult.data
+
+			const cachedAsset = await db
+				.select({
+					filehash: assetVersionCacheTable.filehash,
+					assettypeid: assetVersionCacheTable.assettypeid
+				})
+				.from(assetVersionCacheTable)
+				.where(eq(assetVersionCacheTable.assetversionid, versionId))
+				.limit(1)
+
+			if (cachedAsset?.[0]?.filehash) {
+				redirect(302, getCdnUrl(cachedAsset[0].filehash))
+			} else {
+				const response = await fetch(
+					'https://assetdelivery.roblox.com/v2/asset/?assetversionid=' + versionId,
+					{
+						headers: { 'User-Agent': 'Roblox/WinInet' }
+					}
+				)
+				const data = await response.json()
+
+				if (data) {
+					if (data.locations?.length > 0) {
+						const url = data.locations[0].location
+						const filehash = url.substring(22)
+
+						if (cachedAsset.length === 0) {
+							await db.insert(assetVersionCacheTable).values({
+								assetversionid: versionId,
+								filehash,
+								assettypeid: data.assetTypeId
+							}) // maybe we should cache converted meshes later as well?
+						}
+
+						redirect(302, url)
+					}
+				}
+
+				redirect(302, 'https://assetdelivery.roblox.com/v1/asset/?assetversionid=' + versionId)
+			}
+		}
+
 		error(400, { success: false, message: 'Malformed ID.', data: {} })
 	}
 

@@ -78,6 +78,12 @@ export const assetCacheTable = pgTable('assetcache', {
 	filehash: text('filehash')
 })
 
+export const assetVersionCacheTable = pgTable('assetversioncache', {
+	assetversionid: bigint('assetversionid', { mode: 'number' }).notNull().primaryKey(),
+	assettypeid: integer('assettypeid').notNull().default(0),
+	filehash: text('filehash')
+})
+
 export const assetThumbnailCacheTable = pgTable('assetthumbnailcache', {
 	assetid: bigint('assetid', { mode: 'number' }).notNull().primaryKey(),
 	filehash: text('filehash')
