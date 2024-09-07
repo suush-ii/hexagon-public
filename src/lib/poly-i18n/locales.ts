@@ -1,7 +1,8 @@
 export enum Locales {
 	en = 'English',
 	es = 'Español',
-	pt_br = 'Português (Brasil)'
+	pt_br = 'Português (Brasil)',
+	ru = 'Русский'
 }
 
 export type LocaleCode = keyof typeof Locales
