@@ -444,8 +444,8 @@
 				{#if data.recommendations.length > 0}
 					{#each data.recommendations as game}
 						<GameCard
-							gameId={game.places[0].placeid}
-							gameName={game.places[0].placename}
+							gameId={game.place.placeid}
+							gameName={game.place.placename}
 							playerCount={game.active}
 							assetUrl={game.icon?.simpleasseturl}
 							moderationState={game.icon?.moderationstate}
