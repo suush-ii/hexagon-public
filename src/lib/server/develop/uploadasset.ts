@@ -64,6 +64,10 @@ export async function uploadAsset(
 			moderationState = alreadyModerated[0].moderationState // auto deny or approve the same hashes
 		}
 
+		if (alreadyModeratedPlace?.associatedasset.moderationstate) {
+			moderationState = alreadyModeratedPlace.associatedasset.moderationstate
+		}
+
 		let Key = item
 
 		if (Key === 'shirts' || Key === 'pants' || Key === 't-shirts' || Key === 'decals') {

@@ -25,7 +25,7 @@ export const load: PageServerLoad = async ({ params, url }) => {
 
 	if (params.type === 'popular') {
 		const popularGames = await gameCardSearch({
-			orderBy: [desc(gamesTable.active)],
+			orderBy: desc(gamesTable.active),
 			limit: size,
 			offset: (page - 1) * size
 		})
@@ -40,7 +40,7 @@ export const load: PageServerLoad = async ({ params, url }) => {
 
 	if (params.type === 'newest') {
 		const newestGames = await gameCardSearch({
-			orderBy: [desc(gamesTable.updated)],
+			orderBy: desc(gamesTable.updated),
 			limit: size,
 			offset: (page - 1) * size
 		})
@@ -50,7 +50,7 @@ export const load: PageServerLoad = async ({ params, url }) => {
 
 	if (params.type === 'toprated') {
 		const topRatedGames = await gameCardSearch({
-			orderBy: [desc(gamesTable.likes)],
+			orderBy: desc(gamesTable.likes),
 			limit: size,
 			offset: (page - 1) * size
 		})

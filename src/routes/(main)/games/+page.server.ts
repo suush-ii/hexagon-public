@@ -5,17 +5,17 @@ import { gameCardSearch } from '$lib/server/games/gamecard'
 
 export const load: PageServerLoad = async ({}) => {
 	const popularGames = await gameCardSearch({
-		orderBy: [desc(gamesTable.active)],
+		orderBy: desc(gamesTable.active),
 		limit: 40
 	})
 
 	const newestGames = await gameCardSearch({
-		orderBy: [desc(gamesTable.updated)],
+		orderBy: desc(gamesTable.updated),
 		limit: 40
 	})
 
 	const topRatedGames = await gameCardSearch({
-		orderBy: [desc(gamesTable.likes)],
+		orderBy: desc(gamesTable.likes),
 		limit: 40
 	})
 
