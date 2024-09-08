@@ -60,7 +60,20 @@
 	>
 		<Avatar state={status} {userid} {username} />
 
-		<h1 class="font-semibold text-5xl">{username}</h1>
+		<div class="flex flex-col min-w-52 gap-y-4">
+			<h1 class="font-semibold text-5xl">{username}</h1>
+			<div class="w-full flex flex-row flex-wrap justify-around text-center">
+				<div>
+					<p class="font-bold text-muted-foreground">Friends</p>
+					<p>{formatCompactNumber(data.friendsCount, false)}</p>
+				</div>
+
+				<div>
+					<p class="font-bold text-muted-foreground">Knockouts</p>
+					<p>{formatCompactNumber(data.knockouts, false)}</p>
+				</div>
+			</div>
+		</div>
 
 		{#if userid != data.user.userid}
 			{#if data.relation.length > 0 && data.relation[0].type === 'block'}

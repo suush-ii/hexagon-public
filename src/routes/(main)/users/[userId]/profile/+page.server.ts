@@ -85,7 +85,10 @@ export const load: PageServerLoad = async ({ params, locals, url }) => {
 		if (user.knockouts >= 100) {
 			await addBadge(Number(params.userId), 'warrior', user.sitebadges)
 
-			if (user.knockouts >= 250 && user.knockouts > user.wipeouts) {
+			if (
+				user.knockouts >=
+				250 /*&& user.knockouts > user.wipeouts doesn't satifsy the requirement but i think its bs anyway*/
+			) {
 				await addBadge(Number(params.userId), 'bloxxer', user.sitebadges)
 			}
 		}
@@ -317,6 +320,7 @@ export const load: PageServerLoad = async ({ params, locals, url }) => {
 		friends,
 		blurb: user.blurb,
 		favorites,
-		favoritesCount: favoritesCount[0].count
+		favoritesCount: favoritesCount[0].count,
+		knockouts: user.knockouts
 	}
 }
