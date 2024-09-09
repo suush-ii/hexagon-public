@@ -240,23 +240,76 @@ local function urlencode(url)
 end
 
 ns.ChildAdded:connect(function(replicator) -- mostly from polygon tbh with some added changes
+	local accepted = true
+
+	while not replicator:GetPlayer() do
+		wait()
+	end
+
+		replicator:SetBasicFilteringEnabled(true)
+
+		replicator.NewFilter = function(item)
+			if accepted == true then
+				return Enum.FilterResult.Accepted
+			end
+
+			if item and item:IsA("StringValue") then return Enum.FilterResult.Accepted end -- ticket
+
+			if item and item:IsA("Animation") then return Enum.FilterResult.Accepted end
+
+			if item and item:IsA("AnimationTrack") then return Enum.FilterResult.Accepted end
+			
+			return Enum.FilterResult.Rejected
+		end		
+		
+		replicator.DeleteFilter = function(item)
+			if accepted == true then
+				return Enum.FilterResult.Accepted
+			end
+
+			return Enum.FilterResult.Rejected
+		end
+	
+		replicator.PropertyFilter = function(item, member)
+			if accepted == true then
+				return Enum.FilterResult.Accepted
+			end
+			
+			if item and item:IsA("Tool") then 				
+				return Enum.FilterResult.Accepted
+			end 
+			if item and item:IsA("Humanoid") and member == "TargetPoint" then return Enum.FilterResult.Accepted end 
+	
+			if item and item:IsA("StringValue") then return Enum.FilterResult.Accepted end -- ticket
+
+			if item and item:IsA("Animation") then return Enum.FilterResult.Accepted end
+
+			if item and item:IsA("AnimationTrack") then return Enum.FilterResult.Accepted end
+	
+			return Enum.FilterResult.Rejected
+		end		
+		
+		replicator.EventFilter = function(item)
+			if accepted == true then
+				return Enum.FilterResult.Accepted
+			end
+			
+			if item and item.className == "Tool" then return Enum.FilterResult.Accepted end
+
+			if item and item:IsA("Animation") then return Enum.FilterResult.Accepted end
+
+			if item and item:IsA("AnimationTrack") then return Enum.FilterResult.Accepted end
+
+			return Enum.FilterResult.Rejected
+		end
+
+	--replicator:PreventTerrainChanges()
+
+	if(replicator:GetPlayer()) then
+
     local ok, err = ypcall(function()
 
 		local player = replicator:GetPlayer()
-
-        i = 0
-        if player == nil then
-            while wait(0.25) do
-                player = replicator:GetPlayer()
-                if player ~= nil then break end
-                if i == 120 then
-                    print("[paclib] kicked incoming connection because could not get player")
-                    replicator:CloseConnection()
-                    return
-                end
-                i = i + 1
-            end
-        end
 
 		replicator:DisableProcessPackets()
 
@@ -296,6 +349,10 @@ ns.ChildAdded:connect(function(replicator) -- mostly from polygon tbh with some 
         end
 
 		replicator:EnableProcessPackets()
+
+		accepted = true
+
+		replicator:SetBasicFilteringEnabled(false)
         
 
 		--print("[paclib] " .. player.Name .. " has been authenticated")
@@ -313,6 +370,12 @@ ns.ChildAdded:connect(function(replicator) -- mostly from polygon tbh with some 
         print("[paclib] kicked because could not validate player")
         return
     end
+
+else
+
+	replicator:DisableProcessPackets()
+
+end
 
 	
 
