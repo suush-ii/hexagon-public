@@ -66,7 +66,11 @@ export const actions: Actions = {
 
 		const currentTime = new Date()
 
-		if (new Date(ban.expiration) < currentTime) {
+		if (
+			new Date(ban.expiration) < currentTime &&
+			ban.action !== 'Delete' &&
+			ban.action !== 'Poison'
+		) {
 			await db
 				.update(usersTable)
 				.set({ banid: null })
