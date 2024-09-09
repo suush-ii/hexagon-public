@@ -12,6 +12,10 @@
 
 	export let data: PageData
 
+	let linkForm: HTMLFormElement,
+		discordLinkDisabled = false,
+		discordToken = ''
+
 	const form = superForm(data.form, {
 		validators: zodClient(formSchema),
 		resetForm: false
@@ -46,6 +50,37 @@
 
 	$: selected, set_theme()
 
+	function discord(form: HTMLFormElement) {
+		discordLinkDisabled = true
+
+		const params =
+			'scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,\n' +
+			'width=600,height=900,left=50%,top=50%'
+		const popup = window.open(data.discordAuth.url, 'Discord Auth', params)
+
+		const interval = setInterval(() => {
+			if (!popup) return
+			popup.postMessage('', '*')
+		}, 500)
+
+		window.addEventListener(
+			'message',
+			(event) => {
+				console.log(event.data)
+
+				if (event.data.code && popup) {
+					clearInterval(interval)
+					popup.close()
+					discordToken = event.data.code
+					setTimeout(() => {
+						form.submit()
+					}, 500)
+				}
+			},
+			false
+		)
+	}
+
 	$formData.blurb = data.blurb
 </script>
 
@@ -59,6 +94,24 @@
 			<tr>
 				<td class="w-32">Password:</td>
 				<td>********** <Button variant="outline" size="sm">Change Password</Button></td>
+			</tr>
+			<tr>
+				<td class="w-32">Discord:</td>
+				{#if data.discordId}
+					<td>Linked</td>
+				{:else}
+					<td>
+						None
+						<Button
+							disabled={discordLinkDisabled}
+							on:click={() => {
+								discord(linkForm)
+							}}
+							variant="outline"
+							size="sm">Link Discord</Button
+						>
+					</td>
+				{/if}
 			</tr>
 		</tbody>
 	</table>
@@ -109,3 +162,7 @@
 		<Form.Button disabled={$submitting}>{data.t('develop.save')}</Form.Button>
 	</form>
 </div>
+
+<form action="?/link" method="post" bind:this={linkForm}>
+	<input type="hidden" name="code" bind:value={discordToken} />
+</form>

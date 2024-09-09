@@ -15,3 +15,9 @@ export const formSchemaPassword = z.object({
 })
 
 export type FormSchemaPassword = typeof formSchemaPassword
+
+export const formSchemaDiscord = z.object({
+	code: z.string()
+})
+
+export type FormSchemaDiscord = typeof formSchemaDiscord
