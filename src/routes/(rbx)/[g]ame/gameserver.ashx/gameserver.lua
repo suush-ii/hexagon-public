@@ -321,7 +321,7 @@ ns.ChildAdded:connect(function(replicator) -- mostly from polygon tbh with some 
             return
         end
 
-        if maxPlayers ~= nil and #game:GetService("Players"):GetPlayers() >= maxPlayers then
+        if maxPlayers ~= nil and #game:GetService("Players"):GetPlayers() > maxPlayers then
             replicator:CloseConnection()
             print("[paclib] kicked incoming connection because max players reached")
             return
