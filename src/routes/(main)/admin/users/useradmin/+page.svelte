@@ -19,11 +19,14 @@
 
 	$: joindate = data.joindate
 
+	$: discordId = data.discordid
+
 	$: summary = [
 		{ friendlyName: 'Username', value: username },
 		{ friendlyName: 'Moderation Status', value: data.banid ? 'Moderated' : 'Ok' },
 		{ friendlyName: 'UserId', value: userid },
 		{ friendlyName: 'Membership Type', value: 'N/A' },
+		{ friendlyName: 'Discord ID', value: discordId ?? 'N/A' },
 		{ friendlyName: 'Joindate', value: joindate?.toLocaleDateString('en-US') }
 	]
 </script>

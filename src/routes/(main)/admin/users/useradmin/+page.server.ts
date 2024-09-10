@@ -37,7 +37,8 @@ export const load: PageServerLoad = async ({ url }) => {
 			username: true,
 			userid: true,
 			lastactivetime: true,
-			joindate: true
+			joindate: true,
+			discordid: true
 		},
 		with: {
 			bans: {
@@ -70,7 +71,8 @@ export const load: PageServerLoad = async ({ url }) => {
 			joindate: user.joindate,
 			punishments: user.bans,
 			punishmentsCount: punishmentsCount[0].count,
-			banid: user.banid
+			banid: user.banid,
+			discordid: user.discordid
 		}
 	}
 

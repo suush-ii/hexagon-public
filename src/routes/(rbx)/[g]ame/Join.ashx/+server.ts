@@ -77,6 +77,17 @@ export const fallback: RequestHandler = async (event) => {
 		})
 	}
 
+	const user = await db.query.usersTable.findFirst({
+		where: eq(usersTable.userid, session.userid),
+		columns: {
+			discordid: true
+		}
+	})
+
+	if (!user?.discordid) {
+		return error(401, { success: false, message: 'Please link your discord account.', data: {} })
+	}
+
 	const instance = await db.query.jobsTable.findFirst({
 		where: and(eq(jobsTable.jobid, jobid), eq(jobsTable.type, 'game'))
 	})
