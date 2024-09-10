@@ -172,7 +172,7 @@ local Chat = {
 			MessageThread = nil,
 
 			Admins_List = {
-								"Hexagon", "UTels", "WilledQuasar7", "luna"
+								"Hexagon", "UTels", "WilledQuasar7", "luna", "foid"
 							},
 
 

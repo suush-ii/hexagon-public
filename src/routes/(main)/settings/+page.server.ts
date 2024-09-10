@@ -70,14 +70,14 @@ export const actions: Actions = {
 
 		const code = form.data.code
 
-		const tokens = await getOAuthTokens(code)
+		const tokens = await getOAuthTokens(code).catch((_) => false)
 		if (!tokens) {
 			return fail(400, {
 				form
 			})
 		}
 
-		const userData = await getUserData(tokens)
+		const userData = await getUserData(tokens).catch((_) => false)
 
 		if (!userData) {
 			return fail(400, {
