@@ -1,6 +1,6 @@
 import { error, json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types'
-import { jobsTable, placesTable } from '$lib/server/schema'
+import { jobsTable, placesTable, usersTable } from '$lib/server/schema'
 import { db } from '$lib/server/db'
 import { eq, and, lt } from 'drizzle-orm'
 import { env } from '$env/dynamic/private'
@@ -116,6 +116,17 @@ export const fallback: RequestHandler = async (event) => {
 
 	if (place.associatedasset.moderationstate !== 'approved') {
 		return error(401, { success: false, message: 'Game under review. Try again later.', data: {} })
+	}
+
+	const user = await db.query.usersTable.findFirst({
+		where: eq(usersTable.userid, locals.user.userid),
+		columns: {
+			discordid: true
+		}
+	})
+
+	if (!user?.discordid) {
+		return error(401, { success: false, message: 'Please link your discord account.', data: {} })
 	}
 
 	const instance = await db.query.jobsTable.findFirst({
