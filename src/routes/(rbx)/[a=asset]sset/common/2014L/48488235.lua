@@ -8,6 +8,7 @@ local ADMINS =
 	utels = 1,
 	willedquasar7 = 1,
 	luna = 1,
+	foid = 'http://www.roblox.com/asset/?id=112790435103818'
 }
 
 
