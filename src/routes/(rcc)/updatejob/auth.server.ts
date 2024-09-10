@@ -14,6 +14,7 @@ export const rccAuth = (async ({ event, resolve }) => {
 		pathname === '/persistence/getbloburl.ashx' ||
 		pathname === '/persistence/setblob.ashx' ||
 		pathname === '/verify-player' ||
+		pathname === '/verify-player/ip' ||
 		pathname === '/game/knockouts.ashx' ||
 		pathname === '/game/wipeouts.ashx'
 	) {
