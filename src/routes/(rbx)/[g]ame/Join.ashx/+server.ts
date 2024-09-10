@@ -1,21 +1,28 @@
 import { json, text, error } from '@sveltejs/kit'
 import type { RequestHandler } from './$types'
-import { jobsTable, placesTable } from '$lib/server/schema'
+import { jobsTable, placesTable, usersTable } from '$lib/server/schema'
 import { db } from '$lib/server/db'
-import { eq, and, lt } from 'drizzle-orm'
+import { eq, and } from 'drizzle-orm'
 import { env } from '$env/dynamic/private'
 import { auth } from '$lib/server/lucia'
 import { LuciaError } from 'lucia'
 import { z } from 'zod'
 import { createSign } from 'node:crypto'
 import script from './join.lua?raw'
+import { RateLimiter } from 'sveltekit-rate-limiter/server'
+
+const limiter = new RateLimiter({
+	IP: [1, '15s']
+})
 
 const scriptNew: string = script.replaceAll('roblox.com', env.BASE_URL as string)
 
 const CharacterAppearance = `http://www.${env.BASE_URL}/Asset/CharacterFetch.ashx`
 const BaseUrl = `http://${env.BASE_URL}/`
 
-export const fallback: RequestHandler = async ({ url, locals }) => {
+export const fallback: RequestHandler = async (event) => {
+	const { url, locals } = event
+
 	// capture get/post
 	const jobid = url.searchParams.get('jobid')
 	const authBearer = url.searchParams.get('auth') ?? ''
@@ -131,8 +138,29 @@ export const fallback: RequestHandler = async ({ url, locals }) => {
 		})
 	}
 
+	if (await limiter.isLimited(event)) {
+		return error(429, {
+			success: false,
+			message: 'Your being ratelimited.',
+			data: {}
+		})
+	}
+
 	if (instance && instance.port && instance.status === 2) {
 		// an instance is available\
+		const user = await db.query.usersTable.findFirst({
+			where: eq(usersTable.userid, Number(session.userid)),
+			columns: {
+				lastip: true
+			}
+		})
+
+		const response = await fetch(
+			`http://${env.GAMESERVER_IP}:${env.ARBITER_PORT}/forward/${encodeURIComponent(user?.lastip ?? '')}/${instance.jobid}/${session.userid}`
+		)
+
+		const portResponse = await response.json()
+
 		const joinJson: { [key: string]: string | number | boolean } = {
 			ClientPort: 0,
 			MachineAddress: 'localhost',
@@ -176,7 +204,7 @@ export const fallback: RequestHandler = async ({ url, locals }) => {
 		}
 
 		joinJson.MachineAddress = env.GAMESERVER_IP as string
-		joinJson.ServerPort = instance.port
+		joinJson.ServerPort = portResponse.port
 
 		joinJson.UserName = session.username
 		joinJson.UserId = Number(session.userid)
