@@ -58,9 +58,9 @@ export const actions: Actions = {
 			where: eq(usersTable.userid, locals.user.userid)
 		})
 
-		//if (discordId?.discordid) {
-		//	return redirect(302, '/settings')
-		//}
+		if (discordId?.discordid) {
+			return redirect(302, '/settings')
+		}
 
 		if (!form.valid) {
 			return fail(400, {
