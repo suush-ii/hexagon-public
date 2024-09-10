@@ -240,11 +240,7 @@ local function urlencode(url)
 end
 
 ns.ChildAdded:connect(function(replicator) -- mostly from polygon tbh with some added changes
-	local accepted = true
-
-	while not replicator:GetPlayer() do
-		wait()
-	end
+	local accepted = false
 
 		replicator:SetBasicFilteringEnabled(true)
 
@@ -302,6 +298,10 @@ ns.ChildAdded:connect(function(replicator) -- mostly from polygon tbh with some 
 
 			return Enum.FilterResult.Rejected
 		end
+
+	while not replicator:GetPlayer() do
+		wait()
+	end
 
 	--replicator:PreventTerrainChanges()
 
