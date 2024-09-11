@@ -232,7 +232,7 @@
 												variant="minimal"
 												size="lg"
 												builders={[builder]}
-												class="flex gap-x-4 mt-4 w-full h-16 rounded-xl xl:mt-auto hover:shadow-md hover:shadow-white bg-success"
+												class="flex gap-x-4 mt-4 w-full h-16 rounded-xl xl:mt-auto hover:shadow-md hover:shadow-white bg-blue-600"
 											>
 												<Play class="w-full h-10 fill-white" />
 											</Button>
@@ -242,7 +242,7 @@
 											variant="minimal"
 											size="lg"
 											builders={[builder]}
-											class="flex gap-x-4 mt-4 w-full h-16 rounded-xl xl:mt-auto hover:shadow-md hover:shadow-white bg-success"
+											class="flex gap-x-4 mt-4 w-full h-16 rounded-xl xl:mt-auto hover:shadow-md hover:shadow-white bg-blue-600"
 											on:click={() => {
 												cancel = false
 												placeLauncher()
