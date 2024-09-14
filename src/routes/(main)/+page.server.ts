@@ -32,6 +32,7 @@ export const actions: Actions = {
 				form
 			})
 		}
+
 		const { username, password, gender, key } = form.data
 
 		const config = event.locals.config
