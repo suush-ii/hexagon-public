@@ -55,6 +55,8 @@
 
 	let cancel = false
 
+	let shutdownForm: HTMLFormElement
+
 	function calculatePercent(likes: number, dislikes: number) {
 		return Math.round((likes / (likes + dislikes)) * 100)
 	}
@@ -206,6 +208,7 @@
 									baseurl={data.baseurl}
 									placeid={data.place.placeid}
 									canModerate={data.canModerate}
+									{shutdownForm}
 								/>
 							{/if}
 						</div>
@@ -460,3 +463,5 @@
 		<UserImage type="skyscraper" />
 	</div>
 </div>
+
+<form action="?/shutdown" method="post" bind:this={shutdownForm}></form>

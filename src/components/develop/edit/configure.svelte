@@ -2,11 +2,14 @@
 	import { Button } from '$src/components/ui/button'
 	import * as DropdownMenu from '$src/components/ui/dropdown-menu'
 	import DownloadModal from '$src/components/downloadModal.svelte'
+	import ShutdownModal from '$src/components/games/shutdownModal.svelte'
 	import { launchStudio } from '$lib/develop/studio'
 	import { depluralize } from '$src/lib/utils'
 	import { Menu } from 'lucide-svelte'
 
 	let downloadModal: DownloadModal
+
+	let shutdownModal: ShutdownModal
 
 	export let itemid: number
 
@@ -22,10 +25,16 @@
 
 	export let placeid: number | undefined = undefined
 
+	export let shutdownForm: HTMLFormElement | undefined = undefined
+
 	export let canModerate: boolean
 </script>
 
 <DownloadModal bind:this={downloadModal} type={'studio'} />
+
+{#if shutdownForm}
+	<ShutdownModal bind:this={shutdownModal} {shutdownForm} />
+{/if}
 
 <DropdownMenu.Root>
 	<DropdownMenu.Trigger asChild let:builder
@@ -51,6 +60,16 @@
 			<a href="/admin/catalog/assetadmin/{placeid ?? itemid}"
 				><DropdownMenu.Item class="cursor-pointer">Asset Admin</DropdownMenu.Item></a
 			>
+		{/if}
+
+		{#if assetType === 'games'}
+			<DropdownMenu.Item
+				on:click={() => {
+					shutdownModal.open()
+				}}
+				class="cursor-pointer"
+				>Shut Down All Servers
+			</DropdownMenu.Item>
 		{/if}
 	</DropdownMenu.Content>
 </DropdownMenu.Root>
