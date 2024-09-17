@@ -56,7 +56,7 @@ export async function uploadAsset(
 
 		let moderationState: assetStates = 'pending'
 
-		if (item === 'hats' || item === 'faces' || item === 'gears') {
+		if (item === 'hats' || item === 'faces' || item === 'gears' || item === 'heads') {
 			moderationState = 'approved' // auto approve these
 		}
 
@@ -70,7 +70,14 @@ export async function uploadAsset(
 
 		let Key = item
 
-		if (Key === 'shirts' || Key === 'pants' || Key === 't-shirts' || Key === 'decals') {
+		if (
+			Key === 'shirts' ||
+			Key === 'pants' ||
+			Key === 't-shirts' ||
+			Key === 'decals' ||
+			Key === 'badges' ||
+			Key === 'gamepasses'
+		) {
 			Key = 'images'
 		}
 
@@ -176,7 +183,7 @@ export async function uploadAsset(
 			})
 		}
 
-		if (item === 'audio' || item === 'hats' || item === 'faces') {
+		if (item === 'audio' || item === 'hats' || item === 'faces' || item === 'heads') {
 			const [assetResponse] = await db
 				.insert(assetTable)
 				.values({
@@ -231,7 +238,14 @@ export async function uploadAsset(
 			return assetResponse.assetid
 		}
 
-		if (item === 'shirts' || item === 'pants' || item === 't-shirts' || item === 'decals') {
+		if (
+			item === 'shirts' ||
+			item === 'pants' ||
+			item === 't-shirts' ||
+			item === 'decals' ||
+			item === 'badges' ||
+			item === 'gamepasses'
+		) {
 			// these are all handled the same which is through image and xml
 			const assetResponse = await db.transaction(async (tx) => {
 				try {

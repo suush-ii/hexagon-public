@@ -9,5 +9,6 @@ export const adminAssets: AssetTypes[] = [
 	'l arms',
 	'l legs',
 	'r arms',
-	'r legs'
+	'r legs',
+	'heads'
 ] as const
