@@ -19,7 +19,7 @@ import { S3 } from '$lib/server/s3'
 import type { AssetTypes } from '$lib/types'
 import { outfitsTable } from '$lib/server/schema/outfits'
 
-const _assetSchema = z.enum(['hats', 'faces', 'gears', 'packages'])
+const _assetSchema = z.enum(['hats', 'faces', 'gears', 'packages', 'heads'])
 
 export const load: PageServerLoad = async () => {
 	const assetForm = await superValidate(zod(assetSchema))

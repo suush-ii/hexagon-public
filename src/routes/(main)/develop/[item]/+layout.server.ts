@@ -2,7 +2,16 @@ import type { LayoutServerLoad } from './$types'
 import { error } from '@sveltejs/kit'
 import { z } from 'zod'
 
-export const _assetSchema = z.enum(['games', 'audio', 'decals', 'shirts', 'pants', 't-shirts'])
+export const _assetSchema = z.enum([
+	'games',
+	'audio',
+	'decals',
+	'shirts',
+	'pants',
+	't-shirts',
+	'badges',
+	'gamepasses'
+])
 
 interface assetPrimitive {
 	friendlyName: string
@@ -59,6 +68,18 @@ export const _uploadableAssets: Record<string, assetPrimitive> = {
 		friendlyName: 'Package',
 		fileTypes: [],
 		mimeTypes: []
+	},
+	heads: {
+		friendlyName: 'Head',
+		...accessoryPrimitive
+	},
+	badges: {
+		friendlyName: 'Badge',
+		...imagePrimitive
+	},
+	gamepasses: {
+		friendlyName: 'Game Pass',
+		...imagePrimitive
 	}
 }
 

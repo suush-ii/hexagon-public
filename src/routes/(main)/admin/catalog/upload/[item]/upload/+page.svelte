@@ -13,7 +13,7 @@
 <div class="container p-8 flex flex-col gap-y-8">
 	<h1 class="text-4xl leading-none tracking-tight font-semibold">Upload {data.friendlyName}</h1>
 
-	{#if data.item === 'hats' || data.item === 'faces'}
+	{#if data.item === 'hats' || data.item === 'faces' || data.item === 'heads'}
 		<AssetFormPrimitive
 			fileTypes={data.fileTypes}
 			data={data.assetForm}
