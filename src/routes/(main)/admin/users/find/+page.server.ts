@@ -1,7 +1,7 @@
 import type { PageServerLoad, Actions } from './$types.js'
 import { fail, redirect } from '@sveltejs/kit'
 import { superValidate } from 'sveltekit-superforms'
-import { usernameSchema, idSchema } from './schema'
+import { usernameSchema, idSchema, discordIdSchema } from './schema'
 import { zod } from 'sveltekit-superforms/adapters'
 import { db } from '$lib/server/db'
 import { eq, ilike } from 'drizzle-orm'
@@ -16,7 +16,8 @@ export const load: PageServerLoad = async ({ url }) => {
 
 	return {
 		usernameForm: await superValidate(zod(usernameSchema)),
-		idForm: await superValidate(zod(idSchema))
+		idForm: await superValidate(zod(idSchema)),
+		discordIdForm: await superValidate(zod(discordIdSchema))
 	}
 }
 
@@ -66,6 +67,34 @@ export const actions: Actions = {
 			.from(usersTable)
 			.limit(10)
 			.where(eq(usersTable.userid, userid))
+
+		return {
+			form,
+			users
+		}
+	},
+
+	discordid: async (event) => {
+		const form = await superValidate(event, zod(discordIdSchema))
+		if (!form.valid) {
+			return fail(400, {
+				form
+			})
+		}
+		const { discordid } = form.data
+
+		const users = await db
+			.select({
+				username: usersTable.username,
+				userid: usersTable.userid,
+				role: usersTable.role,
+				joindate: usersTable.joindate
+			})
+			.from(usersTable)
+			.limit(10)
+			.where(eq(usersTable.discordid, discordid.toString()))
+
+		console.log(discordid.toString())
 
 		return {
 			form,
