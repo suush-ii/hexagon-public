@@ -8,5 +8,10 @@ export const idSchema = z.object({
 	userid: z.coerce.number().int().positive({ message: 'Userid must be a positive number!' })
 })
 
+export const discordIdSchema = z.object({
+	discordid: z.string({ required_error: 'Discord ID required.' })
+})
+
 export type UsernameSchema = typeof usernameSchema
 export type IdSchema = typeof idSchema
+export type DiscordIdSchema = typeof discordIdSchema

@@ -498,6 +498,13 @@
       "when": 1725828039539,
       "tag": "0070_high_hellcat",
       "breakpoints": true
+    },
+    {
+      "idx": 71,
+      "version": "7",
+      "when": 1726721132817,
+      "tag": "0071_faulty_blink",
+      "breakpoints": true
     }
   ]
 }

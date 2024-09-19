@@ -25,7 +25,7 @@ export const usersTable = pgTable('users', {
 	id: varchar('id', { length: 128 }).primaryKey(), // used for lucia serials are unable to be used for some reason
 	username: text('username').notNull().unique(),
 	coins: bigint('coins', { mode: 'number' }).notNull(),
-	discordid: bigint('discordid', { mode: 'number' }),
+	discordid: text('discordid'),
 	joindate: timestamp('joindate', { mode: 'date', withTimezone: true }).defaultNow().notNull(),
 	role: text('role').$type<userRole>().notNull(),
 	studiopresencelocation: bigint('studiopresencelocation', { mode: 'number' }),

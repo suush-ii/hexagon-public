@@ -5,7 +5,7 @@
 
 	import * as Form from '$src/components/ui/form'
 	import * as Table from '$src/components/ui/table'
-	import { usernameSchema, idSchema } from './schema'
+	import { usernameSchema, idSchema, discordIdSchema } from './schema'
 
 	import type { ActionData, PageData } from './$types'
 
@@ -35,7 +35,17 @@
 		validators: zodClient(idSchema)
 	})
 
+	const discordIdForm = superForm(data.discordIdForm, {
+		validators: zodClient(discordIdSchema)
+	})
+
 	const { form: idData, enhance: idEnhance, submitting: idSubmitting } = idForm
+
+	const {
+		form: discordIdData,
+		enhance: discordIdEnhance,
+		submitting: discordIdSubmitting
+	} = discordIdForm
 </script>
 
 <div class="p-8 flex flex-col space-y-4">
@@ -76,6 +86,27 @@
 			{/if}Search</Form.Button
 		>
 	</form>
+
+	<form
+		class="flex align-middle space-x-4 whitespace-pre"
+		method="POST"
+		action="?/discordid"
+		use:discordIdEnhance
+	>
+		<h1 class="text-xl">Discord ID:</h1>
+		<Form.Field form={discordIdForm} name="discordid">
+			<Form.Control let:attrs>
+				<Input type="number" {...attrs} bind:value={$discordIdData.discordid} />
+			</Form.Control>
+			<Form.FieldErrors />
+		</Form.Field>
+		<Form.Button disabled={$discordIdSubmitting} variant="outline"
+			>{#if $discordIdSubmitting}
+				<Loader2 class="mr-2 h-4 w-4 animate-spin" />
+			{/if}Search</Form.Button
+		>
+	</form>
+
 	{#if form?.users}
 		<div>
 			<h1>Search Results</h1>
