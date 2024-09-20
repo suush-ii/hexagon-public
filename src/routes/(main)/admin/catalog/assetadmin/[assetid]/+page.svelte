@@ -69,7 +69,9 @@
 							>Moderate Asset</a
 						>
 						{#if data.canEdit}
-							<a class="hover:underline" href="/admin/catalog/updateasset/{data.asset.assetid}"
+							<a
+								class="hover:underline"
+								href="/admin/catalog/upload/{data.asset.assetType}/{data.asset.assetid}/updateasset"
 								>Update Asset</a
 							>
 						{/if}
