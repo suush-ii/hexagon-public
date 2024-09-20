@@ -96,6 +96,19 @@ export const actions: Actions = {
 			})
 		}
 
+		const discord = await db.query.usersTable.findFirst({
+			columns: {
+				discordid: true
+			},
+			where: eq(usersTable.discordid, userData.user.id)
+		})
+
+		if (discord?.discordid) {
+			return fail(400, {
+				form
+			})
+		}
+
 		await db
 			.update(usersTable)
 			.set({ discordid: userData.user.id })
