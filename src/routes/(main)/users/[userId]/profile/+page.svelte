@@ -182,7 +182,7 @@
 				<Separator class="mt-2" />
 			</div>
 
-			<h1 class="text-3xl font-semibold tracking-tight">Hexagon Badges</h1>
+			<h1 class="text-3xl font-semibold tracking-tight">{data.t('profile.hexagonBadges')}</h1>
 
 			<div
 				class="min-h-[28rem] bg-muted-foreground/5 outline-dashed outline-muted-foreground/20 rounded-xl p-9 flex flex-col"
@@ -203,7 +203,7 @@
 				</div>
 			</div>
 
-			<h1 class="text-3xl font-semibold tracking-tight">Player Badges</h1>
+			<h1 class="text-3xl font-semibold tracking-tight">{data.t('profile.playerBadges')}</h1>
 
 			<div
 				class="min-h-[30rem] bg-muted-foreground/5 outline-dashed outline-muted-foreground/20 rounded-xl p-4 px-8 flex flex-col"
@@ -278,7 +278,7 @@
 				/>
 			</div>
 
-			<h1 class="text-3xl font-semibold tracking-tight">Favorites</h1>
+			<h1 class="text-3xl font-semibold tracking-tight">{data.t('profile.favorites')}</h1>
 
 			<div
 				class="min-h-[30rem] bg-muted-foreground/5 outline-dashed outline-muted-foreground/20 rounded-xl p-4 px-12 flex flex-col"
