@@ -73,6 +73,26 @@ export const _uploadableAssets: Record<string, assetPrimitive> = {
 		friendlyName: 'Head',
 		...accessoryPrimitive
 	},
+	torsos: {
+		friendlyName: 'Torso',
+		...accessoryPrimitive
+	},
+	'l arms': {
+		friendlyName: 'Left Arm',
+		...accessoryPrimitive
+	},
+	'l legs': {
+		friendlyName: 'Left Leg',
+		...accessoryPrimitive
+	},
+	'r arms': {
+		friendlyName: 'Right Arm',
+		...accessoryPrimitive
+	},
+	'r legs': {
+		friendlyName: 'Right Leg',
+		...accessoryPrimitive
+	},
 	badges: {
 		friendlyName: 'Badge',
 		...imagePrimitive

@@ -75,7 +75,17 @@ export const actions: Actions = {
 
 		const fileName = Buffer.from(createHash('sha512').update(fileBuffer).digest('hex')).toString()
 
-		const Key = params.item
+		let Key = params.item
+
+		if (
+			params.item === 'l arms' ||
+			params.item === 'l legs' ||
+			params.item === 'r arms' ||
+			params.item === 'r legs' ||
+			params.item === 'torsos'
+		) {
+			Key = 'packages'
+		}
 
 		const command = new PutObjectCommand({
 			Bucket: s3BucketName,
