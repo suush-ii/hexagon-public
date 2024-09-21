@@ -38,7 +38,7 @@
 		"report": "Denunciar!"
 	},
 	"develop": {
-		"audio": "Audio",
+		"audio": "Áudio",
 		"decals": "Adesivos",
 		"shirts": "Camisas",
 		"pants": "Calças",
@@ -59,7 +59,10 @@
 		"lastOnline": "Último online em",
 		"placeVisits": "Total de Visitas",
 		"activePlaces": "Jogos Ativos",
-		"friends": "Amigos de {name}!"
+		"friends": "Amigos de {name}!",
+		"hexagonBadges": "Medalhas de Hexagon",
+		"playerBadges": "Medalhas do Jogador",
+		"favorites": "Favoritos"
 	},
 	"signUpLogin": {
 		"create": "Criar uma conta",
@@ -74,7 +77,9 @@
 		"logIn": "Entrar",
 		"terms": "Termos de Serviço",
 		"privacy": "Política de Privacidade",
-		"agreement": "Ao clicar em {button}, você concorda com os nossos {terms} e a nossa {privacy}."
+		"agreement": "Ao clicar em {button}, você concorda com os nossos {terms} e a nossa {privacy}.",
+		"application": "Soliticação de Entrada",
+		"alreadyCreated": "Já fez uma solicitacão? Clique aqui para ver o Status."
 	},
 	"genders": {
 		"male": "Homem",
@@ -94,6 +99,21 @@
 		"sold": "Vendido",
 		"dailyStipend": "Estipêndio Diário"
 	},
+	"people": {
+		"name": "Nome",
+		"blurb": "Sobre",
+		"lastSeen": "Visto pela última vez"
+	},
+	"settings": {
+		"mySettings": "Minhas Configurações",
+		"accountSettings": "Configurações da Conta",
+		"otherSettings": "Outras Configurações",
+		"linkDiscord": "Conectar Discord",
+		"theme": "Tema:",
+		"blurb": "Sobre:",
+		"changePassword": "Mudar Senha",
+		"linked": "Conectado"
+	},
 	"generic": {
 		"home": "Inicio",
 		"games": "Jogos",
@@ -105,6 +125,8 @@
 		"profile": "Perfil",
 		"friends": "Amigos",
 		"customize": "Customizar",
+		"people": "Pessoas",
+		"avatar": "Avatar",
 		"admin": "Administrador",
 		"seeAll": "Ver todos",
 		"recommendations": "Recomendações",

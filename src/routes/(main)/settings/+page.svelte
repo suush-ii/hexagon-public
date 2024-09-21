@@ -85,20 +85,26 @@
 </script>
 
 <div class="container p-4 flex flex-col gap-y-4">
-	<h1 class="text-4xl leading-none tracking-tight font-semibold">My Settings</h1>
+	<h1 class="text-4xl leading-none tracking-tight font-semibold">
+		{data.t('settings.mySettings')}
+	</h1>
 
-	<h2 class="text-lg font-semibold">Account Settings</h2>
+	<h2 class="text-lg font-semibold">{data.t('settings.accountSettings')}</h2>
 
 	<table class="table-fixed">
 		<tbody>
 			<tr>
-				<td class="w-32">Password:</td>
-				<td>********** <Button variant="outline" size="sm">Change Password</Button></td>
+				<td class="w-32">{data.t('signUpLogin.password')}:</td>
+				<td
+					>********** <Button variant="outline" size="sm"
+						>{data.t('settings.changePassword')}</Button
+					></td
+				>
 			</tr>
 			<tr>
 				<td class="w-32">Discord:</td>
 				{#if data.discordId}
-					<td>Linked</td>
+					<td>{data.t('settings.linked')}</td>
 				{:else}
 					<td>
 						None
@@ -108,7 +114,7 @@
 								discord(linkForm)
 							}}
 							variant="outline"
-							size="sm">Link Discord</Button
+							size="sm">{data.t('settings.linkDiscord')}</Button
 						>
 					</td>
 				{/if}
@@ -116,13 +122,13 @@
 		</tbody>
 	</table>
 
-	<h2 class="text-lg font-semibold mt-4">Other Settings</h2>
+	<h2 class="text-lg font-semibold mt-4">{data.t('settings.otherSettings')}</h2>
 
 	<form method="POST" action="?/other" class="w-full" use:enhance>
 		<table class="table-fixed border-separate border-spacing-y-4 w-full">
 			<tbody>
 				<tr>
-					<td class="w-32">Theme:</td>
+					<td class="w-32">{data.t('settings.theme')}</td>
 					<td
 						><Select.Root bind:selected>
 							<Select.Trigger class="w-[180px]">
@@ -140,7 +146,7 @@
 					>
 				</tr>
 				<tr>
-					<td>Blurb:</td>
+					<td>{data.t('settings.blurb')}</td>
 					<td>
 						<Form.Field {form} name="blurb">
 							<Form.Control let:attrs>

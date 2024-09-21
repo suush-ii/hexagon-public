@@ -59,7 +59,10 @@
 		"lastOnline": "Last Online",
 		"placeVisits": "Place Visits",
 		"activePlaces": "Active Places",
-		"friends": "{name}'s Friends!"
+		"friends": "{name}'s Friends!",
+		"hexagonBadges": "Hexagon Badges",
+		"playerBadges": "Player Badges",
+		"favorites": "Favorites"
 	},
 	"signUpLogin": {
 		"create": "Create an account",
@@ -74,7 +77,9 @@
 		"logIn": "Log In",
 		"terms": "Terms of Service",
 		"privacy": "Privacy Policy",
-		"agreement": "By clicking {button}, you agree to our {terms} and {privacy}."
+		"agreement": "By clicking {button}, you agree to our {terms} and {privacy}.",
+		"application": "Application",
+		"alreadyCreated": "Already made an application? Click here to view the status."
 	},
 	"genders": {
 		"male": "Male",
@@ -98,6 +103,16 @@
 		"name": "Name",
 		"blurb": "Blurb",
 		"lastSeen": "Last Seen"
+	},
+	"settings": {
+		"mySettings": "My Settings",
+		"accountSettings": "Account Settings",
+		"otherSettings": "Other Settings",
+		"linkDiscord": "Link Discord",
+		"theme": "Theme:",
+		"blurb": "Blurb:",
+		"changePassword": "Change Password",
+		"linked": "Linked"
 	},
 	"generic": {
 		"home": "Home",
