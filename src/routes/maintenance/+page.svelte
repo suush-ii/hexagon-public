@@ -70,6 +70,6 @@
 <div class="header">
 	<img src="/hexagon512.png" alt="Hexagon" />
 </div>
-<div class="content">
+<div class="content night">
 	<p class="notification">Hexagon is undergoing scheduled maintenance</p>
 </div>
