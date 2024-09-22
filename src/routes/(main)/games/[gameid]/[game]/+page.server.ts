@@ -34,7 +34,11 @@ export const actions: Actions = {
 			return error(404, { success: false, message: 'Game not found.' })
 		}
 
-		if (game.associatedgame.creatoruserid != locals.user.userid) {
+		if (
+			game.associatedgame.creatoruserid != locals.user.userid &&
+			locals.user.role !== 'admin' &&
+			locals.user.role !== 'owner'
+		) {
 			return error(403, { success: false, message: 'Unauthorized.' })
 		}
 
