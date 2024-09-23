@@ -20,6 +20,7 @@
 	$formData.keysEnabled = data.config.keysEnabled
 	$formData.gamesEnabled = data.config.gamesEnabled
 	$formData.developEnabled = data.config.developEnabled
+	$formData.applicationsEnabled = data.config.applicationsEnabled
 </script>
 
 <div class="p-8 flex flex-col space-y-4">
@@ -93,6 +94,20 @@
 					<Form.Label>Develop</Form.Label>
 				</div>
 				<input name={attrs.name} value={$formData.developEnabled} hidden />
+			</Form.Control>
+		</Form.Field>
+
+		<Form.Field
+			{form}
+			name="applicationsEnabled"
+			class="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4"
+		>
+			<Form.Control let:attrs>
+				<Checkbox {...attrs} bind:checked={$formData.applicationsEnabled} />
+				<div class="space-y-1 leading-none">
+					<Form.Label>Applications</Form.Label>
+				</div>
+				<input name={attrs.name} value={$formData.applicationsEnabled} hidden />
 			</Form.Control>
 		</Form.Field>
 		<Form.Button>Submit</Form.Button>

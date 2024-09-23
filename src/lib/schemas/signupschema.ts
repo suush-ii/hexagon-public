@@ -64,8 +64,21 @@ export const formSchema = z.object({
 	key: z
 		.string({ required_error: 'Key required.' })
 		.min(1, { message: 'Key required.' })
-		.max(100, { message: "Key can't be over 100 characters!" }),
-	gender: z.enum(['male', 'female', 'nonbinary']).default('nonbinary')
+		.max(100, { message: "Key can't be over 100 characters!" })
+		.optional(),
+	gender: z.enum(['male', 'female', 'nonbinary']).default('nonbinary'),
+	application: z.string({ required_error: 'Application required.' }).uuid().optional()
+})
+
+export const applicationFormSchema = z.object({
+	discover: z
+		.string({ required_error: 'This field is required!' })
+		.min(50, { message: 'Minimum 50 Characters!' })
+		.max(1000),
+	socialmedia: z.string({ required_error: 'This field is required!' }).max(200).min(10),
+	pastrevivals: z.string({ required_error: 'This field is required!' }).max(1000),
+	verificationPhrase: z.string({ required_error: 'This field is required!' }).min(8)
 })
 
 export type FormSchema = typeof formSchema
+export type ApplicationFormSchema = typeof applicationFormSchema

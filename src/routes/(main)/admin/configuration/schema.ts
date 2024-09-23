@@ -5,7 +5,8 @@ export const formSchema = z.object({
 	registrationEnabled: z.boolean(),
 	keysEnabled: z.boolean(),
 	gamesEnabled: z.boolean(),
-	developEnabled: z.boolean()
+	developEnabled: z.boolean(),
+	applicationsEnabled: z.boolean()
 })
 
 export type FormSchema = typeof formSchema

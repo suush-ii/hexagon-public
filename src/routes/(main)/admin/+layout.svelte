@@ -12,6 +12,7 @@
 			role={data.user.role}
 			queueCount={data.queueCount}
 			userQueueCount={data.userQueueCount}
+			applicationQueueCount={data.applicationQueueCount}
 		/>
 	</div>
 

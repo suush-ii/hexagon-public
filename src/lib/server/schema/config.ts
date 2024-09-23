@@ -8,5 +8,6 @@ export const configTable = pgTable('config', {
 	developEnabled: boolean('developEnabled').notNull().default(true),
 	keysEnabled: boolean('keysenabled').notNull().default(false),
 	pageClicker: bigint('pageclicker', { mode: 'number' }).notNull().default(0),
-	sitealert: text('sitealert').notNull().default('')
+	sitealert: text('sitealert').notNull().default(''),
+	applicationsEnabled: boolean('applicationsenabled').notNull().default(false)
 })

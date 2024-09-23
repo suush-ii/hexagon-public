@@ -1,0 +1,1 @@
+ALTER TABLE "config" ADD COLUMN "applicationsenabled" boolean DEFAULT false NOT NULL;
