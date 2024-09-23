@@ -2,7 +2,7 @@ import { error, redirect } from '@sveltejs/kit'
 import type { PageServerLoad } from './$types'
 import { z } from 'zod'
 import { db } from '$lib/server/db'
-import { usersTable, bansTable } from '$lib/server/schema'
+import { usersTable, bansTable, applicationsTable } from '$lib/server/schema'
 import { count, eq, desc } from 'drizzle-orm'
 import { getPageNumber } from '$lib/utils'
 
@@ -63,6 +63,14 @@ export const load: PageServerLoad = async ({ url }) => {
 		}
 	})
 
+	const application = await db.query.applicationsTable.findFirst({
+		where: eq(applicationsTable.signupuserid, result.data),
+		columns: {
+			questions: true,
+			internalreason: true
+		}
+	})
+
 	if (user) {
 		return {
 			username: user.username,
@@ -72,7 +80,8 @@ export const load: PageServerLoad = async ({ url }) => {
 			punishments: user.bans,
 			punishmentsCount: punishmentsCount[0].count,
 			banid: user.banid,
-			discordid: user.discordid
+			discordid: user.discordid,
+			application
 		}
 	}
 

@@ -18,7 +18,8 @@ if (!building) {
 				developEnabled: false,
 				keysEnabled: false,
 				pageClicker: 0,
-				sitealert: ''
+				sitealert: '',
+				applicationsEnabled: false
 			}
 		]
 		console.log('might wanna fix the db')
@@ -39,13 +40,15 @@ export async function set(newConfig: Omit<Omit<Config, 'pageClicker'>, 'sitealer
 	config[0].keysEnabled = newConfig.keysEnabled
 	config[0].maintenanceEnabled = newConfig.maintenanceEnabled
 	config[0].registrationEnabled = newConfig.registrationEnabled
+	config[0].applicationsEnabled = newConfig.applicationsEnabled
 
 	await db.update(configTable).set({
 		maintenanceEnabled: newConfig.maintenanceEnabled,
 		registrationEnabled: newConfig.registrationEnabled,
 		keysEnabled: newConfig.keysEnabled,
 		gamesEnabled: newConfig.gamesEnabled,
-		developEnabled: newConfig.developEnabled
+		developEnabled: newConfig.developEnabled,
+		applicationsEnabled: newConfig.applicationsEnabled
 	})
 }
 

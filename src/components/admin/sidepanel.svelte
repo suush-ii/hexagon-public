@@ -11,6 +11,7 @@
 				{ title: 'User Admin', href: '/admin/users/useradmin' },
 				{ title: 'Moderate User', href: '/admin/users/moderateuser' },
 				{ title: 'User Queue', href: '/admin/users/moderateuser?queue=true' },
+				{ title: 'Applications', href: '/admin/users/applications/queue' },
 				{ title: 'Generate Key', href: '/admin/generate' }
 			]
 		},
@@ -28,6 +29,8 @@
 	export let queueCount: number
 
 	export let userQueueCount: number
+
+	export let applicationQueueCount: number
 </script>
 
 <svelte:head>
@@ -92,6 +95,12 @@
 								{#if title === 'User Queue'}
 									<Badge class="ml-4 text-lg h-6 overflow-hidden" variant="destructive"
 										>{userQueueCount}</Badge
+									>
+								{/if}
+
+								{#if title === 'Applications'}
+									<Badge class="ml-4 text-lg h-6 overflow-hidden" variant="destructive"
+										>{applicationQueueCount}</Badge
 									>
 								{/if}
 							</a>

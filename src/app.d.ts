@@ -32,6 +32,7 @@ declare global {
 				gamesEnabled: boolean
 				developEnabled: boolean
 				sitealert: string
+				applicationsEnabled: boolean
 			}[]
 		}
 		// interface PageData {}
