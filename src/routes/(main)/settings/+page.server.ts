@@ -5,9 +5,9 @@ import { zod } from 'sveltekit-superforms/adapters'
 import { fail } from 'sveltekit-superforms'
 import { db } from '$lib/server/db'
 import { usersTable } from '$lib/server/schema'
-import { eq } from 'drizzle-orm'
+import { and, eq, not } from 'drizzle-orm'
 import { getOAuthTokens, getOAuthUrl, getUserData, pushMetadata } from '$lib/server/discord'
-import { redirect } from '@sveltejs/kit'
+import { error, redirect } from '@sveltejs/kit'
 
 export const load: PageServerLoad = async ({ locals }) => {
 	const blurb = await db
@@ -58,10 +58,6 @@ export const actions: Actions = {
 			where: eq(usersTable.userid, locals.user.userid)
 		})
 
-		if (discordId?.discordid) {
-			return redirect(302, '/settings')
-		}
-
 		if (!form.valid) {
 			return fail(400, {
 				form
@@ -98,12 +94,19 @@ export const actions: Actions = {
 
 		const discord = await db.query.usersTable.findFirst({
 			columns: {
-				discordid: true
+				discordid: true,
+				userid: true
 			},
 			where: eq(usersTable.discordid, userData.user.id)
 		})
 
-		if (discord?.discordid) {
+		if (discord?.discordid && discord.userid != locals.user.userid) {
+			return fail(400, {
+				form
+			})
+		}
+
+		if (discordId?.discordid != userData.user.id) {
 			return fail(400, {
 				form
 			})

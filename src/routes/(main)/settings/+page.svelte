@@ -16,6 +16,8 @@
 		discordLinkDisabled = false,
 		discordToken = ''
 
+	let rolesForm: HTMLFormElement
+
 	const form = superForm(data.form, {
 		validators: zodClient(formSchema),
 		resetForm: false
@@ -104,7 +106,18 @@
 			<tr>
 				<td class="w-32">Discord:</td>
 				{#if data.discordId}
-					<td>{data.t('settings.linked')}</td>
+					<td
+						>{data.t('settings.linked')}
+
+						<Button
+							disabled={discordLinkDisabled}
+							on:click={() => {
+								discord(linkForm)
+							}}
+							variant="outline"
+							size="sm">Get Roles</Button
+						>
+					</td>
 				{:else}
 					<td>
 						None
