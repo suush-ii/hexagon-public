@@ -1,7 +1,14 @@
 import { error, json, type RequestHandler } from '@sveltejs/kit'
 import { db } from '$lib/server/db'
-import { gamesTable, recentlyPlayedTable, placesTable, assetTable } from '$lib/server/schema'
-import { and, eq } from 'drizzle-orm'
+import {
+	gamesTable,
+	recentlyPlayedTable,
+	placesTable,
+	assetTable,
+	usersTable,
+	transactionsTable
+} from '$lib/server/schema'
+import { and, eq, sql } from 'drizzle-orm'
 
 import { z } from 'zod'
 
@@ -27,7 +34,7 @@ export const POST: RequestHandler = async ({ url }) => {
 		where: eq(placesTable.placeid, placeid),
 		columns: {},
 		with: {
-			associatedgame: { columns: { visits: true, universeid: true } },
+			associatedgame: { columns: { visits: true, universeid: true, creatoruserid: true } },
 			associatedasset: { columns: { last7dayscounter: true, lastweekreset: true } }
 		}
 	})
@@ -61,6 +68,31 @@ export const POST: RequestHandler = async ({ url }) => {
 		.update(gamesTable)
 		.set({ visits: Number(place?.associatedgame.visits) + 1 })
 		.where(eq(gamesTable.universeid, Number(place?.associatedgame.universeid)))
+
+	const lastTimePlayed = await db.query.recentlyPlayedTable.findFirst({
+		where: and(
+			eq(recentlyPlayedTable.gameid, Number(place?.associatedgame.universeid)),
+			eq(recentlyPlayedTable.userid, userid)
+		),
+		columns: {
+			time: true
+		}
+	})
+	if (
+		!lastTimePlayed ||
+		new Date().valueOf() - lastTimePlayed.time.valueOf() > 12 * 60 * 60 * 1000 // 12 hours
+	) {
+		await db
+			.update(usersTable)
+			.set({ coins: sql`${usersTable.coins} + 1` })
+			.where(eq(usersTable.userid, place?.associatedgame.creatoruserid))
+
+		await db.insert(transactionsTable).values({
+			userid: place?.associatedgame.creatoruserid,
+			type: 'visit',
+			amount: 1
+		})
+	}
 
 	await db
 		.delete(recentlyPlayedTable)
