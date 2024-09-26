@@ -130,8 +130,7 @@ export async function uploadAsset(
 						universeid: universeid,
 						placeurl: fileName,
 						startplace: false,
-						placename: form.data.name,
-						allowedgear: ['Social items']
+						placename: form.data.name
 					})
 				} catch (err) {
 					console.log(err)
@@ -173,8 +172,7 @@ export async function uploadAsset(
 						universeid: gameResponse.universeid,
 						placeurl: fileName,
 						startplace: true,
-						placename: form.data.name,
-						allowedgear: ['Social items']
+						placename: form.data.name
 					})
 				} catch {
 					tx.rollback()
