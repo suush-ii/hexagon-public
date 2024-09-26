@@ -146,7 +146,7 @@ export const fallback: RequestHandler = async ({ url, request, locals }) => {
 
 	await db
 		.update(gamesTable)
-		.set({ active: playerCountUniverse })
+		.set({ active: Math.max(playerCountUniverse, 0) })
 		.where(eq(gamesTable.universeid, Number(instance?.associatedid)))
 
 	return json({
