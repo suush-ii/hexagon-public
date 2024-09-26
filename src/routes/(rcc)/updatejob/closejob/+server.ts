@@ -47,8 +47,10 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 			await db.update(usersTable).set({ activegame: null }).where(eq(usersTable.userid, player))
 		}
 
-		const newActive =
-			Number(instance?.associatedplace?.associatedgame?.active) - instance.players.length
+		const newActive = Math.max(
+			Number(instance?.associatedplace?.associatedgame?.active) - instance.players.length,
+			0
+		)
 
 		await db
 			.update(gamesTable)
