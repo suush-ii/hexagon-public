@@ -1,7 +1,7 @@
-import type { PageServerLoad } from './$types.js'
+import type { Actions, PageServerLoad } from './$types.js'
 import { db } from '$lib/server/db'
-import { eq } from 'drizzle-orm'
-import { assetTable } from '$lib/server/schema/assets'
+import { and, eq } from 'drizzle-orm'
+import { assetTable, jobsTable } from '$lib/server/schema'
 import { error } from '@sveltejs/kit'
 import { imageSql } from '$lib/server/games/getImage'
 import { adminAssets } from '../../upload/[item]'
@@ -52,5 +52,27 @@ export const load: PageServerLoad = async ({ params }) => {
 	return {
 		asset,
 		canEdit
+	}
+}
+
+export const actions: Actions = {
+	render: async ({ params }) => {
+		await db
+			.update(assetTable)
+			.set({
+				assetrender: null,
+				_3dmanifest: null
+			})
+			.where(eq(assetTable.assetid, Number(params.assetid)))
+
+		await db
+			.delete(jobsTable)
+			.where(
+				and(
+					eq(jobsTable.associatedid, Number(params.assetid)),
+					eq(jobsTable.type, 'render'),
+					eq(jobsTable.rendertype, 'asset')
+				)
+			)
 	}
 }
