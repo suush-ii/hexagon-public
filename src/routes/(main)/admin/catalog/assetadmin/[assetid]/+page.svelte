@@ -75,6 +75,10 @@
 								>Update Asset</a
 							>
 						{/if}
+
+						<form method="POST" action="?/render">
+							<button class="hover:underline" type="submit">Redraw Render</button>
+						</form>
 					</td>
 				</tr>
 			</tbody>
