@@ -97,7 +97,10 @@ export const actions: Actions = {
 				discordid: true,
 				userid: true
 			},
-			where: eq(usersTable.discordid, userData.user.id)
+			where: and(
+				eq(usersTable.discordid, userData.user.id),
+				not(eq(usersTable.userid, locals.user.userid))
+			)
 		})
 
 		if (discord?.discordid && discord.userid != locals.user.userid) {
@@ -106,7 +109,7 @@ export const actions: Actions = {
 			})
 		}
 
-		if (discordId?.discordid != userData.user.id) {
+		if (discordId?.discordid && discordId.discordid != userData.user.id) {
 			return fail(400, {
 				form
 			})
