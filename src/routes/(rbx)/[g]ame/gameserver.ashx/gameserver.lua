@@ -254,6 +254,8 @@ ns.ChildAdded:connect(function(replicator) -- mostly from polygon tbh with some 
 			if item and item:IsA("Animation") then return Enum.FilterResult.Accepted end
 
 			if item and item:IsA("AnimationTrack") then return Enum.FilterResult.Accepted end
+
+			if item and item:IsA("StarterPack") then return Enum.FilterResult.Accepted end
 			
 			return Enum.FilterResult.Rejected
 		end		
@@ -281,6 +283,8 @@ ns.ChildAdded:connect(function(replicator) -- mostly from polygon tbh with some 
 			if item and item:IsA("Animation") then return Enum.FilterResult.Accepted end
 
 			if item and item:IsA("AnimationTrack") then return Enum.FilterResult.Accepted end
+
+			if item and item:IsA("StarterPack") then return Enum.FilterResult.Accepted end
 	
 			return Enum.FilterResult.Rejected
 		end		
@@ -295,6 +299,8 @@ ns.ChildAdded:connect(function(replicator) -- mostly from polygon tbh with some 
 			if item and item:IsA("Animation") then return Enum.FilterResult.Accepted end
 
 			if item and item:IsA("AnimationTrack") then return Enum.FilterResult.Accepted end
+
+			if item and item:IsA("StarterPack") then return Enum.FilterResult.Accepted end
 
 			return Enum.FilterResult.Rejected
 		end
