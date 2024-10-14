@@ -9,20 +9,14 @@ import { LuciaError } from 'lucia'
 import { z } from 'zod'
 import { createSign } from 'node:crypto'
 import script from './join.lua?raw'
-import { RateLimiter } from 'sveltekit-rate-limiter/server'
 
-const limiter = new RateLimiter({
-	IP: [1, '15s']
-})
 
 const scriptNew: string = script.replaceAll('roblox.com', env.BASE_URL as string)
 
 const CharacterAppearance = `http://www.${env.BASE_URL}/Asset/CharacterFetch.ashx`
 const BaseUrl = `http://${env.BASE_URL}/`
 
-export const fallback: RequestHandler = async (event) => {
-	const { url, locals } = event
-
+export const fallback: RequestHandler = async ({ url, locals }) => {
 	// capture get/post
 	const jobid = url.searchParams.get('jobid')
 	const authBearer = url.searchParams.get('auth') ?? ''
@@ -149,28 +143,8 @@ export const fallback: RequestHandler = async (event) => {
 		})
 	}
 
-	if (await limiter.isLimited(event)) {
-		return error(429, {
-			success: false,
-			message: 'Your being ratelimited.',
-			data: {}
-		})
-	}
-
 	if (instance && instance.port && instance.status === 2) {
 		// an instance is available\
-		const user = await db.query.usersTable.findFirst({
-			where: eq(usersTable.userid, Number(session.userid)),
-			columns: {
-				lastip: true
-			}
-		})
-
-		const response = await fetch(
-			`http://${env.GAMESERVER_IP}:${env.ARBITER_PORT}/forward/${encodeURIComponent(user?.lastip ?? '')}/${instance.jobid}/${session.userid}`
-		)
-
-		const portResponse = await response.json()
 
 		const joinJson: { [key: string]: string | number | boolean } = {
 			ClientPort: 0,
@@ -215,7 +189,7 @@ export const fallback: RequestHandler = async (event) => {
 		}
 
 		joinJson.MachineAddress = env.GAMESERVER_IP as string
-		joinJson.ServerPort = portResponse.port
+		joinJson.ServerPort = instance.port
 
 		joinJson.UserName = session.username
 		joinJson.UserId = Number(session.userid)
