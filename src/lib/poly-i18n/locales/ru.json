@@ -24,7 +24,7 @@
 		"creator": "Создатель",
 		"price": "Цена",
 		"buyWith": "Купить с помощью",
-		"sold": "({count} Продано)",
+		"sold": "( {count} Продано )",
 		"genres": "Жанры",
 		"gearAttributes": "Атрибуты гиров",
 		"offsale": "Снят с продажи",

@@ -193,6 +193,7 @@
 								sales={item.sales}
 								updated={item.updated}
 								favorites={item.favorites}
+								limited={item.limited}
 							/>
 						{/each}
 					{/if}

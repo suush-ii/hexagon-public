@@ -60,7 +60,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 			wearing: true
 		},
 		with: {
-			asset: { columns: { assetname: true } }
+			asset: { columns: { assetname: true, limited: true } }
 		},
 		orderBy: desc(inventoryTable.obatineddate),
 		limit: size,
@@ -78,7 +78,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 			wearing: true
 		},
 		with: {
-			asset: { columns: { assetname: true } }
+			asset: { columns: { assetname: true, limited: true } }
 		},
 		orderBy: desc(inventoryTable.obatineddate),
 		limit: size,

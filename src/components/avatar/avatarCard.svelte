@@ -13,6 +13,8 @@
 
 	export let trig: boolean
 
+	export let limited: string | null
+
 	async function toggle() {
 		const response = await fetch(`/api/avatar/setwearingassets`, {
 			method: 'POST',
@@ -44,7 +46,12 @@
 			{itemId}
 			{itemName}
 			disable3d={true}
-		/>
+		>
+			{#if limited}
+				<div class="h-7 absolute left-0 bottom-0">
+					<img class="w-full h-full" src="/Images/{limited}.svg" alt={limited} />
+				</div>{/if}</Avatar
+		>
 
 		<h1 class="line-clamp-2 tracking-tighter break-words text-xl hover:underline text-left">
 			{itemName}

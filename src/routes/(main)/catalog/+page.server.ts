@@ -56,7 +56,8 @@ export const load: PageServerLoad = async ({ url }) => {
 				creatoruserid: true,
 				updated: true,
 				sales: true,
-				favorites: true
+				favorites: true,
+				limited: true
 			},
 			with: {
 				author: {
@@ -98,7 +99,8 @@ export const load: PageServerLoad = async ({ url }) => {
 				creatoruserid: true,
 				updated: true,
 				sales: true,
-				favorites: true
+				favorites: true,
+				limited: true
 			},
 			with: {
 				author: {
@@ -142,7 +144,8 @@ export const load: PageServerLoad = async ({ url }) => {
 				creatoruserid: true,
 				updated: true,
 				sales: true,
-				favorites: true
+				favorites: true,
+				limited: true
 			},
 			with: {
 				author: {
@@ -184,7 +187,8 @@ export const load: PageServerLoad = async ({ url }) => {
 				creatoruserid: true,
 				updated: true,
 				sales: true,
-				favorites: true
+				favorites: true,
+				limited: true
 			},
 			with: {
 				author: {

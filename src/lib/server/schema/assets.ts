@@ -11,7 +11,7 @@ import {
 } from 'drizzle-orm/pg-core'
 import { placesTable } from './games'
 import type { assetStates, AssetTypes, AssetGenreDB, GearAttributes } from '$lib/types'
-import { usersTable } from './users'
+import { inventoryTable, usersTable } from './users'
 
 export const assetTable = pgTable('assets', {
 	assetid: bigserial('assetid', { mode: 'number' }).notNull().primaryKey(),
@@ -50,7 +50,10 @@ export const assetTable = pgTable('assets', {
 	lastweekreset: timestamp('lastweekreset', { mode: 'date', withTimezone: true })
 		.notNull()
 		.defaultNow(),
-	last7dayscounter: bigint('last7dayscounter', { mode: 'number' }).notNull().default(0) // every week this is reset using the timestamp above
+	last7dayscounter: bigint('last7dayscounter', { mode: 'number' }).notNull().default(0), // every week this is reset using the timestamp above
+	stock: integer('stock'),
+	limited: text('limited').$type<'limited' | 'limitedu'>(),
+	recentaverageprice: integer('recentaverageprice')
 })
 
 export const assetRelations = relations(assetTable, ({ one }) => ({
@@ -69,6 +72,65 @@ export const assetRelations = relations(assetTable, ({ one }) => ({
 	assetversions: one(assetVersionsTable, {
 		fields: [assetTable.assetid],
 		references: [assetVersionsTable.assetid]
+	})
+}))
+
+export const privateSellersTable = pgTable(
+	'privatesellers',
+	{
+		userid: bigint('userid', { mode: 'number' }).notNull(),
+		assetid: bigint('assetid', { mode: 'number' }).notNull(),
+		inventoryid: integer('inventoryid').notNull(),
+		price: integer('price').notNull(),
+		created: timestamp('created', { mode: 'date', withTimezone: true }).notNull().defaultNow()
+	},
+	(table) => {
+		return { pk: primaryKey({ columns: [table.userid, table.assetid, table.inventoryid] }) }
+	}
+)
+
+export const privateSellersRelations = relations(privateSellersTable, ({ one }) => ({
+	item: one(inventoryTable, {
+		fields: [privateSellersTable.inventoryid],
+		references: [inventoryTable.inventoryid]
+	}),
+	user: one(usersTable, {
+		fields: [privateSellersTable.userid],
+		references: [usersTable.userid]
+	})
+}))
+
+export const salesHistoryTable = pgTable('saleshistory', {
+	saleshistoryid: bigserial('saleshistoryid', { mode: 'number' }).notNull().primaryKey(),
+	userid: bigint('userid', { mode: 'number' }).notNull(),
+	assetid: bigint('assetid', { mode: 'number' }).notNull(),
+	inventoryid: integer('inventoryid').notNull(),
+	price: integer('price').notNull(),
+	time: timestamp('time', { mode: 'date', withTimezone: true }).notNull().defaultNow(),
+	currentaverageprice: integer('currentaverageprice').notNull()
+})
+
+export const tradesTable = pgTable('trades', {
+	requestid: bigserial('requestid', { mode: 'number' }).notNull().primaryKey(),
+	senderid: bigint('senderid', { mode: 'number' }).notNull(),
+	recipient: bigint('recipient', { mode: 'number' }).notNull(),
+	time: timestamp('time', { mode: 'date', withTimezone: true }).notNull().defaultNow(),
+	status: text('status').$type<'pending' | 'accepted' | 'denied'>().notNull().default('pending'),
+	denyreason: text('denyreason').$type<'error' | 'denied' | 'countered'>(),
+	offering: bigint('offering', { mode: 'number' }).array().notNull(),
+	requesting: bigint('requesting', { mode: 'number' }).array().notNull(),
+	offeringmoons: integer('offeringmoons').notNull(),
+	requestingmoons: integer('requestingmoons').notNull()
+})
+
+export const tradesRelations = relations(tradesTable, ({ one }) => ({
+	sender: one(usersTable, {
+		fields: [tradesTable.senderid],
+		references: [usersTable.userid]
+	}),
+	recipient: one(usersTable, {
+		fields: [tradesTable.recipient],
+		references: [usersTable.userid]
 	})
 }))
 
