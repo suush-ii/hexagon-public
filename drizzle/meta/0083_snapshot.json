@@ -1,0 +1,1833 @@
+{
+  "id": "0d13d802-f37f-41df-96d0-c0975b13d732",
+  "prevId": "581f5453-5f8a-40e6-88c3-dde50672ce8e",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.applications": {
+      "name": "applications",
+      "schema": "",
+      "columns": {
+        "applicationid": {
+          "name": "applicationid",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "questions": {
+          "name": "questions",
+          "type": "json[]",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created": {
+          "name": "created",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "reviewed": {
+          "name": "reviewed",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "revieweruserid": {
+          "name": "revieweruserid",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "accepted": {
+          "name": "accepted",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "discordid": {
+          "name": "discordid",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "verificationsequence": {
+          "name": "verificationsequence",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "registerip": {
+          "name": "registerip",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "used": {
+          "name": "used",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
+        },
+        "signupuserid": {
+          "name": "signupuserid",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "internalreason": {
+          "name": "internalreason",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.assetcache": {
+      "name": "assetcache",
+      "schema": "",
+      "columns": {
+        "assetid": {
+          "name": "assetid",
+          "type": "bigint",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "assettypeid": {
+          "name": "assettypeid",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "filehash": {
+          "name": "filehash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.assets": {
+      "name": "assets",
+      "schema": "",
+      "columns": {
+        "assetid": {
+          "name": "assetid",
+          "type": "bigserial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "assetname": {
+          "name": "assetname",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "assettype": {
+          "name": "assettype",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created": {
+          "name": "created",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated": {
+          "name": "updated",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "creatoruserid": {
+          "name": "creatoruserid",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "moderationstate": {
+          "name": "moderationstate",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "simpleasseturl": {
+          "name": "simpleasseturl",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sales": {
+          "name": "sales",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "associatedimageid": {
+          "name": "associatedimageid",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "price": {
+          "name": "price",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "assetrender": {
+          "name": "assetrender",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "3dmanifest": {
+          "name": "3dmanifest",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "genres": {
+          "name": "genres",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'{\"All\"}'::text[]"
+        },
+        "gearattributes": {
+          "name": "gearattributes",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "topunish": {
+          "name": "topunish",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
+        },
+        "punished": {
+          "name": "punished",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
+        },
+        "onsale": {
+          "name": "onsale",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": true
+        },
+        "assetversions": {
+          "name": "assetversions",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'{}'::text[]"
+        },
+        "scrubbedassetname": {
+          "name": "scrubbedassetname",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "favorites": {
+          "name": "favorites",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "lastweekreset": {
+          "name": "lastweekreset",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "last7dayscounter": {
+          "name": "last7dayscounter",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "stock": {
+          "name": "stock",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "limited": {
+          "name": "limited",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "recentaverageprice": {
+          "name": "recentaverageprice",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.assetthumbnailcache": {
+      "name": "assetthumbnailcache",
+      "schema": "",
+      "columns": {
+        "assetid": {
+          "name": "assetid",
+          "type": "bigint",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "filehash": {
+          "name": "filehash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.assetversioncache": {
+      "name": "assetversioncache",
+      "schema": "",
+      "columns": {
+        "assetversionid": {
+          "name": "assetversionid",
+          "type": "bigint",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "assettypeid": {
+          "name": "assettypeid",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "filehash": {
+          "name": "filehash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.assetversions": {
+      "name": "assetversions",
+      "schema": "",
+      "columns": {
+        "assetid": {
+          "name": "assetid",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "filehash": {
+          "name": "filehash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "time": {
+          "name": "time",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "assetversions_assetid_time_pk": {
+          "name": "assetversions_assetid_time_pk",
+          "columns": [
+            "assetid",
+            "time"
+          ]
+        }
+      },
+      "uniqueConstraints": {}
+    },
+    "public.privatesellers": {
+      "name": "privatesellers",
+      "schema": "",
+      "columns": {
+        "userid": {
+          "name": "userid",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "assetid": {
+          "name": "assetid",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "inventoryid": {
+          "name": "inventoryid",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "price": {
+          "name": "price",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created": {
+          "name": "created",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "privatesellers_userid_assetid_inventoryid_pk": {
+          "name": "privatesellers_userid_assetid_inventoryid_pk",
+          "columns": [
+            "userid",
+            "assetid",
+            "inventoryid"
+          ]
+        }
+      },
+      "uniqueConstraints": {}
+    },
+    "public.saleshistory": {
+      "name": "saleshistory",
+      "schema": "",
+      "columns": {
+        "saleshistoryid": {
+          "name": "saleshistoryid",
+          "type": "bigserial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "userid": {
+          "name": "userid",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "assetid": {
+          "name": "assetid",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "inventoryid": {
+          "name": "inventoryid",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "price": {
+          "name": "price",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "time": {
+          "name": "time",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "currentaverageprice": {
+          "name": "currentaverageprice",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.trades": {
+      "name": "trades",
+      "schema": "",
+      "columns": {
+        "requestid": {
+          "name": "requestid",
+          "type": "bigserial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "senderid": {
+          "name": "senderid",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "recipient": {
+          "name": "recipient",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "time": {
+          "name": "time",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'pending'"
+        },
+        "offering": {
+          "name": "offering",
+          "type": "bigint[]",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "requesting": {
+          "name": "requesting",
+          "type": "bigint[]",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "offeringmoons": {
+          "name": "offeringmoons",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "requestingmoons": {
+          "name": "requestingmoons",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.assetfavorites": {
+      "name": "assetfavorites",
+      "schema": "",
+      "columns": {
+        "userid": {
+          "name": "userid",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "assetid": {
+          "name": "assetid",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "assetfavorites_userid_assetid_pk": {
+          "name": "assetfavorites_userid_assetid_pk",
+          "columns": [
+            "userid",
+            "assetid"
+          ]
+        }
+      },
+      "uniqueConstraints": {}
+    },
+    "public.config": {
+      "name": "config",
+      "schema": "",
+      "columns": {
+        "maintenanceenabled": {
+          "name": "maintenanceenabled",
+          "type": "boolean",
+          "primaryKey": true,
+          "notNull": true,
+          "default": false
+        },
+        "registrationenabled": {
+          "name": "registrationenabled",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": true
+        },
+        "gamesenabled": {
+          "name": "gamesenabled",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": true
+        },
+        "developEnabled": {
+          "name": "developEnabled",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": true
+        },
+        "keysenabled": {
+          "name": "keysenabled",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "pageclicker": {
+          "name": "pageclicker",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "sitealert": {
+          "name": "sitealert",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "''"
+        },
+        "applicationsenabled": {
+          "name": "applicationsenabled",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.games": {
+      "name": "games",
+      "schema": "",
+      "columns": {
+        "universeid": {
+          "name": "universeid",
+          "type": "bigserial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "creatoruserid": {
+          "name": "creatoruserid",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "active": {
+          "name": "active",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "visits": {
+          "name": "visits",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "serversize": {
+          "name": "serversize",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "updated": {
+          "name": "updated",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "genre": {
+          "name": "genre",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "iconid": {
+          "name": "iconid",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "thumbnailid": {
+          "name": "thumbnailid",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "likes": {
+          "name": "likes",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "dislikes": {
+          "name": "dislikes",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "scrubbedgamename": {
+          "name": "scrubbedgamename",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "games_universeid_unique": {
+          "name": "games_universeid_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "universeid"
+          ]
+        }
+      }
+    },
+    "public.jobs": {
+      "name": "jobs",
+      "schema": "",
+      "columns": {
+        "jobid": {
+          "name": "jobid",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "placeid": {
+          "name": "placeid",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "associatedid": {
+          "name": "associatedid",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "type": {
+          "name": "type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "rendertype": {
+          "name": "rendertype",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "clientversion": {
+          "name": "clientversion",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created": {
+          "name": "created",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "active": {
+          "name": "active",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "default": 0
+        },
+        "status": {
+          "name": "status",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "default": 1
+        },
+        "port": {
+          "name": "port",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "default": 0
+        },
+        "players": {
+          "name": "players",
+          "type": "bigint[]",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'{}'::bigint[]"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.legacypersistence": {
+      "name": "legacypersistence",
+      "schema": "",
+      "columns": {
+        "placeid": {
+          "name": "placeid",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "userid": {
+          "name": "userid",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "data": {
+          "name": "data",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "legacypersistence_userid_placeid_pk": {
+          "name": "legacypersistence_userid_placeid_pk",
+          "columns": [
+            "userid",
+            "placeid"
+          ]
+        }
+      },
+      "uniqueConstraints": {}
+    },
+    "public.persistence": {
+      "name": "persistence",
+      "schema": "",
+      "columns": {
+        "placeid": {
+          "name": "placeid",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "key": {
+          "name": "key",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "type": {
+          "name": "type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "scope": {
+          "name": "scope",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "target": {
+          "name": "target",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "value": {
+          "name": "value",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "persistence_placeid_target_scope_pk": {
+          "name": "persistence_placeid_target_scope_pk",
+          "columns": [
+            "placeid",
+            "target",
+            "scope"
+          ]
+        }
+      },
+      "uniqueConstraints": {}
+    },
+    "public.places": {
+      "name": "places",
+      "schema": "",
+      "columns": {
+        "placeid": {
+          "name": "placeid",
+          "type": "bigint",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "startplace": {
+          "name": "startplace",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "universeid": {
+          "name": "universeid",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created": {
+          "name": "created",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated": {
+          "name": "updated",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "placeurl": {
+          "name": "placeurl",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "allowedgear": {
+          "name": "allowedgear",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'{}'::text[]"
+        },
+        "geargenreenforced": {
+          "name": "geargenreenforced",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "placeversions": {
+          "name": "placeversions",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'{}'::text[]"
+        },
+        "placename": {
+          "name": "placename",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.votes": {
+      "name": "votes",
+      "schema": "",
+      "columns": {
+        "userid": {
+          "name": "userid",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "gameid": {
+          "name": "gameid",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "type": {
+          "name": "type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "votes_userid_gameid_pk": {
+          "name": "votes_userid_gameid_pk",
+          "columns": [
+            "userid",
+            "gameid"
+          ]
+        }
+      },
+      "uniqueConstraints": {}
+    },
+    "public.adminlogs": {
+      "name": "adminlogs",
+      "schema": "",
+      "columns": {
+        "logid": {
+          "name": "logid",
+          "type": "bigserial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "userid": {
+          "name": "userid",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "associatedid": {
+          "name": "associatedid",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "associatedidtype": {
+          "name": "associatedidtype",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "time": {
+          "name": "time",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "action": {
+          "name": "action",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "banlength": {
+          "name": "banlength",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "newrole": {
+          "name": "newrole",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.bans": {
+      "name": "bans",
+      "schema": "",
+      "columns": {
+        "banid": {
+          "name": "banid",
+          "type": "bigserial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "banlength": {
+          "name": "banlength",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "action": {
+          "name": "action",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "expiration": {
+          "name": "expiration",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "time": {
+          "name": "time",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "userid": {
+          "name": "userid",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "reason": {
+          "name": "reason",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "internalreason": {
+          "name": "internalreason",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "moderatorid": {
+          "name": "moderatorid",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "offensivecontent": {
+          "name": "offensivecontent",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "offensiveassetid": {
+          "name": "offensiveassetid",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.inventory": {
+      "name": "inventory",
+      "schema": "",
+      "columns": {
+        "inventoryid": {
+          "name": "inventoryid",
+          "type": "bigserial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "userid": {
+          "name": "userid",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "itemid": {
+          "name": "itemid",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "wearing": {
+          "name": "wearing",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "obatineddate": {
+          "name": "obatineddate",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "itemtype": {
+          "name": "itemtype",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "serialid": {
+          "name": "serialid",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.user_key": {
+      "name": "user_key",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "varchar(255)",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "varchar(15)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "hashed_password": {
+          "name": "hashed_password",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "user_key_user_id_users_id_fk": {
+          "name": "user_key_user_id_users_id_fk",
+          "tableFrom": "user_key",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.macaddresses": {
+      "name": "macaddresses",
+      "schema": "",
+      "columns": {
+        "userid": {
+          "name": "userid",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "macaddress": {
+          "name": "macaddress",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "banned": {
+          "name": "banned",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "time": {
+          "name": "time",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "macaddresses_userid_macaddress_pk": {
+          "name": "macaddresses_userid_macaddress_pk",
+          "columns": [
+            "userid",
+            "macaddress"
+          ]
+        }
+      },
+      "uniqueConstraints": {}
+    },
+    "public.recentlyplayed": {
+      "name": "recentlyplayed",
+      "schema": "",
+      "columns": {
+        "recentlyplayedid": {
+          "name": "recentlyplayedid",
+          "type": "bigserial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "userid": {
+          "name": "userid",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "gameid": {
+          "name": "gameid",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "time": {
+          "name": "time",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.relations": {
+      "name": "relations",
+      "schema": "",
+      "columns": {
+        "requestid": {
+          "name": "requestid",
+          "type": "bigserial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "sender": {
+          "name": "sender",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "recipient": {
+          "name": "recipient",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "time": {
+          "name": "time",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "type": {
+          "name": "type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.user_session": {
+      "name": "user_session",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "varchar(128)",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "varchar(15)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "active_expires": {
+          "name": "active_expires",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "idle_expires": {
+          "name": "idle_expires",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "user_session_user_id_users_id_fk": {
+          "name": "user_session_user_id_users_id_fk",
+          "tableFrom": "user_session",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.transactions": {
+      "name": "transactions",
+      "schema": "",
+      "columns": {
+        "transactionid": {
+          "name": "transactionid",
+          "type": "bigserial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "userid": {
+          "name": "userid",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "itemid": {
+          "name": "itemid",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "time": {
+          "name": "time",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "type": {
+          "name": "type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "amount": {
+          "name": "amount",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "sourceuserid": {
+          "name": "sourceuserid",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.users": {
+      "name": "users",
+      "schema": "",
+      "columns": {
+        "userid": {
+          "name": "userid",
+          "type": "bigserial",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "id": {
+          "name": "id",
+          "type": "varchar(128)",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "username": {
+          "name": "username",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "coins": {
+          "name": "coins",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "discordid": {
+          "name": "discordid",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "joindate": {
+          "name": "joindate",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "role": {
+          "name": "role",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "studiopresencelocation": {
+          "name": "studiopresencelocation",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "studiopresenceping": {
+          "name": "studiopresenceping",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "gender": {
+          "name": "gender",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'nonbinary'"
+        },
+        "lastactivetime": {
+          "name": "lastactivetime",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "laststipend": {
+          "name": "laststipend",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "avatarheadshot": {
+          "name": "avatarheadshot",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "avatarbody": {
+          "name": "avatarbody",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "3dmanifest": {
+          "name": "3dmanifest",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "headcolor": {
+          "name": "headcolor",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 24
+        },
+        "leftarmcolor": {
+          "name": "leftarmcolor",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 24
+        },
+        "leftlegcolor": {
+          "name": "leftlegcolor",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 119
+        },
+        "rightarmcolor": {
+          "name": "rightarmcolor",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 24
+        },
+        "rightlegcolor": {
+          "name": "rightlegcolor",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 119
+        },
+        "torsocolor": {
+          "name": "torsocolor",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 23
+        },
+        "registerip": {
+          "name": "registerip",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "lastip": {
+          "name": "lastip",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "banid": {
+          "name": "banid",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "blurb": {
+          "name": "blurb",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "''"
+        },
+        "scrubbedusername": {
+          "name": "scrubbedusername",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "activegame": {
+          "name": "activegame",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sitebadges": {
+          "name": "sitebadges",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'{}'::text[]"
+        },
+        "knockouts": {
+          "name": "knockouts",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "wipeouts": {
+          "name": "wipeouts",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "users_username_unique": {
+          "name": "users_username_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "username"
+          ]
+        }
+      }
+    },
+    "public.keys": {
+      "name": "keys",
+      "schema": "",
+      "columns": {
+        "key": {
+          "name": "key",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "madeby": {
+          "name": "madeby",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "claimedby": {
+          "name": "claimedby",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "expires": {
+          "name": "expires",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "useable": {
+          "name": "useable",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created": {
+          "name": "created",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.outfits": {
+      "name": "outfits",
+      "schema": "",
+      "columns": {
+        "outfitid": {
+          "name": "outfitid",
+          "type": "bigserial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "assets": {
+          "name": "assets",
+          "type": "bigint[]",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "associatedpackageid": {
+          "name": "associatedpackageid",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ownerid": {
+          "name": "ownerid",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "headcolor": {
+          "name": "headcolor",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "leftarmcolor": {
+          "name": "leftarmcolor",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "leftlegcolor": {
+          "name": "leftlegcolor",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "rightarmcolor": {
+          "name": "rightarmcolor",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "rightlegcolor": {
+          "name": "rightlegcolor",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "torsocolor": {
+          "name": "torsocolor",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "sequences": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

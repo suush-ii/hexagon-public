@@ -28,12 +28,14 @@
 	export let admin = false
 	export let sitealert: string
 	export let friendRequests: number
+	export let tradeRequests: number
 
 	interface pagePrimitive extends HTMLAnchorAttributes {
 		pageUrl: string
 		friendlyName: string
 		Icon?: Component
 		protected?: boolean
+		badge?: number
 	}
 
 	$: pages = {
@@ -46,8 +48,13 @@
 		],
 		authenticated: [
 			{ pageUrl: `/users/${userId}/profile`, friendlyName: $page.data.t('generic.profile') },
-			{ pageUrl: '/friends/requests', friendlyName: $page.data.t('generic.friends') },
+			{
+				pageUrl: '/friends/requests',
+				friendlyName: $page.data.t('generic.friends'),
+				badge: friendRequests
+			},
 			{ pageUrl: '/avatar', friendlyName: $page.data.t('generic.customize') },
+			{ pageUrl: '/trades', friendlyName: 'Trades', badge: tradeRequests },
 			{ pageUrl: '/admin', friendlyName: $page.data.t('generic.admin'), protected: true }
 		]
 	} as { notAuthenticated: pagePrimitive[]; authenticated: pagePrimitive[] }
@@ -165,7 +172,7 @@
 			<div class="container flex h-10 items-center">
 				<nav class="flex items-center space-x-4 lg:space-x-6">
 					{#each pages.authenticated as navPage}
-						{#if navPage.pageUrl === '/friends/requests'}
+						{#if navPage.badge || navPage?.badge === 0}
 							<a
 								class="text-xs font-medium text-muted-foreground transition-colors hover:text-primary"
 								href={navPage.pageUrl}
@@ -173,7 +180,7 @@
 								<div class="flex gap-x-2 items-center">
 									{navPage.friendlyName}
 
-									<Badge class="h-4" variant="secondary">{friendRequests}</Badge>
+									<Badge class="h-4" variant="secondary">{navPage.badge}</Badge>
 								</div></a
 							>
 						{:else if (navPage?.protected === true && admin === true) || !navPage?.protected}

@@ -77,7 +77,8 @@ export const inventoryTable = pgTable('inventory', {
 	obatineddate: timestamp('obatineddate', { mode: 'date', withTimezone: true })
 		.notNull()
 		.defaultNow(),
-	itemtype: text('itemtype').$type<AssetTypes>().notNull()
+	itemtype: text('itemtype').$type<AssetTypes>().notNull(),
+	serialid: integer('serialid')
 })
 
 export const transactionsTable = pgTable('transactions', {
@@ -85,7 +86,9 @@ export const transactionsTable = pgTable('transactions', {
 	userid: bigint('userid', { mode: 'number' }).notNull(),
 	itemid: bigint('itemid', { mode: 'number' }),
 	time: timestamp('time', { mode: 'date', withTimezone: true }).notNull().defaultNow(),
-	type: text('type').$type<'stipend' | 'purchase' | 'sales' | 'adjustment' | 'visit'>().notNull(),
+	type: text('type')
+		.$type<'stipend' | 'purchase' | 'sales' | 'adjustment' | 'visit' | 'trade'>()
+		.notNull(),
 	amount: bigint('amount', { mode: 'number' }).notNull(),
 	sourceuserid: bigint('sourceuserid', { mode: 'number' })
 })

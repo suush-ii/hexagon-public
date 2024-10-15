@@ -3,13 +3,22 @@
 	import * as DropdownMenu from '$src/components/ui/dropdown-menu'
 	import DownloadModal from '$src/components/downloadModal.svelte'
 	import ShutdownModal from '$src/components/games/shutdownModal.svelte'
+	import SellModalLimited from '$src/components/catalog/sell/sellModalLimited.svelte'
+	import SellModalLimitedU from '$src/components/catalog/sell/sellModalLimitedU.svelte'
 	import { launchStudio } from '$lib/develop/studio'
 	import { depluralize } from '$src/lib/utils'
 	import { Menu } from 'lucide-svelte'
+	import type { Infer, SuperValidated } from 'sveltekit-superforms'
+	import { type FormSchema as SellLimitedSchema } from '$lib/schemas/catalog/selllimitedschema'
+	import { type FormSchema as SellLimitedSchemaU } from '$lib/schemas/catalog/selllimiteduschema'
 
 	let downloadModal: DownloadModal
 
 	let shutdownModal: ShutdownModal
+
+	let sellModalLimited: SellModalLimited
+
+	let sellModalLimitedU: SellModalLimitedU
 
 	export let itemid: number
 
@@ -27,13 +36,33 @@
 
 	export let shutdownForm: HTMLFormElement | undefined = undefined
 
+	export let sellFormLimited: SuperValidated<Infer<SellLimitedSchema>> | undefined = undefined
+
+	export let sellFormLimitedU: SuperValidated<Infer<SellLimitedSchemaU>> | undefined = undefined
+
+	export let serials: { serialid: number | null }[] = []
+
+	export let sold: number = 0
+
 	export let canModerate: boolean
+
+	export let canSell = false
+
+	export let limited: string | undefined | null = undefined
 </script>
 
 <DownloadModal bind:this={downloadModal} type={'studio'} />
 
 {#if shutdownForm}
 	<ShutdownModal bind:this={shutdownModal} {shutdownForm} />
+{/if}
+
+{#if sellFormLimited}
+	<SellModalLimited bind:this={sellModalLimited} {sellFormLimited} {itemid} />
+{/if}
+
+{#if sellFormLimitedU}
+	<SellModalLimitedU bind:this={sellModalLimitedU} {sellFormLimitedU} {itemid} {serials} {sold} />
 {/if}
 
 <DropdownMenu.Root>
@@ -70,6 +99,19 @@
 				class="cursor-pointer"
 				>Shut Down All Servers
 			</DropdownMenu.Item>
+		{/if}
+
+		{#if canSell}
+			<DropdownMenu.Item
+				on:click={() => {
+					if (limited === 'limitedu') {
+						sellModalLimitedU.open()
+					} else {
+						sellModalLimited.open()
+					}
+				}}
+				class="cursor-pointer">Sell Item</DropdownMenu.Item
+			>
 		{/if}
 	</DropdownMenu.Content>
 </DropdownMenu.Root>

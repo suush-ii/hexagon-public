@@ -41,6 +41,7 @@
 		{admin}
 		sitealert={data.sitealert}
 		friendRequests={data.requestCount}
+		tradeRequests={data.tradeCount}
 	/>
 	<div class="m-auto flex">
 		<Card.Root class="w-96 p-4 text-center m-auto">

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { depluralize } from '$lib/utils'
-	import EditAssetFormPrimitive from '$src/components/develop/edit/editAssetFormPrimitive.svelte'
+	import EditAssetFormPrimitive from '$src/components/develop/edit/admin/editAssetFormPrimitive.svelte'
 	import EditGearFormPrimitive from '$src/components/develop/edit/editGearFormPrimitive.svelte'
 	import type { PageData } from './$types'
 
@@ -34,6 +34,7 @@
 			onsale={data.onsale}
 			price={data.price}
 			genres={data.genres}
+			limited={data.limited}
 		/>
 	{/if}
 </div>

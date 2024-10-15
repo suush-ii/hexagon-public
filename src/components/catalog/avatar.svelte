@@ -142,4 +142,6 @@
 				attempt = 0
 			}}>{dimension === '2D' ? '3D' : '2D'}</Button
 		>{/if}
+
+		<slot/>
 </div>
