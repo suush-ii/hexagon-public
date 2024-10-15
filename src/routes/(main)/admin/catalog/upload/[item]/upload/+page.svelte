@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { PageData } from './$types'
 
-	import AssetFormPrimitive from '$src/components/develop/assetFormPrimitive.svelte'
+	import AssetFormPrimitive from '$src/components/develop/admin/assetFormPrimitive.svelte'
 
 	import GearFormPrimitive from '$src/components/develop/gearFormPrimitive.svelte'
 

@@ -41,7 +41,9 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 			assetType: true,
 			onsale: true,
 			last7dayscounter: true,
-			lastweekreset: true
+			lastweekreset: true,
+			stock: true,
+			limited: true
 		},
 		with: {
 			author: {
@@ -77,13 +79,29 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 		})
 	}
 
+	if (item.stock && item.stock <= 0) {
+		return error(403, {
+			success: false,
+			message: 'This item is out of stock!',
+			data: {}
+		})
+	}
+
+	if (item.limited === 'limited') {
+		return error(403, {
+			success: false,
+			message: 'This item cannot be purchased!',
+			data: {}
+		})
+	}
+
 	const alreadyOwned = await db
 		.select()
 		.from(inventoryTable)
 		.where(and(eq(inventoryTable.userid, locals.user.userid), eq(inventoryTable.itemid, itemid)))
 		.limit(1)
 
-	if (alreadyOwned.length > 0) {
+	if (alreadyOwned.length > 0 && item.limited !== 'limitedu') {
 		return error(400, {
 			success: false,
 			message: 'You already own this item!',
@@ -115,9 +133,13 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 					}
 				}
 
-				await tx
-					.insert(inventoryTable)
-					.values({ itemid, userid: user.userid, wearing: false, itemtype: item.assetType })
+				await tx.insert(inventoryTable).values({
+					itemid,
+					userid: user.userid,
+					wearing: false,
+					itemtype: item.assetType,
+					serialid: item.sales + 1
+				})
 
 				if (item.assetType === 'packages') {
 					const outfit = await tx.query.outfitsTable.findFirst({
@@ -198,6 +220,13 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 					.update(assetTable)
 					.set({ sales: item.sales + 1 })
 					.where(eq(assetTable.assetid, itemid))
+
+				if (item.stock && item.stock > 0) {
+					await tx
+						.update(assetTable)
+						.set({ stock: item.stock - 1 })
+						.where(eq(assetTable.assetid, itemid))
+				}
 			}
 		} catch (e) {
 			tx.rollback()

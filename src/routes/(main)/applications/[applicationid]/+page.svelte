@@ -7,6 +7,7 @@
 	import type { Writable } from 'svelte/store'
 	import { browser } from '$app/environment'
 	import { goto } from '$app/navigation'
+	import { env } from '$env/dynamic/public'
 
 	export let data: PageData
 
@@ -83,8 +84,14 @@
 				size="sm">Link Discord</Button
 			>
 		{:else if !data.reviewed}
-			<div class="bg-muted-foreground/10 rounded-xl p-2">
+			<div class="bg-muted-foreground/10 rounded-xl p-2 flex flex-col gap-y-2">
 				Your application is currently being reviewed.
+
+				<h2 class="font-semibold">Do not lose your Application ID. Please save it.</h2>
+
+				<a class="hover:underline font-semibold" href={env.PUBLIC_DISCORD_INVITE ?? ''}
+					>Please join the discord server.</a
+				>
 			</div>
 		{/if}
 

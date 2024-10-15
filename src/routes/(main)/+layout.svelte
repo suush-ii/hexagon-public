@@ -47,6 +47,7 @@
 			{admin}
 			sitealert={data.sitealert}
 			friendRequests={data.requestCount}
+			tradeRequests={data.tradeCount}
 		/>
 	{:else if $page.url.pathname === '/login'}
 		<Navbar
@@ -56,6 +57,7 @@
 			{admin}
 			sitealert={data.sitealert}
 			friendRequests={data.requestCount}
+			tradeRequests={data.tradeCount}
 		/>
 	{/if}
 

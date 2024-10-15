@@ -1,7 +1,7 @@
 import { error, fail, redirect } from '@sveltejs/kit'
 import type { PageServerLoad, Actions } from './$types'
-import { superValidate } from 'sveltekit-superforms/server'
-import { formSchema as assetSchema } from '$src/lib/schemas/edit/editassetschema'
+import { setError, superValidate } from 'sveltekit-superforms/server'
+import { formSchema as assetSchema } from '$src/lib/schemas/edit/admin/editassetschema'
 import { formSchema as gearSchema } from '$src/lib/schemas/edit/editgearschema'
 import { zod } from 'sveltekit-superforms/adapters'
 import { z } from 'zod'
@@ -28,7 +28,8 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 			price: assetTable.price,
 			genres: assetTable.genres,
 			assettype: assetTable.assetType,
-			gearattributes: assetTable.gearattributes
+			gearattributes: assetTable.gearattributes,
+			limited: assetTable.limited
 		})
 		.from(assetTable)
 		.where(eq(assetTable.assetid, result.data))
@@ -48,6 +49,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 	const price = asset[0].price ?? 0
 	const genres = asset[0].genres
 	const gearattributes = asset[0].gearattributes ?? []
+	const limited = asset[0].limited ? true : false
 	const assetForm = await superValidate(zod(assetSchema))
 	const gearForm = await superValidate(zod(gearSchema))
 
@@ -60,6 +62,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 		onsale,
 		price,
 		genres,
+		limited,
 		gearattributes
 	}
 }
@@ -70,7 +73,8 @@ async function updateAsset(
 	price: number,
 	genres: AssetGenreDB[],
 	assetname: string,
-	assetid: number
+	assetid: number,
+	limited: boolean = false
 ) {
 	await db
 		.update(assetTable)
@@ -80,7 +84,8 @@ async function updateAsset(
 			price,
 			genres,
 			assetname,
-			updated: new Date()
+			updated: new Date(),
+			limited: limited ? 'limited' : undefined
 		})
 		.where(eq(assetTable.assetid, assetid))
 }
@@ -106,13 +111,31 @@ export const actions: Actions = {
 
 		const data = form.data
 
+		const item = await db.query.assetTable.findFirst({
+			where: eq(assetTable.assetid, Number(params.assetid)),
+			columns: {
+				limited: true
+			}
+		})
+
+		if (!item) {
+			return fail(404, {
+				form
+			})
+		}
+
+		if (item.limited && data.limited) {
+			return setError(form, 'limited', 'This item is already limited.')
+		}
+
 		await updateAsset(
 			data.description,
 			data.onsale,
 			data.price,
 			data.genres,
 			data.name,
-			Number(params.assetid)
+			Number(params.assetid),
+			data.limited
 		)
 
 		return { form }

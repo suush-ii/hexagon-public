@@ -17,7 +17,8 @@ export async function uploadAsset(
 	form: SuperValidated<any, any, any>,
 	userid: number,
 	assetname?: string,
-	universeid?: number // for places
+	universeid?: number, // for places
+	stock?: number
 ) {
 	const mimeTypes = _uploadableAssets[item].mimeTypes
 
@@ -66,6 +67,18 @@ export async function uploadAsset(
 
 		if (alreadyModeratedPlace?.associatedasset.moderationstate) {
 			moderationState = alreadyModeratedPlace.associatedasset.moderationstate
+		}
+
+		let limited: 'limitedu' | undefined = undefined
+		let rap = undefined
+
+		if (stock === 0) {
+			stock = undefined
+		}
+
+		if (stock && stock > 0) {
+			limited = 'limitedu'
+			rap = 0
 		}
 
 		let Key = item
@@ -196,7 +209,10 @@ export async function uploadAsset(
 					moderationstate: moderationState,
 					price: form.data.price,
 					description: form.data.description,
-					genres: form.data.genres
+					genres: form.data.genres,
+					stock,
+					limited,
+					recentaverageprice: rap
 				})
 				.returning({ assetid: assetTable.assetid })
 
@@ -215,7 +231,10 @@ export async function uploadAsset(
 					price: form.data.price,
 					description: form.data.description,
 					genres: form.data.genres,
-					gearattributes: form.data.gearattributes
+					gearattributes: form.data.gearattributes,
+					stock,
+					limited,
+					recentaverageprice: rap
 				})
 				.returning({ assetid: assetTable.assetid })
 

@@ -189,6 +189,7 @@
 								itemId={item.itemid}
 								itemName={item.asset.assetname}
 								wearing={item.wearing}
+								limited={item.asset.limited}
 								bind:trig
 							/>
 						{/each}
@@ -208,6 +209,7 @@
 								itemId={item.itemid}
 								itemName={item.asset.assetname}
 								wearing={item.wearing}
+								limited={item.asset.limited}
 								bind:trig
 							/>
 						{/each}

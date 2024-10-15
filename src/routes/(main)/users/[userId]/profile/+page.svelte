@@ -7,6 +7,8 @@
 
 	import GameThumbnail from '$src/components/games/gameThumbnail.svelte'
 
+	import Dropdown from '$src/components/users/dropdown.svelte'
+
 	import { friend as friendLib } from '$lib/friend'
 
 	import * as Accordion from '$src/components/ui/accordion'
@@ -60,9 +62,10 @@
 	>
 		<Avatar state={status} {userid} {username} />
 
-		<div class="flex flex-col min-w-52 gap-y-4">
+		<div class="flex flex-col min-w-52 gap-y-4 w-full">
 			<h1 class="font-semibold text-5xl">{username}</h1>
-			<div class="w-full flex flex-row flex-wrap justify-around text-center">
+
+			<div class="max-w-48 flex flex-wrap justify-around text-center">
 				<div>
 					<p class="font-bold text-muted-foreground">Friends</p>
 					<p>{formatCompactNumber(data.friendsCount, false)}</p>
@@ -76,33 +79,37 @@
 		</div>
 
 		{#if userid != data.user.userid}
-			{#if data.relation.length > 0 && data.relation[0].type === 'block'}
-				<Button variant="outline" class="ml-auto mt-auto h-14 w-40 text-lg" disabled size="lg"
-					>Blocked</Button
-				>
-			{:else if data.relation.length > 0 && data.relation[0].type === 'friend'}
-				<Button
-					on:click={() => {
-						friend(false)
-					}}
-					variant="outline"
-					class="ml-auto mt-auto h-14 w-40 text-lg"
-					size="lg">Unfriend</Button
-				>
-			{:else if data.relation.length > 0 && data.relation[0].type === 'request'}
-				<Button variant="outline" class="ml-auto mt-auto h-14 w-40 text-lg" disabled size="lg"
-					>Pending</Button
-				>
-			{:else}
-				<Button
-					on:click={() => {
-						friend(true)
-					}}
-					variant="outline"
-					class="ml-auto mt-auto h-14 w-40 text-lg"
-					size="lg">Add Friend</Button
-				>
-			{/if}
+			<div class="flex flex-col">
+				<Dropdown {userid} />
+
+				{#if data.relation.length > 0 && data.relation[0].type === 'block'}
+					<Button variant="outline" class="ml-auto mt-auto h-14 w-40 text-lg" disabled size="lg"
+						>Blocked</Button
+					>
+				{:else if data.relation.length > 0 && data.relation[0].type === 'friend'}
+					<Button
+						on:click={() => {
+							friend(false)
+						}}
+						variant="outline"
+						class="ml-auto mt-auto h-14 w-40 text-lg"
+						size="lg">Unfriend</Button
+					>
+				{:else if data.relation.length > 0 && data.relation[0].type === 'request'}
+					<Button variant="outline" class="ml-auto mt-auto h-14 w-40 text-lg" disabled size="lg"
+						>Pending</Button
+					>
+				{:else}
+					<Button
+						on:click={() => {
+							friend(true)
+						}}
+						variant="outline"
+						class="ml-auto mt-auto h-14 w-40 text-lg"
+						size="lg">Add Friend</Button
+					>
+				{/if}
+			</div>
 		{/if}
 	</div>
 

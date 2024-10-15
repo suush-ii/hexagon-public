@@ -10,7 +10,12 @@ import { usersTable } from '$lib/server/schema/users'
 export const load: PageServerLoad = async ({ url }) => {
 	const redirectString = url.searchParams.get('redirect')
 
-	if (redirectString && redirectString != 'useradmin' && redirectString != 'moderateuser') {
+	if (
+		redirectString &&
+		redirectString !== 'useradmin' &&
+		redirectString !== 'moderateuser' &&
+		redirectString !== 'tradehistory'
+	) {
 		redirect(302, url.pathname)
 	}
 
