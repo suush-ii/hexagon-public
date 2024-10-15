@@ -342,10 +342,10 @@
 				<div class="flex flex-col w-full">
 					<h5 class="text-lg flex items-center">
 						Recent Average Price: <MoonStar class="h-5" />
-						{#if data.item.recentaverageprice === 0}
+						{#if !data.item.recentaverageprice || data.item.recentaverageprice === 0}
 							N/A
 						{:else}
-							{formatCompactNumber(data.item.recentaverageprice ?? 0, false)}
+							{formatCompactNumber(data.item.recentaverageprice, false)}
 						{/if}
 					</h5>
 
