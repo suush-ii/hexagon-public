@@ -24,6 +24,7 @@
 	export let assetid: number
 	export let username: string
 	export let assetname: string
+	export let limited: string | null
 
 	export let data: SuperValidated<Infer<InventoryIdSchema>>
 
@@ -56,7 +57,7 @@
 			<h5 class="font-bold">{formatCompactNumber(price, false)}</h5>
 		</div>
 
-		{#if serial !== 0}
+		{#if serial !== 0 && limited === 'limitedu'}
 			<h5 class="text-lg text-muted-foreground">Serial #{serial} of {sold}</h5>
 		{:else}
 			<h5 class="text-lg text-muted-foreground">Serial N/A</h5>

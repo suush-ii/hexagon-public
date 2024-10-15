@@ -321,6 +321,7 @@
 								data={data.inventoryId}
 								assetname={data.item.assetname}
 								assetid={data.item.assetid}
+								limited={data.item.limited}
 							/>
 						{/each}
 						<div class="mt-auto">
