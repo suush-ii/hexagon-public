@@ -461,7 +461,11 @@
 							<Form.FieldErrors />
 						</Form.Field>
 
-						<input type="hidden" name="application" value={data.applicationid} />
+						<input
+							type="hidden"
+							name="application"
+							value={data.applicationid ?? '00000000-0000-0000-0000-000000000000'}
+						/>
 
 						<Form.Button disabled={$submitting} class="w-full">
 							{#if $submitting}

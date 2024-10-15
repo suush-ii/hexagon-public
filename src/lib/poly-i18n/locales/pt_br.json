@@ -24,7 +24,7 @@
 		"creator": "Criador",
 		"price": "Preço",
 		"buyWith": "Comprar com",
-		"sold": "({count} Vendidos)",
+		"sold": "( {count} Vendidos )",
 		"genres": "Gêneros",
 		"gearAttributes": "Atributos dos Gears",
 		"offsale": "Esgotado",

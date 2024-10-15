@@ -63,6 +63,9 @@
 							<a class="hover:underline" href="/admin/users/moderateuser?id={data.userid}"
 								>Moderate User</a
 							>
+							<a class="hover:underline" href="/admin/users/tradehistory?id={data.userid}"
+								>Trade History</a
+							>
 						</td>
 					</tr>
 				</tbody>

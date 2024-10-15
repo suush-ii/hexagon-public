@@ -24,7 +24,7 @@
 		"creator": "Creator",
 		"price": "Price",
 		"buyWith": "Buy with",
-		"sold": "({count} Sold)",
+		"sold": "( {count} Sold )",
 		"genres": "Genres",
 		"gearAttributes": "Gear Attributes",
 		"offsale": "Offsale",

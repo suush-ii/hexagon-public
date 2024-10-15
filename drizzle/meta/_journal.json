@@ -540,6 +540,55 @@
       "when": 1727056273796,
       "tag": "0077_old_zarek",
       "breakpoints": true
+    },
+    {
+      "idx": 78,
+      "version": "7",
+      "when": 1727150393108,
+      "tag": "0078_mushy_mordo",
+      "breakpoints": true
+    },
+    {
+      "idx": 79,
+      "version": "7",
+      "when": 1727150705226,
+      "tag": "0079_past_mole_man",
+      "breakpoints": true
+    },
+    {
+      "idx": 80,
+      "version": "7",
+      "when": 1727152475912,
+      "tag": "0080_low_annihilus",
+      "breakpoints": true
+    },
+    {
+      "idx": 81,
+      "version": "7",
+      "when": 1727404696832,
+      "tag": "0081_nervous_union_jack",
+      "breakpoints": true
+    },
+    {
+      "idx": 82,
+      "version": "7",
+      "when": 1727919312671,
+      "tag": "0082_sticky_prowler",
+      "breakpoints": true
+    },
+    {
+      "idx": 83,
+      "version": "7",
+      "when": 1728346276027,
+      "tag": "0083_glamorous_bedlam",
+      "breakpoints": true
+    },
+    {
+      "idx": 84,
+      "version": "7",
+      "when": 1728615028135,
+      "tag": "0084_milky_sasquatch",
+      "breakpoints": true
     }
   ]
 }
