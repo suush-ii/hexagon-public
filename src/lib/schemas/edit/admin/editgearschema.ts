@@ -1,15 +1,16 @@
 import { z } from 'zod'
-import { formSchema as assetSchema } from '$lib/schemas/assetschema'
+import { formSchema as gearSchema } from '$lib/schemas/edit/editgearschema'
 
-const { shape } = assetSchema
+const { shape } = gearSchema
 
 export const formSchema = z.object({
 	name: shape.name,
 	description: shape.description,
 	price: shape.price,
-	asset: shape.asset,
 	genres: shape.genres,
-	stock: z.coerce.number().int().min(0).max(10000).default(0)
+	onsale: shape.onsale,
+	gearattributes: shape.gearattributes,
+	limited: z.boolean()
 })
 
 export type FormSchema = typeof formSchema

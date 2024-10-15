@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { depluralize } from '$lib/utils'
 	import EditAssetFormPrimitive from '$src/components/develop/edit/admin/editAssetFormPrimitive.svelte'
-	import EditGearFormPrimitive from '$src/components/develop/edit/editGearFormPrimitive.svelte'
+	import EditGearFormPrimitive from '$src/components/develop/edit/admin/editGearFormPrimitive.svelte'
 	import type { PageData } from './$types'
 
 	export let data: PageData
@@ -24,6 +24,7 @@
 			price={data.price}
 			genres={data.genres}
 			gearattributes={data.gearattributes}
+			limited={data.limited}
 		/>
 	{:else}
 		<EditAssetFormPrimitive
