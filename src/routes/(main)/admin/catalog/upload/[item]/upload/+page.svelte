@@ -3,7 +3,7 @@
 
 	import AssetFormPrimitive from '$src/components/develop/admin/assetFormPrimitive.svelte'
 
-	import GearFormPrimitive from '$src/components/develop/gearFormPrimitive.svelte'
+	import GearFormPrimitive from '$src/components/develop/admin/gearFormPrimitive.svelte'
 
 	import PackageFormPrimitive from '$src/components/develop/packageFormPrimitive.svelte'
 

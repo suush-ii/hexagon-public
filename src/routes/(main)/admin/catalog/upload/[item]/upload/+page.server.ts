@@ -3,7 +3,7 @@ import { fail } from 'sveltekit-superforms'
 import { setError, superValidate } from 'sveltekit-superforms/server'
 import { zod } from 'sveltekit-superforms/adapters'
 import { formSchema as assetSchema } from '$lib/schemas/admin/assetschema'
-import { formSchema as gearSchema } from '$lib/schemas/gearschema'
+import { formSchema as gearSchema } from '$lib/schemas/admin/gearschema'
 import { formSchema as packageSchema } from '$lib/schemas/packageschema'
 import { redirect } from '@sveltejs/kit'
 import { uploadAsset } from '$lib/server/develop/uploadasset'
@@ -122,7 +122,15 @@ export const actions: Actions = {
 		}
 
 		const file = form.data.asset
-		const assetid = await uploadAsset(file, params.item, form, locals.user.userid)
+		const assetid = await uploadAsset(
+			file,
+			params.item,
+			form,
+			locals.user.userid,
+			undefined,
+			undefined,
+			form.data.stock
+		)
 
 		const numAssetId = Number(assetid)
 

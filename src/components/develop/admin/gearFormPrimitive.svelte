@@ -2,9 +2,9 @@
 	import * as Form from '$src/components/ui/form'
 	import { type SuperValidated, type Infer, superForm, fileProxy } from 'sveltekit-superforms'
 
-	import type { FormSchema as GearSchema } from '$lib/schemas/gearschema'
+	import type { FormSchema as GearSchema } from '$lib/schemas/admin/gearschema'
 
-	import { formSchema as gearSchema } from '$lib/schemas/gearschema'
+	import { formSchema as gearSchema } from '$lib/schemas/admin/gearschema'
 
 	import type { FormTextareaEvent } from '$src/components/ui/textarea'
 	import { BookText } from 'lucide-svelte'
@@ -148,6 +148,22 @@
 					{/each}
 				</Select.Content>
 			</Select.Root>
+		</Form.Control>
+		<Form.FieldErrors />
+	</Form.Field>
+
+	<Form.Field {form} name="stock">
+		<Form.Control let:attrs>
+			<Form.Label>Stock (Limited U)</Form.Label>
+			<Input
+				{...attrs}
+				disabled={$submitting}
+				type="number"
+				min={0}
+				max={10000}
+				bind:value={$formData.stock}
+			/>
+			<Form.Description>Up to 10000. Leave at 0 to ignore.</Form.Description>
 		</Form.Control>
 		<Form.FieldErrors />
 	</Form.Field>

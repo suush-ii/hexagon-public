@@ -2,9 +2,9 @@
 	import * as Form from '$src/components/ui/form'
 	import { type SuperValidated, type Infer, superForm } from 'sveltekit-superforms'
 
-	import type { FormSchema as GearSchema } from '$lib/schemas/edit/editgearschema'
+	import type { FormSchema as GearSchema } from '$lib/schemas/edit/admin/editgearschema'
 
-	import { formSchema as gearSchema } from '$lib/schemas/edit/editgearschema'
+	import { formSchema as gearSchema } from '$lib/schemas/edit/admin/editgearschema'
 
 	import type { FormTextareaEvent } from '$src/components/ui/textarea'
 	import { BookText } from 'lucide-svelte'
@@ -44,6 +44,8 @@
 
 	export let gearattributes: GearAttributes[]
 
+    export let limited: boolean
+
 	function handleUpdate(e: FormTextareaEvent<any>) {
 		description = e?.target?.value
 	}
@@ -58,6 +60,7 @@
 	$formData.price = price
 	$formData.genres = genres
 	$formData.gearattributes = gearattributes
+    $formData.limited = limited
 </script>
 
 <form method="POST" action="?/gear" enctype="multipart/form-data" class="max-w-4xl" use:enhance>
@@ -98,6 +101,17 @@
 
 			<input name={attrs.name} value={$formData.onsale} hidden />
 		</Form.Control>
+		<Form.FieldErrors />
+	</Form.Field>
+
+    <Form.Field {form} name="limited">
+		<Form.Control let:attrs>
+			<Checkbox disabled={limited} {...attrs} bind:checked={$formData.limited} />
+			<Form.Label>Limited (Non Unique) (PERMANENT)</Form.Label>
+
+			<input name={attrs.name} value={$formData.limited} hidden />
+		</Form.Control>
+		<Form.FieldErrors />
 		<Form.FieldErrors />
 	</Form.Field>
 

@@ -12,7 +12,6 @@ import { createHash } from 'node:crypto'
 import { PutObjectCommand } from '@aws-sdk/client-s3'
 import { s3BucketName } from '$src/stores'
 import { S3 } from '$lib/server/s3'
-import { isNullOrUndefined } from 'node:util'
 
 const limiter = new RateLimiter({
 	IP: [1, '15s']
