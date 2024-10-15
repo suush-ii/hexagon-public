@@ -245,7 +245,8 @@ export const actions: Actions = {
 				const currentRap = await tx.query.assetTable.findFirst({
 					where: eq(assetTable.assetid, seller.assetid),
 					columns: {
-						recentaverageprice: true
+						recentaverageprice: true,
+						limited: true
 					}
 				})
 
@@ -253,8 +254,13 @@ export const actions: Actions = {
 					!currentRap ||
 					(!currentRap.recentaverageprice && currentRap.recentaverageprice !== 0)
 				) {
-					tx.rollback()
-					return
+					if (currentRap?.limited !== 'limited') {
+						// "limiteds" originally start out as normal items so they wont have rap
+						tx.rollback()
+						return
+					} else {
+						currentRap.recentaverageprice = 0
+					}
 				}
 
 				const newRap = Math.ceil(
