@@ -2,7 +2,7 @@ import type { PageServerLoad } from './$types'
 import { db } from '$lib/server/db'
 import { assetTable } from '$lib/server/schema/assets'
 import type { AssetTypes, GearAttributes } from '$lib/types'
-import { and, count, desc, eq, ilike, arrayOverlaps, not, or } from 'drizzle-orm'
+import { and, count, desc, eq, ilike, arrayOverlaps, or, isNotNull } from 'drizzle-orm'
 import { categories } from './'
 import { commonWhere } from '$lib/server/catalog'
 import { getPageNumber } from '$lib/utils'
@@ -49,6 +49,61 @@ export const load: PageServerLoad = async ({ url }) => {
 
 		items = await db.query.assetTable.findMany({
 			where: and(commonWhere, ilike(assetTable.assetname, `%${search}%`)), // library assets
+			columns: {
+				assetname: true,
+				price: true,
+				assetid: true,
+				creatoruserid: true,
+				updated: true,
+				sales: true,
+				favorites: true,
+				limited: true
+			},
+			with: {
+				author: {
+					columns: {
+						username: true
+					}
+				}
+			},
+			orderBy: desc(assetTable.updated),
+			limit: size,
+			offset: (page - 1) * size
+		})
+	} else if (
+		category.value === 'collectibles' ||
+		category.value === 'collectibleface' ||
+		category.value === 'collectiblehats' ||
+		category.value === 'collectiblegears'
+	) {
+		const queryType =
+			category.value === 'collectibles'
+				? undefined
+				: eq(assetTable.assetType, category.value.replace('collectible', '') as AssetTypes)
+
+		itemscount = await db
+			.select({ count: count() })
+			.from(assetTable)
+			.where(
+				and(
+					commonWhere,
+					isNotNull(assetTable.limited),
+					queryType,
+					ilike(assetTable.assetname, `%${search}%`)
+				)
+			)
+
+		if (itemscount[0].count < (page - 1) * size) {
+			page = 1
+		}
+
+		items = await db.query.assetTable.findMany({
+			where: and(
+				commonWhere,
+				isNotNull(assetTable.limited),
+				queryType,
+				ilike(assetTable.assetname, `%${search}%`)
+			), // library assets
 			columns: {
 				assetname: true,
 				price: true,
