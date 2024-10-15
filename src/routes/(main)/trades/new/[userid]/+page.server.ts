@@ -227,19 +227,25 @@ export const actions: Actions = {
 		const user = await db.query.usersTable.findFirst({
 			where: eq(usersTable.userid, event.locals.user.userid),
 			columns: {
-				coins: true
+				coins: true,
+				userid: true
 			}
 		})
 
 		const userOther = await db.query.usersTable.findFirst({
 			where: eq(usersTable.userid, Number(params.userid)),
 			columns: {
-				coins: true
+				coins: true,
+				userid: true
 			}
 		})
 
 		if (!user || !userOther) {
 			return setError(form, 'offering.items._errors', 'User not found.')
+		}
+
+		if (user.userid == userOther.userid) {
+			return setError(form, 'offering.items._errors', 'You cannot trade with yourself.')
 		}
 
 		const moons = offering.moons ?? 0
