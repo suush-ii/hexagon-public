@@ -16,7 +16,7 @@ export const categories = [
 		label: 'Collectibles',
 		types: [
 			{ value: 'collectibles', label: 'All Collectibles' },
-			{ value: 'collectibleface', label: 'Collectible Faces' },
+			{ value: 'collectiblefaces', label: 'Collectible Faces' },
 			{ value: 'collectiblehats', label: 'Collectibles Hats' },
 			{ value: 'collectiblegears', label: 'Collectibles Gear' }
 		]
