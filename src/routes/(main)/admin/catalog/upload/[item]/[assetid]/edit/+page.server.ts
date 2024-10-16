@@ -124,7 +124,7 @@ export const actions: Actions = {
 			})
 		}
 
-		if (item.limited && data.limited) {
+		if (item.limited && data.limited === false) {
 			return setError(form, 'limited', 'This item is already limited.')
 		}
 
@@ -160,6 +160,23 @@ export const actions: Actions = {
 
 		const data = form.data
 
+		const item = await db.query.assetTable.findFirst({
+			where: eq(assetTable.assetid, Number(params.assetid)),
+			columns: {
+				limited: true
+			}
+		})
+
+		if (!item) {
+			return fail(404, {
+				form
+			})
+		}
+
+		if (item.limited && data.limited === false) {
+			return setError(form, 'limited', 'This item is already limited.')
+		}
+
 		await db
 			.update(assetTable)
 			.set({
@@ -169,7 +186,8 @@ export const actions: Actions = {
 				genres: data.genres,
 				gearattributes: data.gearattributes,
 				assetname: data.name,
-				updated: new Date()
+				updated: new Date(),
+				limited: data.limited ? 'limited' : undefined
 			})
 			.where(eq(assetTable.assetid, Number(params.assetid)))
 
