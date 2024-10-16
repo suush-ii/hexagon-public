@@ -58,6 +58,7 @@
 				<AlertDialog.Title class="text-2xl text-center font-semibold flex items-center">
 					<h1 class="w-full">Trade Request</h1>
 					<button
+						type="button"
 						on:click={() => {
 							openTrade = false
 						}}><X /></button
@@ -192,6 +193,7 @@
 					<Button
 						disabled={$submitting}
 						size="lg"
+						type="button"
 						on:click={() => {
 							openTrade = false
 						}}>Close</Button
