@@ -217,7 +217,8 @@ export const actions: Actions = {
 				await tx
 					.update(inventoryTable)
 					.set({
-						userid: locals.user.userid
+						userid: locals.user.userid,
+						wearing: false
 					})
 					.where(eq(inventoryTable.inventoryid, form.data.inventoryId))
 
