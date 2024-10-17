@@ -79,7 +79,7 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 		})
 	}
 
-	if (item.stock && item.stock <= 0) {
+	if (item.stock !== null && item.stock <= 0) {
 		return error(403, {
 			success: false,
 			message: 'This item is out of stock!',
