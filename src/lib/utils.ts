@@ -60,7 +60,7 @@ export const flyAndScale = (
 }
 
 export function slugify(text: string) {
-	return text
+	text = text
 		.toString()
 		.normalize('NFD') // split an accented letter in the base letter and the acent
 		.replace(/[\u0300-\u036f]/g, '') // remove all previously split accents
@@ -68,6 +68,12 @@ export function slugify(text: string) {
 		.replace(/\s+/g, '-')
 		.replace(/[^\w\-]+/g, '')
 		.replace(/\-\-+/g, '-')
+
+	if (text.length === 0) {
+		return 'unnamed'
+	}
+
+	return text
 }
 // https://gist.github.com/codeguy/6684588?permalink_comment_id=3332719#gistcomment-3332719
 
