@@ -104,7 +104,7 @@
 <div class="container p-4 flex flex-col gap-y-4">
 	<h1 class="text-4xl leading-none tracking-tight font-semibold">Trading</h1>
 
-	<div class="flex flex-wrap gap-x-6">
+	<div class="flex flex-wrap lg:flex-nowrap gap-x-6">
 		<form
 			method="POST"
 			class="flex flex-col p-6 gap-y-16 bg-muted-foreground/5 rounded-xl border h-fit"
@@ -199,7 +199,7 @@
 		<div class="flex flex-col gap-y-4 grow">
 			<h1 class="text-xl">Your Inventory</h1>
 
-			<div class="flex gap-x-4 p-4 min-h-96">
+			<div class="flex gap-x-4 p-4 min-h-96 flex-wrap">
 				{#each data.inventory as item}
 					{#if trade.offering.items.find((i) => i.inventoryid === item.inventoryid) === undefined}
 						<TradeCard
@@ -232,7 +232,7 @@
 
 			<h1 class="text-xl">{data.user.username}'s Inventory</h1>
 
-			<div class="flex gap-x-4 p-4 h-full min-h-96">
+			<div class="flex gap-x-4 p-4 h-full min-h-96 flex-wrap">
 				{#each data.inventoryOther as item}
 					{#if trade.requesting.items.find((i) => i.inventoryid === item.inventoryid) === undefined}
 						<TradeCard
