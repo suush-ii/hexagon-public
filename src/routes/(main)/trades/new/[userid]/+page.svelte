@@ -226,7 +226,12 @@
 				{/each}
 			</div>
 
-			<PaginationWrapper count={0} size={28} url={$page.url} />
+			<PaginationWrapper
+				count={data.inventoryCount ?? 0}
+				size={12}
+				url={$page.url}
+				queryName={'inventory'}
+			/>
 
 			<Separator />
 
@@ -258,7 +263,12 @@
 					{/if}
 				{/each}
 			</div>
-			<PaginationWrapper count={0} size={28} url={$page.url} />
+			<PaginationWrapper
+				count={data.inventoryOtherCount ?? 0}
+				size={12}
+				url={$page.url}
+				queryName={'otherinventory'}
+			/>
 		</div>
 	</div>
 </div>
