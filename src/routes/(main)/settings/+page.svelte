@@ -9,6 +9,9 @@
 	import { formSchema } from '$lib/schemas/settingsschema'
 	import type { PageData } from './$types'
 	import * as Form from '$src/components/ui/form'
+	import ChangePasswordModal from '$src/components/changePasswordModal.svelte'
+
+	let changePasswordModal: ChangePasswordModal
 
 	export let data: PageData
 
@@ -98,7 +101,7 @@
 			<tr>
 				<td class="w-32">{data.t('signUpLogin.password')}:</td>
 				<td
-					>********** <Button variant="outline" size="sm"
+					>********** <Button variant="outline" size="sm" on:click={() => changePasswordModal.open()}
 						>{data.t('settings.changePassword')}</Button
 					></td
 				>
@@ -185,3 +188,5 @@
 <form action="?/link" method="post" bind:this={linkForm}>
 	<input type="hidden" name="code" bind:value={discordToken} />
 </form>
+
+<ChangePasswordModal bind:this={changePasswordModal} changePasswordForm={data.changePasswordForm} />

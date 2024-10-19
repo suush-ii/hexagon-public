@@ -1,13 +1,16 @@
 import type { PageServerLoad, Actions } from './$types'
 import { superValidate } from 'sveltekit-superforms/server'
 import { formSchema, formSchemaDiscord } from '$lib/schemas/settingsschema'
+import { formSchema as changePasswordSchema } from '$lib/schemas/changepasswordschema'
 import { zod } from 'sveltekit-superforms/adapters'
-import { fail } from 'sveltekit-superforms'
+import { fail, setError } from 'sveltekit-superforms'
 import { db } from '$lib/server/db'
 import { usersTable } from '$lib/server/schema'
 import { and, eq, not } from 'drizzle-orm'
 import { getOAuthTokens, getOAuthUrl, getUserData, pushMetadata } from '$lib/server/discord'
 import { error, redirect } from '@sveltejs/kit'
+import { auth } from '$src/lib/server/lucia'
+import { LuciaError } from 'lucia'
 
 export const load: PageServerLoad = async ({ locals }) => {
 	const blurb = await db
@@ -23,8 +26,11 @@ export const load: PageServerLoad = async ({ locals }) => {
 		where: eq(usersTable.userid, locals.user.userid)
 	})
 
+	const changePasswordForm = await superValidate(zod(changePasswordSchema))
+
 	return {
 		form: await superValidate(zod(formSchema)),
+		changePasswordForm,
 		blurb: blurb[0].blurb,
 		discordAuth: getOAuthUrl(),
 		discordId: discordId?.discordid
@@ -123,5 +129,32 @@ export const actions: Actions = {
 		await pushMetadata(userData.user.id, tokens, { has_account: 1 })
 
 		return redirect(302, '/settings')
+	},
+	changepassword: async (event) => {
+		const form = await superValidate(event, zod(changePasswordSchema))
+		if (!form.valid) {
+			return fail(400, {
+				form
+			})
+		}
+
+		const { locals } = event
+
+		const { newpassword, password } = form.data
+
+		try {
+			await auth.useKey('username', locals.user.username.toLowerCase(), password) // validate password too
+		} catch (e) {
+			if (e instanceof LuciaError && e.message === 'AUTH_INVALID_KEY_ID') {
+				return setError(form, 'password', 'Incorrect password')
+			}
+			if (e instanceof LuciaError && e.message === 'AUTH_INVALID_PASSWORD') {
+				return setError(form, 'password', 'Invalid password')
+			}
+
+			return fail(400, { form })
+		}
+
+		await auth.updateKeyPassword('username', locals.user.username.toLowerCase(), newpassword)
 	}
 }
