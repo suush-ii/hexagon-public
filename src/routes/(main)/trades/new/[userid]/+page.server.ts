@@ -8,6 +8,7 @@ import { fail, message, setError, superValidate } from 'sveltekit-superforms'
 import { zod } from 'sveltekit-superforms/adapters'
 import { formSchema } from '.'
 import { RateLimiter } from 'sveltekit-rate-limiter/server'
+import { getPageNumber } from '$src/lib/utils'
 
 const limiter = new RateLimiter({
 	IP: [1, '15s']
@@ -42,6 +43,34 @@ export const load: PageServerLoad = async ({ params, locals, url }) => {
 		error(400, { success: false, message: 'You cannot trade with yourself.' })
 	}
 
+	const inventoryCount = await db
+		.select({ count: count() })
+		.from(inventoryTable)
+		.where(and(eq(inventoryTable.userid, locals.user.userid), isNotNull(assetTable.limited)))
+		.innerJoin(assetTable, eq(assetTable.assetid, inventoryTable.itemid))
+		.limit(1)
+
+	let pageInventory = getPageNumber(url, 'inventory')
+
+	const sizeInventory = 12
+
+	if (inventoryCount[0].count < (pageInventory - 1) * sizeInventory) {
+		pageInventory = 1
+	}
+
+	const inventoryOtherCount = await db
+		.select({ count: count() })
+		.from(inventoryTable)
+		.where(and(eq(inventoryTable.userid, result.data), isNotNull(assetTable.limited)))
+		.innerJoin(assetTable, eq(assetTable.assetid, inventoryTable.itemid))
+		.limit(1)
+
+	let pageOtherInventory = getPageNumber(url, 'otherinventory')
+
+	if (inventoryOtherCount[0].count < (pageOtherInventory - 1) * sizeInventory) {
+		pageOtherInventory = 1
+	}
+
 	const inventory = await db
 		.select({
 			assetid: inventoryTable.itemid,
@@ -55,6 +84,8 @@ export const load: PageServerLoad = async ({ params, locals, url }) => {
 		.from(inventoryTable)
 		.where(and(eq(inventoryTable.userid, locals.user.userid), isNotNull(assetTable.limited)))
 		.innerJoin(assetTable, eq(assetTable.assetid, inventoryTable.itemid))
+		.limit(sizeInventory)
+		.offset((pageInventory - 1) * sizeInventory)
 
 	const inventoryOther = await db
 		.select({
@@ -69,6 +100,8 @@ export const load: PageServerLoad = async ({ params, locals, url }) => {
 		.from(inventoryTable)
 		.where(and(eq(inventoryTable.userid, result.data), isNotNull(assetTable.limited)))
 		.innerJoin(assetTable, eq(assetTable.assetid, inventoryTable.itemid))
+		.limit(sizeInventory)
+		.offset((pageOtherInventory - 1) * sizeInventory)
 
 	const form = await superValidate(zod(formSchema))
 
@@ -126,7 +159,9 @@ export const load: PageServerLoad = async ({ params, locals, url }) => {
 		inventory,
 		inventoryOther,
 		user,
-		form
+		form,
+		inventoryCount: inventoryCount[0].count,
+		inventoryOtherCount: inventoryOtherCount[0].count
 	}
 }
 
