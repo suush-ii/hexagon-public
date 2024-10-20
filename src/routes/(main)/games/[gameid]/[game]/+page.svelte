@@ -57,6 +57,8 @@
 
 	let shutdownForm: HTMLFormElement
 
+	let originalForm: HTMLFormElement
+
 	function calculatePercent(likes: number, dislikes: number) {
 		return Math.round((likes / (likes + dislikes)) * 100)
 	}
@@ -209,6 +211,7 @@
 									placeid={data.place.placeid}
 									canModerate={data.canModerate}
 									{shutdownForm}
+									{originalForm}
 								/>
 							{/if}
 						</div>
@@ -465,3 +468,5 @@
 </div>
 
 <form action="?/shutdown" method="post" bind:this={shutdownForm}></form>
+
+<form action="?/originalgame" method="post" bind:this={originalForm}></form>

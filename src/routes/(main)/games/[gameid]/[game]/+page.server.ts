@@ -3,7 +3,7 @@ import type { Actions } from './$types'
 import { RateLimiter } from 'sveltekit-rate-limiter/server'
 import { db } from '$lib/server/db'
 import { eq } from 'drizzle-orm'
-import { jobsTable, placesTable } from '$lib/server/schema'
+import { gamesTable, jobsTable, placesTable } from '$lib/server/schema'
 import { env } from '$env/dynamic/private'
 
 const limiter = new RateLimiter({
@@ -63,5 +63,34 @@ export const actions: Actions = {
 		}
 
 		return redirect(302, `/games/${params.gameid}/${params.game}`)
+	},
+	originalgame: async (event) => {
+		const { params, locals } = event
+
+		const game = await db.query.placesTable.findFirst({
+			where: eq(placesTable.placeid, Number(params.gameid)),
+			columns: {},
+			with: {
+				associatedgame: {
+					columns: {
+						original: true,
+						universeid: true
+					}
+				}
+			}
+		})
+
+		if (!game) {
+			return error(404, { success: false, message: 'Game not found.' })
+		}
+
+		if (locals.user.role !== 'admin' && locals.user.role !== 'owner') {
+			return error(403, { success: false, message: 'Unauthorized.' })
+		}
+
+		await db
+			.update(gamesTable)
+			.set({ original: game.associatedgame.original ? false : true })
+			.where(eq(gamesTable.universeid, game.associatedgame.universeid))
 	}
 }

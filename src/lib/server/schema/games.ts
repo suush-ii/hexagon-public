@@ -29,7 +29,8 @@ export const gamesTable = pgTable('games', {
 	thumbnailid: bigint('thumbnailid', { mode: 'number' }),
 	likes: bigint('likes', { mode: 'number' }).notNull().default(0),
 	dislikes: bigint('dislikes', { mode: 'number' }).notNull().default(0),
-	scrubbedgamename: text('scrubbedgamename')
+	scrubbedgamename: text('scrubbedgamename'),
+	original: boolean('original').notNull().default(false)
 })
 
 export const gamesRelations = relations(gamesTable, ({ one, many }) => ({
