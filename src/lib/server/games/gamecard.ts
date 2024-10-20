@@ -8,6 +8,7 @@ export async function gameCardSearch(params: {
 	orderBy: SQL<unknown>
 	limit: number
 	offset?: number
+	where?: SQL<unknown>
 }) {
 	const associatedAsset = alias(assetTable, 'associatedasset')
 
@@ -30,7 +31,7 @@ export async function gameCardSearch(params: {
 			and(eq(placesTable.universeid, gamesTable.universeid), eq(placesTable.startplace, true))
 		)
 		.innerJoin(associatedAsset, eq(associatedAsset.assetid, placesTable.placeid))
-		.where(eq(associatedAsset.moderationstate, 'approved'))
+		.where(and(eq(associatedAsset.moderationstate, 'approved'), params.where))
 
 	return games
 }

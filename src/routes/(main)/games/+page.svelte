@@ -81,11 +81,15 @@
 
 	<GameTurnstile games={data.popular} type="popular" />
 
-	<h1 class="text-2xl leading-none tracking-tight font-semibold">Newest</h1>
+	<h1 class="text-2xl leading-none tracking-tight font-semibold">Original Games on Hexagon</h1>
 
-	<GameTurnstile games={data.newest} type="newest" />
+	<GameTurnstile games={data.original} type="original" />
 
 	<h1 class="text-2xl leading-none tracking-tight font-semibold">Top Rated</h1>
 
 	<GameTurnstile games={data.topRated} type="toprated" />
+
+	<h1 class="text-2xl leading-none tracking-tight font-semibold">Newest</h1>
+
+	<GameTurnstile games={data.newest} type="newest" />
 </div>

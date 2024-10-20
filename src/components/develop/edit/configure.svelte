@@ -36,6 +36,8 @@
 
 	export let shutdownForm: HTMLFormElement | undefined = undefined
 
+	export let originalForm: HTMLFormElement | undefined = undefined
+
 	export let sellFormLimited: SuperValidated<Infer<SellLimitedSchema>> | undefined = undefined
 
 	export let sellFormLimitedU: SuperValidated<Infer<SellLimitedSchemaU>> | undefined = undefined
@@ -98,6 +100,19 @@
 				}}
 				class="cursor-pointer"
 				>Shut Down All Servers
+			</DropdownMenu.Item>
+		{/if}
+
+		{#if assetType === 'games' && canModerate}
+			<DropdownMenu.Item
+				on:click={() => {
+					if (originalForm) {
+						originalForm.submit()
+					}
+				}}
+				class="cursor-pointer"
+			>
+				Toggle Original Game
 			</DropdownMenu.Item>
 		{/if}
 

@@ -1,6 +1,6 @@
 import type { PageServerLoad } from './$types'
 import { gamesTable } from '$lib/server/schema/games'
-import { desc } from 'drizzle-orm'
+import { desc, eq } from 'drizzle-orm'
 import { gameCardSearch } from '$lib/server/games/gamecard'
 
 export const load: PageServerLoad = async ({}) => {
@@ -19,5 +19,16 @@ export const load: PageServerLoad = async ({}) => {
 		limit: 40
 	})
 
-	return { popular: popularGames, newest: newestGames, topRated: topRatedGames }
+	const originalGames = await gameCardSearch({
+		orderBy: desc(gamesTable.active),
+		where: eq(gamesTable.original, true),
+		limit: 40
+	})
+
+	return {
+		popular: popularGames,
+		newest: newestGames,
+		topRated: topRatedGames,
+		original: originalGames
+	}
 }
