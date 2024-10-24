@@ -1,10 +1,9 @@
 import { error, fail, redirect } from '@sveltejs/kit'
 import type { PageServerLoad, Actions } from './$types'
-import { superValidate } from 'sveltekit-superforms/server'
-import { formSchema } from '$lib/schemas/applicationschema'
+import { message, superValidate } from 'sveltekit-superforms/server'
 import { zod } from 'sveltekit-superforms/adapters'
 import { db } from '$lib/server/db'
-import { eq } from 'drizzle-orm'
+import { and, eq, isNull } from 'drizzle-orm'
 import { applicationsTable, usersTable } from '$lib/server/schema'
 import { getOAuthTokens, getOAuthUrl, getUserData } from '$lib/server/discord'
 import { formSchemaDiscord } from '$lib/schemas/settingsschema'
@@ -37,7 +36,7 @@ export const load: PageServerLoad = async ({ params }) => {
 	}
 
 	return {
-		form: await superValidate(zod(formSchema)),
+		form: await superValidate(zod(formSchemaDiscord)),
 		discordAuth: getOAuthUrl(),
 		discordid: application.discordid,
 		accepted: application.accepted,
@@ -51,21 +50,14 @@ export const actions: Actions = {
 		const form = await superValidate(event, zod(formSchemaDiscord))
 		const { params } = event
 
-		const discordId = await db.query.applicationsTable.findFirst({
-			where: eq(applicationsTable.applicationid, params.applicationid),
-			columns: {
-				discordid: true
-			}
-		})
-
-		const discordId2 = await db.query.usersTable.findFirst({
+		const discordId = await db.query.usersTable.findFirst({
 			where: eq(usersTable.discordid, form.data.code),
 			columns: {
 				discordid: true
 			}
 		})
 
-		if (discordId?.discordid || discordId2?.discordid) {
+		if (discordId?.discordid) {
 			return redirect(302, `/applications/${params.applicationid}`)
 		}
 
@@ -101,6 +93,27 @@ export const actions: Actions = {
 			return fail(400, {
 				form
 			})
+		}
+
+		const currentApplication = await db.query.applicationsTable.findFirst({
+			where: and(
+				eq(applicationsTable.discordid, userData.user.id),
+				isNull(applicationsTable.reviewed)
+			),
+			columns: { accepted: true }
+		})
+
+		if (currentApplication) {
+			return message(form, 'You already submitted a pending application!')
+		}
+
+		const submittedApplications = await db.query.applicationsTable.findMany({
+			where: eq(applicationsTable.discordid, userData.user.id),
+			columns: { accepted: true }
+		})
+
+		if (submittedApplications.length >= 3) {
+			return message(form, 'You have reached the maximum amount of applications!')
 		}
 
 		await db

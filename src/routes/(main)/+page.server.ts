@@ -6,7 +6,7 @@ import { db } from '$src/lib/server/db'
 import { auth } from '$src/lib/server/lucia'
 import postgres from 'postgres' // TODO: Check this out later seems to be a workaround for a postgres issue https://github.com/porsager/postgres/issues/684 10/3/2023
 import { usersTable, keyTable, applicationsTable } from '$lib/server/schema'
-import { eq, or, sql, count } from 'drizzle-orm'
+import { eq, or, sql, count, and, isNull, desc } from 'drizzle-orm'
 import { zod } from 'sveltekit-superforms/adapters'
 import { LuciaError } from 'lucia'
 import { RateLimiter } from 'sveltekit-rate-limiter/server'
@@ -217,12 +217,42 @@ export const actions: Actions = {
 		}
 
 		const currentApplication = await db.query.applicationsTable.findFirst({
-			where: eq(applicationsTable.registerip, event.getClientAddress()),
+			where: and(
+				eq(applicationsTable.registerip, event.getClientAddress()),
+				or(isNull(applicationsTable.reviewed), eq(applicationsTable.accepted, true))
+			),
 			columns: { accepted: true }
 		})
 
 		if (currentApplication) {
-			return message(form, 'You already submitted an application!')
+			return message(form, 'You have an application currently pending!')
+		}
+
+		const submittedApplications = await db.query.applicationsTable.findMany({
+			where: eq(applicationsTable.registerip, event.getClientAddress()),
+			columns: { accepted: true }
+		})
+
+		if (submittedApplications.length >= 3) {
+			return message(form, 'You have reached the maximum amount of applications!')
+		}
+
+		const lastApplication = await db.query.applicationsTable.findFirst({
+			where: eq(applicationsTable.registerip, event.getClientAddress()),
+			columns: { reviewed: true },
+			orderBy: desc(applicationsTable.reviewed)
+		})
+
+		if (
+			lastApplication &&
+			lastApplication.reviewed &&
+			Date.now() - lastApplication.reviewed.getTime() < 1000 * 60 * 60 * 24
+		) {
+			// 1 day
+			return message(
+				form,
+				'You have recently submitted an application. Please wait 1 day before reapplying.'
+			)
 		}
 
 		const signedUp = await db.query.usersTable.findFirst({

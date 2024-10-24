@@ -8,16 +8,23 @@
 	import { browser } from '$app/environment'
 	import { goto } from '$app/navigation'
 	import { env } from '$env/dynamic/public'
+	import { superForm } from 'sveltekit-superforms'
+	import { zodClient } from 'sveltekit-superforms/adapters'
+	import { formSchemaDiscord } from '$lib/schemas/settingsschema'
 
 	export let data: PageData
 
 	pageName.set('Applications')
 
-	let linkForm: HTMLFormElement,
-		discordLinkDisabled = false,
-		discordToken = ''
+	let discordLinkDisabled = false
 
-	function discord(form: HTMLFormElement) {
+	const form = superForm(data.form, {
+		validators: zodClient(formSchemaDiscord)
+	})
+
+	const { form: formData, enhance, submitting, message } = form
+
+	function discord() {
 		discordLinkDisabled = true
 
 		const params =
@@ -38,7 +45,7 @@
 				if (event.data.code && popup) {
 					clearInterval(interval)
 					popup.close()
-					discordToken = event.data.code
+					$formData.code = event.data.code
 					setTimeout(() => {
 						form.submit()
 					}, 500)
@@ -73,13 +80,15 @@
 				<p class="text-sm text-muted-foreground">
 					You have to link your discord account to fully submit your application.
 				</p>
+
+				{#if $message}
+					<p class="bg-destructive/80 p-2">{$message}</p>
+				{/if}
 			</div>
 
 			<Button
-				disabled={discordLinkDisabled}
-				on:click={() => {
-					discord(linkForm)
-				}}
+				disabled={$submitting || discordLinkDisabled}
+				on:click={discord}
 				variant="outline"
 				size="sm">Link Discord</Button
 			>
@@ -101,10 +110,17 @@
 			</div>
 		{:else if data.reviewed && data.accepted === false}
 			<div class="bg-destructive/80 rounded-xl p-2">Your application has been denied.</div>
+
+			<p>
+				Reapplication is possible but there are only 3 chances so please make sure to review any
+				mistakes.
+			</p>
+
+			<p>Verification codes have to be on your account or you will be denied!</p>
 		{/if}
 	</div>
 </div>
 
-<form action="?/link" method="post" bind:this={linkForm}>
-	<input type="hidden" name="code" bind:value={discordToken} />
+<form action="?/link" method="post" use:enhance>
+	<input type="hidden" name="code" bind:value={$formData.code} />
 </form>
