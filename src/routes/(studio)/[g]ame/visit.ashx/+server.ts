@@ -5,8 +5,8 @@ import { createSign } from 'node:crypto'
 import { z } from 'zod'
 
 const visitSchema = z.object({
-	userId: z.coerce.number().int().min(0),
-	placeId: z.coerce.number().int().min(0)
+	userId: z.coerce.number().int(),
+	placeId: z.coerce.number().int()
 })
 
 const scriptNew: string = script.replaceAll('roblox.com', env.BASE_URL as string)
@@ -20,6 +20,10 @@ export const GET: RequestHandler = async ({ url }) => {
 	if (!result.success) {
 		const errors = result.error.issues.map((issue) => issue.message) // get us only the error msgs
 		return error(400, { success: false, message: 'Malformed.', data: { errors } })
+	}
+
+	if (result.data.userId < 1) {
+		result.data.userId = 1
 	}
 
 	const placeId = result.data.placeId

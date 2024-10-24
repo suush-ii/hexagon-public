@@ -34,7 +34,9 @@ export const POST: RequestHandler = async ({ url }) => {
 		where: eq(placesTable.placeid, placeid),
 		columns: {},
 		with: {
-			associatedgame: { columns: { visits: true, universeid: true, creatoruserid: true } },
+			associatedgame: {
+				columns: { visits: true, universeid: true, creatoruserid: true, original: true }
+			},
 			associatedasset: { columns: { last7dayscounter: true, lastweekreset: true } }
 		}
 	})
@@ -80,17 +82,20 @@ export const POST: RequestHandler = async ({ url }) => {
 	})
 	if (
 		!lastTimePlayed ||
-		new Date().valueOf() - lastTimePlayed.time.valueOf() > 12 * 60 * 60 * 1000 // 12 hours
+		(new Date().valueOf() - lastTimePlayed.time.valueOf() > 12 * 60 * 60 * 1000 && // 12 hours
+			place?.associatedgame.creatoruserid != userid)
 	) {
+		const award = place.associatedgame.original ? 3 : 1
+
 		await db
 			.update(usersTable)
-			.set({ coins: sql`${usersTable.coins} + 1` })
+			.set({ coins: sql`${usersTable.coins} + ${award}` })
 			.where(eq(usersTable.userid, place?.associatedgame.creatoruserid))
 
 		await db.insert(transactionsTable).values({
 			userid: place?.associatedgame.creatoruserid,
 			type: 'visit',
-			amount: 1
+			amount: award
 		})
 	}
 

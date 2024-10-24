@@ -596,6 +596,13 @@
       "when": 1729397348890,
       "tag": "0085_supreme_professor_monster",
       "breakpoints": true
+    },
+    {
+      "idx": 86,
+      "version": "7",
+      "when": 1729480053719,
+      "tag": "0086_glamorous_lady_vermin",
+      "breakpoints": true
     }
   ]
 }

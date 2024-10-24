@@ -6,7 +6,8 @@ import rejectedIcon from '$lib/icons/iconrejected.png'
 export function getImage(
 	assetUrl: string | undefined | null | unknown,
 	moderationState: assetStates | undefined | null,
-	size: 'thumbnail' | 'icon'
+	size: 'thumbnail' | 'icon',
+	render?: boolean
 ) {
 	// TODO: dedicated thumbnail sized icons for pending and rejected states
 	if (moderationState === 'pending' /*&& size === 'icon*/) {
@@ -18,7 +19,7 @@ export function getImage(
 	}
 
 	if (assetUrl) {
-		return `https://${s3Url}/images/${assetUrl}`
+		return `https://${s3Url}/${render ? 'thumbnails' : 'images'}/${assetUrl}`
 	}
 
 	if (size === 'icon') {

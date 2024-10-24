@@ -4,6 +4,8 @@
 	import EditClothingFormPrimitive from '$src/components/develop/edit/editClothingFormPrimitive.svelte'
 	import EditGameFormPrimitive from '$src/components/develop/edit/editGameFormPrimitive.svelte'
 	import EditGameImageFormPrimitive from '$src/components/develop/edit/game/editGameImageFormPrimitive.svelte'
+	import EditBadgeFormPrimitive from '$src/components/develop/edit/editBadgeFormPrimitive.svelte'
+	import EditGamepassFormPrimitive from '$src/components/develop/edit/editGamepassFormPrimitive.svelte'
 	import GameThumbnail from '$src/components/games/gameThumbnail.svelte'
 	import * as Tabs from '$src/components/ui/tabs/index.js'
 	import { Button } from '$src/components/ui/button'
@@ -42,6 +44,22 @@
 			onsale={data.onsale}
 			price={data.price}
 			genres={data.genres}
+		/>
+	{:else if data.item === 'badges'}
+		<EditBadgeFormPrimitive
+			data={data.badgeForm}
+			friendlyName={data.friendlyName}
+			name={data.assetname}
+			description={data.description}
+		/>
+	{:else if data.item === 'gamepasses'}
+		<EditGamepassFormPrimitive
+			data={data.gamepassForm}
+			friendlyName={data.friendlyName}
+			name={data.assetname}
+			description={data.description}
+			onsale={data.onsale}
+			price={data.price}
 		/>
 	{:else if data.item === 'games'}
 		<Tabs.Root value={$page.url.searchParams.get('page') ?? 'settings'}>

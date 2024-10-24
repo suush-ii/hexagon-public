@@ -7,7 +7,8 @@ import {
 	gamesTable,
 	placesTable,
 	assetFavoritesTable,
-	assetTable
+	assetTable,
+	inventoryTable
 } from '$src/lib/server/schema'
 import { and, count, desc, eq, or, sum } from 'drizzle-orm'
 import { z } from 'zod'
@@ -299,6 +300,41 @@ export const load: PageServerLoad = async ({ params, locals, url }) => {
 
 	const relation = user.received
 
+	const [badgeCount] = await db
+		.select({ count: count() })
+		.from(inventoryTable)
+		.where(
+			and(eq(inventoryTable.userid, Number(params.userId)), eq(inventoryTable.itemtype, 'badges'))
+		)
+		.limit(1)
+
+	let badgePage = getPageNumber(url, 'playerbadges')
+
+	const badgeSize = 8
+
+	if (badgeCount.count < (page - 1) * badgeSize) {
+		page = 1
+	}
+
+	const badges = await db.query.inventoryTable.findMany({
+		where: and(
+			eq(inventoryTable.userid, Number(params.userId)),
+			eq(inventoryTable.itemtype, 'badges')
+		),
+		columns: {
+			itemid: true
+		},
+		with: {
+			asset: {
+				columns: {
+					assetname: true
+				}
+			}
+		},
+		limit: 8,
+		offset: (badgePage - 1) * badgeSize
+	})
+
 	return {
 		username: user.username,
 		userid: user.userid,
@@ -321,6 +357,8 @@ export const load: PageServerLoad = async ({ params, locals, url }) => {
 		blurb: user.blurb,
 		favorites,
 		favoritesCount: favoritesCount[0].count,
-		knockouts: user.knockouts
+		knockouts: user.knockouts,
+		playerbadges: badges,
+		badgeCount: badgeCount.count
 	}
 }

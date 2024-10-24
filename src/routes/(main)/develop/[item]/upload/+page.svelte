@@ -25,7 +25,7 @@
 			data={data.clothingForm}
 			friendlyName={data.friendlyName}
 		/>
-	{:else if data.item === 'audio' || data.item === 'decals' || data.item === 't-shirts'}
+	{:else if data.item === 'audio' || data.item === 'decals' || data.item === 't-shirts' || data.item === 'badges' || data.item === 'gamepasses'}
 		<AssetFormPrimitive
 			fileTypes={data.fileTypes}
 			data={data.assetForm}

@@ -1,5 +1,5 @@
 import type { PageServerLoad, Actions } from './$types'
-import { setError, superValidate, type SuperValidated } from 'sveltekit-superforms/server'
+import { setError, superValidate } from 'sveltekit-superforms/server'
 import { fail } from 'sveltekit-superforms'
 import { formSchema as placeSchema } from '$lib/schemas/placeschema'
 import { redirect } from '@sveltejs/kit'
@@ -9,7 +9,7 @@ import { zod } from 'sveltekit-superforms/adapters'
 import { uploadAsset } from '$lib/server/develop/uploadasset'
 import { db } from '$src/lib/server/db'
 import { placesTable } from '$src/lib/server/schema'
-import { count, eq, sql } from 'drizzle-orm'
+import { count, eq } from 'drizzle-orm'
 import { RateLimiter } from 'sveltekit-rate-limiter/server'
 
 const limiter = new RateLimiter({

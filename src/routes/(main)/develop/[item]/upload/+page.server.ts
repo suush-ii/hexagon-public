@@ -36,10 +36,14 @@ async function giveItem(assetid: number, userid: number) {
 	}
 }
 
-export const load: PageServerLoad = async () => {
+export const load: PageServerLoad = async ({ params }) => {
 	const gameForm = await superValidate(zod(gameSchema))
 	const clothingForm = await superValidate(zod(clothingSchema))
 	const assetForm = await superValidate(zod(assetSchema))
+
+	if (params.item === 'gamepasses' || params.item === 'badges') {
+		return redirect(302, '/develop/' + params.item)
+	}
 
 	return {
 		gameForm,

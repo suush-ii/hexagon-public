@@ -106,17 +106,15 @@
 			itemId={itemid}
 			disable3d={data.item.moderationstate !== 'approved'
 				? true
-				: data.item.assetType === 'audio'
+				: data.item.assetType === 'audio' ||
+					  data.item.assetType === 'decals' ||
+					  data.item.assetType === 'images' ||
+					  data.item.assetType === 'faces' ||
+					  data.item.assetType === 't-shirts' ||
+					  data.item.assetType === 'gamepasses' ||
+					  data.item.assetType === 'badges'
 					? true
-					: data.item.assetType === 'decals'
-						? true
-						: data.item.assetType === 'images'
-							? true
-							: data.item.assetType === 'faces'
-								? true
-								: data.item.assetType === 't-shirts'
-									? true
-									: false}
+					: false}
 		>
 			{#if data.item.limited}
 				<div class="h-14 absolute left-0 bottom-0">

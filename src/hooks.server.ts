@@ -54,7 +54,9 @@ const protectedRoutes = [
 	'/game/PlaceLauncher.ashx', // Join.ashx uses special auth
 	'/ide/upload.aspx',
 	'/ide/publishing',
-	'/ide/newplace'
+	'/ide/newplace',
+	'/trades',
+	'/currency'
 ]
 const adminProtectedRoutes = ['/admin', '/api/admin']
 

@@ -79,8 +79,8 @@ local nonBcRobuxProducts	= 	{80, 160, 240, 320, 400, 800,  2000}
 ----------------------------- Util Functions ---------------------------------------------
 function getSecureApiBaseUrl()
 	local secureApiUrl = baseUrl
-	secureApiUrl = string.gsub(secureApiUrl,"http","https")
-	secureApiUrl = string.gsub(secureApiUrl,"www","api")
+	--secureApiUrl = string.gsub(secureApiUrl,"http","https") hexagon :3
+	--secureApiUrl = string.gsub(secureApiUrl,"www","api")
 	return secureApiUrl
 end
 
@@ -265,9 +265,9 @@ function updatePurchasePromptData(insufficientFunds)
 	purchaseDialog.BodyFrame.ItemDescription.Text = newItemDescription
 
 	if purchasingConsumable then
-		purchaseDialog.BodyFrame.ItemPreview.Image = baseUrl .. "thumbs/asset.ashx?assetid=" .. tostring(currentProductInfo["IconImageAssetId"]) .. '&x=100&y=100&format=png'
+		purchaseDialog.BodyFrame.ItemPreview.Image = baseUrl .. "Thumbs/Asset.ashx?assetId=" .. tostring(currentProductInfo["IconImageAssetId"]) .. '&x=100&y=100&format=png'
 	else
-		purchaseDialog.BodyFrame.ItemPreview.Image = baseUrl .. "thumbs/asset.ashx?assetid=" .. tostring(currentAssetId) .. '&x=100&y=100&format=png'
+		purchaseDialog.BodyFrame.ItemPreview.Image = baseUrl .. "Thumbs/Asset.ashx?assetId=" .. tostring(currentAssetId) .. '&x=100&y=100&format=png'
 	end
 end
 

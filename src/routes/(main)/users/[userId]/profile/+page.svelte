@@ -29,6 +29,8 @@
 
 	import { badgeImages, friendlyBadgeNames } from '$lib'
 
+	import CatalogAvatar from '$src/components/catalog/avatar.svelte'
+
 	const relativeTime = new RelativeTime()
 
 	import type { PageData } from './$types'
@@ -214,7 +216,31 @@
 
 			<div
 				class="min-h-[30rem] bg-muted-foreground/5 outline-dashed outline-muted-foreground/20 rounded-xl p-4 px-8 flex flex-col"
-			></div>
+			>
+				<div class="flex flex-wrap gap-y-16 gap-x-12 w-full">
+					{#each data.playerbadges as badge}
+						<a href="/catalog/{badge.itemid}/{slugify(badge.asset.assetname)}"
+							><div class="text-center w-28 h-28 my-auto" title={badge.asset.assetname}>
+								<CatalogAvatar
+									css="w-full h-full rounded-xl aspect-square"
+									itemId={badge.itemid}
+									itemName={badge.asset.assetname}
+									disable3d={true}
+								/>
+							</div></a
+						>
+					{/each}
+				</div>
+
+				<div class="mt-auto">
+					<PaginationWrapper
+						count={data.badgeCount}
+						size={8}
+						url={$page.url}
+						queryName={'playerbadges'}
+					/>
+				</div>
+			</div>
 
 			<div class="flex flex-wrap"></div>
 
