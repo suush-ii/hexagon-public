@@ -48,7 +48,7 @@
 			{itemName}
 		</h1>
 		<h1 class="tracking-tighter truncate text-sm flex flex-row">
-			<MoonStar class="h-5" />{cost}
+			<MoonStar class="h-5" />{formatCompactNumber(cost ?? 0, false)}
 		</h1>
 	</a>
 	<div class="invisible group-hover:visible flex text-xs pt-2 flex-col gap-y-1">

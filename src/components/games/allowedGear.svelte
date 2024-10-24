@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { gameGenre, GearAttributes as gears } from '$lib/types'
+	import type { gameGenre as GameGenre, GearAttributes as gears } from '$lib/types'
 	import { Ban, Briefcase } from 'lucide-svelte'
 
 	import * as Tooltip from '$src/components/ui/tooltip'
@@ -10,7 +10,7 @@
 
 	export let genreEnforcement: boolean
 
-	export let gameGenre: gameGenre
+	export let gameGenre: GameGenre
 </script>
 
 <div class="flex flex-wrap gap-x-2 justify-center w-24">

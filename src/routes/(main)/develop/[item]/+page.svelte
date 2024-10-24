@@ -61,16 +61,26 @@
 				><Tabs.Trigger class="w-full pointer-events-none" value="t-shirts">T-Shirts</Tabs.Trigger
 				></a
 			>
+			<a href="/develop/badges" class="w-full"
+				><Tabs.Trigger class="w-full pointer-events-none" value="badges">Badges</Tabs.Trigger></a
+			>
+			<a href="/develop/gamepasses" class="w-full"
+				><Tabs.Trigger class="w-full pointer-events-none" value="gamepasses"
+					>Game Passes</Tabs.Trigger
+				></a
+			>
 		</Tabs.List>
 		<Tabs.Content value={data.item}>
-			<a href="/develop/{data.item}/upload">
-				<div
-					class="h-40 supports-backdrop-blur:bg-background/60 w-full border-b bg-muted-foreground/5 shadow-sm backdrop-blur p-4 select-none outline-dashed outline-muted-foreground/20 rounded-xl flex flex-col"
+			{#if data.item !== 'gamepasses' && data.item !== 'badges'}
+				<a href="/develop/{data.item}/upload">
+					<div
+						class="h-40 supports-backdrop-blur:bg-background/60 w-full border-b bg-muted-foreground/5 shadow-sm backdrop-blur p-4 select-none outline-dashed outline-muted-foreground/20 rounded-xl flex flex-col"
+					>
+						<Upload class="m-auto w-14 h-14" />
+						<h1 class="mx-auto mb-auto font-semibold text-xl">{data.t('develop.uploadHere')}</h1>
+					</div></a
 				>
-					<Upload class="m-auto w-14 h-14" />
-					<h1 class="mx-auto mb-auto font-semibold text-xl">{data.t('develop.uploadHere')}</h1>
-				</div></a
-			>
+			{/if}
 			{#if creations.length === 0}
 				<EmptyCard class="p-8 m-auto" />
 			{/if}
@@ -84,7 +94,7 @@
 						href="/{creation.placeid ? 'games' : 'catalog'}/{creation.placeid ??
 							creation.assetid}/{slugify(creation.assetName)}"
 					>
-						{#if data.params === 'shirts' || data.params === 'pants' || data.params === 't-shirts'}
+						{#if data.params === 'shirts' || data.params === 'pants' || data.params === 't-shirts' || data.params === 'gamepasses' || data.params === 'badges'}
 							<CatalogAvatar
 								css="w-24 h-24 rounded-xl aspect-square"
 								itemId={creation.assetid}

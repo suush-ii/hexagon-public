@@ -159,7 +159,9 @@ export const load: PageServerLoad = async ({ params, locals, url, cookies }) => 
 		params.item === 'decals' ||
 		params.item === 'shirts' ||
 		params.item === 'pants' ||
-		params.item === 't-shirts'
+		params.item === 't-shirts' ||
+		params.item === 'gamepasses' ||
+		params.item === 'badges'
 	) {
 		itemscount = await db
 			.select({ count: count() })

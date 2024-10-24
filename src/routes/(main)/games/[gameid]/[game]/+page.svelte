@@ -12,7 +12,7 @@
 
 	import { Button } from '$src/components/ui/button'
 
-	import { Play, ThumbsUp, ThumbsDown, Loader2 } from 'lucide-svelte'
+	import { Play, ThumbsUp, ThumbsDown, Loader2, Plus } from 'lucide-svelte'
 
 	import DownloadModal from '$src/components/downloadModal.svelte'
 
@@ -36,6 +36,8 @@
 	import Favorite from '$src/components/favorite.svelte'
 	import GameCard from '$src/components/games/gameCard.svelte'
 	import EmptyCard from '$src/components/emptyCard.svelte'
+	import GamepassCard from '$src/components/games/gamepassCard.svelte'
+	import BadgeCard from '$src/components/games/badgeCard.svelte'
 
 	const defaultText = 'A server is loading the game...'
 
@@ -363,13 +365,21 @@
 
 				<div class="flex flex-row flex-wrap">
 					<Tabs.Root
-						value={$page.url.searchParams.get('page') === 'servers' ? 'servers' : 'about'}
+						value={$page.url.searchParams.get('page') === 'servers'
+							? 'servers'
+							: $page.url.searchParams.get('page') === 'store'
+								? 'store'
+								: 'about'}
 						class="flex flex-col gap-y-4 w-full"
 					>
 						<Tabs.List class="justify-around w-full">
 							<a href="?page=about" class="w-full"
 								><Tabs.Trigger class="w-full pointer-events-none" value="about"
 									>{data.t('games.about')}</Tabs.Trigger
+								></a
+							>
+							<a href="?page=store" class="w-full"
+								><Tabs.Trigger class="w-full pointer-events-none" value="store">Store</Tabs.Trigger
 								></a
 							>
 							<a href="?page=servers" class="w-full"
@@ -440,9 +450,58 @@
 								/>
 							</Tabs.Content>
 						{/if}
+
+						{#if $page.url.searchParams.get('page') === 'store'}
+							<Tabs.Content value="store" class="flex flex-col gap-y-4">
+								<h1 class="text-2xl font-semibold">Passes for this game</h1>
+
+								<div class="flex flex-wrap gap-x-4">
+									{#each data.passes as pass}
+										<GamepassCard
+											assetid={pass.assetid}
+											assetname={pass.assetname}
+											price={pass.price ?? 0}
+											own={pass.own}
+										/>
+									{/each}
+
+									{#if data.canEdit}
+										<div class="h-full flex text-center p-4">
+											<a
+												href="/develop/games/{data.place.associatedgame
+													.universeid}/edit/gamepasses/upload"
+												class="m-auto flex flex-col"><Plus class="w-24 h-24" /> Add Pass</a
+											>
+										</div>
+									{/if}
+
+									{#if data.passes.length <= 0}
+										<EmptyCard class="p-8 m-auto" />
+									{/if}
+								</div>
+							</Tabs.Content>
+						{/if}
 					</Tabs.Root>
 				</div>
 			</div>
+
+			{#if ($page.url.searchParams.get('page') ?? 'about') === 'about'}
+				<h1 class="text-2xl font-semibold">Badges</h1>
+
+				<div class="space-y-4">
+					{#each data.badges as badge}
+						<BadgeCard
+							assetid={badge.assetid}
+							assetname={badge.assetname}
+							description={badge.description}
+							obtaineddate={badge.obtaineddate}
+							wonyesterday={badge.wonyesterday}
+							wonever={badge.wonever}
+							joinedGameCount={data.joinedGameCount}
+						/>
+					{/each}
+				</div>
+			{/if}
 
 			<h1 class="text-2xl font-semibold">{data.t('games.recommendedGames')}</h1>
 

@@ -93,7 +93,10 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 
 	const packageRender = item?.assetType === 'packages'
 
-	const tshirtRender = item?.assetType === 't-shirts'
+	const imageRender =
+		item?.assetType === 'gamepasses' ||
+		item?.assetType === 'badges' ||
+		item?.assetType === 't-shirts'
 
 	if (
 		asset === 'item' &&
@@ -101,7 +104,10 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 		(item?.assetType === 'faces' ||
 			item?.assetType === 'decals' ||
 			item?.assetType === 'images' ||
-			item?.assetType === 'audio')
+			item?.assetType === 'audio' ||
+			item?.assetType === 't-shirts' ||
+			item?.assetType === 'gamepasses' ||
+			item?.assetType === 'badges')
 	) {
 		error(400, { success: false, message: 'Malformed JSON.', data: {} })
 	}
@@ -230,7 +236,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 
 	if (type === 'avatar') {
 		const response = await fetch(
-			`http://${env.GAMESERVER_IP}:${env.ARBITER_PORT}/${userRender ? 'openrender2016' : 'openrenderasset2016'}/${instanceNew.jobid}/${packageRender ? encodeURIComponent(assets) : tshirtRender ? item.associatedImage?.assetid : assetid}${userRender ? '/false' : ''}${'/false'}${item ? `/${item.assetType}` : ''}`
+			`http://${env.GAMESERVER_IP}:${env.ARBITER_PORT}/${userRender ? 'openrender2016' : 'openrenderasset2016'}/${instanceNew.jobid}/${packageRender ? encodeURIComponent(assets) : imageRender ? item.associatedImage?.assetid : assetid}${userRender ? '/false' : ''}${'/false'}${item ? `/${item.assetType}` : ''}`
 		)
 
 		const responseJson = await response.json()

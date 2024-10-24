@@ -78,6 +78,8 @@ function enumFromAssetType(value: AssetTypes): number {
 			return 3
 		case 'games':
 			return 9
+		case 'gamepasses':
+			return 34
 	}
 	return 0
 }

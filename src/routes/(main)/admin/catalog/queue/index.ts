@@ -6,5 +6,7 @@ export const filter = and(
 	ne(assetTable.assetType, 'shirts'),
 	ne(assetTable.assetType, 'pants'),
 	ne(assetTable.assetType, 'decals'),
-	ne(assetTable.assetType, 't-shirts')
+	ne(assetTable.assetType, 't-shirts'),
+	ne(assetTable.assetType, 'badges'),
+	ne(assetTable.assetType, 'gamepasses')
 )

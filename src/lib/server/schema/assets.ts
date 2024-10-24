@@ -53,7 +53,8 @@ export const assetTable = pgTable('assets', {
 	last7dayscounter: bigint('last7dayscounter', { mode: 'number' }).notNull().default(0), // every week this is reset using the timestamp above
 	stock: integer('stock'),
 	limited: text('limited').$type<'limited' | 'limitedu'>(),
-	recentaverageprice: integer('recentaverageprice')
+	recentaverageprice: integer('recentaverageprice'),
+	associatedgameid: bigint('associatedgameid', { mode: 'number' }) // badges / gamepasses
 })
 
 export const assetRelations = relations(assetTable, ({ one }) => ({

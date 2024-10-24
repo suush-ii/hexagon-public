@@ -101,6 +101,15 @@
 				class="cursor-pointer"
 				>Shut Down All Servers
 			</DropdownMenu.Item>
+
+			<a href="/develop/games/{itemid}/edit/gamepasses/upload"
+				><DropdownMenu.Item class="cursor-pointer">Create a Game Pass</DropdownMenu.Item></a
+			>
+
+			<a href="/develop/games/{itemid}/edit/badges/upload"
+				><DropdownMenu.Item class="cursor-pointer">Create a Badge for this Place</DropdownMenu.Item
+				></a
+			>
 		{/if}
 
 		{#if assetType === 'games' && canModerate}

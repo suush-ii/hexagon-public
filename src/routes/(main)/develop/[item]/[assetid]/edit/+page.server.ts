@@ -5,6 +5,8 @@ import { formSchema as gameSchema } from '$src/lib/schemas/edit/editgameschema'
 import { formSchema as clothingSchema } from '$src/lib/schemas/edit/editclothingschema'
 import { formSchema as assetSchema } from '$src/lib/schemas/edit/editassetschema'
 import { formSchema as gameImageSchema } from '$src/lib/schemas/edit/game/editimageschema'
+import { formSchema as badgeSchema } from '$src/lib/schemas/edit/editbadgeschema'
+import { formSchema as gamepassSchema } from '$src/lib/schemas/edit/editgamepassschema'
 import { zod } from 'sveltekit-superforms/adapters'
 import { z } from 'zod'
 import { assetTable, gamesTable, placesTable } from '$lib/server/schema'
@@ -97,7 +99,9 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 		params.item === 'decals' ||
 		params.item === 'shirts' ||
 		params.item === 'pants' ||
-		params.item === 't-shirts'
+		params.item === 't-shirts' ||
+		params.item === 'badges' ||
+		params.item === 'gamepasses'
 	) {
 		const asset = await db
 			.select({
@@ -139,12 +143,16 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 	const clothingForm = await superValidate(zod(clothingSchema))
 	const assetForm = await superValidate(zod(assetSchema))
 	const gameImageForm = await superValidate(zod(gameImageSchema))
+	const badgeForm = await superValidate(zod(badgeSchema))
+	const gamepassForm = await superValidate(zod(gamepassSchema))
 
 	return {
 		gameForm,
 		clothingForm,
 		assetForm,
 		gameImageForm,
+		badgeForm,
+		gamepassForm,
 		assetid: result.data,
 		assetname: name,
 		description,
@@ -163,8 +171,29 @@ async function updateAsset(
 	price: number,
 	genres: AssetGenreDB[],
 	assetname: string,
-	assetid: number
+	assetid: number,
+	creatoruserid: number
 ) {
+	const asset = await db.query.assetTable.findFirst({
+		where: eq(assetTable.assetid, assetid),
+		columns: {
+			creatoruserid: true,
+			moderationstate: true
+		}
+	})
+
+	if (!asset) {
+		error(404, { success: false, message: 'Asset not found.' })
+	}
+
+	if (asset.creatoruserid != creatoruserid) {
+		error(403, { success: false, message: 'You do not have permission to edit this asset.' })
+	}
+
+	if (asset.moderationstate === 'rejected') {
+		error(403, { success: false, message: 'This asset has been moderated.' })
+	}
+
 	await db
 		.update(assetTable)
 		.set({
@@ -195,6 +224,21 @@ export const actions: Actions = {
 			return fail(400, {
 				form
 			})
+		}
+
+		const game = await db.query.gamesTable.findFirst({
+			columns: {
+				creatoruserid: true
+			},
+			where: eq(gamesTable.universeid, Number(params.assetid))
+		})
+
+		if (!game) {
+			return fail(404, { form })
+		}
+
+		if (game.creatoruserid != locals.user.userid) {
+			return fail(403, { form })
 		}
 
 		const data = form.data
@@ -243,7 +287,8 @@ export const actions: Actions = {
 			data.price,
 			data.genres,
 			data.name,
-			Number(params.assetid)
+			Number(params.assetid),
+			locals.user.userid
 		)
 
 		return { form }
@@ -274,7 +319,8 @@ export const actions: Actions = {
 			data.price,
 			data.genres,
 			data.name,
-			Number(params.assetid)
+			Number(params.assetid),
+			locals.user.userid
 		)
 
 		return { form }
@@ -299,7 +345,7 @@ export const actions: Actions = {
 		const file = form.data.asset
 
 		const game = await db
-			.select({ gamename: placesTable.placename })
+			.select({ gamename: placesTable.placename, creatoruserid: gamesTable.creatoruserid })
 			.from(gamesTable)
 			.leftJoin(
 				placesTable,
@@ -307,6 +353,10 @@ export const actions: Actions = {
 			)
 			.where(eq(gamesTable.universeid, Number(params.assetid)))
 			.limit(1)
+
+		if (game[0].creatoruserid != locals.user.userid) {
+			return fail(403, { form })
+		}
 
 		const assetid = await uploadAsset(
 			file,
@@ -335,5 +385,69 @@ export const actions: Actions = {
 		}
 
 		return message(form, 'Done!')
+	},
+	badge: async ({ request, params, locals }) => {
+		const formData = await request.formData()
+		const form = await superValidate(formData, zod(badgeSchema))
+
+		const result = await _assetSchema.safeParseAsync(params.item)
+
+		if (result.success === false) {
+			return fail(400, {
+				form
+			})
+		}
+
+		if (!form.valid) {
+			return fail(400, {
+				form
+			})
+		}
+
+		const data = form.data
+
+		await updateAsset(
+			data.description,
+			false,
+			0,
+			['All'],
+			data.name,
+			Number(params.assetid),
+			locals.user.userid
+		)
+
+		return { form }
+	},
+	gamepass: async ({ request, params, locals }) => {
+		const formData = await request.formData()
+		const form = await superValidate(formData, zod(gamepassSchema))
+
+		const result = await _assetSchema.safeParseAsync(params.item)
+
+		if (result.success === false) {
+			return fail(400, {
+				form
+			})
+		}
+
+		if (!form.valid) {
+			return fail(400, {
+				form
+			})
+		}
+
+		const data = form.data
+
+		await updateAsset(
+			data.description,
+			data.onsale,
+			data.price,
+			['All'],
+			data.name,
+			Number(params.assetid),
+			locals.user.userid
+		)
+
+		return { form }
 	}
 }

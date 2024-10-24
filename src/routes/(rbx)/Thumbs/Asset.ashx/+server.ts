@@ -1,9 +1,9 @@
 import { db } from '$lib/server/db'
-import { assetThumbnailCacheTable, placesTable } from '$lib/server/schema'
+import { assetTable, assetThumbnailCacheTable, placesTable } from '$lib/server/schema'
 import { getImage } from '$lib/games/getImage'
 import { imageSql } from '$lib/server/games/getImage'
 import { type RequestHandler, redirect, error } from '@sveltejs/kit'
-import { eq } from 'drizzle-orm'
+import { and, eq, or, sql } from 'drizzle-orm'
 import { z } from 'zod'
 const assetSchema = z.number().int().positive()
 
@@ -57,6 +57,26 @@ export const GET: RequestHandler = async ({ url }) => {
 				'thumbnail'
 			)
 		)
+	}
+
+	const asset = await db.query.assetTable.findFirst({
+		where: and(
+			eq(assetTable.assetid, assetId),
+			or(eq(assetTable.assetType, 'gamepasses'), eq(assetTable.assetType, 'badges'))
+		), // for ingame purchase prompt
+		columns: {
+			moderationstate: true
+		},
+		extras: {
+			simpleasseturl:
+				sql`CASE WHEN ${assetTable.moderationstate} = 'approved' THEN ${assetTable.assetrender} ELSE NULL END`.as(
+					'simpleasseturl'
+				)
+		}
+	})
+
+	if (asset) {
+		return redirect(302, getImage(asset?.simpleasseturl, asset.moderationstate, 'icon', true))
 	}
 
 	const res = await fetch(

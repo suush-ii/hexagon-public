@@ -1,7 +1,7 @@
 import type { LayoutServerLoad } from './$types'
 import { gamesTable, placesTable } from '$lib/server/schema/games'
 import { db } from '$lib/server/db'
-import { eq, and, count, desc, ne } from 'drizzle-orm'
+import { eq, and, count, desc, asc, sql } from 'drizzle-orm'
 import { error, redirect } from '@sveltejs/kit'
 import { z } from 'zod'
 import { votesTable } from '$lib/server/schema/gamevotes'
@@ -9,7 +9,13 @@ import { jobsTable } from '$lib/server/schema/games'
 import { slugify } from '$lib/utils'
 type jobs = typeof jobsTable.$inferSelect
 import { env } from '$env/dynamic/private'
-import { assetFavoritesTable } from '$src/lib/server/schema'
+import {
+	assetFavoritesTable,
+	assetTable,
+	inventoryTable,
+	recentlyPlayedTable
+} from '$src/lib/server/schema'
+type passes = typeof assetTable.$inferSelect
 const joinScriptUrl = `http://${env.BASE_URL}/game/Join.ashx`
 import { gameCardSearch } from '$lib/server/games/gamecard'
 import { imageSql } from '$lib/server/games/getImage'
@@ -102,12 +108,87 @@ export const load: LayoutServerLoad = async ({
 
 	let servers: Pick<jobs, 'jobid' | 'active' | 'players'>[] = []
 
+	let passes: (Pick<passes, 'assetid' | 'assetname' | 'price'> & { own: unknown })[] = []
+
+	let badges: (Pick<passes, 'assetid' | 'assetname' | 'description'> & {
+		obtaineddate: unknown
+		wonyesterday: number
+		wonever: number
+	})[] = []
+
 	if (url.searchParams.get('page') === 'servers') {
 		servers = await db
 			.select({ jobid: jobsTable.jobid, active: jobsTable.active, players: jobsTable.players })
 			.from(jobsTable)
 			.where(eq(jobsTable.associatedid, place.associatedgame.universeid))
 			.limit(40) // TODO: ADD PAGINATION
+	}
+
+	if (url.searchParams.get('page') === 'store') {
+		passes = await db.query.assetTable.findMany({
+			where: and(
+				eq(assetTable.associatedgameid, place.associatedgame.universeid),
+				eq(assetTable.onsale, true),
+				eq(assetTable.assetType, 'gamepasses')
+			),
+			columns: {
+				assetid: true,
+				assetname: true,
+				price: true
+			},
+			extras: {
+				own: sql`exists (
+                        select 1
+                        from ${inventoryTable}
+                        where ${inventoryTable.itemid} = ${assetTable.assetid}
+                        and ${inventoryTable.userid} = ${locals.user.userid}
+                    )`.as('own')
+			}
+		})
+	}
+
+	let [joinedGameCount] = await db
+		.select({ count: count() })
+		.from(recentlyPlayedTable)
+		.where(
+			sql`${recentlyPlayedTable.gameid} = ${place.associatedgame.universeid} and ${recentlyPlayedTable.time} >= (NOW() - INTERVAL '1 day')::date and ${recentlyPlayedTable.time} < (NOW() - INTERVAL '0 day')::date`
+		)
+		.limit(1)
+
+	if ((url.searchParams.get('page') ?? 'about') === 'about') {
+		badges = await db
+			.select({
+				assetid: assetTable.assetid,
+				assetname: assetTable.assetname,
+				description: assetTable.description,
+				obtaineddate: inventoryTable.obatineddate,
+				wonyesterday: sql<number>`(
+                    select count(*)
+                    from ${inventoryTable}
+                    where ${inventoryTable.itemid} = ${assetTable.assetid}
+                    and ${inventoryTable.obatineddate} >= (NOW() - INTERVAL '1 day')::date
+                    and ${inventoryTable.obatineddate} < (NOW() - INTERVAL '0 day')::date
+                )`.as('wonyesterday'),
+				wonever:
+					sql<number>`(select count(*) from ${inventoryTable} where ${inventoryTable.itemid} = ${assetTable.assetid})`.as(
+						'wonever'
+					)
+			})
+			.from(assetTable)
+			.where(
+				and(
+					eq(assetTable.associatedgameid, place.associatedgame.universeid),
+					eq(assetTable.assetType, 'badges')
+				)
+			)
+			.leftJoin(
+				inventoryTable,
+				and(
+					eq(inventoryTable.itemid, assetTable.assetid),
+					eq(inventoryTable.userid, locals.user.userid)
+				)
+			)
+			.orderBy(asc(assetTable.created))
 	}
 
 	const canEdit = Number(locals.user.userid) === place.associatedgame.creatoruserid
@@ -160,6 +241,9 @@ export const load: LayoutServerLoad = async ({
 		userAgent: request.headers.get('user-agent'),
 		recommendations,
 		authBearer,
-		baseurl: env.BASE_URL
+		baseurl: env.BASE_URL,
+		passes,
+		badges,
+		joinedGameCount: joinedGameCount.count
 	}
 }

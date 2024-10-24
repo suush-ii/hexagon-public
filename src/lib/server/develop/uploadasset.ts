@@ -1,4 +1,4 @@
-import { setError, superValidate, type SuperValidated } from 'sveltekit-superforms/server'
+import { setError, type SuperValidated } from 'sveltekit-superforms/server'
 
 import { _uploadableAssets } from '$src/routes/(main)/develop/[item]/+layout.server'
 import { createHash } from 'node:crypto'
@@ -291,9 +291,11 @@ export async function uploadAsset(
 							creatoruserid: userid,
 							moderationstate: moderationState,
 							associatedimageid: imageResponse.assetid,
-							price: form.data.price,
+							price: form.data?.price ?? 0,
 							description: form.data.description,
-							genres: form.data.genres
+							genres: form.data.genres,
+							associatedgameid: universeid,
+							onsale: item === 'badges' ? false : true
 						})
 						.returning({ assetid: assetTable.assetid })
 

@@ -55,7 +55,9 @@ export const assetTypes = [
 	'shirts',
 	'pants',
 	'gears',
-	'images'
+	'images',
+	'badges',
+	'gamepasses'
 ] as const
 
 export const hexagonBadges = [
