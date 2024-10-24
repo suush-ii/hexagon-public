@@ -17,7 +17,7 @@ import { filter } from './admin/users/applications/queue'
 const uuid = z.string().uuid()
 
 const limiter = new RateLimiter({
-	IP: [1, '12h']
+	IP: [1, '45s']
 })
 
 function getRandomWords(count: number): string {
@@ -203,10 +203,6 @@ export const actions: Actions = {
 			return message(form, 'Registration disabled.')
 		}
 
-		if (await limiter.isLimited(event)) {
-			return message(form, 'Your submitting too fast!')
-		}
-
 		const [applicationsCount] = await db
 			.select({ count: count() })
 			.from(applicationsTable)
@@ -214,6 +210,10 @@ export const actions: Actions = {
 
 		if (applicationsCount.count >= 15) {
 			return message(form, 'There are too many applications right now. Try again later.')
+		}
+
+		if (await limiter.isLimited(event)) {
+			return message(form, 'Your submitting too fast!')
 		}
 
 		const currentApplication = await db.query.applicationsTable.findFirst({
