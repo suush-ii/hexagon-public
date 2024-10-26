@@ -237,7 +237,7 @@ export const load: LayoutServerLoad = async ({ params, locals, url }) => {
 		recommendations,
 		canEdit,
 		adminAsset,
-		canModerate: locals.user.role !== 'normal' && locals.user.role !== 'uploader',
+		canModerate: locals.user.role !== 'normal',
 		alreadySelling: owned ? owned.length > 0 : false,
 		limitedmode,
 		privateSellers,
