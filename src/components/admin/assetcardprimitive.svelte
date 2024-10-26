@@ -91,17 +91,19 @@
 		</div>
 
 		<h1 class="mx-auto">Temporary</h1>
-		<audio
-			controls
-			bind:this={audioElement}
-			bind:paused
-			bind:currentTime
-			bind:duration
-			bind:volume={vol[0]}
-		>
-			<source src={`https://${s3Url}/${assetType}/${assetUrl}`} type="audio/mp3" />
-			Your browser does not support the audio element.
-		</audio>
+		{#key assetUrl}
+			<audio
+				controls
+				bind:this={audioElement}
+				bind:paused
+				bind:currentTime
+				bind:duration
+				bind:volume={vol[0]}
+			>
+				<source src={`https://${s3Url}/${assetType}/${assetUrl}`} type="audio/mp3" />
+				Your browser does not support the audio element.
+			</audio>
+		{/key}
 
 		<div class="flex flex-row justify-between">
 			<span>{format(currentTime)}</span>
