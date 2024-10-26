@@ -190,6 +190,8 @@ export const actions: Actions = {
 		if (form.data.scrubusername === false) {
 			if (form.data.action === 'Ban 1 Day') {
 				expiration.setDate(expiration.getDate() + 1)
+			} else if (form.data.action === 'Ban 3 Days') {
+				expiration.setDate(expiration.getDate() + 3)
 			} else if (form.data.action === 'Ban 7 Days') {
 				expiration.setDate(expiration.getDate() + 7)
 			} else if (form.data.action === 'Ban 14 Days') {
