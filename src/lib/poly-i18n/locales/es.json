@@ -10,7 +10,7 @@
 		"visits": "Visitas",
 		"maxPlayers": "Número Máximo de Jugadores",
 		"genre": "Género",
-		"allowedGear": "Gears Permitidos",
+		"allowedGear": "Equipamiento Permitido",
 		"recommendedGames": "Juegos Recomendados",
 		"playing": "{count} Jugando"
 	},
@@ -18,7 +18,7 @@
 		"search": "Búsqueda",
 		"browseBy": "Buscar",
 		"category": "Categoría",
-		"featuredHero": "Artículos en destaque en Hexagon",
+		"featuredHero": "Artículos destacados en Hexagon",
 		"sales": "Ventas",
 		"favorited": "Favoritos",
 		"creator": "Creador",
@@ -26,8 +26,8 @@
 		"buyWith": "Comprar con",
 		"sold": "( {count} Vendidos )",
 		"genres": "Géneros",
-		"gearAttributes": "Atributos de los Gears",
-		"offsale": "Agotado",
+		"gearAttributes": "Atributos de equipamiento",
+		"offsale": "Fuera de venta",
 		"free": "Gratis",
 		"alreadyOwned": "Ya Obtenido",
 		"notEnough": "Insuficiente"
@@ -59,22 +59,27 @@
 		"lastOnline": "Último en línea en",
 		"placeVisits": "Visitas totales",
 		"activePlaces": "Juegos Activos",
-		"friends": "Amigos de {name}!"
+		"friends": "Amigos de {name}!",
+		"hexagonBadges": "Emblemas de Hexagon",
+		"playerBadges": "Emblemas de Jugador",
+		"favorites": "Favoritos"
 	},
 	"signUpLogin": {
 		"create": "Crear una cuenta",
-		"loginText": "Engresar a Hexagon",
-		"clicked": "Nos pincharon  {count} veces.",
+		"loginText": "Iniciar Sesion Hexagon",
+		"clicked": "Pincharon aqui {count} veces.",
 		"details": "Introduzca sus datos para registrarse.",
 		"username": "Nombre de Usuário",
 		"password": "Contraseña",
 		"invite": "Llave de invitación",
-		"gender": "Sexo",
+		"gender": "Genero",
 		"signUp": "Registrarse!",
 		"logIn": "Engresar",
 		"terms": "Condiciones de Servicio",
 		"privacy": "Política de Privacidad",
-		"agreement": "Al hacer clic en {button}, acepta nuestras {terms} y nuestra {privacy}."
+		"agreement": "Al hacer clic en {button}, acepta nuestras {terms} y nuestra {privacy}.",
+		"application": "Formulario",
+		"alreadyCreated": "Ya has rellenado el formulario? Mira aqui el estado"
 	},
 	"genders": {
 		"male": "Hombre",
@@ -86,13 +91,28 @@
 		"transactionType": "Tipo de transacción:",
 		"date": "Fecha",
 		"member": "Miembro",
-		"amount": "Cuantía",
-		"stipend": "Estipendio",
+		"amount": "Cantidad",
+		"stipend": "Recompensa Diaria",
 		"purchases": "Compras",
 		"purchased": "Comprado",
 		"adjustment": "Ajuste",
 		"sold": "Vendido",
-		"dailyStipend": "Estipendio Diario"
+		"dailyStipend": "Recompensa Diaria"
+	},
+	"people": {
+		"name": "Nombre",
+		"blurb": "Descripcion",
+		"lastSeen": "Ultima vez visto"
+	},
+	"settings": {
+		"mySettings": "Ajustes",
+		"accountSettings": "Informacion de la cuenta",
+		"otherSettings": "Otros ajustes",
+		"linkDiscord": "Conectar Discord",
+		"theme": "Tema",
+		"blurb": "Descripcion",
+		"changePassword": "Cambiar Contraseña",
+		"linked": "Conectado"
 	},
 	"generic": {
 		"home": "Inicio",
@@ -105,6 +125,8 @@
 		"profile": "Perfil",
 		"friends": "Amigos",
 		"customize": "Personalizar",
+		"people": "Gente",
+		"avatar": "Avatar",
 		"admin": "Administrador",
 		"seeAll": "Ver todos",
 		"recommendations": "Recomendaciones",
