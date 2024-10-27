@@ -27,7 +27,8 @@
 		{ value: 'en', label: 'English' },
 		{ value: 'es', label: 'Español' },
 		{ value: 'pt_br', label: 'Português (Brasil)' },
-		{ value: 'ru', label: 'Русский' }
+		{ value: 'ru', label: 'Русский' },
+		{ value: "ja", label: "日本語"},
 	]
 
 	$: selected, change()
