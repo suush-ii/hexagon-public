@@ -73,8 +73,9 @@
 		<nav class="flex items-center space-x-3 sm:space-x-4 lg:space-x-6 w-full">
 			<div class="flex items-center space-x-3 sm:space-x-4 lg:space-x-6 w-full">
 				<a href={loggedIn === false ? '/' : '/home'}
-					><img alt="H" class="w-8 sm:w-12 max-w-xs mr-0 ml-6" src="/hexagon128.png" /></a
-				>
+					><img alt="H" class="hidden md:block md:w-36 max-w-xs mr-0 ml-6" src="/hexagonfull.png" />
+					<img alt="H" class="md:hidden w-8 md:w-12 max-w-xs mr-0 ml-6" src="/hexagon128.png" />
+				</a>
 				{#each pages.notAuthenticated as navPage}
 					<a
 						href={navPage.pageUrl}
@@ -194,6 +195,12 @@
 					{/each}
 				</nav>
 			</div>
+
+			<img
+				class="absolute w-[70rem] h-3.5 bottom-0 left-0 right-0 m-auto opacity-80 pointer-events-none select-none"
+				src={'/leaves.png'}
+				alt="leaves"
+			/>
 		</div>
 
 		{#if sitealert && sitealert !== '' && sitealert !== $storedalert && storedalert}
