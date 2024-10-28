@@ -58,7 +58,7 @@
 
 		<div class="flex flex-col gap-y-4 text-center">
 			<h1>
-				{Math.floor((wonyesterday / joinedGameCount === 0 ? wonyesterday : joinedGameCount) * 100)}%
+				{Math.floor((wonyesterday / joinedGameCount <= 0 ? wonyesterday : joinedGameCount) * 100)}%
 			</h1>
 			<h1>{wonyesterday}</h1>
 			<h1>{wonever}</h1>
