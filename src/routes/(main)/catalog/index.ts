@@ -1,14 +1,14 @@
 export const categories = [
 	{ value: 'all', label: 'All Categories' },
 	{
-		value: 'featured',
+		value: '',
 		label: 'Featured',
 		types: [
-			{ value: 'featured', label: 'All Featured Items' },
-			{ value: 'featuredhats', label: 'Featured Hats' },
-			{ value: 'featuredgears', label: 'Featured Gear' },
-			{ value: 'featuredfaces', label: 'Featured Faces' },
-			{ value: 'featuredpackages', label: 'Featured Packages' }
+			{ value: '', label: 'All Featured Items' },
+			{ value: 'hats', label: 'Featured Hats' },
+			{ value: 'gears', label: 'Featured Gear' },
+			{ value: 'faces', label: 'Featured Faces' },
+			{ value: 'packages', label: 'Featured Packages' }
 		]
 	},
 	{

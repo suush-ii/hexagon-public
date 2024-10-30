@@ -316,12 +316,12 @@
 			<div
 				class="min-h-[30rem] bg-muted-foreground/5 outline-dashed outline-muted-foreground/20 rounded-xl p-4 px-12 flex flex-col"
 			>
-				<div class="flex flex-wrap gap-x-16 gap-y-16 mb-auto p-4">
+				<div class="flex flex-wrap gap-x-16 gap-y-4 mb-auto p-4">
 					{#if data.favorites.length > 0}
 						{#each data.favorites as item}
-							<div class="w-24 h-24 2xl:w-32 2xl:h-32">
+							<div class="w-24 2xl:w-32">
 								<a href="/games/{item.assetid}/{slugify(item.assetname ?? '')}">
-									<ImageAvatar.Root class="w-full h-full rounded-xl aspect-square">
+									<ImageAvatar.Root class="w-24 h-24 2xl:w-32 2xl:h-32 rounded-xl aspect-square">
 										<ImageAvatar.Image
 											src={getImage(item.simpleasseturl, item.moderationstate, 'icon')}
 											alt={item.assetname}
