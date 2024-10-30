@@ -29,10 +29,6 @@ export const load: PageServerLoad = async ({ url }) => {
 	let items
 	let itemscount
 
-	if (category.value.includes('featured')) {
-		category.value = category.value.replace('featured', '')
-	}
-
 	let page = getPageNumber(url)
 
 	const size = 28
@@ -72,7 +68,7 @@ export const load: PageServerLoad = async ({ url }) => {
 		})
 	} else if (
 		category.value === 'collectibles' ||
-		category.value === 'collectibleface' ||
+		category.value === 'collectiblefaces' ||
 		category.value === 'collectiblehats' ||
 		category.value === 'collectiblegears'
 	) {
@@ -145,6 +141,49 @@ export const load: PageServerLoad = async ({ url }) => {
 			where: and(
 				commonWhere,
 				or(eq(assetTable.assetType, 'shirts'), eq(assetTable.assetType, 'pants')),
+				ilike(assetTable.assetname, `%${search}%`)
+			), // library assets
+			columns: {
+				assetname: true,
+				price: true,
+				assetid: true,
+				creatoruserid: true,
+				updated: true,
+				sales: true,
+				favorites: true,
+				limited: true
+			},
+			with: {
+				author: {
+					columns: {
+						username: true
+					}
+				}
+			},
+			orderBy: desc(assetTable.updated),
+			limit: size,
+			offset: (page - 1) * size
+		})
+	} else if (category.value === 'bodyparts') {
+		itemscount = await db
+			.select({ count: count() })
+			.from(assetTable)
+			.where(
+				and(
+					commonWhere,
+					or(eq(assetTable.assetType, 'heads'), eq(assetTable.assetType, 'faces')),
+					ilike(assetTable.assetname, `%${search}%`)
+				)
+			)
+
+		if (itemscount[0].count < (page - 1) * size) {
+			page = 1
+		}
+
+		items = await db.query.assetTable.findMany({
+			where: and(
+				commonWhere,
+				or(eq(assetTable.assetType, 'heads'), eq(assetTable.assetType, 'faces')),
 				ilike(assetTable.assetname, `%${search}%`)
 			), // library assets
 			columns: {

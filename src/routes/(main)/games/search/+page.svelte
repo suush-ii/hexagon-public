@@ -82,7 +82,7 @@
 		</div>
 	</div>
 
-	<div class="flex gap-4 mb-auto">
+	<div class="flex flex-wrap gap-4 mb-auto">
 		{#each data.games as game}
 			<GameCard
 				gameId={game?.places.placeid}
