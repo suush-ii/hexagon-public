@@ -269,8 +269,8 @@ export const load: PageServerLoad = async ({ params, locals, url }) => {
 	const favorites = await db // i would of rather done all of this in a query but drizzle doesnt have aggregations supported yet
 		.select({
 			assetid: assetFavoritesTable.assetid,
-			assetname: assetTable.assetname,
-			creatoruserid: assetTable.creatoruserid,
+			assetname: placesTable.placename,
+			creatoruserid: gamesTable.creatoruserid,
 			creatorusername: usersTable.username,
 			simpleasseturl: aliasedimageSql(icon),
 			moderationstate: icon.moderationstate
