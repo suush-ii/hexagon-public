@@ -1,0 +1,1 @@
+ALTER TABLE "eventitems" ADD CONSTRAINT "eventitems_badgeid_unique" UNIQUE("badgeid");

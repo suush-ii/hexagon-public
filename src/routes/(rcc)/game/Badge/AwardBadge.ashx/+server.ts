@@ -1,5 +1,11 @@
 import { db } from '$lib/server/db'
-import { inventoryTable, assetTable, placesTable, usersTable } from '$lib/server/schema'
+import {
+	inventoryTable,
+	assetTable,
+	placesTable,
+	usersTable,
+	eventItemsTable
+} from '$lib/server/schema'
 import { type RequestHandler, error, json, text } from '@sveltejs/kit'
 import { eq, and, count } from 'drizzle-orm'
 import { z } from 'zod'
@@ -77,6 +83,11 @@ export const POST: RequestHandler = async ({ url }) => {
 		return error(404, { success: false, message: 'User not found.' })
 	}
 
+	const eventItem = await db.query.eventItemsTable.findFirst({
+		where: eq(eventItemsTable.badgeid, badgeid),
+		columns: { awardid: true }
+	})
+
 	await db.transaction(async (tx) => {
 		await tx.insert(inventoryTable).values({
 			itemid: badgeid,
@@ -93,6 +104,32 @@ export const POST: RequestHandler = async ({ url }) => {
 
 		if (badgeCount.count > 1) {
 			tx.rollback()
+		}
+
+		if (eventItem) {
+			const eventItemAward = await db.query.assetTable.findFirst({
+				where: eq(assetTable.assetid, eventItem.awardid),
+				columns: { assetType: true }
+			})
+
+			if (eventItemAward) {
+				const alreadyOwned = await db
+					.select()
+					.from(inventoryTable)
+					.where(
+						and(eq(inventoryTable.userid, userid), eq(inventoryTable.itemid, eventItem.awardid))
+					)
+					.limit(1)
+
+				if (alreadyOwned.length === 0) {
+					await tx.insert(inventoryTable).values({
+						itemid: eventItem.awardid,
+						userid: userid,
+						wearing: false,
+						itemtype: eventItemAward.assetType
+					})
+				}
+			}
 		}
 	})
 
