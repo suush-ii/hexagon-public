@@ -3,5 +3,16 @@ services:
     build: .
     env_file:
       - .env
-    ports:
-      - '3000:3000'
+    environment:
+      - DATABASE_URL=postgres://postgres:hexagon@db/postgres
+  db:
+    image: postgres:17
+    volumes:
+      - './postgres:/var/lib/postgresql'
+    environment:
+      - POSTGRES_PASSWORD=hexagon
+  cloudflared:
+    image: cloudflare/cloudflared
+    command: tunnel
+    env_file:
+      - .env
