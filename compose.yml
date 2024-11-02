@@ -32,6 +32,13 @@ services:
       - .env
     networks:
       - hexagon-nw
+  backups:
+    image: tiredofit/db-backup
+    restart: always
+    env_file:
+      - .env.backups
+    networks:
+      - hexagon-nw
 
 volumes:
   hexagon-db:
