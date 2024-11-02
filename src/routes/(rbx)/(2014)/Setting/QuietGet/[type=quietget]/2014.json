@@ -503,7 +503,7 @@
 	"FIntValidateLauncherPercent": "100",
 	"FFlagCSGDataLossFixEnabled": "True",
 	"DFStringRobloxAnalyticsURL": "http://public.ecs.roblox.com/",
-	"DFFlagRobloxAnalyticsTrackingEnabled": "True",
+	"DFFlagRobloxAnalyticsTrackingEnabled": "False",
 	"FFlagStudioOpenFirstPlace": "False",
 	"FFlagStudioOpenLastSaved": "False",
 	"FFlagStudioShowTutorialsByDefault": "True",

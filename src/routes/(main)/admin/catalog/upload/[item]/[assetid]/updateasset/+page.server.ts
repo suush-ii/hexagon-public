@@ -45,9 +45,9 @@ export const actions: Actions = {
 		const form = await superValidate(event, zod(updateAssetSchema))
 
 		if (!form.valid) {
-			return {
+			return fail(400, {
 				form
-			}
+			})
 		}
 
 		const { asset: file } = form.data

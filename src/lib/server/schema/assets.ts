@@ -163,3 +163,14 @@ export const assetVersionsTable = pgTable(
 		return { pk: primaryKey({ columns: [table.assetid, table.time] }) }
 	}
 )
+
+export const eventItemsTable = pgTable(
+	'eventitems',
+	{
+		badgeid: bigint('badgeid', { mode: 'number' }).notNull().unique(),
+		awardid: bigint('awardid', { mode: 'number' }).notNull()
+	},
+	(table) => {
+		return { pk: primaryKey({ columns: [table.badgeid, table.awardid] }) }
+	}
+)

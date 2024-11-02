@@ -74,6 +74,12 @@
 								href="/admin/catalog/upload/{data.asset.assetType}/{data.asset.assetid}/updateasset"
 								>Update Asset</a
 							>
+
+							<a
+								class="hover:underline"
+								href="/admin/catalog/upload/{data.asset.assetType}/{data.asset.assetid}/eventitem"
+								>Event Item</a
+							>
 						{/if}
 
 						<form method="POST" action="?/render">
