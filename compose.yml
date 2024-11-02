@@ -8,7 +8,7 @@ services:
   db:
     image: postgres:17
     volumes:
-      - './postgres:/var/lib/postgresql'
+      - 'hexagon-db:/var/lib/postgresql'
     environment:
       - POSTGRES_PASSWORD=hexagon
   cloudflared:
@@ -16,3 +16,6 @@ services:
     command: tunnel
     env_file:
       - .env
+
+volumes:
+  hexagon-db:
