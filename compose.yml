@@ -3,5 +3,36 @@ services:
     build: .
     env_file:
       - .env
-    ports:
-      - '3000:3000'
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - hexagon-nw
+  db:
+    image: postgres:17
+    volumes:
+      - hexagon-db:/var/lib/postgresql/data
+    networks:
+      - hexagon-nw
+    environment:
+      - POSTGRES_PASSWORD=hexagon
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready', '-d', 'postgres', '-U', 'postgres']
+      interval: 30s
+      timeout: 60s
+      retries: 5
+      start_period: 80s
+  cloudflared:
+    image: cloudflare/cloudflared
+    command: tunnel run
+    env_file:
+      - .env
+    networks:
+      - hexagon-nw
+
+volumes:
+  hexagon-db:
+    external: true
+
+networks:
+  hexagon-nw:
