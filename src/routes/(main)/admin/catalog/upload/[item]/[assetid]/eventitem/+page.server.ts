@@ -11,7 +11,7 @@ import { zod } from 'sveltekit-superforms/adapters'
 export const load: PageServerLoad = async ({ params }) => {
 	const asset = await db.query.assetTable.findFirst({
 		where: eq(assetTable.assetid, Number(params.assetid)),
-		columns: { assetType: true }
+		columns: { assetType: true, limited: true }
 	})
 
 	if (!asset) {
@@ -22,6 +22,14 @@ export const load: PageServerLoad = async ({ params }) => {
 		return error(403, {
 			success: false,
 			message: 'You do not have permission to update this asset.',
+			data: {}
+		})
+	}
+
+	if (asset.limited) {
+		return error(403, {
+			success: false,
+			message: 'Limited asset.',
 			data: {}
 		})
 	}
@@ -49,46 +57,53 @@ export const actions: Actions = {
 
 		const { params } = event
 
-		const awardid = form.data.assetid
+		const badgeid = form.data.assetid
 
 		const asset = await db.query.assetTable.findFirst({
 			where: eq(assetTable.assetid, Number(params.assetid)),
-			columns: { assetid: true }
+			columns: { assetid: true, assetType: true, limited: true }
 		})
 
 		if (!asset) {
 			return error(404, { success: false, message: 'Asset not found.', data: {} })
 		}
 
-		if (awardid) {
-			const reward = await db.query.assetTable.findFirst({
-				where: eq(assetTable.assetid, awardid),
+		if (asset.limited) {
+			return setError(form, 'assetid', 'Reward is limited.')
+		}
+
+		if (!adminAssets.includes(asset.assetType) || asset.assetType === 'packages') {
+			return setError(form, 'assetid', 'You cannot reward this asset type.')
+		}
+
+		if (badgeid) {
+			const badge = await db.query.assetTable.findFirst({
+				where: eq(assetTable.assetid, badgeid),
 				columns: { assetType: true, limited: true }
 			})
 
-			if (!reward) {
-				return setError(form, 'assetid', 'Reward not found.')
+			if (!badge) {
+				return setError(form, 'assetid', 'Badge not found.')
 			}
 
-			if (reward.limited) {
-				return setError(form, 'assetid', 'Reward is limited.')
-			}
-
-			if (!adminAssets.includes(reward.assetType) || reward.assetType === 'packages') {
-				return setError(form, 'assetid', 'You cannot reward this asset type.')
+			if (badge.assetType !== 'badges') {
+				return setError(form, 'assetid', 'Badgeid is not a badge.')
 			}
 		}
 
-		if (!awardid) {
-			await db.delete(eventItemsTable).where(eq(eventItemsTable.badgeid, Number(params.assetid)))
+		if (!badgeid) {
+			await db.delete(eventItemsTable).where(eq(eventItemsTable.awardid, Number(params.assetid)))
 
 			return { form }
 		}
 
 		await db
 			.insert(eventItemsTable)
-			.values({ badgeid: Number(params.assetid), awardid })
-			.onConflictDoUpdate({ target: eventItemsTable.badgeid, set: { awardid } })
+			.values({ badgeid: badgeid, awardid: Number(params.assetid) })
+			.onConflictDoUpdate({
+				target: eventItemsTable.badgeid,
+				set: { awardid: Number(params.assetid) }
+			})
 
 		return { form }
 	}
