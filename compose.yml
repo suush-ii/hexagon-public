@@ -1,6 +1,7 @@
 services:
   web:
     build: .
+    restart: always
     env_file:
       - .env
     depends_on:
@@ -10,6 +11,7 @@ services:
       - hexagon-nw
   db:
     image: postgres:17
+    restart: always
     volumes:
       - hexagon-db:/var/lib/postgresql/data
     networks:
@@ -24,6 +26,7 @@ services:
       start_period: 80s
   cloudflared:
     image: cloudflare/cloudflared
+    restart: always
     command: tunnel run
     env_file:
       - .env
