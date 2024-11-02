@@ -26,7 +26,7 @@
 	<form method="POST" class="max-w-4xl" use:enhance>
 		<Form.Field {form} name="assetid" class="max-w-xl">
 			<Form.Control let:attrs>
-				<Form.Label>Assetid to reward:</Form.Label>
+				<Form.Label>Badgeid to reward:</Form.Label>
 				<Input
 					placeholder="None"
 					disabled={$submitting}
