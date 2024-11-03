@@ -243,6 +243,8 @@
 					/>
 				</button>
 				exagon
+
+				<img alt="noob" class="w-32 h-32 absolute -right-28 top-0" src={'/noob.gif'} />
 			</div>
 
 			{#if !hideText}
