@@ -31,9 +31,9 @@
 		? ''
 		: tradeRequest
 			? ''
-			: '2xl:w-32'} group hover:outline-dashed outline-muted-foreground/20 outline-offset-6 hover:scale-105 relative z-50 hover:bg-background"
+			: '2xl:w-32'} group hover:outline-dashed outline-muted-foreground/20 outline-offset-6 hover:scale-105 relative z-50"
 >
-	<button type="button" on:click={move}
+	<button class="peer" type="button" on:click={move}
 		><div class="flex flex-col">
 			<a href="/catalog/{itemId}/{slugify(itemName)}" class="text-center"
 				><h1
@@ -59,7 +59,9 @@
 		</div></button
 	>
 
-	<div class="invisible group-hover:visible flex text-xs pt-2 flex-col gap-y-1">
+	<div
+		class="hidden peer-hover:bg-background peer-hover:visible peer-hover:flex text-xs pt-2 flex-col gap-y-1"
+	>
 		<h5 class="text-muted-foreground flex items-center">
 			Avg Price:
 			<MoonStar class="h-4 text-foreground" />
