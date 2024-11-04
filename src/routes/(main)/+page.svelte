@@ -23,6 +23,7 @@
 	import { Textarea } from '$src/components/ui/textarea'
 	import { Label } from '$src/components/ui/label'
 	import { slide } from 'svelte/transition'
+	import { page } from '$app/stores'
 
 	$: hideText = false
 
@@ -184,6 +185,7 @@
 	})
 
 	$applicationFormData.verificationPhrase = data.verificationPhrase
+	$applicationFormData.referer = Number($page.url.searchParams.get('referral'))
 </script>
 
 <svelte:head>
@@ -379,6 +381,8 @@
 							name="verificationPhrase"
 							bind:value={$applicationFormData.verificationPhrase}
 						/>
+
+						<input type="hidden" name="referer" value={$applicationFormData.referer} />
 
 						<Form.Button disabled={$applicationSubmitting} class="w-full mt-4">
 							{#if $applicationSubmitting}

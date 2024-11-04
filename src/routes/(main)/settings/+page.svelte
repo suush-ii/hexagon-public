@@ -19,8 +19,6 @@
 		discordLinkDisabled = false,
 		discordToken = ''
 
-	let rolesForm: HTMLFormElement
-
 	const form = superForm(data.form, {
 		validators: zodClient(formSchema),
 		resetForm: false

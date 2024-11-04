@@ -38,6 +38,7 @@
 		{loggedIn}
 		userId={data.user?.userid}
 		coins={data.user?.coins}
+		username={data.user?.username}
 		{admin}
 		sitealert={data.sitealert}
 		friendRequests={data.requestCount}

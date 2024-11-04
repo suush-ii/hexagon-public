@@ -87,7 +87,7 @@ export const transactionsTable = pgTable('transactions', {
 	itemid: bigint('itemid', { mode: 'number' }),
 	time: timestamp('time', { mode: 'date', withTimezone: true }).notNull().defaultNow(),
 	type: text('type')
-		.$type<'stipend' | 'purchase' | 'sales' | 'adjustment' | 'visit' | 'trade'>()
+		.$type<'stipend' | 'purchase' | 'sales' | 'adjustment' | 'visit' | 'trade' | 'referral'>()
 		.notNull(),
 	amount: bigint('amount', { mode: 'number' }).notNull(),
 	sourceuserid: bigint('sourceuserid', { mode: 'number' })

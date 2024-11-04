@@ -14,6 +14,7 @@
 	import * as DropdownMenu from '$src/components/ui/dropdown-menu'
 	import { formatCompactNumber } from '$lib/utils'
 	import { localStorageStore } from '$src/stores'
+	import Avatar from '$src/components/users/avatar.svelte'
 
 	import { currencyName, currencyNamePlural } from '$src/stores'
 	import { browser } from '$app/environment'
@@ -25,6 +26,7 @@
 	export let coins: number
 	export let signUpButton = false
 	export let userId = 0
+	export let username = ''
 	export let admin = false
 	export let sitealert: string
 	export let friendRequests: number
@@ -55,6 +57,7 @@
 			},
 			{ pageUrl: '/avatar', friendlyName: $page.data.t('generic.customize') },
 			{ pageUrl: '/trades', friendlyName: 'Trades', badge: tradeRequests },
+			{ pageUrl: '/referrals', friendlyName: 'Referrals' },
 			{ pageUrl: '/admin', friendlyName: $page.data.t('generic.admin'), protected: true }
 		]
 	} as { notAuthenticated: pagePrimitive[]; authenticated: pagePrimitive[] }
@@ -111,6 +114,12 @@
 			{/if}
 
 			{#if loggedIn}
+				<div class="flex gap-x-2 items-center">
+					<Avatar state={'online'} userid={userId} {username} disableoutline={true} css="w-7 h-7" />
+
+					<p class="text-lg font-semibold">{username}</p>
+				</div>
+
 				<div class="flex gap-x-2">
 					<DropdownMenu.Root preventScroll={false}>
 						<DropdownMenu.Trigger asChild let:builder

@@ -43,6 +43,7 @@
 		<Navbar
 			{loggedIn}
 			userId={data?.user?.userid}
+			username={data.user?.username}
 			coins={data?.user?.coins}
 			{admin}
 			sitealert={data.sitealert}

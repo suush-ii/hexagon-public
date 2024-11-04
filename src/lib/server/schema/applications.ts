@@ -1,4 +1,6 @@
+import { relations } from 'drizzle-orm'
 import { pgTable, text, timestamp, bigint, boolean, uuid, json } from 'drizzle-orm/pg-core'
+import { usersTable } from './users'
 
 export const applicationsTable = pgTable('applications', {
 	applicationid: uuid('applicationid').notNull().defaultRandom().primaryKey(),
@@ -12,5 +14,13 @@ export const applicationsTable = pgTable('applications', {
 	registerip: text('registerip'),
 	used: boolean('used').default(false),
 	signupuserid: bigint('signupuserid', { mode: 'number' }),
-	internalreason: text('internalreason')
+	internalreason: text('internalreason'),
+	refereruserid: bigint('refereruserid', { mode: 'number' })
 })
+
+export const applicationsRelations = relations(applicationsTable, ({ one }) => ({
+	user: one(usersTable, {
+		fields: [applicationsTable.signupuserid],
+		references: [usersTable.userid]
+	})
+}))
