@@ -4,6 +4,7 @@
 	import * as Table from '$src/components/ui/table'
 	import PaginationWrapper from '$src/components/pagnationWrapper.svelte'
 	import Avatar from '$src/components/users/avatar.svelte'
+	import EmptyCard from '$src/components/emptyCard.svelte'
 
 	export let data: PageData
 </script>
@@ -34,28 +35,32 @@
 			</Table.Row>
 		</Table.Header>
 		<Table.Body>
-			{#if data.referrals}
-				{#each data.referrals as referral}
-					<Table.Row>
-						<Table.Cell>{referral?.reviewed?.toLocaleDateString('en-US')}</Table.Cell>
-						<Table.Cell
-							><a href="/users/{referral.signupuserid ?? 0}/profile">
-								<Table.Cell class="flex gap-x-2 items-center truncate w-[150px] hover:underline"
-									><Avatar
-										state={'offline'}
-										userid={referral.signupuserid ?? 0}
-										css="h-7 w-7"
-										disableoutline={true}
-									/>
-									{referral.user?.username}
-								</Table.Cell></a
-							></Table.Cell
-						>
-					</Table.Row>
-				{/each}
-			{/if}
+			{#each data.referrals as referral}
+				<Table.Row>
+					<Table.Cell>{referral?.reviewed?.toLocaleDateString('en-US')}</Table.Cell>
+					<Table.Cell
+						><a href="/users/{referral.signupuserid ?? 0}/profile">
+							<Table.Cell class="flex gap-x-2 items-center truncate w-[150px] hover:underline"
+								><Avatar
+									state={'offline'}
+									userid={referral.signupuserid ?? 0}
+									css="h-7 w-7"
+									disableoutline={true}
+								/>
+								{referral.user?.username}
+							</Table.Cell></a
+						></Table.Cell
+					>
+				</Table.Row>
+			{/each}
 		</Table.Body>
 	</Table.Root>
+
+	{#if data.referrals.length === 0}
+		<EmptyCard>
+			<h5 class="text-center">Maybe refer some people to get some moons?</h5>
+		</EmptyCard>
+	{/if}
 
 	<div class="mt-auto">
 		<PaginationWrapper count={data.referralCount} size={30} url={$page.url} />
