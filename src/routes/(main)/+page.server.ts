@@ -5,7 +5,7 @@ import { fail, redirect } from '@sveltejs/kit'
 import { db } from '$src/lib/server/db'
 import { auth } from '$src/lib/server/lucia'
 import postgres from 'postgres' // TODO: Check this out later seems to be a workaround for a postgres issue https://github.com/porsager/postgres/issues/684 10/3/2023
-import { usersTable, keyTable, applicationsTable } from '$lib/server/schema'
+import { usersTable, keyTable, applicationsTable, transactionsTable } from '$lib/server/schema'
 import { eq, or, sql, count, and, isNull, desc } from 'drizzle-orm'
 import { zod } from 'sveltekit-superforms/adapters'
 import { LuciaError } from 'lucia'
@@ -102,7 +102,13 @@ export const actions: Actions = {
 			if (applicationResult.success) {
 				application = await db.query.applicationsTable.findFirst({
 					where: eq(applicationsTable.applicationid, applicationResult.data),
-					columns: { accepted: true, discordid: true, applicationid: true, used: true }
+					columns: {
+						accepted: true,
+						discordid: true,
+						applicationid: true,
+						used: true,
+						refereruserid: true
+					}
 				})
 
 				if (!application?.accepted || application?.used) {
@@ -174,6 +180,19 @@ export const actions: Actions = {
 					.update(usersTable)
 					.set({ discordid: application.discordid })
 					.where(eq(usersTable.userid, session.user.userid))
+
+				if (application.refereruserid) {
+					await db
+						.update(usersTable)
+						.set({ coins: sql`${usersTable.coins} + 25` })
+						.where(eq(usersTable.userid, application.refereruserid))
+
+					await db.insert(transactionsTable).values({
+						amount: 25,
+						type: 'referral',
+						userid: application.refereruserid
+					})
+				}
 			}
 		} catch (e) {
 			//console.log(e)
@@ -267,17 +286,36 @@ export const actions: Actions = {
 			return message(form, 'Your ineligible to apply.')
 		}
 
-		const formattedData = Object.entries(form.data).map(([key, value]) => ({
-			question: key,
-			answer: value
-		}))
+		const formattedData = Object.entries(form.data)
+			.filter(([key]) => key !== 'referer')
+			.map(([key, value]) => ({
+				question: key,
+				answer: String(value)
+			}))
+
+		const referer = form.data.referer
+
+		let refereruserid = null
+
+		if (referer) {
+			const [user] = await db
+				.select({ userid: usersTable.userid })
+				.from(usersTable)
+				.where(eq(usersTable.userid, referer))
+				.limit(1)
+
+			if (user) {
+				refereruserid = user.userid
+			}
+		}
 
 		const [application] = await db
 			.insert(applicationsTable)
 			.values({
 				questions: formattedData,
 				verificationsequence: form.data.verificationPhrase,
-				registerip: event.getClientAddress()
+				registerip: event.getClientAddress(),
+				refereruserid
 			})
 			.returning({ applicationid: applicationsTable.applicationid })
 

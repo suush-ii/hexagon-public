@@ -56,7 +56,8 @@ const protectedRoutes = [
 	'/ide/publishing',
 	'/ide/newplace',
 	'/trades',
-	'/currency'
+	'/currency',
+	'/referrals'
 ]
 const adminProtectedRoutes = ['/admin', '/api/admin']
 
