@@ -78,7 +78,7 @@ export const applicationFormSchema = z.object({
 	socialmedia: z.string({ required_error: 'This field is required!' }).max(200).min(10),
 	pastrevivals: z.string({ required_error: 'This field is required!' }).max(1000),
 	verificationPhrase: z.string({ required_error: 'This field is required!' }).min(8),
-	referer: z.coerce.number().positive().int().optional()
+	referer: z.coerce.number().int().optional()
 })
 
 export type FormSchema = typeof formSchema
