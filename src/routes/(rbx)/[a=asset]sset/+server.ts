@@ -269,6 +269,10 @@ export const GET: RequestHandler = async (event) => {
 		.where(eq(assetCacheTable.assetid, assetId))
 		.limit(1)
 
+	if (cachedAsset[0]?.filehash) {
+		cachedAsset[0].filehash = cachedAsset[0].filehash.split('?')[0].replace('/', '')
+	}
+
 	const meshAssetId = 4
 
 	if (cachedAsset?.[0]?.filehash && cachedAsset?.[0]?.assettypeid != meshAssetId) {
