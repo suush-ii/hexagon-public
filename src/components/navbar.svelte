@@ -114,11 +114,19 @@
 			{/if}
 
 			{#if loggedIn}
-				<div class="flex gap-x-2 items-center">
-					<Avatar state={'online'} userid={userId} {username} disableoutline={true} css="w-7 h-7" />
+				<a href="/users/{userId}/profile">
+					<div class="flex gap-x-2 items-center">
+						<Avatar
+							state={'online'}
+							userid={userId}
+							{username}
+							disableoutline={true}
+							css="w-7 h-7"
+						/>
 
-					<p class="text-lg font-semibold">{username}</p>
-				</div>
+						<p class="text-lg font-semibold">{username}</p>
+					</div></a
+				>
 
 				<div class="flex gap-x-2">
 					<DropdownMenu.Root preventScroll={false}>
