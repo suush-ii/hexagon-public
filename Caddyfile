@@ -15,7 +15,7 @@
         }
 }
 
-hexagon.pw {
+http://hexagon.pw {
     import hexagon_error
     reverse_proxy http://web:3000
 }
