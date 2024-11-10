@@ -46,8 +46,8 @@ services:
       - type: bind
         source: ./Caddyfile
         target: /etc/caddy/Caddyfile
-      - caddy-data:/data
-      - caddy-config:/config
+      - caddy_data:/data
+      - caddy_config:/config
       - '/home/sushi/hexagon-maintenance/build:/var/www/hexagon-backup'
     networks:
       - hexagon-nw
