@@ -39,10 +39,24 @@ services:
       - .env.backups
     networks:
       - hexagon-nw
+  caddy:
+    image: caddy:2-alpine
+    restart: always
+    volumes:
+      - type: bind
+        source: ./Caddyfile
+        target: /etc/caddy/Caddyfile
+      - caddy-data:/data
+      - caddy-config:/config
+      - '/home/sushi/hexagon-maintenance/build:/var/www/hexagon-backup'
+    networks:
+      - hexagon-nw
 
 volumes:
   hexagon-db:
     external: true
+  caddy_data:
+  caddy_config:
 
 networks:
   hexagon-nw:

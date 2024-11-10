@@ -1,0 +1,21 @@
+(hexagon_error) {
+    handle_errors {
+        root * /var/www/hexagon-backup
+        try_files {path} /error.html
+
+        header * {
+            Cache-Control "max-age=0, no-cache, no-store, must-revalidate"
+            Pragma "no-cache"
+            Expires 0
+        }
+
+        file_server {
+            status 200
+        }
+        }
+}
+
+hexagon.pw {
+    import hexagon_error
+    reverse_proxy http://web:3000
+}
