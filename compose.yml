@@ -51,8 +51,6 @@ services:
       - '/home/sushi/hexagon-maintenance/build:/var/www/hexagon-backup'
     networks:
       - hexagon-nw
-    ports:
-      - '80:80'
 
 volumes:
   hexagon-db:
