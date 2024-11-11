@@ -12,10 +12,17 @@
         file_server {
             status 200
         }
-        }
+    }
 }
 
-http:// {
+http://test.hexagon.pw, http://hexagon.pw, http://www.hexagon.pw {
+    log
     import hexagon_error
-    reverse_proxy http://web:3000
+
+    reverse_proxy {
+	to http://web:3000
+        header_up Host "hexagon.pw"
+        header_up Origin "https://hexagon.pw"
+        header_up CF-Connecting-IP {header.cf-connecting.ip}
+    }
 }
