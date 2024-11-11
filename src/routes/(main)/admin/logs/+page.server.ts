@@ -39,6 +39,11 @@ export const load: PageServerLoad = async ({ url }) => {
 					assetType: true,
 					assetname: true
 				}
+			},
+			user: {
+				columns: {
+					username: true
+				}
 			}
 		},
 		orderBy: desc(adminLogsTable.time),

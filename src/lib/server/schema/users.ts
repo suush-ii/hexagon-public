@@ -161,6 +161,10 @@ export const adminLogsRelations = relations(adminLogsTable, ({ one }) => ({
 	asset: one(assetTable, {
 		fields: [adminLogsTable.associatedid],
 		references: [assetTable.assetid]
+	}),
+	user: one(usersTable, {
+		fields: [adminLogsTable.associatedid],
+		references: [usersTable.userid]
 	})
 }))
 
