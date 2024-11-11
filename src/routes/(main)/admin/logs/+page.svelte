@@ -93,7 +93,7 @@
 													: ''}
 										>{formatAction(
 											log.action,
-											log.admin.username,
+											log?.user?.username ?? "",
 											log.associatedid,
 											log?.asset?.assetType ?? '',
 											log?.asset?.assetname ?? '',
