@@ -15,7 +15,7 @@
     }
 }
 
-http://test.hexagon.pw, http://hexagon.pw, http://www.hexagon.pw {
+http://api.hexagon.pw, http://hexagon.pw, http://www.hexagon.pw {
     log
     import hexagon_error
 
