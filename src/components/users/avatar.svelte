@@ -141,7 +141,7 @@
 	<div class="flex flex-col gap-y-1 relative">
 		{#if state === 'winner'}
 			<Crown
-				class="absolute h-10 z-50 mx-auto w-full text-yellow-500 -top-5 fill-yellow-500 rotate-6 left-2"
+				class="absolute h-10 mx-auto w-full text-yellow-500 -top-5 fill-yellow-500 rotate-6 left-2"
 			/>
 		{/if}
 
