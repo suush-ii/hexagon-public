@@ -21,7 +21,12 @@ export const load: PageServerLoad = async ({ url }) => {
 			placesTable,
 			and(eq(placesTable.universeid, gamesTable.universeid), eq(placesTable.startplace, true))
 		)
-		.where(and(ilike(placesTable.placename, `%${search}%`), eq(gamesTable.genre, genre)))
+		.where(
+			and(
+				ilike(placesTable.placename, `%${search}%`),
+				genre === 'All' ? undefined : eq(gamesTable.genre, genre)
+			)
+		)
 		.limit(1)
 
 	if (gamesCount.count < (page - 1) * size) {
@@ -41,7 +46,12 @@ export const load: PageServerLoad = async ({ url }) => {
 			and(eq(placesTable.universeid, gamesTable.universeid), eq(placesTable.startplace, true))
 		)
 		.leftJoin(assetTable, eq(assetTable.assetid, gamesTable.iconid))
-		.where(and(ilike(placesTable.placename, `%${search}%`), eq(gamesTable.genre, genre)))
+		.where(
+			and(
+				ilike(placesTable.placename, `%${search}%`),
+				genre === 'All' ? undefined : eq(gamesTable.genre, genre)
+			)
+		)
 		.limit(size)
 		.offset((page - 1) * size)
 		.orderBy(desc(gamesTable.active))

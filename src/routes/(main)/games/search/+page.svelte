@@ -30,6 +30,8 @@
 	function search() {
 		let query = new URLSearchParams($page.url.searchParams.toString())
 
+		query.delete('genre')
+
 		if (selected.value !== 'All') {
 			query.set('genre', selected.value)
 		}
