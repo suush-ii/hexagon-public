@@ -1,10 +1,11 @@
 <script lang="ts">
-	import { type Infer, type SuperValidated, superForm } from 'sveltekit-superforms'
+	import { superForm } from 'sveltekit-superforms'
 	import { zodClient } from 'sveltekit-superforms/adapters'
 	import * as Form from '$src/components/ui/form/index.js'
 	import { Checkbox } from '$src/components/ui/checkbox/index.js'
-	import { formSchema, type FormSchema } from './schema'
+	import { formSchema } from './schema'
 	import type { PageData } from './$types'
+	import { Input } from '$src/components/ui/input'
 
 	export let data: PageData
 
@@ -13,7 +14,7 @@
 		resetForm: false
 	})
 
-	const { form: formData, enhance } = form
+	const { form: formData, enhance, submitting } = form
 
 	$formData.maintenanceEnabled = data.config.maintenanceEnabled
 	$formData.registrationEnabled = data.config.registrationEnabled
@@ -21,6 +22,9 @@
 	$formData.gamesEnabled = data.config.gamesEnabled
 	$formData.developEnabled = data.config.developEnabled
 	$formData.applicationsEnabled = data.config.applicationsEnabled
+	$formData.coneHat = data.coneHat?.awardid
+	$formData.jamrioHat = data.jamrioHat?.awardid
+	$formData.wuffHat = data.wuffHat?.awardid
 </script>
 
 <div class="p-8 flex flex-col space-y-4">
@@ -110,6 +114,64 @@
 				<input name={attrs.name} value={$formData.applicationsEnabled} hidden />
 			</Form.Control>
 		</Form.Field>
+
+		<Form.Field
+			{form}
+			name="coneHat"
+			class="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4"
+		>
+			<Form.Control let:attrs>
+				<Form.Label>Hat for cone clan to reward:</Form.Label>
+				<Input
+					placeholder="None"
+					disabled={$submitting}
+					{...attrs}
+					bind:value={$formData.coneHat}
+					type="number"
+				/>
+
+				<Form.FieldErrors />
+			</Form.Control>
+		</Form.Field>
+
+		<Form.Field
+			{form}
+			name="jamrioHat"
+			class="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4"
+		>
+			<Form.Control let:attrs>
+				<Form.Label>Hat for jamrio clan to reward:</Form.Label>
+				<Input
+					placeholder="None"
+					disabled={$submitting}
+					{...attrs}
+					bind:value={$formData.jamrioHat}
+					type="number"
+				/>
+
+				<Form.FieldErrors />
+			</Form.Control>
+		</Form.Field>
+
+		<Form.Field
+			{form}
+			name="wuffHat"
+			class="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4"
+		>
+			<Form.Control let:attrs>
+				<Form.Label>Hat for wuff clan to reward:</Form.Label>
+				<Input
+					placeholder="None"
+					disabled={$submitting}
+					{...attrs}
+					bind:value={$formData.wuffHat}
+					type="number"
+				/>
+
+				<Form.FieldErrors />
+			</Form.Control>
+		</Form.Field>
+
 		<Form.Button>Submit</Form.Button>
 	</form>
 </div>

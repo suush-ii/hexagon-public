@@ -31,6 +31,8 @@
 
 	import CatalogAvatar from '$src/components/catalog/avatar.svelte'
 
+	import { clanImages } from '$lib'
+
 	const relativeTime = new RelativeTime()
 
 	import type { PageData } from './$types'
@@ -65,7 +67,18 @@
 		<Avatar state={status} {userid} {username} />
 
 		<div class="flex flex-col min-w-52 gap-y-4 w-full">
-			<h1 class="font-semibold text-5xl">{username}</h1>
+			<div class="flex items-center gap-x-2">
+				<h1 class="font-semibold text-5xl">{username}</h1>
+
+				{#if data.registeredclan}
+					<a href="/clans?clan={data.registeredclan}">
+						<ImageAvatar.Root class="w-12 h-12 rounded-xl aspect-square">
+							<ImageAvatar.Image src={clanImages[data.registeredclan]} alt="clan" />
+							<ImageAvatar.Fallback />
+						</ImageAvatar.Root>
+					</a>
+				{/if}
+			</div>
 
 			<div class="max-w-48 flex flex-wrap justify-around text-center">
 				<div>

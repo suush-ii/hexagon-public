@@ -10,10 +10,10 @@ import {
 	boolean,
 	primaryKey
 } from 'drizzle-orm/pg-core'
-import type { userState, userRole, userGenders, AssetTypes, HexagonBadges } from '$lib/types'
+import type { userRole, userGenders, AssetTypes, HexagonBadges, HexagonClans } from '$lib/types'
 import { relations, sql } from 'drizzle-orm'
 import { keyTable } from './keys'
-import { gamesTable, jobsTable, placesTable } from './games'
+import { gamesTable, placesTable } from './games'
 import type { ActionTypes } from '../admin'
 import { assetTable } from './assets'
 import type { Action as moderationTypes } from '$src/routes/(main)/admin/users/moderateuser/schema'
@@ -58,7 +58,8 @@ export const usersTable = pgTable('users', {
 		.notNull()
 		.default(sql`'{}'::text[]`),
 	knockouts: bigint('knockouts', { mode: 'number' }).notNull().default(0),
-	wipeouts: bigint('wipeouts', { mode: 'number' }).notNull().default(0)
+	wipeouts: bigint('wipeouts', { mode: 'number' }).notNull().default(0),
+	registeredclan: text('registeredclan').$type<HexagonClans>()
 })
 
 export const relationsTable = pgTable('relations', {

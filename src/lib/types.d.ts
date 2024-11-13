@@ -1,7 +1,7 @@
-import { assetGenreZod, assetTypes, gearAttributesZod, hexagonBadges } from '.'
+import { assetGenreZod, assetTypes, gearAttributesZod, hexagonBadges, hexagonClans } from '.'
 import type { SvelteComponent } from 'svelte'
 
-export type userState = 'offline' | 'online' | 'game' | 'studio'
+export type userState = 'offline' | 'online' | 'game' | 'studio' | 'winner'
 export type userRole = 'owner' | 'admin' | 'mod' | 'uploader' | 'normal'
 export type userGenders = 'male' | 'female' | 'nonbinary'
 
@@ -16,6 +16,8 @@ export type AssetTypes = (typeof assetTypes)[number]
 export type GearAttributes = (typeof gearAttributesZod)[number]
 
 export type HexagonBadges = (typeof hexagonBadges)[number]
+
+export type HexagonClans = (typeof hexagonClans)[number]
 
 export type renderStatus = 'pending' | 'completed'
 

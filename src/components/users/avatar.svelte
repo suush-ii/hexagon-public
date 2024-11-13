@@ -6,7 +6,7 @@
 	import { Canvas, extend } from '@threlte/core'
 	import Scene from '$src/components/_3d/Scene.svelte'
 	import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
-	import { Loader2 } from 'lucide-svelte'
+	import { Crown, Loader2 } from 'lucide-svelte'
 	import { browser } from '$app/environment'
 	import { loadedImages } from '$src/stores'
 
@@ -138,7 +138,13 @@
 </script>
 
 {#if type === 'headshot'}
-	<div class="flex flex-col gap-y-1">
+	<div class="flex flex-col gap-y-1 relative">
+		{#if state === 'winner'}
+			<Crown
+				class="absolute h-10 z-50 mx-auto w-full text-yellow-500 -top-5 fill-yellow-500 rotate-6 left-2"
+			/>
+		{/if}
+
 		<Avatar.Root
 			class="w-28 h-28 outline-offset-4 {css} {outline} {disableoutline === true
 				? ''

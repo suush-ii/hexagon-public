@@ -48,7 +48,8 @@ export const load: PageServerLoad = async ({ params, locals, url }) => {
 			wipeouts: true,
 			knockouts: true,
 			studiopresencelocation: true,
-			studiopresenceping: true
+			studiopresenceping: true,
+			registeredclan: true
 		},
 		where: eq(usersTable.userid, Number(params.userId)),
 		with: {
@@ -359,6 +360,7 @@ export const load: PageServerLoad = async ({ params, locals, url }) => {
 		favoritesCount: favoritesCount[0].count,
 		knockouts: user.knockouts,
 		playerbadges: badges,
-		badgeCount: badgeCount.count
+		badgeCount: badgeCount.count,
+		registeredclan: user.registeredclan
 	}
 }

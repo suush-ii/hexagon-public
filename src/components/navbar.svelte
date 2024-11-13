@@ -58,6 +58,8 @@
 			{ pageUrl: '/avatar', friendlyName: $page.data.t('generic.customize') },
 			{ pageUrl: '/trades', friendlyName: 'Trades', badge: tradeRequests },
 			{ pageUrl: '/referrals', friendlyName: 'Referrals' },
+			{ pageUrl: '/clans', friendlyName: 'Clans' },
+			{ pageUrl: '/leaderboards', friendlyName: 'Leaderboards' },
 			{ pageUrl: '/admin', friendlyName: $page.data.t('generic.admin'), protected: true }
 		]
 	} as { notAuthenticated: pagePrimitive[]; authenticated: pagePrimitive[] }

@@ -81,7 +81,8 @@ export const stateOutlineMap = {
 	online: 'outline-blue-500',
 	game: 'outline-success',
 	studio: 'outline-orange',
-	offline: 'outline-muted-foreground/70'
+	offline: 'outline-muted-foreground/70',
+	winner: 'outline-yellow-500'
 }
 
 export const stateBackgroundMap = {
