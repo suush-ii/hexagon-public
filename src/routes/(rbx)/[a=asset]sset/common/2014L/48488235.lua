@@ -101,7 +101,7 @@ end
 	membershipType		Enum of membership status
 	@Return: 			string of image asset
 --]]
-function getMembershipTypeIcon(membershipType,playerName)
+function getMembershipTypeIcon(membershipType,playerName, playerId)
 	if ADMINS[string.lower(playerName)]~=nil then
 		if ADMINS[string.lower(playerName)] == 1 then
 			return "http://www.roblox.com/asset/?id=99727663"
@@ -109,6 +109,25 @@ function getMembershipTypeIcon(membershipType,playerName)
 			return ADMINS[string.lower(playerName)]
 		end
 	elseif membershipType == Enum.MembershipType.None then
+		
+		local url =  game:GetService("ContentProvider").BaseUrl:lower() .. "api/clan?userId=" .. tostring(playerId)
+		
+		local response = "none"
+		
+		ypcall(function() 
+			response = game:HttpPostAsync(url, "HexagonClanRequest") 
+		end)
+	
+		if response == "none" then
+			return ""
+		elseif response == "wuff" then
+			return "http://www.roblox.com/asset/?id=120826306242727"
+		elseif response == "jamrio" then
+			return "http://www.roblox.com/asset/?id=87827241009264"
+		elseif response == "cone" then
+			return "http://www.roblox.com/asset/?id=96531513565043"
+		end
+
 		return ""
 	elseif membershipType == Enum.MembershipType.BuildersClub then
 		return "rbxasset://textures/ui/TinyBcIcon.png"
@@ -118,7 +137,8 @@ function getMembershipTypeIcon(membershipType,playerName)
 		return "rbxasset://textures/ui/TinyObcIcon.png"
 	else
 		error("Unknown membershipType" .. membershipType)
-	end	
+	end
+
 end
 
 local function getFriendStatusIcon(friendStatus)
@@ -2191,7 +2211,7 @@ function InsertPlayerFrame(nplayer)
 	
 	local nfriendstatus = GetFriendStatus(nplayer)
 	
-	nFrame:FindFirstChild('BCLabel').Image = getMembershipTypeIcon(nplayer.MembershipType,nplayer.Name)
+	nFrame:FindFirstChild('BCLabel').Image = getMembershipTypeIcon(nplayer.MembershipType,nplayer.Name, nplayer.userId)
 	nFrame:FindFirstChild('FriendLabel').Image = getFriendStatusIcon(nfriendstatus)
 	nFrame.Name = nplayer.Name
 	WaitForChild(WaitForChild(nFrame,'TitleFrame'),'Title').Text = playerName
@@ -2539,7 +2559,7 @@ function PlayerChanged(entry, property)
 		SetPlayerToTeam(entry)
 		BaseUpdate()
 	elseif property == 'Name' or property == 'MembershipType' then
-		entry['Frame']:FindFirstChild('BCLabel').Image = getMembershipTypeIcon(entry['Player'].MembershipType,entry['Player'].Name)
+		entry['Frame']:FindFirstChild('BCLabel').Image = getMembershipTypeIcon(entry['Player'].MembershipType,entry['Player'].Name, entry['Player'].userId)
 		entry['Frame'].Name = entry['Player'].Name
 		entry['Frame'].TitleFrame.Title.Text = entry['Player'].Name
 		if(entry['Frame'].BCLabel.Image ~= '') then
