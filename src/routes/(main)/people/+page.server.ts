@@ -1,7 +1,7 @@
 import type { PageServerLoad } from './$types'
 import { getPageNumber } from '$lib/utils'
 import { db } from '$lib/server/db'
-import { count, asc, ilike } from 'drizzle-orm'
+import { count, desc, ilike } from 'drizzle-orm'
 import { usersTable } from '$lib/server/schema'
 import { getUserState } from '$lib/server/userState'
 
@@ -32,7 +32,7 @@ export const load: PageServerLoad = async ({ url }) => {
 			studiopresencelocation: true,
 			studiopresenceping: true
 		},
-		orderBy: asc(usersTable.userid),
+		orderBy: desc(usersTable.lastactivetime),
 		limit: size,
 		offset: (page - 1) * size,
 		where: ilike(usersTable.username, `%${search}%`)
