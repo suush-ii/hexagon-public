@@ -162,6 +162,8 @@
 						<h1 class="text-lg text-destructive mx-auto">[ Administrator ]</h1>
 					{:else if data.role === 'mod'}
 						<h1 class="text-lg text-destructive mx-auto">[ Moderator ]</h1>
+					{:else if data.role === 'uploader'}
+						<h1 class="text-lg text-success mx-auto">[ Item Uploader ]</h1>
 					{/if}
 				</div>
 
