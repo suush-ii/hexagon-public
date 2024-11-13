@@ -6,7 +6,10 @@ import friendship from '$lib/icons/badges/friendship.png'
 import initiation from '$lib/icons/badges/initiation.png'
 import warrior from '$lib/icons/badges/warrior.png'
 import bloxxer from '$lib/icons/badges/bloxxer.png'
-import type { HexagonBadges } from './types'
+import wuff from '$lib/icons/clans/wuff.png'
+import jamrio from '$lib/icons/clans/jamrio.png'
+import cone from '$lib/icons/clans/cone.png'
+import type { HexagonBadges, HexagonClans } from './types'
 
 export const assetGenreZod = [
 	'All',
@@ -91,4 +94,18 @@ export const friendlyBadgeNames: Record<HexagonBadges, string> = {
 	'combat initiation': 'Combat Initiation',
 	warrior: 'Warrior',
 	bloxxer: 'Bloxxer'
+}
+
+export const hexagonClans = ['cone', 'jamrio', 'wuff'] as const
+
+export const clanImages: Record<HexagonClans, string> = {
+	cone,
+	jamrio,
+	wuff
+}
+
+export const friendlyClanNames: Record<HexagonClans, string> = {
+	cone: 'Commutative Decisions of Hexagon',
+	jamrio: 'Labour Collective of Hexagon',
+	wuff: 'Euanthe Knights of Hexagon'
 }

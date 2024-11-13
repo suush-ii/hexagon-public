@@ -624,6 +624,20 @@
       "when": 1730677425529,
       "tag": "0089_sweet_professor_monster",
       "breakpoints": true
+    },
+    {
+      "idx": 90,
+      "version": "7",
+      "when": 1731293294432,
+      "tag": "0090_confused_rumiko_fujikawa",
+      "breakpoints": true
+    },
+    {
+      "idx": 91,
+      "version": "7",
+      "when": 1731469574457,
+      "tag": "0091_lyrical_captain_cross",
+      "breakpoints": true
     }
   ]
 }

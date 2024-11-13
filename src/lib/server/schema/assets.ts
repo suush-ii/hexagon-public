@@ -10,7 +10,13 @@ import {
 	primaryKey
 } from 'drizzle-orm/pg-core'
 import { placesTable } from './games'
-import type { assetStates, AssetTypes, AssetGenreDB, GearAttributes } from '$lib/types'
+import type {
+	assetStates,
+	AssetTypes,
+	AssetGenreDB,
+	GearAttributes,
+	HexagonClans
+} from '$lib/types'
 import { inventoryTable, usersTable } from './users'
 
 export const assetTable = pgTable('assets', {
@@ -172,5 +178,16 @@ export const eventItemsTable = pgTable(
 	},
 	(table) => {
 		return { pk: primaryKey({ columns: [table.badgeid, table.awardid] }) }
+	}
+)
+
+export const clanItemsTable = pgTable(
+	'clanitems',
+	{
+		clan: text('clan').$type<HexagonClans>().unique(),
+		awardid: bigint('awardid', { mode: 'number' }).notNull()
+	},
+	(table) => {
+		return { pk: primaryKey({ columns: [table.clan, table.awardid] }) }
 	}
 )
