@@ -19,9 +19,9 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 		.from(usersTable)
 		.limit(1)
 
-	const top50 = await db.query.usersTable.findMany({
+	const top25 = await db.query.usersTable.findMany({
 		orderBy: desc(usersTable.coins),
-		limit: 50,
+		limit: 25,
 		columns: {
 			coins: true,
 			username: true
@@ -36,12 +36,12 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 		}
 	})
 
-	const labels = top50.map((user) => user.username)
-	const usersData = top50.map((user) => user.coins)
+	const labels = top25.map((user) => user.username)
+	const usersData = top25.map((user) => user.coins)
 
-	const top50StaffLess = await db.query.usersTable.findMany({
+	const top25StaffLess = await db.query.usersTable.findMany({
 		orderBy: desc(usersTable.coins),
-		limit: 50,
+		limit: 25,
 		columns: {
 			coins: true,
 			username: true
@@ -58,12 +58,12 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 		where: eq(usersTable.role, 'normal')
 	})
 
-	const labelsStaffLess = top50StaffLess.map((user) => user.username)
-	const usersDataStaffLess = top50StaffLess.map((user) => user.coins)
+	const labelsStaffLess = top25StaffLess.map((user) => user.username)
+	const usersDataStaffLess = top25StaffLess.map((user) => user.coins)
 
-	const top50Knockouts = await db.query.usersTable.findMany({
+	const top25Knockouts = await db.query.usersTable.findMany({
 		orderBy: desc(usersTable.knockouts),
-		limit: 50,
+		limit: 25,
 		columns: {
 			username: true,
 			knockouts: true
@@ -78,8 +78,8 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 		}
 	})
 
-	const labelsKnockouts = top50Knockouts.map((user) => user.username)
-	const usersDataKnockouts = top50Knockouts.map((user) => user.knockouts)
+	const labelsKnockouts = top25Knockouts.map((user) => user.username)
+	const usersDataKnockouts = top25Knockouts.map((user) => user.knockouts)
 
 	const signupHistory = await db
 		.select({

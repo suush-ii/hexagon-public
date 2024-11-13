@@ -74,7 +74,7 @@
 						/>
 					</a>
 
-					<h5 class="mx-auto">Top 50 Wealth</h5>
+					<h5 class="mx-auto">Top 25 Wealth</h5>
 
 					<PieChart usersData={data.usersData} labels={data.labels} />
 				</div>
@@ -91,7 +91,7 @@
 						/>
 					</a>
 
-					<h5 class="mx-auto">Top 50 Wealth ( Members Only )</h5>
+					<h5 class="mx-auto">Top 25 Wealth ( Members Only )</h5>
 
 					<PieChart usersData={data.usersDataStaffLess} labels={data.labelsStaffLess} />
 				</div>
@@ -108,7 +108,7 @@
 						/>
 					</a>
 
-					<h5 class="mx-auto">Top 50 Knockouts</h5>
+					<h5 class="mx-auto">Top 25 Knockouts</h5>
 
 					<PieChart usersData={data.usersDataKnockouts} labels={data.labelsKnockouts} />
 				</div>
