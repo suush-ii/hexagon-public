@@ -7,12 +7,14 @@ import {
 	assetTable,
 	assetFavoritesTable,
 	privateSellersTable,
-	salesHistoryTable
+	salesHistoryTable,
+	gamesTable
 } from '$lib/server/schema'
 import { inventoryTable } from '$lib/server/schema/users'
 import { getPageNumber, slugify } from '$lib/utils'
 import { commonWhere } from '$lib/server/catalog'
 import { adminAssets } from '../../admin/catalog/upload/[item]'
+import { gameCardSearch } from '$lib/server/games/gamecard'
 
 export const load: LayoutServerLoad = async ({ params, locals, url }) => {
 	const result = await z.number().safeParseAsync(Number(params.itemid))
@@ -40,7 +42,8 @@ export const load: LayoutServerLoad = async ({ params, locals, url }) => {
 			favorites: true,
 			stock: true,
 			limited: true,
-			recentaverageprice: true
+			recentaverageprice: true,
+			associatedgameid: true
 		},
 		with: {
 			author: {
@@ -229,6 +232,16 @@ export const load: LayoutServerLoad = async ({ params, locals, url }) => {
 		}
 	}
 
+	let associatedgame
+
+	if (item.associatedgameid) {
+		;[associatedgame] = await gameCardSearch({
+			orderBy: desc(gamesTable.active),
+			where: eq(gamesTable.universeid, item.associatedgameid),
+			limit: 1
+		})
+	}
+
 	return {
 		item: item,
 		alreadyOwned: alreadyOwned.length > 0,
@@ -245,6 +258,7 @@ export const load: LayoutServerLoad = async ({ params, locals, url }) => {
 		owned: owned ?? [],
 		userid: locals.user.userid,
 		saleshistory,
-		volumehistory
+		volumehistory,
+		associatedgame
 	}
 }

@@ -29,6 +29,7 @@
 	import GearAttributes from '$src/components/catalog/gearattributes.svelte'
 	import Chart from '$src/components/catalog/chart.svelte'
 	import VolumeChart from '$src/components/catalog/volumeChart.svelte'
+	import GameImage from '$src/components/games/gameImage.svelte'
 
 	export let data: PageData
 
@@ -158,6 +159,30 @@
 			<h1 class="text-lg leading-relaxed tracking-tight max-h-96 overflow-y-auto">
 				{data.item.description ?? ''}
 			</h1>
+			{#if data.item.associatedgameid && data.associatedgame}
+				<h1>
+					{#if data.item.assetType === 'gamepasses'}
+						Buy this gamepass in:
+					{:else}
+						Get this badge in:
+					{/if}
+					<a
+						href="/games/{data.associatedgame.place.placeid}/{slugify(
+							data.associatedgame.place.placename
+						)}"
+						><span class="font-semibold hover:underline">{data.associatedgame.place.placename}</span
+						></a
+					>
+				</h1>
+
+				<GameImage
+					gameId={data.associatedgame.place.placeid}
+					gameName={data.associatedgame.place.placename}
+					assetUrl={data.associatedgame.icon?.simpleasseturl}
+					moderationState={data.associatedgame.icon?.moderationstate}
+				/>
+			{/if}
+
 			<ReportButton />
 			<Separator />
 
