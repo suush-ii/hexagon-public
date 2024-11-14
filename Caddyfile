@@ -23,6 +23,6 @@ http://api.hexagon.pw, http://hexagon.pw, http://www.hexagon.pw {
 	to http://web:3000
         header_up Host "hexagon.pw"
         header_up Origin "https://hexagon.pw"
-        header_up CF-Connecting-IP {header.cf-connecting.ip}
+        header_up CF-Connecting-IP {header.cf-connecting-ip}
     }
 }
