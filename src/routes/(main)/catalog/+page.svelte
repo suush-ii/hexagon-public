@@ -111,7 +111,7 @@
 						{#if category.value != 'all'}<ChevronRight />{/if}</Button
 					>
 					{#if category.value != 'all'}
-						{#if category.value != 'gear'}
+						{#if category.value != 'gears'}
 							<div
 								class="absolute hidden group-hover:flex left-52 top-20 bg-background/80 w-full h-full z-40 p-2 rounded-xl flex-col flex-wrap max-h-72"
 							>
