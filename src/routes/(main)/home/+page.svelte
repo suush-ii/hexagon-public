@@ -63,7 +63,7 @@
 		<div class="flex flex-row justify-between px-4 mt-6">
 			<h1 class="text-3xl">{data.t('home.recentlyPlayed')}</h1>
 
-			<SeeAll href="/recentlyplayed" />
+			<SeeAll href="/home/recentlyplayed" />
 		</div>
 
 		<div class="flex flex-row gap-x-5 w-full">
