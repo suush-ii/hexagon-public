@@ -3,7 +3,7 @@ import type { Actions } from './$types'
 import { RateLimiter } from 'sveltekit-rate-limiter/server'
 import { db } from '$lib/server/db'
 import { eq } from 'drizzle-orm'
-import { gamesTable, jobsTable, placesTable } from '$lib/server/schema'
+import { gamesTable, jobsTable, placesTable, usersTable } from '$lib/server/schema'
 import { env } from '$env/dynamic/private'
 
 const limiter = new RateLimiter({
@@ -45,9 +45,23 @@ export const actions: Actions = {
 		const jobs = await db.query.jobsTable.findMany({
 			where: eq(jobsTable.placeid, Number(params.gameid)),
 			columns: {
-				jobid: true
+				jobid: true,
+				players: true
 			},
-			limit: 10
+			limit: 10,
+			with: {
+				associatedplace: {
+					columns: {},
+					with: {
+						associatedgame: {
+							columns: {
+								active: true,
+								universeid: true
+							}
+						}
+					}
+				}
+			}
 		})
 
 		for (const job of jobs) {
@@ -59,6 +73,25 @@ export const actions: Actions = {
 
 			if (result.success === false) {
 				await db.delete(jobsTable).where(eq(jobsTable.jobid, job.jobid))
+
+				if (job.players && job.players.length > 0) {
+					for (const player of job.players) {
+						await db
+							.update(usersTable)
+							.set({ activegame: null })
+							.where(eq(usersTable.userid, player))
+					}
+
+					const newActive = Math.max(
+						Number(job?.associatedplace?.associatedgame?.active) - job.players.length,
+						0
+					)
+
+					await db
+						.update(gamesTable)
+						.set({ active: newActive })
+						.where(eq(gamesTable.universeid, job?.associatedplace?.associatedgame.universeid ?? 0))
+				}
 			}
 		}
 
