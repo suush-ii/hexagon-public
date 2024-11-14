@@ -31,6 +31,8 @@
 
 	import CatalogAvatar from '$src/components/catalog/avatar.svelte'
 
+	import EmptyCard from '$src/components/emptyCard.svelte'
+
 	import { clanImages } from '$lib'
 
 	const relativeTime = new RelativeTime()
@@ -209,7 +211,9 @@
 			<h1 class="text-3xl font-semibold tracking-tight">{data.t('profile.hexagonBadges')}</h1>
 
 			<div
-				class="min-h-[28rem] bg-muted-foreground/5 outline-dashed outline-muted-foreground/20 rounded-xl p-9 flex flex-col"
+				class="{data.badges.length > 0
+					? 'min-h-[28rem]'
+					: 'min-h-64'} bg-muted-foreground/5 outline-dashed outline-muted-foreground/20 rounded-xl p-9 flex flex-col"
 			>
 				<div class="flex flex-wrap gap-y-16 gap-x-12 w-full">
 					{#each data.badges as badge}
@@ -225,12 +229,24 @@
 						>
 					{/each}
 				</div>
+
+				{#if data.badges.length === 0}
+					<div class="m-auto">
+						<EmptyCard>
+							{#if userid == data.user.userid}
+								<h5 class="text-center">Get some knockouts!</h5>
+							{/if}
+						</EmptyCard>
+					</div>
+				{/if}
 			</div>
 
 			<h1 class="text-3xl font-semibold tracking-tight">{data.t('profile.playerBadges')}</h1>
 
 			<div
-				class="min-h-[30rem] bg-muted-foreground/5 outline-dashed outline-muted-foreground/20 rounded-xl p-4 px-8 flex flex-col"
+				class="{data.playerbadges.length > 0
+					? 'min-h-[30rem]'
+					: 'min-h-64'} bg-muted-foreground/5 outline-dashed outline-muted-foreground/20 rounded-xl p-4 px-8 flex flex-col"
 			>
 				<div class="flex flex-wrap gap-y-16 gap-x-12 w-full">
 					{#each data.playerbadges as badge}
@@ -246,6 +262,16 @@
 						>
 					{/each}
 				</div>
+
+				{#if data.playerbadges.length === 0}
+					<div class="m-auto">
+						<EmptyCard>
+							{#if userid == data.user.userid}
+								<h5 class="text-center">Earn some badges!</h5>
+							{/if}
+						</EmptyCard>
+					</div>
+				{/if}
 
 				<div class="mt-auto">
 					<PaginationWrapper
@@ -268,7 +294,9 @@
 			<Separator class="w-full" />
 			<h1 class="text-3xl font-semibold tracking-tight">{data.t('profile.activePlaces')}</h1>
 			<div
-				class="min-h-[40rem] bg-muted-foreground/5 outline-dashed outline-muted-foreground/20 rounded-xl p-4 flex flex-col"
+				class="{data.places.length > 0
+					? 'min-h-[40rem]'
+					: 'min-h-64'}  bg-muted-foreground/5 outline-dashed outline-muted-foreground/20 rounded-xl p-4 flex flex-col"
 			>
 				<Accordion.Root class="w-full mb-auto">
 					{#each data.places as place, i}
@@ -294,7 +322,17 @@
 					{/each}
 				</Accordion.Root>
 
-				<PaginationWrapper count={data.placeCount} size={40} url={$page.url} queryName={'places'} />
+				{#if data.places.length === 0}
+					<div class="m-auto">
+						<EmptyCard>
+							{#if userid == data.user.userid}
+								<h5 class="text-center">Create some places!</h5>
+							{/if}
+						</EmptyCard>
+					</div>
+				{/if}
+
+				<PaginationWrapper count={data.placeCount} size={10} url={$page.url} queryName={'places'} />
 			</div>
 
 			<h1 class="text-3xl font-semibold tracking-tight">
@@ -302,7 +340,9 @@
 			</h1>
 
 			<div
-				class="min-h-96 bg-muted-foreground/5 outline-dashed outline-muted-foreground/20 rounded-xl p-4 px-12 flex flex-col"
+				class="{data.friends.length > 0
+					? 'min-h-96'
+					: 'min-h-64'} bg-muted-foreground/5 outline-dashed outline-muted-foreground/20 rounded-xl p-4 px-12 flex flex-col"
 			>
 				<div class="flex flex-wrap gap-x-12 gap-y-4 mb-auto p-4">
 					{#if data.friends}
@@ -318,6 +358,16 @@
 					{/if}
 				</div>
 
+				{#if data.friends.length === 0}
+					<div class="m-auto">
+						<EmptyCard>
+							{#if userid == data.user.userid}
+								<h5 class="text-center">Make some friends?</h5>
+							{/if}
+						</EmptyCard>
+					</div>
+				{/if}
+
 				<PaginationWrapper
 					count={data.friendsCount}
 					size={8}
@@ -329,7 +379,9 @@
 			<h1 class="text-3xl font-semibold tracking-tight">{data.t('profile.favorites')}</h1>
 
 			<div
-				class="min-h-[30rem] bg-muted-foreground/5 outline-dashed outline-muted-foreground/20 rounded-xl p-4 px-12 flex flex-col"
+				class="{data.favorites.length > 0
+					? 'min-h-[30rem]'
+					: 'min-h-64'} bg-muted-foreground/5 outline-dashed outline-muted-foreground/20 rounded-xl p-4 px-12 flex flex-col"
 			>
 				<div class="flex flex-wrap gap-x-16 gap-y-4 mb-auto p-4">
 					{#if data.favorites.length > 0}
@@ -360,6 +412,16 @@
 						{/each}
 					{/if}
 				</div>
+
+				{#if data.favorites.length === 0}
+					<div class="m-auto">
+						<EmptyCard>
+							{#if userid == data.user.userid}
+								<h5 class="text-center">Favorite some games dummy.</h5>
+							{/if}
+						</EmptyCard>
+					</div>
+				{/if}
 
 				<PaginationWrapper
 					count={data.favoritesCount}

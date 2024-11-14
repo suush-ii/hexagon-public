@@ -96,7 +96,8 @@ export const stateTextMap = {
 	online: 'text-blue-500',
 	game: 'text-success',
 	studio: 'text-orange',
-	offline: 'text-muted-foreground/70'
+	offline: 'text-muted-foreground/70',
+	winner: 'text-yellow-500'
 }
 
 export function getPageNumber(url: URL, query?: string, count?: number) {
