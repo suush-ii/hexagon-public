@@ -170,7 +170,7 @@
 						href="/games/{data.associatedgame.place.placeid}/{slugify(
 							data.associatedgame.place.placename
 						)}"
-						><span class="font-semibold hover:underline">{data.associatedgame.place.placename}</span
+						><span class="font-semibold hover:underline line-clamp-2 break-words">{data.associatedgame.place.placename}</span
 						></a
 					>
 				</h1>
