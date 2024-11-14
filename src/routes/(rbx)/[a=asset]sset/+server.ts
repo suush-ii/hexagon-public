@@ -263,7 +263,7 @@ export const GET: RequestHandler = async (event) => {
 		redirect(302, `https://${s3Url}/${'packages'}/` + existingAsset?.simpleasseturl)
 	}
 
-	const cachedAsset = await db
+	/*const cachedAsset = await db
 		.select({ filehash: assetCacheTable.filehash, assettypeid: assetCacheTable.assettypeid })
 		.from(assetCacheTable)
 		.where(eq(assetCacheTable.assetid, assetId))
@@ -271,53 +271,53 @@ export const GET: RequestHandler = async (event) => {
 
 	if (cachedAsset[0]?.filehash) {
 		cachedAsset[0].filehash = cachedAsset[0].filehash.split('?')[0].replace('/', '')
-	}
+	}*/
 
 	const meshAssetId = 4
 
-	if (cachedAsset?.[0]?.filehash && cachedAsset?.[0]?.assettypeid != meshAssetId) {
+	/**if (cachedAsset?.[0]?.filehash && cachedAsset?.[0]?.assettypeid != meshAssetId) {
 		redirect(302, getCdnUrl(cachedAsset[0].filehash))
-	} else {
-		const response = await fetch('https://assetdelivery.roblox.com/v2/assetId/' + assetId, {
-			headers: { 'User-Agent': 'Roblox/WinInet' }
-		})
-		const data = await response.json()
+	} else {*/
+	const response = await fetch('https://assetdelivery.roblox.com/v2/assetId/' + assetId, {
+		headers: { 'User-Agent': 'Roblox/WinInet' }
+	})
+	const data = await response.json()
 
-		if (data) {
-			if (data.locations?.length > 0) {
-				const url = data.locations[0].location
-				const filehash = url.substring(22)
+	if (data) {
+		if (data.locations?.length > 0) {
+			const url = data.locations[0].location
+			const filehash = url.substring(22)
 
-				if (data.assetTypeId === meshAssetId) {
-					const assetResponse = await fetch(url, {
-						headers: { 'User-Agent': 'Roblox/WinInet' }
-					})
-					const assetData = await assetResponse.arrayBuffer()
+			if (data.assetTypeId === meshAssetId) {
+				const assetResponse = await fetch(url, {
+					headers: { 'User-Agent': 'Roblox/WinInet' }
+				})
+				const assetData = await assetResponse.arrayBuffer()
 
-					return new Response(
-						parse(Buffer.from(assetData)) ?? assetData /* parse returns nothing if mesh is old */,
-						{
-							status: 200,
-							headers: {
-								'Content-Type': 'application/octet-stream',
-								'Content-Disposition': `attachment; filename*=UTF-8''${filehash}`
-							}
+				return new Response(
+					parse(Buffer.from(assetData)) ?? assetData /* parse returns nothing if mesh is old */,
+					{
+						status: 200,
+						headers: {
+							'Content-Type': 'application/octet-stream',
+							'Content-Disposition': `attachment; filename*=UTF-8''${filehash}`
 						}
-					)
-				}
-
-				if (cachedAsset.length === 0) {
-					await db.insert(assetCacheTable).values({
-						assetid: assetId,
-						filehash,
-						assettypeid: data.assetTypeId
-					}) // maybe we should cache converted meshes later as well?
-				}
-
-				redirect(302, url)
+					}
+				)
 			}
-		}
 
-		redirect(302, 'https://assetdelivery.roblox.com/v1/asset/?id=' + assetId)
+			/*if (cachedAsset.length === 0) {
+				await db.insert(assetCacheTable).values({
+					assetid: assetId,
+					filehash,
+					assettypeid: data.assetTypeId
+				}) // maybe we should cache converted meshes later as well?
+			}*/
+
+			redirect(302, url)
+		}
 	}
+
+	redirect(302, 'https://assetdelivery.roblox.com/v1/asset/?id=' + assetId)
+	//}
 }
