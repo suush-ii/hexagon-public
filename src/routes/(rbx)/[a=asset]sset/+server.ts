@@ -13,6 +13,8 @@ import tshirtTemplate from './templates/tshirtTemplate.xml?raw'
 import decalTemplate from './templates/decalTemplate.xml?raw'
 import { building } from '$app/environment'
 import { auth } from '$lib/server/lucia'
+import * as jose from 'jose'
+import { jobsTable } from '$lib/server/schema'
 
 export const trailingSlash = 'ignore'
 let luas = formatPath(
@@ -228,17 +230,44 @@ export const GET: RequestHandler = async (event) => {
 		// authenticate this
 		const accessKey = event.url.searchParams.get('apikey')
 
-		if (!accessKey || (env.RCC_ACCESS_KEY as string) !== accessKey) {
-			event.locals.auth = auth.handleRequest(event)
+		try {
+			const { payload } = await jose.jwtVerify(
+				accessKey ?? '',
+				new TextEncoder().encode(env.RCC_ACCESS_KEY as string)
+			)
 
-			const session = await event.locals.auth.validate()
+			const job = await db.query.jobsTable.findFirst({
+				where: eq(jobsTable.jobid, (payload?.jobid ?? '') as string),
+				columns: {
+					placeid: true,
+					status: true
+				}
+			})
 
-			if (session?.user?.userid != existingAsset.creatoruserid) {
+			if (job?.status === 2) {
+				console.log('Warning something sus.')
+			}
+
+			if (!job || job.placeid != assetId || job.status != 1) {
 				return error(403, {
 					success: false,
-					message: "You don't have permission to access this asset.",
+					message: 'Invalid session.',
 					data: {}
 				})
+			}
+		} catch {
+			if (!accessKey || (env.RCC_ACCESS_KEY as string) !== accessKey) {
+				event.locals.auth = auth.handleRequest(event)
+
+				const session = await event.locals.auth.validate()
+
+				if (session?.user?.userid != existingAsset.creatoruserid) {
+					return error(403, {
+						success: false,
+						message: "You don't have permission to access this asset.",
+						data: {}
+					})
+				}
 			}
 		}
 
