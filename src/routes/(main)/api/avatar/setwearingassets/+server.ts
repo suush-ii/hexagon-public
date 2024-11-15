@@ -3,7 +3,7 @@ import type { RequestHandler } from './$types'
 import { db } from '$src/lib/server/db'
 import { z } from 'zod'
 import { inventoryTable, outfitsTable, usersTable } from '$lib/server/schema'
-import { eq, and } from 'drizzle-orm'
+import { eq, and, sql, notInArray } from 'drizzle-orm'
 import type { AssetTypes } from '$lib/types'
 
 const itemSchema = z.object({
@@ -48,20 +48,20 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 		error(400, { success: false, message: 'Malformed JSON.', data: { errors } })
 	}
 
-	const wearingAssets = await db.query.inventoryTable.findMany({
-		where: and(eq(inventoryTable.userid, user.userid), eq(inventoryTable.wearing, true)),
-		with: {
-			asset: {
-				columns: {
-					assetType: true
-				}
-			}
-		}
-	})
+	const [wearingCount] = await db
+		.select({
+			count: sql<number>`count(DISTINCT ${inventoryTable.itemid})::INTEGER`.as('count')
+		})
+		.from(inventoryTable)
+		.where(
+			and(
+				eq(inventoryTable.userid, user.userid),
+				eq(inventoryTable.wearing, true),
+				notInArray(inventoryTable.itemtype, canOnlyWearOne)
+			)
+		)
 
-	const wearingCount = wearingAssets.filter((w) => !canOnlyWearOne.includes(w.asset.assetType)) // we only care about accessories like hats
-
-	if (wearingCount.length >= 10 && result.data.wear === true) {
+	if (wearingCount.count >= 10 && result.data.wear === true) {
 		return error(400, {
 			success: false,
 			message: 'You can only wear up to 10 accessories.',
@@ -138,7 +138,16 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 
 	if (canOnlyWearOne.includes(item.asset.assetType)) {
 		// can only wear one shirt and one pants
-		const wearing = wearingAssets.find((w) => w.asset.assetType === item.asset.assetType)
+		const wearing = await db.query.inventoryTable.findFirst({
+			where: and(
+				eq(inventoryTable.userid, user.userid),
+				eq(inventoryTable.wearing, true),
+				eq(inventoryTable.itemtype, item.asset.assetType)
+			),
+			columns: {
+				itemid: true
+			}
+		})
 
 		if (wearing) {
 			await db

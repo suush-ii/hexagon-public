@@ -6,6 +6,7 @@ import { getPageNumber } from '$lib/utils'
 import { z } from 'zod'
 
 import { assetTypes } from '$lib'
+import { assetTable } from '$src/lib/server/schema'
 
 export const load: PageServerLoad = async ({ locals, url }) => {
 	let page = getPageNumber(url)
@@ -54,37 +55,37 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 		pageWearing = 1
 	}
 
-	const inventory = await db.query.inventoryTable.findMany({
-		columns: {
-			itemid: true,
-			wearing: true
-		},
-		with: {
-			asset: { columns: { assetname: true, limited: true } }
-		},
-		orderBy: desc(inventoryTable.obatineddate),
-		limit: size,
-		offset: (page - 1) * size,
-		where: and(
-			eq(inventoryTable.wearing, false),
-			eq(inventoryTable.itemtype, categoryParams),
-			eq(inventoryTable.userid, locals.user.userid)
+	const inventory = await db
+		.selectDistinctOn([inventoryTable.itemid], {
+			itemid: inventoryTable.itemid,
+			wearing: inventoryTable.wearing,
+			asset: { assetname: assetTable.assetname, limited: assetTable.limited }
+		})
+		.from(inventoryTable)
+		.where(
+			and(
+				eq(inventoryTable.wearing, false),
+				eq(inventoryTable.itemtype, categoryParams),
+				eq(inventoryTable.userid, locals.user.userid)
+			)
 		)
-	})
+		.orderBy(desc(inventoryTable.itemid), desc(inventoryTable.obatineddate))
+		.limit(size)
+		.offset((page - 1) * size)
+		.innerJoin(assetTable, eq(inventoryTable.itemid, assetTable.assetid))
 
-	const inventoryWearing = await db.query.inventoryTable.findMany({
-		columns: {
-			itemid: true,
-			wearing: true
-		},
-		with: {
-			asset: { columns: { assetname: true, limited: true } }
-		},
-		orderBy: desc(inventoryTable.obatineddate),
-		limit: size,
-		offset: (pageWearing - 1) * size,
-		where: and(eq(inventoryTable.wearing, true), eq(inventoryTable.userid, locals.user.userid))
-	})
+	const inventoryWearing = await db
+		.selectDistinctOn([inventoryTable.itemid], {
+			itemid: inventoryTable.itemid,
+			wearing: inventoryTable.wearing,
+			asset: { assetname: assetTable.assetname, limited: assetTable.limited }
+		})
+		.from(inventoryTable)
+		.where(and(eq(inventoryTable.wearing, true), eq(inventoryTable.userid, locals.user.userid)))
+		.orderBy(desc(inventoryTable.itemid), desc(inventoryTable.obatineddate))
+		.limit(size)
+		.offset((page - 1) * size)
+		.innerJoin(assetTable, eq(inventoryTable.itemid, assetTable.assetid))
 
 	return {
 		colors: {
