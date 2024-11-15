@@ -4,6 +4,7 @@ import { gamesTable, jobsTable, placesTable, usersTable } from '$lib/server/sche
 import { eq } from 'drizzle-orm'
 import { env } from '$env/dynamic/private'
 import { z } from 'zod'
+import * as jose from 'jose'
 
 const presenceSchema = z.object({
 	action: z.enum(['connect', 'disconnect']).nullable(),
@@ -32,12 +33,35 @@ export const fallback: RequestHandler = async ({ url, request, locals }) => {
 	if (result.data.locationType !== 'Studio') {
 		const accessKey = url.searchParams.get('apikey') || request.headers.get('accessKey')
 
-		if (!accessKey || (env.RCC_ACCESS_KEY as string) != accessKey) {
-			return error(403, {
-				success: false,
-				message: 'Invalid session.',
-				data: {}
+		try {
+			const { payload } = await jose.jwtVerify(
+				accessKey ?? '',
+				new TextEncoder().encode(env.RCC_ACCESS_KEY as string)
+			)
+
+			const job = await db.query.jobsTable.findFirst({
+				where: eq(jobsTable.jobid, (payload?.jobid ?? '') as string),
+				columns: {
+					placeid: true,
+					status: true
+				}
 			})
+
+			if (!job || job.placeid != placeid) {
+				return error(403, {
+					success: false,
+					message: 'Invalid session.',
+					data: {}
+				})
+			}
+		} catch {
+			if (!accessKey || (env.RCC_ACCESS_KEY as string) != accessKey) {
+				return error(403, {
+					success: false,
+					message: 'Invalid session.',
+					data: {}
+				})
+			}
 		}
 	}
 
