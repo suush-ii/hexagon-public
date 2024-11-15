@@ -1,7 +1,7 @@
 import type { PageServerLoad } from './$types'
 import { db } from '$src/lib/server/db'
 import { inventoryTable, usersTable } from '$lib/server/schema/users'
-import { eq, count, desc, and } from 'drizzle-orm'
+import { eq, count, desc, and, sql } from 'drizzle-orm'
 import { getPageNumber } from '$lib/utils'
 import { z } from 'zod'
 
@@ -30,7 +30,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 	})
 
 	const assetCount = await db
-		.select({ count: count() })
+		.select({ count: sql<number>`count(DISTINCT ${inventoryTable.itemid})::INTEGER`.as('count') })
 		.from(inventoryTable)
 		.where(
 			and(
@@ -42,7 +42,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 		.limit(1)
 
 	const assetWearingCount = await db
-		.select({ count: count() })
+		.select({ count: sql<number>`count(DISTINCT ${inventoryTable.itemid})::INTEGER`.as('count') })
 		.from(inventoryTable)
 		.where(and(eq(inventoryTable.userid, locals.user.userid), eq(inventoryTable.wearing, true)))
 		.limit(1)
@@ -84,7 +84,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 		.where(and(eq(inventoryTable.wearing, true), eq(inventoryTable.userid, locals.user.userid)))
 		.orderBy(desc(inventoryTable.itemid), desc(inventoryTable.obatineddate))
 		.limit(size)
-		.offset((page - 1) * size)
+		.offset((pageWearing - 1) * size)
 		.innerJoin(assetTable, eq(inventoryTable.itemid, assetTable.assetid))
 
 	return {
