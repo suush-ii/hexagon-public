@@ -20,7 +20,7 @@ export const load: PageServerLoad = async ({}) => {
 	})
 
 	const originalGames = await gameCardSearch({
-		orderBy: desc(gamesTable.active),
+		orderBy: (desc(gamesTable.active), desc(gamesTable.updated)),
 		where: eq(gamesTable.original, true),
 		limit: 40
 	})
