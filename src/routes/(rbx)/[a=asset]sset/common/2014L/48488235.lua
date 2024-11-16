@@ -1826,7 +1826,7 @@ function StartDrag(entry,startx,starty)
 			stopDrag = true 
 
 			if  entry['Player'] and SelectedPlayer and openPanel
-				and (entry['Player']~=LocalPlayer and (SelectedPlayer.userId>1 and LocalPlayer.userId>1)) then
+				and (entry['Player']~=LocalPlayer and (SelectedPlayer.userId>=1 and LocalPlayer.userId>=1)) then -- fixed a bug here where if ur userid is one this shit assumes your a guest --sushi
 				ActivatePlayerEntryPanel(entry)
 			end
 		end
