@@ -30,9 +30,11 @@
 				Are you sure you want to shut down all servers for this place?
 			</AlertDialog.Description>
 		</AlertDialog.Header>
-		<AlertDialog.Footer class="mx-auto">
-			<AlertDialog.Action disabled={submitting} on:click={shutdown}>Yes</AlertDialog.Action>
-			<AlertDialog.Cancel>No</AlertDialog.Cancel>
+		<AlertDialog.Footer class="flex gap-x-12">
+			<AlertDialog.Action class="w-full" disabled={submitting} on:click={shutdown}
+				>Yes</AlertDialog.Action
+			>
+			<AlertDialog.Cancel class="w-full">No</AlertDialog.Cancel>
 		</AlertDialog.Footer>
 	</AlertDialog.Content>
 </AlertDialog.Root>
