@@ -578,5 +578,5 @@
 	"FFlagKKTChecks": "False",
 	"DFFlagUseApiProxyThrottling": "True",
 	"FFlagNewLoadingScreen": "True",
-	"FFlagDebugLocalRccServerConnection": "True"
+	"FFlagDebugLocalRccServerConnection": "False"
 }
