@@ -1,6 +1,9 @@
 import { env } from '$env/dynamic/private'
 import { type RequestHandler, text } from '@sveltejs/kit'
 import { createSign } from 'node:crypto'
+import { gamesessionsTable } from '$lib/server/schema'
+import { db } from '$lib/server/db'
+import { eq, and } from 'drizzle-orm'
 
 export const GET: RequestHandler = async ({ url }) => {
 	const username = url.searchParams.get('Username')
@@ -39,6 +42,13 @@ export const GET: RequestHandler = async ({ url }) => {
 	if (signature2 !== givensig2) {
 		return text('False')
 	}
+
+	await db
+		.update(gamesessionsTable)
+		.set({ active: true, verified: true })
+		.where(
+			and(eq(gamesessionsTable.jobid, jobId ?? ''), eq(gamesessionsTable.userid, Number(userid)))
+		)
 
 	return text('True')
 }

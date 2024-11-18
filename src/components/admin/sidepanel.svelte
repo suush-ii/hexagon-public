@@ -21,6 +21,10 @@
 				{ title: 'Upload', href: '/admin/catalog/upload/hats' },
 				{ title: 'Queue', href: '/admin/catalog/queue' }
 			]
+		},
+		{
+			title: 'Games',
+			links: [{ title: 'Sessions', href: '/admin/games/sessions' }]
 		}
 	]
 
