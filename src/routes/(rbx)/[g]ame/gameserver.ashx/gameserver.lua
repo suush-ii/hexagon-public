@@ -377,6 +377,15 @@ ns.ChildAdded:connect(function(replicator) -- mostly from polygon tbh with some 
         return
     end
 
+
+	
+	while wait(0.5) do
+		local player = replicator:GetPlayer()
+
+		if player == nil then
+			game:HttpPost(url .. "/game/NewPresence.ashx?action=disconnect&" .. access .. "&PlaceID=" .. placeId .. "&JobID=" .. JobId .. "&UserID=" .. player.userId, "")
+		end
+	end
 else
 
 	replicator:DisableProcessPackets()

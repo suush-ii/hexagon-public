@@ -1,6 +1,6 @@
 import { json, text, error } from '@sveltejs/kit'
 import type { RequestHandler } from './$types'
-import { jobsTable, placesTable, usersTable } from '$lib/server/schema'
+import { jobsTable, placesTable, usersTable, gamesessionsTable } from '$lib/server/schema'
 import { db } from '$lib/server/db'
 import { eq, and } from 'drizzle-orm'
 import { env } from '$env/dynamic/private'
@@ -9,7 +9,6 @@ import { LuciaError } from 'lucia'
 import { z } from 'zod'
 import { createSign } from 'node:crypto'
 import script from './join.lua?raw'
-
 
 const scriptNew: string = script.replaceAll('roblox.com', env.BASE_URL as string)
 
@@ -240,6 +239,12 @@ export const fallback: RequestHandler = async ({ url, locals }) => {
 		const sign = createSign('SHA1')
 		sign.update('\r\n' + scriptNewArgs)
 		const signature = sign.sign(env.CLIENT_PRIVATE_KEY as string, 'base64')
+
+		await db.insert(gamesessionsTable).values({
+			jobid: instance.jobid,
+			placeid: place.placeid,
+			userid: Number(session.userid)
+		})
 
 		return text('--rbxsig%' + signature + '%\r\n' + scriptNewArgs)
 	}

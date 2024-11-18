@@ -1,7 +1,13 @@
 import { error, json, text, type RequestHandler } from '@sveltejs/kit'
 import { db } from '$lib/server/db'
-import { gamesTable, jobsTable, placesTable, usersTable } from '$lib/server/schema'
-import { eq } from 'drizzle-orm'
+import {
+	gamesessionsTable,
+	gamesTable,
+	jobsTable,
+	placesTable,
+	usersTable
+} from '$lib/server/schema'
+import { and, eq } from 'drizzle-orm'
 import { env } from '$env/dynamic/private'
 import { z } from 'zod'
 import * as jose from 'jose'
@@ -161,6 +167,11 @@ export const fallback: RequestHandler = async ({ url, request, locals }) => {
 		}
 
 		await db.update(usersTable).set({ activegame: null }).where(eq(usersTable.userid, userid))
+
+		await db
+			.update(gamesessionsTable)
+			.set({ active: false })
+			.where(and(eq(gamesessionsTable.jobid, jobId), eq(gamesessionsTable.userid, userid)))
 	}
 
 	await db

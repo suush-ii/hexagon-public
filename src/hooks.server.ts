@@ -79,7 +79,8 @@ const adminPanelPermissions = [
 	{ path: '/admin/catalog/moderateasset', requiredLevel: 3 },
 	{ path: '/admin/catalog', requiredLevel: 4 },
 	{ path: '/admin/logs', requiredLevel: 4 },
-	{ path: '/admin/generate', requiredLevel: 3 }
+	{ path: '/admin/generate', requiredLevel: 3 },
+	{ path: '/admin/games', requiredLevel: 3 }
 ]
 
 const skipAuth = [
