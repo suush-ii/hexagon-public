@@ -100,15 +100,21 @@ export const jobsTable = pgTable('jobs', {
 		.default(sql`'{}'::bigint[]`)
 })
 
-export const gamesessionsTable = pgTable('gamesessions', {
-	jobid: uuid('jobid').notNull().primaryKey().defaultRandom(),
-	time: timestamp('time', { mode: 'date', withTimezone: true }).notNull().defaultNow(),
-	active: boolean('active').default(true),
-	verified: boolean('verified').default(false),
-	placeid: bigint('placeid', { mode: 'number' }).notNull(),
-	flagged: boolean('flagged').notNull().default(false),
-	userid: bigint('userid', { mode: 'number' }).notNull()
-})
+export const gamesessionsTable = pgTable(
+	'gamesessions',
+	{
+		jobid: uuid('jobid').notNull(),
+		time: timestamp('time', { mode: 'date', withTimezone: true }).notNull().defaultNow(),
+		active: boolean('active').default(true),
+		verified: boolean('verified').default(false),
+		placeid: bigint('placeid', { mode: 'number' }).notNull(),
+		flagged: boolean('flagged').notNull().default(false),
+		userid: bigint('userid', { mode: 'number' }).notNull()
+	},
+	(table) => {
+		return { pk: primaryKey({ columns: [table.jobid, table.placeid, table.userid, table.time] }) }
+	}
+)
 
 export const legacyPersistenceTable = pgTable(
 	'legacypersistence',
