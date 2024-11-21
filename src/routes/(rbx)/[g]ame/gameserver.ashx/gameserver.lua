@@ -245,6 +245,12 @@ ns.ChildAdded:connect(function(replicator) -- mostly from polygon tbh with some 
 		replicator:SetBasicFilteringEnabled(true)
 
 		replicator.NewFilter = function(item)
+			if(replicator:GetPlayer() and placeId == 2) then
+				local player = replicator:GetPlayer()
+
+				print(player.Name .. " created a new item: " .. item.ClassName .. " " .. item.Name)
+			end
+
 			if accepted == true then
 				return Enum.FilterResult.Accepted
 			end
@@ -263,6 +269,12 @@ ns.ChildAdded:connect(function(replicator) -- mostly from polygon tbh with some 
 		end		
 		
 		replicator.DeleteFilter = function(item)
+			if(replicator:GetPlayer() and placeId == 2) then
+				local player = replicator:GetPlayer()
+
+				print(player.Name .. " deleted an item: " .. item.ClassName)
+			end
+
 			if accepted == true then
 				return Enum.FilterResult.Accepted
 			end
@@ -271,6 +283,12 @@ ns.ChildAdded:connect(function(replicator) -- mostly from polygon tbh with some 
 		end
 	
 		replicator.PropertyFilter = function(item, member)
+			if(replicator:GetPlayer() and placeId == 2) then
+				local player = replicator:GetPlayer()
+
+				print(player.Name .. " changed a property: " .. item.ClassName .. "." .. member)
+			end
+
 			if accepted == true then
 				return Enum.FilterResult.Accepted
 			end
@@ -294,6 +312,12 @@ ns.ChildAdded:connect(function(replicator) -- mostly from polygon tbh with some 
 		end		
 		
 		replicator.EventFilter = function(item)
+			if(replicator:GetPlayer() and placeId == 2) then
+				local player = replicator:GetPlayer()
+
+				print(player.Name .. " fired an event: " .. item.ClassName)
+			end
+
 			if accepted == true then
 				return Enum.FilterResult.Accepted
 			end
