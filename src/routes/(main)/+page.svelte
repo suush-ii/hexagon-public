@@ -331,7 +331,8 @@
 							<Form.Control let:attrs>
 								<Form.Label>Socials</Form.Label>
 								<Form.Description
-									>Paste a URL to a public profile. You can use Roblox profiles, X accoounts, etc..</Form.Description
+									>Paste a URL to a public profile. You can use Roblox profiles, Bluesky accounts,
+									etc..</Form.Description
 								>
 								<Input
 									{...attrs}
