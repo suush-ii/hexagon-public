@@ -262,7 +262,7 @@ end
 
 local function sendLogs(blocking)
 	pcall(function()
-		game:HttpPost(url .. "/game/Log.ashx?" .. "&jobId=" .. JobId .. "&placeId=" .. placeId .. "&" .. access, HttpService:JSONEncode(logs), blocking, "application/json")
+		--game:HttpPost(url .. "/game/Log.ashx?" .. "&jobId=" .. JobId .. "&placeId=" .. placeId .. "&" .. access, HttpService:JSONEncode(logs), blocking, "application/json")
 	end)
 end
 
@@ -292,10 +292,12 @@ ns.ChildAdded:connect(function(replicator) -- mostly from polygon tbh with some 
 		replicator:SetBasicFilteringEnabled(true)
 
 		replicator.NewFilter = function(item)
-			if(replicator:GetPlayer() and placeId == 2) then
+			if(replicator:GetPlayer()) then
 				local player = replicator:GetPlayer()
 
-				print(player.Name .. " created a new item: " .. item.ClassName .. " " .. item.Name)
+				--print(player.Name .. " created a new item: " .. item.ClassName .. " " .. item.Name)
+
+				logEvent(player, player.Name .. " created a new item " .. item.ClassName .. " " .. item.Name)
 			end
 
 			if accepted == true then
@@ -316,10 +318,12 @@ ns.ChildAdded:connect(function(replicator) -- mostly from polygon tbh with some 
 		end		
 		
 		replicator.DeleteFilter = function(item)
-			if(replicator:GetPlayer() and placeId == 2) then
+			if(replicator:GetPlayer()) then
 				local player = replicator:GetPlayer()
 
-				print(player.Name .. " deleted an item: " .. item.ClassName)
+				--print(player.Name .. " deleted an item: " .. item.ClassName)
+
+				logEvent(player, player.Name .. " deleted an item " .. item.ClassName)
 			end
 
 			if accepted == true then
@@ -329,11 +333,13 @@ ns.ChildAdded:connect(function(replicator) -- mostly from polygon tbh with some 
 			return Enum.FilterResult.Rejected
 		end
 	
-		replicator.PropertyFilter = function(item, member)
-			if(replicator:GetPlayer() and placeId == 2) then
+		replicator.PropertyFilter = function(item, member, value)
+			if(replicator:GetPlayer()) then
 				local player = replicator:GetPlayer()
 
-				print(player.Name .. " changed a property: " .. item.ClassName .. "." .. member)
+				--print(player.Name .. " changed a property: " .. item.ClassName .. "." .. member)
+
+				logEvent(player, player.Name .. " changed a property " .. item.ClassName .. "." .. member)
 			end
 
 			if accepted == true then
@@ -359,10 +365,12 @@ ns.ChildAdded:connect(function(replicator) -- mostly from polygon tbh with some 
 		end		
 		
 		replicator.EventFilter = function(item)
-			if(replicator:GetPlayer() and placeId == 2) then
+			if(replicator:GetPlayer()) then
 				local player = replicator:GetPlayer()
 
-				print(player.Name .. " fired an event: " .. item.ClassName)
+				--print(player.Name .. " fired an event: " .. item.ClassName)
+
+				logEvent(player, player.Name .. " fired an event " .. item.ClassName)
 			end
 
 			if accepted == true then
@@ -509,7 +517,7 @@ if access then
 		presenceCheck()
 		--sendLogs(false)
 
-		wait(5)
+		wait(10)
 	end
  end)
 end
