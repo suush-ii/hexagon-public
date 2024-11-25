@@ -336,6 +336,16 @@ export const load: PageServerLoad = async ({ params, locals, url }) => {
 		offset: (badgePage - 1) * badgeSize
 	})
 
+	const inventoryWearing = await db
+		.selectDistinctOn([inventoryTable.itemid], {
+			itemid: inventoryTable.itemid,
+			asset: { assetname: assetTable.assetname, limited: assetTable.limited }
+		})
+		.from(inventoryTable)
+		.where(and(eq(inventoryTable.wearing, true), eq(inventoryTable.userid, locals.user.userid)))
+		.orderBy(desc(inventoryTable.itemid), desc(inventoryTable.obatineddate))
+		.innerJoin(assetTable, eq(inventoryTable.itemid, assetTable.assetid))
+
 	return {
 		username: user.username,
 		userid: user.userid,
@@ -361,6 +371,7 @@ export const load: PageServerLoad = async ({ params, locals, url }) => {
 		knockouts: user.knockouts,
 		playerbadges: badges,
 		badgeCount: badgeCount.count,
-		registeredclan: user.registeredclan
+		registeredclan: user.registeredclan,
+		inventoryWearing
 	}
 }
