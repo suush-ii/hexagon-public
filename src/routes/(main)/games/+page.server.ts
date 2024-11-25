@@ -1,11 +1,11 @@
 import type { PageServerLoad } from './$types'
 import { gamesTable } from '$lib/server/schema/games'
-import { desc, eq } from 'drizzle-orm'
+import { desc, eq, sql } from 'drizzle-orm'
 import { gameCardSearch } from '$lib/server/games/gamecard'
 
 export const load: PageServerLoad = async ({}) => {
 	const popularGames = await gameCardSearch({
-		orderBy: desc(gamesTable.active),
+		orderBy: (desc(gamesTable.active), sql`associatedasset.last7dayscounter DESC`),
 		limit: 40
 	})
 
