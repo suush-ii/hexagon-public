@@ -4,8 +4,8 @@ import { jobsTable, usersTable } from '$lib/server/schema'
 import { error, json, type RequestHandler } from '@sveltejs/kit'
 import { eq } from 'drizzle-orm'
 
-export const GET: RequestHandler = async ({ request, url }) => {
-	const accessKey = url.searchParams.get('apikey')
+export const GET: RequestHandler = async ({ request }) => {
+	const accessKey = request.headers.get('apikey')
 
 	if (!accessKey || (env.EVICT_KEY as string) != accessKey) {
 		return error(403, {
