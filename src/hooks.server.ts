@@ -59,7 +59,8 @@ const protectedRoutes = [
 	'/currency',
 	'/referrals',
 	'/clans',
-	'/leaderboards'
+	'/leaderboards',
+	'/verify-player/ac'
 ]
 const adminProtectedRoutes = ['/admin', '/api/admin']
 

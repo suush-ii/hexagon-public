@@ -71,23 +71,6 @@ export const fallback: RequestHandler = async (event) => {
 			placeLauncherJson.jobId = instance.jobid
 			placeLauncherJson.joinScriptUrl += '?auth=' + authBearer + '&jobid=' + instance.jobid
 
-			//let characterAppearance =
-			//	CharacterAppearance + `?userId=` + locals.user.userid + '&jobId=' + instance.jobid
-
-			//const jwt = await new jose.SignJWT({
-			//	username: locals.user.username,
-			//	userId: locals.user.userid,
-			//	jobId: instance.jobid,
-			//	membershipType: 'None',
-			//	characterAppearance
-			//})
-			//	.setProtectedHeader({ alg })
-			//	.setIssuedAt()
-			//	.setExpirationTime('1min')
-			//	.sign(secret)
-
-			//placeLauncherJson.authenticationTicket = jwt
-
 			return json(placeLauncherJson)
 		}
 	}
@@ -141,6 +124,13 @@ export const fallback: RequestHandler = async (event) => {
 		// an instance is already available or is loading...
 
 		if (
+			instance.presenceping &&
+			new Date().valueOf() - instance.presenceping.valueOf() > 10 * 1000
+		) {
+			await db.delete(jobsTable).where(eq(jobsTable.jobid, instance.jobid))
+		}
+
+		if (
 			(instance.active ?? 0) <= 0 &&
 			instance.status === 1 &&
 			new Date().valueOf() - instance.created.valueOf() > 5 * 60 * 1000
@@ -152,23 +142,6 @@ export const fallback: RequestHandler = async (event) => {
 			placeLauncherJson.status = instance.status
 			placeLauncherJson.jobId = instance.jobid
 			placeLauncherJson.joinScriptUrl += '?auth=' + authBearer + '&jobid=' + instance.jobid
-
-			//let characterAppearance =
-			//	CharacterAppearance + `?userId=` + locals.user.userid + '&jobId=' + instance.jobid
-
-			//const jwt = await new jose.SignJWT({
-			//	username: locals.user.username,
-			//	userId: locals.user.userid,
-			//	jobId: instance.jobid,
-			//	membershipType: 'None',
-			//	characterAppearance
-			//})
-			//	.setProtectedHeader({ alg })
-			//	.setIssuedAt()
-			//	.setExpirationTime('1min')
-			//	.sign(secret)
-
-			//placeLauncherJson.authenticationTicket = jwt
 
 			return json(placeLauncherJson)
 		}

@@ -97,6 +97,12 @@ export const jobsTable = pgTable('jobs', {
 	players: bigint('players', { mode: 'number' })
 		.array()
 		.$type<number[]>()
+		.default(sql`'{}'::bigint[]`),
+	presenceping: timestamp('presenceping', { mode: 'date', withTimezone: true }).defaultNow(),
+	closed: boolean('closed').default(false),
+	toevict: bigint('toevict', { mode: 'number' })
+		.array()
+		.$type<number[]>()
 		.default(sql`'{}'::bigint[]`)
 })
 
@@ -113,6 +119,19 @@ export const gamesessionsTable = pgTable(
 	},
 	(table) => {
 		return { pk: primaryKey({ columns: [table.jobid, table.placeid, table.userid, table.time] }) }
+	}
+)
+
+export const logsTable = pgTable(
+	'logs',
+	{
+		jobid: uuid('jobid').notNull(),
+		time: timestamp('time', { mode: 'date', withTimezone: true }).notNull().defaultNow(),
+		log: text('log').notNull(),
+		userid: bigint('userid', { mode: 'number' }).notNull()
+	},
+	(table) => {
+		return { pk: primaryKey({ columns: [table.jobid, table.time] }) }
 	}
 )
 
@@ -160,4 +179,11 @@ export const jobsRelations = relations(jobsTable, ({ one, many }) => ({
 		references: [usersTable.userid]
 	})
 	//activeusers: many(usersTable) // so we can fetch all the users in a job
+}))
+
+export const logsRelations = relations(logsTable, ({ one }) => ({
+	user: one(usersTable, {
+		fields: [logsTable.userid],
+		references: [usersTable.userid]
+	})
 }))

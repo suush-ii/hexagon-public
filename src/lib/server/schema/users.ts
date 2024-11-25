@@ -8,12 +8,13 @@ import {
 	timestamp,
 	varchar,
 	boolean,
-	primaryKey
+	primaryKey,
+	uuid
 } from 'drizzle-orm/pg-core'
 import type { userRole, userGenders, AssetTypes, HexagonBadges, HexagonClans } from '$lib/types'
 import { relations, sql } from 'drizzle-orm'
 import { keyTable } from './keys'
-import { gamesTable, placesTable } from './games'
+import { gamesTable, logsTable, placesTable } from './games'
 import type { ActionTypes } from '../admin'
 import { assetTable } from './assets'
 import type { Action as moderationTypes } from '$src/routes/(main)/admin/users/moderateuser/schema'
@@ -59,7 +60,8 @@ export const usersTable = pgTable('users', {
 		.default(sql`'{}'::text[]`),
 	knockouts: bigint('knockouts', { mode: 'number' }).notNull().default(0),
 	wipeouts: bigint('wipeouts', { mode: 'number' }).notNull().default(0),
-	registeredclan: text('registeredclan').$type<HexagonClans>()
+	registeredclan: text('registeredclan').$type<HexagonClans>(),
+	activejob: uuid('jobid')
 })
 
 export const relationsTable = pgTable('relations', {
