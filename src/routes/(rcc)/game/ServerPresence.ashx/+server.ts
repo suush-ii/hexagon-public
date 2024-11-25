@@ -29,7 +29,7 @@ export const fallback: RequestHandler = async ({ url, request, locals }) => {
 	const { jobId } = result.data
 
 	const instance = await db.query.jobsTable.findFirst({
-		columns: { players: true, associatedid: true },
+		columns: { players: true, associatedid: true, toevict: true, closed: true },
 		where: eq(jobsTable.jobid, jobId)
 	})
 
@@ -45,7 +45,7 @@ export const fallback: RequestHandler = async ({ url, request, locals }) => {
 		success: true,
 		message: '',
 		data: {},
-		status: '',
-		evicted: []
+		status: instance?.closed ? 'close' : '',
+		evicted: instance?.toevict ?? []
 	})
 }
