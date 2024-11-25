@@ -342,7 +342,7 @@ export const load: PageServerLoad = async ({ params, locals, url }) => {
 			asset: { assetname: assetTable.assetname, limited: assetTable.limited }
 		})
 		.from(inventoryTable)
-		.where(and(eq(inventoryTable.wearing, true), eq(inventoryTable.userid, locals.user.userid)))
+		.where(and(eq(inventoryTable.wearing, true), eq(inventoryTable.userid, Number(params.userId))))
 		.orderBy(desc(inventoryTable.itemid), desc(inventoryTable.obatineddate))
 		.innerJoin(assetTable, eq(inventoryTable.itemid, assetTable.assetid))
 
