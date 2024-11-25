@@ -123,7 +123,7 @@ export const fallback: RequestHandler = async ({ url, request, locals }) => {
 	}
 
 	const instance = await db.query.jobsTable.findFirst({
-		columns: { players: true, associatedid: true },
+		columns: { players: true, associatedid: true, toevict: true },
 		where: eq(jobsTable.jobid, jobId),
 		with: {
 			associatedplace: { columns: {}, with: { associatedgame: { columns: { active: true } } } }
@@ -148,7 +148,10 @@ export const fallback: RequestHandler = async ({ url, request, locals }) => {
 		active += 1
 		playerCountUniverse += 1
 
-		await db.update(usersTable).set({ activegame: placeid }).where(eq(usersTable.userid, userid))
+		await db
+			.update(usersTable)
+			.set({ activegame: placeid, activejob: jobId })
+			.where(eq(usersTable.userid, userid))
 	}
 
 	if (action === 'disconnect') {
@@ -166,7 +169,14 @@ export const fallback: RequestHandler = async ({ url, request, locals }) => {
 			playerCountUniverse -= 1
 		}
 
-		await db.update(usersTable).set({ activegame: null }).where(eq(usersTable.userid, userid))
+		await db
+			.update(usersTable)
+			.set({ activegame: null, activejob: null })
+			.where(eq(usersTable.userid, userid))
+
+		const updatedToevict = instance.toevict ? instance.toevict.filter((id) => id !== userid) : []
+
+		await db.update(jobsTable).set({ toevict: updatedToevict }).where(eq(jobsTable.jobid, jobId))
 
 		await db
 			.update(gamesessionsTable)

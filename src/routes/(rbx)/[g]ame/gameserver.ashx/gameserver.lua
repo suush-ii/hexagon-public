@@ -4,6 +4,20 @@
 local sleeptime, url, timeout = 0, "http://www.roblox.com", 0
 
 local access, placeId, port, JobId, maxPlayers = {1}
+
+local logs = {}
+
+function RemoveTableDupes(tab)
+	local hash = {}
+	local res = {}
+	for _,v in ipairs(tab) do
+		if (not hash[v]) then
+			res[#res+1] = v
+			hash[v] = true
+		end
+	end
+	return res
+end
 --defining jobid here is a hack for now
 
 
@@ -226,9 +240,10 @@ if placeId~=nil and url~=nil then
 	print("DataModel Loading http://www.hexagon.pw/asset/?id=" .. placeId)
 end
 
+
 local function char_to_hex(c)
     return string.format("%%%02X", string.byte(c))
-  end
+end
 
 local function urlencode(url)
     if url == nil then
@@ -237,6 +252,38 @@ local function urlencode(url)
     url = url:gsub("\n", "\r\n")
     url = url:gsub("([^%w%-%.%_%~%!%*%'%(%)])", char_to_hex)
     return url
+end
+
+local function logEvent(player, event)
+    logs["" .. player.userId] = logs["" .. player.userId] or {}
+	logs["" .. player.userId] = RemoveTableDupes(logs["" .. player.userId])
+    table.insert(logs["" .. player.userId], event)
+end
+
+local function sendLogs(blocking)
+	pcall(function()
+		game:HttpPost(url .. "/game/Log.ashx?" .. "&jobId=" .. JobId .. "&placeId=" .. placeId .. "&" .. access, HttpService:JSONEncode(logs), blocking, "application/json")
+	end)
+end
+
+local function presenceCheck()
+	local success, response  = pcall(function()
+		local response = game:HttpPostAsync(url .. "/game/ServerPresence.ashx?" .. "&jobId=" .. JobId .. "&" .. access, "")
+
+		local data = HttpService:JSONDecode(response)
+
+		if data["status"] == "close" then
+			game:Shutdown()
+		end
+
+		for _, v in pairs(data["evicted"]) do
+			for _, player in pairs(game:GetService("Players"):GetPlayers()) do
+				if player.userId == v then
+					player:Kick()
+				end
+			end
+		end
+	end)
 end
 
 ns.ChildAdded:connect(function(replicator) -- mostly from polygon tbh with some added changes
@@ -349,7 +396,7 @@ ns.ChildAdded:connect(function(replicator) -- mostly from polygon tbh with some 
 
 		replicator:DisableProcessPackets()
 
-        if player.CharacterAppearance ~= url .. "/Asset/CharacterFetch.ashx?userId=" ..player.userId.. "&jobId=" .. JobId .. "&placeId=" .. placeId then
+        if player.CharacterAppearance ~= url .. "/Asset/CharacterFetch.ashx?userId=" ..player.userId .. "&jobId=" .. JobId .. "&placeId=" .. placeId then
             replicator:CloseConnection()
             print("[paclib] kicked " .. player.Name .. " because player does not have correct character appearance for this server")
             print("[paclib] correct character appearance url: " .. url .. "/Asset/CharacterFetch.ashx?userId=" .. player.userId .. "&jobId=" .. JobId .. "&placeId=" .. placeId)
@@ -450,21 +497,22 @@ scriptContext.ScriptsDisabled = false
 delay(1, function()
 	loadfile(url .. "/analytics/GamePerfMonitor.ashx")(JobId, placeId)
 end)
-
+]]
 
 if access then
   game.Close:connect(function()
-    reportCdn(true)
+    sendLogs(true)
   end)
 
-  delay(60*5, function()
+  delay(5, function()
     while true do
-		reportCdn(false)
-		wait(60*5)
+		presenceCheck()
+		--sendLogs(false)
+
+		wait(5)
 	end
  end)
 end
-]]
 
 ------------------------------END START GAME SHARED SCRIPT--------------------------
 
