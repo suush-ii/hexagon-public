@@ -186,6 +186,9 @@
 					localStorage.setItem('profileAvatarMode', dimension)
 					attempt = 0
 				}}>{dimension === '2D' ? '3D' : '2D'}</Button
-			>{/if}
+			>
+		{/if}
+
+		<slot />
 	</div>
 {/if}
