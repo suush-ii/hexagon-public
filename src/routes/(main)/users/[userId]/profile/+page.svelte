@@ -33,6 +33,8 @@
 
 	import EmptyCard from '$src/components/emptyCard.svelte'
 
+	import ViewItems from '$src/components/users/viewItems.svelte'
+
 	import { clanImages } from '$lib'
 
 	const relativeTime = new RelativeTime()
@@ -175,7 +177,11 @@
 					{username}
 					css={'xl:h-80 h-fit w-full max-w-80 aspect-square'}
 					type="avatar"
-				/>
+				>
+					<div class="h-14 absolute right-0 bottom-0">
+						<ViewItems items={data.inventoryWearing} />
+					</div>
+				</Avatar>
 
 				<p class="mx-auto line-clamp-6 break-words w-full whitespace-pre-line text-center">
 					{data.blurb}
