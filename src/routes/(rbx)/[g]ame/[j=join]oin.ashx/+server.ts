@@ -9,14 +9,46 @@ import { LuciaError } from 'lucia'
 import { z } from 'zod'
 import { createSign } from 'node:crypto'
 import script from './join.lua?raw'
+import scriptDefault from './join_studio.lua?raw'
 
 const scriptNew: string = script.replaceAll('roblox.com', env.BASE_URL as string)
+const scriptNewDefault: string = scriptDefault.replaceAll('roblox.com', env.BASE_URL as string)
 
 const CharacterAppearance = `http://www.${env.BASE_URL}/Asset/CharacterFetch.ashx`
 const BaseUrl = `http://${env.BASE_URL}/`
 
+const studioJoinSchema = z.object({
+	userid: z.coerce.number().int(),
+	port: z.coerce.number().int(),
+	universeid: z.coerce.number().int()
+})
+
 export const fallback: RequestHandler = async ({ url, locals }) => {
-	// capture get/post
+	const studioJoinResult = await studioJoinSchema.safeParseAsync({
+		userid: url.searchParams.get('UserID') ?? undefined,
+		port: url.searchParams.get('serverPort') ?? undefined,
+		universeid: url.searchParams.get('universeId') ?? undefined
+	})
+
+	if (studioJoinResult.success) {
+		console.log(studioJoinResult)
+
+		let scriptNewArgs = scriptNewDefault
+
+		scriptNewArgs = scriptNewArgs.replaceAll('{UserId}', studioJoinResult.data.userid.toString())
+		scriptNewArgs = scriptNewArgs.replaceAll('{ServerPort}', studioJoinResult.data.port.toString())
+		scriptNewArgs = scriptNewArgs.replaceAll(
+			'{PlaceId}',
+			studioJoinResult.data.universeid.toString()
+		)
+
+		const sign = createSign('SHA1')
+		sign.update('\r\n' + scriptNewArgs)
+		const signature = sign.sign(env.CLIENT_PRIVATE_KEY as string, 'base64')
+
+		return text('--rbxsig%' + signature + '%\r\n' + scriptNewArgs)
+	}
+
 	const jobid = url.searchParams.get('jobid')
 	const authBearer = url.searchParams.get('auth') ?? ''
 
