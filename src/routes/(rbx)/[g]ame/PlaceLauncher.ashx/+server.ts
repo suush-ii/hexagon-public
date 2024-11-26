@@ -125,7 +125,7 @@ export const fallback: RequestHandler = async (event) => {
 
 		if (
 			instance.presenceping &&
-			new Date().valueOf() - instance.presenceping.valueOf() > 10 * 1000
+			new Date().valueOf() - instance.presenceping.valueOf() > 60 * 1000
 		) {
 			await db.delete(jobsTable).where(eq(jobsTable.jobid, instance.jobid))
 		}
