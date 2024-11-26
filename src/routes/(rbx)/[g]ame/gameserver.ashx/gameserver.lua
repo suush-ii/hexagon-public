@@ -513,12 +513,14 @@ if access then
   end)
 
   delay(5, function()
-    while true do
-		presenceCheck()
-		--sendLogs(false)
+	spawn(function()
+    	while true do
+			presenceCheck()
+			--sendLogs(false)
 
-		wait(10)
-	end
+			wait(10)
+		end
+	end)
  end)
 end
 
