@@ -5,7 +5,7 @@ import { gameCardSearch } from '$lib/server/games/gamecard'
 
 export const load: PageServerLoad = async ({}) => {
 	const popularGames = await gameCardSearch({
-		orderBy: (desc(gamesTable.active), sql`associatedasset.last7dayscounter DESC`),
+		orderBy: desc(gamesTable.active),
 		limit: 40
 	})
 
