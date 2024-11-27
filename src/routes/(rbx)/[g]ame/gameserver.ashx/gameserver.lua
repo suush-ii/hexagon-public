@@ -505,7 +505,7 @@ scriptContext.ScriptsDisabled = false
 delay(1, function()
 	loadfile(url .. "/analytics/GamePerfMonitor.ashx")(JobId, placeId)
 end)
-]]
+
 
 if access then
   game.Close:connect(function()
@@ -523,7 +523,7 @@ if access then
 	end)
  end)
 end
-
+]]
 ------------------------------END START GAME SHARED SCRIPT--------------------------
 
 
