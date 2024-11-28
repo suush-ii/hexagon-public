@@ -2,7 +2,7 @@ import { error, json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types'
 import { db } from '$src/lib/server/db'
 import { relationsTable } from '$lib/server/schema'
-import { and, eq, ne, or } from 'drizzle-orm'
+import { and, count, eq, ne, or } from 'drizzle-orm'
 import { z } from 'zod'
 
 const itemSchema = z.object({
@@ -31,6 +31,10 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 	if (!result.success) {
 		const errors = result.error.issues.map((issue) => issue.message) // get us only the error msgs
 		error(400, { success: false, message: 'Malformed JSON.', data: { errors } })
+	}
+
+	if (user.userid == recipientid) {
+		error(400, { success: false, message: 'You cannot friend yourself.', data: {} })
 	}
 
 	const alreadyFriends = await db
@@ -78,23 +82,79 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 		.limit(1)
 
 	if (type === 'friend' && recipientAlreadyRequested.length === 0) {
-		await db
-			.insert(relationsTable)
-			.values({ recipient: recipientid, sender: user.userid, type: 'request' })
-	} else if (type === 'friend' && recipientAlreadyRequested.length > 0) {
-		await db
-			.update(relationsTable)
-			.set({ recipient: user.userid, sender: recipientid, type: type })
-			.where(
-				and(
-					eq(relationsTable.sender, recipientid),
-					eq(relationsTable.recipient, user.userid),
-					eq(relationsTable.type, 'request')
+		await db.transaction(async (tx) => {
+			await tx
+				.insert(relationsTable)
+				.values({ recipient: recipientid, sender: user.userid, type: 'request' })
+
+			const [requests] = await tx
+				.select({ count: count() })
+				.from(relationsTable)
+				.where(
+					and(
+						eq(relationsTable.recipient, recipientid),
+						eq(relationsTable.type, 'request'),
+						eq(relationsTable.sender, user.userid)
+					)
 				)
-			)
-		await db
-			.insert(relationsTable)
-			.values({ sender: user.userid, recipient: recipientid, type: type }) // create 2 way
+				.limit(1)
+
+			if (requests.count > 1) {
+				tx.rollback()
+			}
+		})
+	} else if (type === 'friend' && recipientAlreadyRequested.length > 0) {
+		await db.transaction(async (tx) => {
+			await tx
+				.update(relationsTable)
+				.set({ recipient: user.userid, sender: recipientid, type: type })
+				.where(
+					and(
+						eq(relationsTable.sender, recipientid),
+						eq(relationsTable.recipient, user.userid),
+						eq(relationsTable.type, 'request')
+					)
+				)
+
+			await tx
+				.insert(relationsTable)
+				.values({ sender: user.userid, recipient: recipientid, type: type }) // create 2 way
+
+			const [friends] = await tx
+				.select({ count: count() })
+				.from(relationsTable)
+				.where(
+					and(
+						eq(relationsTable.sender, recipientid),
+						eq(relationsTable.recipient, user.userid),
+						eq(relationsTable.type, type)
+					)
+				)
+
+			if (friends.count > 1) {
+				await db
+					.delete(relationsTable)
+					.where(
+						and(
+							eq(relationsTable.sender, recipientid),
+							eq(relationsTable.recipient, user.userid),
+							eq(relationsTable.type, 'request')
+						)
+					)
+
+				await db
+					.delete(relationsTable)
+					.where(
+						and(
+							eq(relationsTable.sender, user.userid),
+							eq(relationsTable.recipient, recipientid),
+							eq(relationsTable.type, 'request')
+						)
+					)
+
+				tx.rollback()
+			}
+		})
 	} else {
 		//unfriend
 
