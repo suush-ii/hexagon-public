@@ -307,15 +307,15 @@ export const GET: RequestHandler = async (event) => {
 	/**if (cachedAsset?.[0]?.filehash && cachedAsset?.[0]?.assettypeid != meshAssetId) {
 		redirect(302, getCdnUrl(cachedAsset[0].filehash))
 	} else {*/
-	const response = await fetch('https://assetdelivery.roblox.com/v2/assetId/' + assetId, {
+	const response = await fetch('https://assetdelivery.roblox.com/v1/assetId/' + assetId, {
 		headers: { 'User-Agent': 'Roblox/WinInet' }
 	})
 	const data = await response.json()
 
 	if (data) {
-		if (data.locations?.length > 0) {
-			const url = data.locations[0].location
-			const filehash = url.substring(22)
+		if (data.location) {
+			const url = data.location
+			const filehash = new URL(url).pathname.replace('/', '')
 
 			if (data.assetTypeId === meshAssetId) {
 				const assetResponse = await fetch(url, {
