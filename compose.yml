@@ -33,7 +33,7 @@ services:
     networks:
       - hexagon-nw
   backups:
-    image: docker-db-backup:latest
+    image: tiredofit/db-backup:latest
     restart: always
     env_file:
       - .env.backups
