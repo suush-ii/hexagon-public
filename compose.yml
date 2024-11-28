@@ -33,7 +33,7 @@ services:
     networks:
       - hexagon-nw
   backups:
-    image: registry.cirroskais.xyz/docker-db-backup:edge
+    image: docker-db-backup:latest
     restart: always
     env_file:
       - .env.backups
