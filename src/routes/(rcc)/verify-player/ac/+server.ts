@@ -7,7 +7,8 @@ export const GET: RequestHandler = async ({ locals }) => {
 	const user = await db.query.usersTable.findFirst({
 		columns: {
 			activejob: true,
-			activegame: true
+			activegame: true,
+			userid: true
 		},
 		where: eq(usersTable.userid, locals.user.userid)
 	})
@@ -34,6 +35,6 @@ export const GET: RequestHandler = async ({ locals }) => {
 	return json({
 		success: true,
 		message: '',
-		data: { placeid: user.activegame, jobid: user.activejob }
+		data: { placeid: user.activegame, jobid: user.activejob, userid: user.userid }
 	})
 }
