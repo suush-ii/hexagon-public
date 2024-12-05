@@ -157,6 +157,8 @@
 				const uri = `hexagon-player:1+launchmode:play+gameinfo:${json.authenticationTicket}+placelauncherurl:${encodeURIComponent(json.joinScriptUrl)}`
 				document.location = uri
 
+				console.log(json.joinScriptUrl)
+
 				open = false
 
 				disableRandom = true

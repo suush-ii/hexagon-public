@@ -254,7 +254,17 @@ local function urlencode(url)
     return url
 end
 
-local function logEvent(player, event)
+local function logEvent(player, item, event)
+	pcall(function()
+		if item.Parent ~= nil then
+			event = event .. " Parent: " .. tostring(item.Parent)
+		
+			if item.Parent.Parent ~= nil then
+				event = event .. " Parent.Parent: " .. tostring(item.Parent.Parent)
+			end
+		end
+	end)
+
     logs["" .. player.userId] = logs["" .. player.userId] or {}
 	logs["" .. player.userId] = RemoveTableDupes(logs["" .. player.userId])
     table.insert(logs["" .. player.userId], event)
@@ -262,7 +272,7 @@ end
 
 local function sendLogs(blocking)
 	pcall(function()
-		--game:HttpPost(url .. "/game/Log.ashx?" .. "&jobId=" .. JobId .. "&placeId=" .. placeId .. "&" .. access, HttpService:JSONEncode(logs), blocking, "application/json")
+		game:HttpPost(url .. "/game/Log.ashx?" .. "&jobId=" .. JobId .. "&placeId=" .. placeId .. "&" .. access, HttpService:JSONEncode(logs), blocking, "application/json")
 	end)
 end
 
@@ -297,7 +307,7 @@ ns.ChildAdded:connect(function(replicator) -- mostly from polygon tbh with some 
 
 				--print(player.Name .. " created a new item: " .. item.ClassName .. " " .. item.Name)
 
-				logEvent(player, player.Name .. " created a new item " .. item.ClassName .. " " .. item.Name)
+				logEvent(player, item, player.Name .. " created a new item: " .. item.ClassName .. " " .. item.Name)
 			end
 
 			if accepted == true then
@@ -323,7 +333,7 @@ ns.ChildAdded:connect(function(replicator) -- mostly from polygon tbh with some 
 
 				--print(player.Name .. " deleted an item: " .. item.ClassName)
 
-				logEvent(player, player.Name .. " deleted an item " .. item.ClassName)
+				logEvent(player, item, player.Name .. " deleted an item: " .. item.ClassName)
 			end
 
 			if accepted == true then
@@ -339,7 +349,7 @@ ns.ChildAdded:connect(function(replicator) -- mostly from polygon tbh with some 
 
 				--print(player.Name .. " changed a property: " .. item.ClassName .. "." .. member)
 
-				logEvent(player, player.Name .. " changed a property " .. item.ClassName .. "." .. member)
+				logEvent(player, item, player.Name .. " changed a property: " .. item.ClassName .. "." .. member)
 			end
 
 			if accepted == true then
@@ -370,7 +380,7 @@ ns.ChildAdded:connect(function(replicator) -- mostly from polygon tbh with some 
 
 				--print(player.Name .. " fired an event: " .. item.ClassName)
 
-				logEvent(player, player.Name .. " fired an event " .. item.ClassName)
+				logEvent(player, item, player.Name .. " fired an event: " .. item.ClassName)
 			end
 
 			if accepted == true then
@@ -505,7 +515,7 @@ scriptContext.ScriptsDisabled = false
 delay(1, function()
 	loadfile(url .. "/analytics/GamePerfMonitor.ashx")(JobId, placeId)
 end)
-
+]]
 
 if access then
   game.Close:connect(function()
@@ -515,15 +525,15 @@ if access then
   delay(5, function()
 	spawn(function()
     	while true do
-			presenceCheck()
-			--sendLogs(false)
+			--presenceCheck()
+			sendLogs(false)
 
 			wait(10)
 		end
 	end)
  end)
 end
-]]
+
 ------------------------------END START GAME SHARED SCRIPT--------------------------
 
 
@@ -543,3 +553,7 @@ if not ok then
 	Instance.new("Message", workspace).Text = tostring(err)
 	game:SetMessage(tostring(err))
 	end
+
+--settings().Network.PrintProperties = true
+--settings().Network.PrintInstances = true
+--settings().Network.PrintEvents = true
