@@ -277,7 +277,11 @@ export const actions: Actions = {
 			if (form.data.scrubusername === true) {
 				await db
 					.update(usersTable)
-					.set({ username: `[Content Deleted ${result.data}]`, scrubbedusername: user[0].username })
+					.set({
+						username: `[Content Deleted ${result.data}]`,
+						scrubbedusername: user[0].username,
+						blurb: '[ Content Deleted ]'
+					})
 					.where(eq(usersTable.userid, result.data))
 			}
 		}
