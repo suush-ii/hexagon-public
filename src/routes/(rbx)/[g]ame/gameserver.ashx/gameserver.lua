@@ -536,16 +536,67 @@ end
 
 ------------------------------END START GAME SHARED SCRIPT--------------------------
 
+--START EC--
+--[[
+EC V2, test sounds for now (dec 5 2024)
+
+by brandan for hexagon
+]]--
+
+local sound_t = {
+	"rbxassetid://6668", -- micro (meow)
+	"rbxassetid://6669", -- micro (bark)
+	"rbxassetid://9587", -- nsml
+	"rbxassetid://9589", -- all around me are familiar faces
+}
+
+local ec_trigs = {
+	";ec",
+	";energycell",
+	";finobe",
+	";suicide",
+	";raymonf",
+	";minecraft",
+	";sex",
+	";cut"
+}
+
+local function containsKillPhrase(message)
+    for _, phrase in ipairs(ec_trigs) do
+        if string.find(string.lower(message), string.lower(phrase)) then
+            return true
+        end
+    end
+    return false
+end
+
+local players = game:GetService("Players")
+players.PlayerAdded:connect(function(player)
+	player.Chatted:connect(function(message)
+		if containsKillPhrase(message) then
+			local c_success, c_result = pcall(function()
+				local new_sound = Instance.new("Sound", player["Character"]["Head"])
+				new_sound.SoundId = sound_t[math.random(1, #sound_t)]
+				
+				new_sound.Volume = 0.25
+				new_sound:Play();player["Character"]:BreakJoints()
+			end)
+
+			if c_success then
+				print(string.format("[ec] Triggered on %s", player.Name))
+			elseif not c_success and c_result then
+				print(string.format("[ec] Failed to trigger on %s", player.Name))
+			end
+		end
+	end)
+end)
+--END EC--
+
 
 -- StartGame --
 
-if injectScriptAssetID and (injectScriptAssetID < 0) then
-	pcall(function() Game:LoadGame(injectScriptAssetID * -1) end)
-else
-	pcall(function() Game:GetService("ScriptContext"):AddStarterScript(injectScriptAssetID) end)
-end
+game:GetService("RunService"):Run()
 
-Game:GetService("RunService"):Run()
 end)
 
 if not ok then
