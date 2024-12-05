@@ -216,9 +216,9 @@
 			</div>
 
 			<img
-				class="absolute w-[70rem] h-3.5 bottom-0 left-0 right-0 m-auto opacity-80 pointer-events-none select-none"
-				src={'/leaves.png'}
-				alt="leaves"
+				class="absolute w-[70rem] bottom-0 left-0 right-0 m-auto opacity-80 pointer-events-none select-none"
+				src={'/snow.png'}
+				alt="snow"
 			/>
 		</div>
 
