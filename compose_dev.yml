@@ -1,0 +1,32 @@
+services:
+  web:
+    build:
+      context: ./
+      dockerfile: ./dev/Dockerfile
+    restart: always
+    env_file:
+      - .env
+    networks:
+      - hexagon-nw
+    ports:
+      - '9000:9000'
+      - 24678:24678
+    volumes:
+      - ./:/usr/src/app
+      - /usr/src/app/node_modules
+  db:
+    image: postgres:17
+    restart: always
+    volumes:
+      - hexagon-db:/var/lib/postgresql/data
+    networks:
+      - hexagon-nw
+    environment:
+      - POSTGRES_PASSWORD=hexagon
+volumes:
+  hexagon-db:
+  caddy_data:
+  caddy_config:
+
+networks:
+  hexagon-nw:
