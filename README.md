@@ -1,57 +1,19 @@
 # Hexagon
 
-Using ~~bun~~ in production and node for development.
+Setup env using .env.example if you don't have arbiter set DISABLE_RENDER to true or you will get errors.
 
-Seems like bun doesn't support everything well right now we will return eventually :3.
-
-Setup env using .env.example
-
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+To setup dev environment easily I made a docker container for this.
 
 ```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
+docker compose -f compose_dev.yml build
+docker-compose -f compose_dev.yml up
 ```
 
-## Building
+# Production
 
-To create a production version of your app:
-
-```
-bun i
-```
+There is another container for production as well. You do also have to setup the hexagon-maintenance project and build it for caddy's error pages to work. :3
 
 ```bash
-bun run build
+docker compose build
+docker compose up -d
 ```
-
-## Production Setup
-
-This project uses postgres for the database, drizzle for the orm, and lucia for authentication/session handling.
-
-In production setup a NGINX server as a reverse proxy on port 9000. Example config below.
-
-```nginx
-location / {
-
-    proxy_pass http://127.0.0.1:9000;
-    proxy_http_version 1.1;
-    proxy_set_header Upgrade $http_upgrade;
-    proxy_set_header Connection 'upgrade';
-    proxy_cache_bypass $http_upgrade;
-    proxy_set_header X-Forwarded-Proto $scheme; # these are important so the sveltekit server can verify the origin
-    proxy_set_header X-Forwarded-Host $host;
-    client_max_body_size 100M;
-
-}
-```
-
-```bash
-node run prod
-```
-
-You can preview the production build with `npm run preview`.

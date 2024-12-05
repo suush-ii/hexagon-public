@@ -87,6 +87,14 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 		})
 	}
 
+	if (env.DISABLE_RENDER === 'true') {
+		return json({
+			success: true,
+			message: '',
+			data: { url: '/Images/iconplaceholder.png', status: 'completed' }
+		})
+	}
+
 	const userRender = user.length > 0 && asset === 'user'
 
 	const renderType = userRender ? 'user' : 'asset'

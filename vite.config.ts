@@ -33,16 +33,13 @@ export default defineConfig({
 	},
 	server: {
 		port: 9000,
-		strictPort: false
-		//proxy: {
-		//	'/asset': 'http://127.0.0.1:8080'
-		//}
+		strictPort: false,
+		watch: {
+			usePolling: true
+		}
 	},
 	preview: {
 		port: 9000,
 		strictPort: false
-		//proxy: {
-		//	'/asset': 'http://127.0.0.1:8080'
-		//}
 	}
 })
