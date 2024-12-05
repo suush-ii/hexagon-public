@@ -27,7 +27,7 @@
 					<Table.Body>
 						{#each data.logs as log}
 							<Table.Row>
-								<Table.Cell>{log.jobid}</Table.Cell>
+								<a href="/admin/games/logs/{log.jobid}" class="hover:underline"><Table.Cell>{log.jobid}</Table.Cell></a>
 								<Table.Cell>{log.userid}</Table.Cell>
 								<Table.Cell>{log.verified}</Table.Cell>
 								<Table.Cell>{log.flagged}</Table.Cell>
