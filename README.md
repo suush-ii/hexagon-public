@@ -6,7 +6,7 @@ To setup dev environment easily I made a docker container for this.
 
 ```bash
 docker compose -f compose_dev.yml build
-docker-compose -f compose_dev.yml up
+docker compose -f compose_dev.yml up
 ```
 
 # Production

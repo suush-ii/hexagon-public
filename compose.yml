@@ -51,12 +51,37 @@ services:
       - '/home/sushi/hexagon-maintenance/build:/var/www/hexagon-backup'
     networks:
       - hexagon-nw
+  umami:
+    image: docker.umami.is/umami-software/umami:postgresql-latest
+    env_file:
+      - .env.umami
+    depends_on:
+      db_umami:
+        condition: service_healthy
+    restart: always
+    networks:
+      - hexagon-nw
+  db_umami:
+    image: postgres:17
+    env_file: .env.umami
+    networks:
+      - hexagon-nw
+    volumes:
+      - umami-db:/var/lib/postgresql/data
+    restart: always
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready', '-d', 'postgres', '-U', 'postgres']
+      interval: 30s
+      timeout: 60s
+      retries: 5
+      start_period: 80s
 
 volumes:
   hexagon-db:
     external: true
   caddy_data:
   caddy_config:
+  umami-db:
 
 networks:
   hexagon-nw:
