@@ -254,20 +254,38 @@ local function urlencode(url)
     return url
 end
 
+local function pullUserLog(player)
+	logs["" .. player.userId] = logs["" .. player.userId] or {}
+	logs["" .. player.userId] = RemoveTableDupes(logs["" .. player.userId])
+
+	return logs["" .. player.userId]
+end
+
+
 local function logEvent(player, item, event)
+	local player_log = pullUserLog(player)
+	event = "[INSTANCE] "..event
 	pcall(function()
 		if item.Parent ~= nil then
-			event = event .. " Parent: " .. tostring(item.Parent)
+			event = string.format("%s Parent: %s", event, tostring(item.Parent))
 		
 			if item.Parent.Parent ~= nil then
-				event = event .. " Parent.Parent: " .. tostring(item.Parent.Parent)
+				event = string.format("%s Parent.Parent: %s", event, tostring(item.Parent.Parent))
 			end
 		end
 	end)
 
-    logs["" .. player.userId] = logs["" .. player.userId] or {}
-	logs["" .. player.userId] = RemoveTableDupes(logs["" .. player.userId])
-    table.insert(logs["" .. player.userId], event)
+    table.insert(player_log, event)
+end
+
+local function logChatEvent(player, message)
+	pcall(function()
+		local player_log = pullUserLog(player)
+		table.insert(
+			player_log,
+			("[CHAT] %s: %s"):format(player.Name, message) 
+	)
+	end)
 end
 
 local function sendLogs(blocking)
@@ -536,6 +554,18 @@ end
 
 ------------------------------END START GAME SHARED SCRIPT--------------------------
 
+-- START CHAT LOGS --
+--[[
+CHAT LOG 4 HEXAGON BY BRANDAN
+]]--
+
+game:GetService("Players").PlayerAdded:connect(function(player)
+	player.Chatted:connect(function(message)
+		logChatEvent(player, message)
+	end)
+end)
+
+-- END CHAT LOGS --
 --START EC--
 --[[
 EC V2, test sounds for now (dec 5 2024)
