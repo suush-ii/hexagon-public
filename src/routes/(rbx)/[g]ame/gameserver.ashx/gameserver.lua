@@ -290,7 +290,7 @@ end
 
 local function sendLogs(blocking)
 	pcall(function()
-		game:HttpPost(url .. "/game/Log.ashx?" .. "&jobId=" .. JobId .. "&placeId=" .. placeId .. "&" .. access, HttpService:JSONEncode(logs), blocking, "application/json")
+		game:HttpPost(url .. "/game/Log.ashx?" .. "jobId=" .. JobId .. "&placeId=" .. placeId .. "&" .. access, HttpService:JSONEncode(logs), blocking, "application/json")
 	end)
 end
 
@@ -314,10 +314,37 @@ local function presenceCheck()
 	end)
 end
 
+local function find(t, pred)
+    for pos, value in ipairs(t) do
+        if pred == value then
+            return pos
+        end
+    end
+    return nil
+end
+
+local filtered = false
+
+if workspace.FilteringEnabled == true then
+	filtered = true
+
+	workspace.FilteringEnabled = false
+end
+
+local whitelistedEvents = {"OnServerEvent",
+"PromptProductPurchaseFinished", "PromptPurchaseFinished",
+"PromptPurchaseRequested", "ClientPurchaseSuccess", "ServerPurchaseVerification",
+"Activated", "Deactivated", "SimulationRadiusChanged", "LuaDialogCallbackSignal", "ServerAdVerification",
+"ClientAdVerificationResults", "Player", "InsertService"}
+
 ns.ChildAdded:connect(function(replicator) -- mostly from polygon tbh with some added changes
 	local accepted = false
 
 		replicator:SetBasicFilteringEnabled(true)
+
+		if filtered == true then
+			replicator:PreventTerrainChanges()
+		end
 
 		replicator.NewFilter = function(item)
 			if(replicator:GetPlayer()) then
@@ -328,7 +355,7 @@ ns.ChildAdded:connect(function(replicator) -- mostly from polygon tbh with some 
 				logEvent(player, item, player.Name .. " created a new item: " .. item.ClassName .. " " .. item.Name)
 			end
 
-			if accepted == true then
+			if accepted == true and filtered == false then
 				return Enum.FilterResult.Accepted
 			end
 
@@ -341,6 +368,20 @@ ns.ChildAdded:connect(function(replicator) -- mostly from polygon tbh with some 
 			if item and item:IsA("StarterPack") then return Enum.FilterResult.Accepted end
 
 			if item and item:IsA("StarterGear") then return Enum.FilterResult.Accepted end
+
+			if item and item:IsA("Player") then return Enum.FilterResult.Accepted end
+
+			if item and item:IsA("Weld") then
+				if(replicator:GetPlayer()) then
+					local player = replicator:GetPlayer()
+
+					if player.Character ~= nil then
+						if item:IsDescendantOf(player.Character) then
+							return Enum.FilterResult.Accepted
+						end
+					end
+				end
+			end
 			
 			return Enum.FilterResult.Rejected
 		end		
@@ -354,8 +395,22 @@ ns.ChildAdded:connect(function(replicator) -- mostly from polygon tbh with some 
 				logEvent(player, item, player.Name .. " deleted an item: " .. item.ClassName)
 			end
 
-			if accepted == true then
+			if accepted == true and filtered == false then
 				return Enum.FilterResult.Accepted
+			end
+
+			if(replicator:GetPlayer()) then
+				local player = replicator:GetPlayer()
+
+				if item:IsDescendantOf(player) then
+					return Enum.FilterResult.Accepted
+				end
+				
+				if player.Character ~= nil then
+					if item:IsDescendantOf(player.Character) then
+						return Enum.FilterResult.Accepted
+					end
+				end
 			end
 
 			return Enum.FilterResult.Rejected
@@ -370,13 +425,14 @@ ns.ChildAdded:connect(function(replicator) -- mostly from polygon tbh with some 
 				logEvent(player, item, player.Name .. " changed a property: " .. item.ClassName .. "." .. member)
 			end
 
-			if accepted == true then
+			if accepted == true and filtered == false then
 				return Enum.FilterResult.Accepted
 			end
-			
-			if item and item:IsA("Tool") then 				
+
+			if item and item:IsA("Tool") then	
 				return Enum.FilterResult.Accepted
 			end 
+
 			if item and item:IsA("Humanoid") and member == "TargetPoint" then return Enum.FilterResult.Accepted end 
 	
 			if item and item:IsA("StringValue") then return Enum.FilterResult.Accepted end -- ticket
@@ -388,11 +444,11 @@ ns.ChildAdded:connect(function(replicator) -- mostly from polygon tbh with some 
 			if item and item:IsA("StarterPack") then return Enum.FilterResult.Accepted end
 
 			if item and item:IsA("StarterGear") then return Enum.FilterResult.Accepted end
-	
+
 			return Enum.FilterResult.Rejected
 		end		
 		
-		replicator.EventFilter = function(item)
+		replicator.EventFilter = function(item)	
 			if(replicator:GetPlayer()) then
 				local player = replicator:GetPlayer()
 
@@ -401,10 +457,11 @@ ns.ChildAdded:connect(function(replicator) -- mostly from polygon tbh with some 
 				logEvent(player, item, player.Name .. " fired an event: " .. item.ClassName)
 			end
 
-			if accepted == true then
+			if accepted == true and filtered == false then
 				return Enum.FilterResult.Accepted
 			end
-			
+
+
 			if item and item:IsA("Tool") then return Enum.FilterResult.Accepted end
 
 			if item and item:IsA("Animation") then return Enum.FilterResult.Accepted end
@@ -415,14 +472,16 @@ ns.ChildAdded:connect(function(replicator) -- mostly from polygon tbh with some 
 
 			if item and item:IsA("StarterGear") then return Enum.FilterResult.Accepted end
 
+			if item and find(whitelistedEvents, item.ClassName) then
+				return Enum.FilterResult.Accepted
+			end
+
 			return Enum.FilterResult.Rejected
 		end
 
 	while not replicator:GetPlayer() do
 		wait()
 	end
-
-	--replicator:PreventTerrainChanges()
 
 	if(replicator:GetPlayer()) then
 
