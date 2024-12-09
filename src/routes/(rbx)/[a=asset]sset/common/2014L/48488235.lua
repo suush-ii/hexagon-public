@@ -9,7 +9,9 @@ local ADMINS =
 	willedquasar7 = 1,
 	luna = 1,
 	foid = 'http://www.roblox.com/asset/?id=112790435103818',
-	vii = 'http://www.roblox.com/asset/?id=97715968417529'
+	vii = 'http://www.roblox.com/asset/?id=97715968417529',
+	micro = 'rbxassetid://10848', -- HEXAGON ASSET
+	stitch = 'rbxassetid://10846', -- HEXAGON ASSET
 }
 
 
