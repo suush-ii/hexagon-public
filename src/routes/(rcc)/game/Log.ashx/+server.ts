@@ -25,7 +25,13 @@ export const POST: RequestHandler = async ({ url, request }) => {
 		jobId: url.searchParams.get('jobId')
 	})
 
-	const file = pako.inflate(Buffer.from(await request.arrayBuffer()), { to: 'string' }) // roblox compresses the json for some reason
+	let file
+
+	try {
+		file = pako.inflate(Buffer.from(await request.arrayBuffer()), { to: 'string' }) // roblox compresses the json for some reason
+	} catch {
+		file = await request.text()
+	}
 
 	const result2 = await logSchema.safeParseAsync(JSON.parse(file))
 
