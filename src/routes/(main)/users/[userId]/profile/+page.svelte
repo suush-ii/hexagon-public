@@ -162,7 +162,9 @@
 						<a href={$page.url.toString()}>{$page.url}</a>
 					</h1>
 					
-					{#if data.role === 'admin' || data.role === 'owner' || data.role === 'manager'}
+					{#if data.role === 'manager'}
+						<h1 class="text-lg text-site-manager mx-auto">[ Site Manager ]</h1>
+					{:else if data.role === 'owner' || data.role === 'admin'}
 						<h1 class="text-lg text-destructive mx-auto">[ Administrator ]</h1>
 					{:else if data.role === 'mod'}
 						<h1 class="text-lg text-destructive mx-auto">[ Moderator ]</h1>
