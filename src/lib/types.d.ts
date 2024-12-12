@@ -2,7 +2,7 @@ import { assetGenreZod, assetTypes, gearAttributesZod, hexagonBadges, hexagonCla
 import type { SvelteComponent } from 'svelte'
 
 export type userState = 'offline' | 'online' | 'game' | 'studio' | 'winner'
-export type userRole = 'owner' | 'admin' | 'mod' | 'uploader' | 'normal'
+export type userRole = 'owner' | 'manager' | 'admin' | 'mod' | 'uploader' | 'normal'
 export type userGenders = 'male' | 'female' | 'nonbinary'
 
 export type gameGenre = (typeof assetGenreZod)[number]

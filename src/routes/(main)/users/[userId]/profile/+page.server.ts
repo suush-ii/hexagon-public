@@ -96,7 +96,7 @@ export const load: PageServerLoad = async ({ params, locals, url }) => {
 		}
 	}
 
-	const admin = user.role === 'admin' || user.role === 'mod' || user.role === 'owner'
+	const admin = user.role === 'admin' || user.role === 'mod' || user.role === 'manager' || user.role === 'owner'
 
 	if (user.sitebadges.includes('admin') && !admin) {
 		// remove they badge
