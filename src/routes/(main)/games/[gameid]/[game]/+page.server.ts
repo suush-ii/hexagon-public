@@ -37,6 +37,7 @@ export const actions: Actions = {
 		if (
 			game.associatedgame.creatoruserid != locals.user.userid &&
 			locals.user.role !== 'admin' &&
+			locals.user.role !== 'manager' &&
 			locals.user.role !== 'owner'
 		) {
 			return error(403, { success: false, message: 'Unauthorized.' })
@@ -117,7 +118,7 @@ export const actions: Actions = {
 			return error(404, { success: false, message: 'Game not found.' })
 		}
 
-		if (locals.user.role !== 'admin' && locals.user.role !== 'owner') {
+		if (locals.user.role !== 'admin' && locals.user.role !== 'owner' && locals.user.role !== 'manager') {
 			return error(403, { success: false, message: 'Unauthorized.' })
 		}
 

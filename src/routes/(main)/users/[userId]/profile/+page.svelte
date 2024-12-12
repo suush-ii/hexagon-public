@@ -161,8 +161,8 @@
 					<h1 class="text-lg {textColor} mx-auto hover:underline">
 						<a href={$page.url.toString()}>{$page.url}</a>
 					</h1>
-
-					{#if data.role === 'admin' || data.role === 'owner'}
+					
+					{#if data.role === 'admin' || data.role === 'owner' || data.role === 'manager'}
 						<h1 class="text-lg text-destructive mx-auto">[ Administrator ]</h1>
 					{:else if data.role === 'mod'}
 						<h1 class="text-lg text-destructive mx-auto">[ Moderator ]</h1>
