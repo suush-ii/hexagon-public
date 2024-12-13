@@ -15,6 +15,7 @@ import { S3 } from '$lib/server/s3'
 
 const permissionLevels = [
 	{ name: 'owner', level: 1 },
+	{ name: 'manager', level: 1.5 },
 	{ name: 'admin', level: 2 },
 	{ name: 'mod', level: 3 },
 	{ name: 'uploader', level: 4 },

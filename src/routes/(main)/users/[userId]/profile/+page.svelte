@@ -154,15 +154,16 @@
 						>
 					{:else if status == 'studio'}
 						<a href="/games/{data.studiopresencelocation}" class="mx-auto"
-							><h1 class="text-lg {textColor} hover:underline">[ Online: Studio ]</h1></a
-						>
+							><h1 class="text-lg {textColor} hover:underline">[ Online: Studio ]</h1></a>
 					{/if}
 
 					<h1 class="text-lg {textColor} mx-auto hover:underline">
 						<a href={$page.url.toString()}>{$page.url}</a>
 					</h1>
-
-					{#if data.role === 'admin' || data.role === 'owner'}
+					
+					{#if data.role === 'manager'}
+						<h1 class="text-lg site-manager mx-auto">[ Site Manager ]</h1>
+					{:else if data.role === 'admin' || data.role === 'owner' }
 						<h1 class="text-lg text-destructive mx-auto">[ Administrator ]</h1>
 					{:else if data.role === 'mod'}
 						<h1 class="text-lg text-destructive mx-auto">[ Moderator ]</h1>

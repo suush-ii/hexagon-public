@@ -66,6 +66,7 @@ const adminProtectedRoutes = ['/admin', '/api/admin']
 
 const permissionLevels = [
 	{ name: 'owner', level: 1 },
+	{ name: 'manager', level: 1.5 },
 	{ name: 'admin', level: 2 },
 	{ name: 'mod', level: 3 },
 	{ name: 'uploader', level: 4 },
@@ -73,8 +74,8 @@ const permissionLevels = [
 ]
 
 const adminPanelPermissions = [
-	{ path: '/admin/sitealert', requiredLevel: 1 },
-	{ path: '/admin/configuration', requiredLevel: 1 },
+	{ path: '/admin/sitealert', requiredLevel: 1.5 },
+	{ path: '/admin/configuration', requiredLevel: 1.5 },
 	{ path: '/admin/reports', requiredLevel: 3 },
 	{ path: '/admin/users', requiredLevel: 3 },
 	{ path: '/admin/catalog/moderateasset', requiredLevel: 3 },
@@ -249,6 +250,7 @@ export const handle: Handle = sequence(
 
 					if (
 						user.role !== 'owner' &&
+						user.role !== 'manager' && 
 						user.role !== 'admin' &&
 						user.role !== 'mod' &&
 						user.role !== 'uploader'
