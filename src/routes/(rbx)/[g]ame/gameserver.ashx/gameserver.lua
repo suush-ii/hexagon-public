@@ -294,9 +294,9 @@ local function sendLogs(blocking)
 	end)
 end
 
-local function presenceCheck()
-	local success, response  = pcall(function()
-		local response = game:HttpPostAsync(url .. "/game/ServerPresence.ashx?" .. "&jobId=" .. JobId .. "&" .. access, "")
+local function presenceCheck(blocking)
+	pcall(function()
+		local response = game:HttpPost(url .. "/game/ServerPresence.ashx?" .. "&jobId=" .. JobId .. "&" .. access, "", blocking)
 
 		local data = HttpService:JSONDecode(response)
 
@@ -602,7 +602,7 @@ if access then
   delay(5, function()
 	spawn(function()
     	while true do
-			--presenceCheck()
+			presenceCheck(false)
 			sendLogs(false)
 
 			wait(10)
