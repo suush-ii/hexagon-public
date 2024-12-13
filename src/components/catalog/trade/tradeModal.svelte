@@ -102,6 +102,7 @@
 										sold={offer.sales ?? 0}
 										selected={false}
 										tradeRequest={true}
+										limited={offer.limited}
 									/>
 								</div>
 							{/each}
@@ -147,6 +148,7 @@
 										sold={offer.sales ?? 0}
 										selected={false}
 										tradeRequest={true}
+										limited={offer.limited}
 									/>
 								</div>
 							{/each}
