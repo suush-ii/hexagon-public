@@ -540,7 +540,7 @@ ns.ChildAdded:connect(function(replicator) -- mostly from polygon tbh with some 
 		--print("[paclib] " .. player.Name .. " has been authenticated")
 
 		if url and access and placeId and player and player.userId then
-			game:HttpPost(url .. "/game/ClientPresence.ashx?action=connect&" .. access .. "&PlaceID=" .. placeId .. "&JobID=" .. JobId .. "&UserID=" .. player.userId, "")
+			game:HttpGet(url .. "/game/ClientPresence.ashx?action=connect&" .. access .. "&PlaceID=" .. placeId .. "&JobID=" .. JobId .. "&UserID=" .. player.userId)
 			game:HttpPost(url .. "/game/PlaceVisit.ashx?UserID=" .. player.userId .. "&AssociatedPlaceID=" .. placeId .. "&" .. access, "")
 		end
     end)
