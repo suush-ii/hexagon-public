@@ -257,7 +257,7 @@ export const actions: Actions = {
 
 		await db.transaction(async (tx) => {
 			try {
-				const senderInventory = await db.query.inventoryTable.findMany({
+				const senderInventory = await tx.query.inventoryTable.findMany({
 					where: and(
 						eq(inventoryTable.userid, trade.senderid),
 						inArray(inventoryTable.inventoryid, trade.offering)
@@ -294,7 +294,7 @@ export const actions: Actions = {
 					await tx.delete(privateSellersTable).where(eq(privateSellersTable.inventoryid, item))
 				}
 
-				const recipientInventory = await db.query.inventoryTable.findMany({
+				const recipientInventory = await tx.query.inventoryTable.findMany({
 					where: and(
 						eq(inventoryTable.userid, locals.user.userid),
 						inArray(inventoryTable.inventoryid, trade.requesting)
