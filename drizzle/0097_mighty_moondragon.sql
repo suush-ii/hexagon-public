@@ -1,0 +1,1 @@
+ALTER TABLE "users" ADD COLUMN "gamepresenceping" timestamp with time zone;

@@ -20,7 +20,8 @@ export const load: PageServerLoad = async ({ locals }) => {
 							lastactivetime: true,
 							activegame: true,
 							studiopresencelocation: true,
-							studiopresenceping: true
+							studiopresenceping: true,
+							gamepresenceping: true
 						}
 					}
 				},
@@ -48,7 +49,8 @@ export const load: PageServerLoad = async ({ locals }) => {
 			request.sender.lastactivetime,
 			request.sender.activegame,
 			request.sender.studiopresencelocation,
-			request.sender.studiopresenceping
+			request.sender.studiopresenceping,
+			request.sender.gamepresenceping
 		)
 		return { ...request, status }
 	})

@@ -17,7 +17,7 @@ const presenceSchema = z.object({
 	placeid: z.coerce.number().int().positive(),
 	jobId: z.string().uuid().nullable(),
 	userid: z.coerce.number().int().positive().nullable(),
-	locationType: z.enum(['Studio']).nullable()
+	locationType: z.enum(['Studio', 'Game']).nullable()
 })
 
 export const fallback: RequestHandler = async ({ url, request, locals }) => {
@@ -36,7 +36,7 @@ export const fallback: RequestHandler = async ({ url, request, locals }) => {
 
 	const { action, placeid, jobId, userid } = result.data
 
-	if (result.data.locationType !== 'Studio') {
+	if (result.data.locationType !== 'Studio' && result.data.locationType !== 'Game') {
 		const accessKey = url.searchParams.get('apikey') || request.headers.get('accessKey')
 
 		try {
@@ -69,6 +69,19 @@ export const fallback: RequestHandler = async ({ url, request, locals }) => {
 				})
 			}
 		}
+	}
+
+	if (result.data.locationType === 'Game' && !userid) {
+		return text('')
+	}
+
+	if (result.data.locationType === 'Game' && userid) {
+		await db
+			.update(usersTable)
+			.set({ gamepresenceping: new Date() })
+			.where(eq(usersTable.userid, userid))
+
+		return text('')
 	}
 
 	if (result.data.locationType === 'Studio') {
@@ -150,7 +163,7 @@ export const fallback: RequestHandler = async ({ url, request, locals }) => {
 
 		await db
 			.update(usersTable)
-			.set({ activegame: placeid, activejob: jobId })
+			.set({ activegame: placeid, activejob: jobId, gamepresenceping: new Date() })
 			.where(eq(usersTable.userid, userid))
 	}
 
@@ -171,7 +184,7 @@ export const fallback: RequestHandler = async ({ url, request, locals }) => {
 
 		await db
 			.update(usersTable)
-			.set({ activegame: null, activejob: null })
+			.set({ activegame: null, activejob: null, gamepresenceping: null })
 			.where(eq(usersTable.userid, userid))
 
 		const updatedToevict = instance.toevict ? instance.toevict.filter((id) => id !== userid) : []

@@ -30,7 +30,8 @@ export const load: PageServerLoad = async ({ url }) => {
 			blurb: true,
 			activegame: true,
 			studiopresencelocation: true,
-			studiopresenceping: true
+			studiopresenceping: true,
+			gamepresenceping: true
 		},
 		orderBy: desc(usersTable.lastactivetime),
 		limit: size,
@@ -43,7 +44,8 @@ export const load: PageServerLoad = async ({ url }) => {
 			user.lastactivetime,
 			user.activegame,
 			user.studiopresencelocation,
-			user.studiopresenceping
+			user.studiopresenceping,
+			user.gamepresenceping
 		)
 		return { ...user, status }
 	})

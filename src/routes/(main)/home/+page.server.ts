@@ -154,7 +154,8 @@ export const load: PageServerLoad = async ({ locals }) => {
 			lastactivetime: sender.lastactivetime,
 			activegame: sender.activegame,
 			studiopresencelocation: sender.studiopresencelocation,
-			studiopresenceping: sender.studiopresenceping
+			studiopresenceping: sender.studiopresenceping,
+			gamepresenceping: sender.gamepresenceping
 		})
 		.from(usersTable)
 		.innerJoin(
@@ -171,7 +172,8 @@ export const load: PageServerLoad = async ({ locals }) => {
 			request.lastactivetime,
 			request.activegame,
 			request.studiopresencelocation,
-			request.studiopresenceping
+			request.studiopresenceping,
+			request.gamepresenceping
 		)
 		return { ...request, status }
 	})
