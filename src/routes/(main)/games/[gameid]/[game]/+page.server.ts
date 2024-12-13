@@ -5,6 +5,7 @@ import { db } from '$lib/server/db'
 import { eq } from 'drizzle-orm'
 import { gamesTable, jobsTable, placesTable, usersTable } from '$lib/server/schema'
 import { env } from '$env/dynamic/private'
+import { deleteJob } from '$lib/games/deleteJob'
 
 const limiter = new RateLimiter({
 	IP: [1, '30s']
@@ -73,26 +74,12 @@ export const actions: Actions = {
 			const result = await response.json()
 
 			if (result.success === false) {
-				await db.delete(jobsTable).where(eq(jobsTable.jobid, job.jobid))
-
-				if (job.players && job.players.length > 0) {
-					for (const player of job.players) {
-						await db
-							.update(usersTable)
-							.set({ activegame: null })
-							.where(eq(usersTable.userid, player))
-					}
-
-					const newActive = Math.max(
-						Number(job?.associatedplace?.associatedgame?.active) - job.players.length,
-						0
-					)
-
-					await db
-						.update(gamesTable)
-						.set({ active: newActive })
-						.where(eq(gamesTable.universeid, job?.associatedplace?.associatedgame.universeid ?? 0))
-				}
+				await deleteJob(
+					job.jobid,
+					job.players,
+					job?.associatedplace?.associatedgame.universeid ?? 0,
+					job?.associatedplace?.associatedgame.active ?? 0
+				)
 			}
 		}
 
@@ -118,7 +105,11 @@ export const actions: Actions = {
 			return error(404, { success: false, message: 'Game not found.' })
 		}
 
-		if (locals.user.role !== 'admin' && locals.user.role !== 'owner' && locals.user.role !== 'manager') {
+		if (
+			locals.user.role !== 'admin' &&
+			locals.user.role !== 'owner' &&
+			locals.user.role !== 'manager'
+		) {
 			return error(403, { success: false, message: 'Unauthorized.' })
 		}
 
