@@ -124,19 +124,17 @@ export const fallback: RequestHandler = async (event) => {
 		// an instance is already available or is loading...
 
 		if (
-			instance.presenceping &&
-			new Date().valueOf() - instance.presenceping.valueOf() > 60 * 1000
-		) {
-			//await db.delete(jobsTable).where(eq(jobsTable.jobid, instance.jobid))
-		}
-
-		if (
 			(instance.active ?? 0) <= 0 &&
 			instance.status === 1 &&
 			new Date().valueOf() - instance.created.valueOf() > 5 * 60 * 1000
 		) {
 			// 5 mins has passed and the instance shows no life?
 			// its probably dead also this should probalby not be possible unless the gameserver goes down because windows updates or something LOL
+			await db.delete(jobsTable).where(eq(jobsTable.jobid, instance.jobid))
+		} else if (
+			instance.presenceping &&
+			new Date().valueOf() - instance.presenceping.valueOf() > 60 * 1000
+		) {
 			await db.delete(jobsTable).where(eq(jobsTable.jobid, instance.jobid))
 		} else {
 			placeLauncherJson.status = instance.status
