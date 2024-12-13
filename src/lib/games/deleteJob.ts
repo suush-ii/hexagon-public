@@ -1,6 +1,6 @@
 import { db } from '../server/db'
 import { gamesTable, jobsTable, usersTable } from '../server/schema'
-import { eq } from 'drizzle-orm'
+import { eq, inArray } from 'drizzle-orm'
 
 export async function deleteJob(
 	jobid: string,
@@ -11,15 +11,18 @@ export async function deleteJob(
 	await db.delete(jobsTable).where(eq(jobsTable.jobid, jobid))
 
 	if (players && players.length > 0) {
-		for (const player of players) {
-			await db.update(usersTable).set({ activegame: null }).where(eq(usersTable.userid, player))
-		}
+		await db.transaction(async (tx) => {
+			await tx
+				.update(usersTable)
+				.set({ activegame: null, activejob: null, gamepresenceping: null })
+				.where(inArray(usersTable.userid, players))
 
-		const newActive = Math.max(Number(active) - players.length, 0)
+			const newActive = Math.max(Number(active) - players.length, 0)
 
-		await db
-			.update(gamesTable)
-			.set({ active: newActive })
-			.where(eq(gamesTable.universeid, universeid))
+			await tx
+				.update(gamesTable)
+				.set({ active: newActive })
+				.where(eq(gamesTable.universeid, universeid))
+		})
 	}
 }
