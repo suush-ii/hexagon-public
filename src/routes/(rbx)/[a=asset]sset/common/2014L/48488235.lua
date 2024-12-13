@@ -12,7 +12,7 @@ local ADMINS =
 	vii = 'http://www.roblox.com/asset/?id=97715968417529',
 	micro = 'rbxassetid://10845', -- HEXAGON ASSET
 	stitch = 'rbxassetid://10847', -- HEXAGON ASSET
-	vista = 'rbxassetid://11439', -- HEXAGON ASSET
+	vista = 'rbxassetid://11686', -- HEXAGON ASSET
 	Chess = 'rbxassetid://11441', -- HEXAGON ASSET
 	brandan = 'rbxassetid://11458' -- HEXAGON ASSET
 }
