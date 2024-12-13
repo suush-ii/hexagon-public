@@ -49,7 +49,8 @@ export const load: PageServerLoad = async ({ params, locals, url }) => {
 			knockouts: true,
 			studiopresencelocation: true,
 			studiopresenceping: true,
-			registeredclan: true
+			registeredclan: true,
+			gamepresenceping: true
 		},
 		where: eq(usersTable.userid, Number(params.userId)),
 		with: {
@@ -96,7 +97,8 @@ export const load: PageServerLoad = async ({ params, locals, url }) => {
 		}
 	}
 
-	const admin = user.role === 'admin' || user.role === 'mod' || user.role === 'manager' || user.role === 'owner'
+	const admin =
+		user.role === 'admin' || user.role === 'mod' || user.role === 'manager' || user.role === 'owner'
 
 	if (user.sitebadges.includes('admin') && !admin) {
 		// remove they badge
@@ -160,7 +162,8 @@ export const load: PageServerLoad = async ({ params, locals, url }) => {
 					lastactivetime: true,
 					activegame: true,
 					studiopresencelocation: true,
-					studiopresenceping: true
+					studiopresenceping: true,
+					gamepresenceping: true
 				}
 			}
 		},
@@ -178,7 +181,8 @@ export const load: PageServerLoad = async ({ params, locals, url }) => {
 			request.sender.lastactivetime,
 			request.sender.activegame,
 			request.sender.studiopresencelocation,
-			request.sender.studiopresenceping
+			request.sender.studiopresenceping,
+			request.sender.gamepresenceping
 		)
 		return { ...request, status }
 	})
@@ -296,7 +300,8 @@ export const load: PageServerLoad = async ({ params, locals, url }) => {
 		user.lastactivetime,
 		user.activegame,
 		user.studiopresencelocation,
-		user.studiopresenceping
+		user.studiopresenceping,
+		user.gamepresenceping
 	)
 
 	const relation = user.received

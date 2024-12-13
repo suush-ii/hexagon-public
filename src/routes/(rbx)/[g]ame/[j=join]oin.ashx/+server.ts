@@ -232,6 +232,7 @@ export const fallback: RequestHandler = async ({ url, locals }) => {
 		joinJson.CreatorId = place.associatedgame.author.userid
 		joinJson.SessionId = `${authBearer}`
 		joinJson.UniverseId = Number(place.associatedgame.universeid)
+		joinJson.PingUrl = `${BaseUrl}game/ClientPresence.ashx?LocationType=Game&UserID=${session.userid}&PlaceID=${place.placeid}`
 
 		// client ticket
 

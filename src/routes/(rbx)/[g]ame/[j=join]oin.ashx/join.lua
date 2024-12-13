@@ -271,9 +271,7 @@ function onConnectionAccepted(url, replicator)
 	local waitingForMarker = true
 	
 	local success, err = pcall(function()	
-		if not test then 
-		    visit:SetPing("", 300) 
-		end
+		visit:SetPing("{PingUrl}", 30)
 		
 		if not false then
 			game:SetMessageBrickCount()

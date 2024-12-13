@@ -4,9 +4,14 @@ export const getUserState = (
 	timestamp: Date,
 	activegame: number | null,
 	studiopresencelocation: number | null,
-	studiopresenceping: Date | null
+	studiopresenceping: Date | null,
+	gamepresenceping: Date | null
 ): userState => {
-	if (activegame) {
+	if (
+		activegame &&
+		gamepresenceping &&
+		new Date().valueOf() - gamepresenceping.valueOf() < 3 * 60 * 1000
+	) {
 		return 'game'
 	}
 

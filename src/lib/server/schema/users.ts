@@ -53,6 +53,7 @@ export const usersTable = pgTable('users', {
 	blurb: text('blurb').notNull().default(''),
 	scrubbedusername: text('scrubbedusername'),
 	activegame: bigint('activegame', { mode: 'number' }),
+	gamepresenceping: timestamp('gamepresenceping', { mode: 'date', withTimezone: true }),
 	sitebadges: text('sitebadges')
 		.$type<HexagonBadges>()
 		.array()
