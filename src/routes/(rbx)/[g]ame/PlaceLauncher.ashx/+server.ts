@@ -6,6 +6,7 @@ import { eq, and, lt } from 'drizzle-orm'
 import { env } from '$env/dynamic/private'
 import * as jose from 'jose'
 import { RateLimiter } from 'sveltekit-rate-limiter/server'
+import { deleteJob } from '$lib/games/deleteJob'
 
 const limiter = new RateLimiter({
 	IP: [2, '10s']
@@ -117,7 +118,20 @@ export const fallback: RequestHandler = async (event) => {
 			eq(placesTable.placeid, Number(placeid)),
 			eq(jobsTable.type, 'game'),
 			lt(jobsTable.active, place.associatedgame.serversize) // we only want jobs that aren't full
-		)
+		),
+		with: {
+			associatedplace: {
+				columns: {},
+				with: {
+					associatedgame: {
+						columns: {
+							active: true,
+							universeid: true
+						}
+					}
+				}
+			}
+		}
 	})
 
 	if (instance && instance.port && (instance.status === 1 || instance.status === 2)) {
@@ -130,12 +144,22 @@ export const fallback: RequestHandler = async (event) => {
 		) {
 			// 5 mins has passed and the instance shows no life?
 			// its probably dead also this should probalby not be possible unless the gameserver goes down because windows updates or something LOL
-			await db.delete(jobsTable).where(eq(jobsTable.jobid, instance.jobid))
+			await deleteJob(
+				instance.jobid,
+				instance.players,
+				instance?.associatedplace?.associatedgame.universeid ?? 0,
+				instance?.associatedplace?.associatedgame.active ?? 0
+			)
 		} else if (
 			instance.presenceping &&
 			new Date().valueOf() - instance.presenceping.valueOf() > 60 * 1000
 		) {
-			await db.delete(jobsTable).where(eq(jobsTable.jobid, instance.jobid))
+			await deleteJob(
+				instance.jobid,
+				instance.players,
+				instance?.associatedplace?.associatedgame.universeid ?? 0,
+				instance?.associatedplace?.associatedgame.active ?? 0
+			)
 		} else {
 			placeLauncherJson.status = instance.status
 			placeLauncherJson.jobId = instance.jobid
