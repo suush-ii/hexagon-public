@@ -24,6 +24,8 @@
 	export let selected: boolean
 
 	export let tradeRequest: boolean = false
+
+	export let limited: string | null
 </script>
 
 <div
@@ -75,7 +77,7 @@
 		<h5 class="text-muted-foreground">
 			Serial #
 			<span class="text-foreground"
-				>{#if serial !== 0}
+				>{#if serial !== 0 && limited === 'limitedu'}
 					{serial} / {sold}
 				{:else}
 					-- / --
