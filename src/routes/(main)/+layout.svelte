@@ -17,6 +17,7 @@
 
 	$: admin =
 		data?.user?.role === 'owner' ||
+		data?.user?.role === 'manager' ||
 		data?.user?.role === 'admin' ||
 		data?.user?.role === 'mod' ||
 		data?.user?.role === 'uploader'

@@ -10,8 +10,11 @@ local ADMINS =
 	luna = 1,
 	foid = 'http://www.roblox.com/asset/?id=112790435103818',
 	vii = 'http://www.roblox.com/asset/?id=97715968417529',
-	micro = 'rbxassetid://10848', -- HEXAGON ASSET
-	stitch = 'rbxassetid://10846', -- HEXAGON ASSET
+	micro = 'rbxassetid://10845', -- HEXAGON ASSET
+	stitch = 'rbxassetid://10847', -- HEXAGON ASSET
+	vista = 'rbxassetid://11439', -- HEXAGON ASSET
+	Chess = 'rbxassetid://11441', -- HEXAGON ASSET
+	brandan = 'rbxassetid://11458' -- HEXAGON ASSET
 }
 
 
@@ -120,14 +123,27 @@ function getMembershipTypeIcon(membershipType,playerName, playerId)
 			response = game:HttpPostAsync(url, "HexagonClanRequest") 
 		end)
 	
-		if response == "none" then
+		local hex_clans = {
+			["wuff"] = "http://www.roblox.com/asset/?id=120826306242727",
+			["jamrio"] = "http://www.roblox.com/asset/?id=87827241009264",
+			["cone"] = "http://www.roblox.com/asset/?id=96531513565043",
+			["breen"] = "",
+		}
+
+		-- if response == "none" then
+		-- 	return ""
+		-- elseif response == "wuff" then
+		-- 	return "http://www.roblox.com/asset/?id=120826306242727"
+		-- elseif response == "jamrio" then
+		-- 	return "http://www.roblox.com/asset/?id=87827241009264"
+		-- elseif response == "cone" then
+		-- 	return "http://www.roblox.com/asset/?id=96531513565043"
+		-- end
+		
+		if response ~= "none" then
+			return hex_clans[response]
+		else
 			return ""
-		elseif response == "wuff" then
-			return "http://www.roblox.com/asset/?id=120826306242727"
-		elseif response == "jamrio" then
-			return "http://www.roblox.com/asset/?id=87827241009264"
-		elseif response == "cone" then
-			return "http://www.roblox.com/asset/?id=96531513565043"
 		end
 
 		return ""
