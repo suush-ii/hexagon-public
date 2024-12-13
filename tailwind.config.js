@@ -51,7 +51,8 @@ const config = {
 					foreground: 'hsl(var(--card-foreground))'
 				},
 				success: 'hsl(var(--success))',
-				orange: 'hsl(var(--orange))'
+				orange: 'hsl(var(--orange))',
+				'site-manager': 'hsl(var(--site-manager))'
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
