@@ -1,7 +1,7 @@
 import type { PageServerLoad } from './$types'
 import { db } from '$lib/server/db'
 import { gamesTable, placesTable } from '$lib/server/schema/games'
-import { desc, eq, count } from 'drizzle-orm'
+import { desc, eq, count, sql } from 'drizzle-orm'
 import { redirect } from '@sveltejs/kit'
 import { getPageNumber } from '$lib/utils'
 import { gameCardSearch } from '$lib/server/games/gamecard'
@@ -30,7 +30,7 @@ export const load: PageServerLoad = async ({ params, url }) => {
 
 	if (params.type === 'popular') {
 		const popularGames = await gameCardSearch({
-			orderBy: desc(gamesTable.active),
+			orderBy: desc(sql`active`),
 			limit: size,
 			offset: (page - 1) * size
 		})
@@ -76,7 +76,7 @@ export const load: PageServerLoad = async ({ params, url }) => {
 			.where(eq(gamesTable.original, true))
 
 		const originalGames = await gameCardSearch({
-			orderBy: desc(gamesTable.active),
+			orderBy: desc(sql`active`),
 			where: eq(gamesTable.original, true),
 			limit: size,
 			offset: (page - 1) * size
