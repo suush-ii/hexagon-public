@@ -599,7 +599,7 @@ if access then
     sendLogs(true)
   end)
 
-  delay(5, function()
+  delay(25, function()
 	spawn(function()
     	while true do
 			presenceCheck(false)
