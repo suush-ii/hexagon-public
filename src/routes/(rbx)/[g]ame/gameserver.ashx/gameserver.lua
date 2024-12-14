@@ -193,11 +193,20 @@ game:GetService("Players").PlayerAdded:connect(function(player)
 
 	
 end)
+
 local HttpService = game:GetService("HttpService")
+
+local function sendLogs(blocking)
+	pcall(function()
+		game:HttpPost(url .. "/game/Log.ashx?" .. "jobId=" .. JobId .. "&placeId=" .. placeId .. "&" .. access, HttpService:JSONEncode(logs), blocking, "application/json")
+	end)
+end
 
 local function check()
 	if #game:GetService("Players"):GetPlayers() < 1 then
 		-- less than one player is in the game so lets shut down
+		sendLogs(true)
+
 		local arguments = {
 			["jobid"] = JobId
 		}
@@ -285,12 +294,6 @@ local function logChatEvent(player, message)
 			player_log,
 			("[CHAT] %s: %s"):format(player.Name, message) 
 	)
-	end)
-end
-
-local function sendLogs(blocking)
-	pcall(function()
-		game:HttpPost(url .. "/game/Log.ashx?" .. "jobId=" .. JobId .. "&placeId=" .. placeId .. "&" .. access, HttpService:JSONEncode(logs), blocking, "application/json")
 	end)
 end
 
