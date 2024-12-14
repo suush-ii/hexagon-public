@@ -4,6 +4,7 @@ import { db } from '$src/lib/server/db'
 import { z } from 'zod'
 import { usersTable } from '$src/lib/server/schema'
 import { eq } from 'drizzle-orm'
+import { renderClear } from '$lib/server/renderClear'
 
 const bodyColorsSchema = z.object({
 	headColor: z.coerce.number(),
@@ -34,6 +35,8 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 		const errors = result.error.issues.map((issue) => issue.message) // get us only the error msgs
 		error(400, { success: false, message: 'Malformed JSON.', data: { errors } })
 	}
+
+	await renderClear(user.userid)
 
 	await db
 		.update(usersTable)

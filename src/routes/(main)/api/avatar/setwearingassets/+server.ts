@@ -5,6 +5,7 @@ import { z } from 'zod'
 import { inventoryTable, outfitsTable, usersTable } from '$lib/server/schema'
 import { eq, and, sql, notInArray } from 'drizzle-orm'
 import type { AssetTypes } from '$lib/types'
+import { renderClear } from '$lib/server/renderClear'
 
 const itemSchema = z.object({
 	itemId: z.coerce.number().int(),
@@ -169,6 +170,8 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 		.where(
 			and(eq(inventoryTable.userid, user.userid), eq(inventoryTable.itemid, result.data.itemId))
 		)
+
+	await renderClear(user.userid)
 
 	await db
 		.update(usersTable)

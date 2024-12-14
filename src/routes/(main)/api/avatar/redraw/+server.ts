@@ -3,6 +3,7 @@ import type { RequestHandler } from './$types'
 import { db } from '$src/lib/server/db'
 import { jobsTable, usersTable } from '$src/lib/server/schema'
 import { and, eq } from 'drizzle-orm'
+import { renderClear } from '$lib/server/renderClear'
 
 export const POST: RequestHandler = async ({ locals }) => {
 	const user = locals.user
@@ -10,6 +11,8 @@ export const POST: RequestHandler = async ({ locals }) => {
 	if (!user) {
 		error(401, { success: false, message: 'No session.', data: {} })
 	}
+
+	await renderClear(user.userid)
 
 	await db
 		.update(usersTable)
