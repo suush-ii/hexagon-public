@@ -289,10 +289,6 @@ local function logChatEvent(player, message)
 end
 
 local function sendLogs(blocking)
-	if #logs == 0 then
-		return
-	end
-
 	pcall(function()
 		game:HttpPost(url .. "/game/Log.ashx?" .. "jobId=" .. JobId .. "&placeId=" .. placeId .. "&" .. access, HttpService:JSONEncode(logs), blocking, "application/json")
 	end)
