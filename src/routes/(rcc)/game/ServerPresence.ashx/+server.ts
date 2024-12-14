@@ -41,6 +41,8 @@ export const fallback: RequestHandler = async ({ url, request, locals }) => {
 		})
 	}
 
+	await db.update(jobsTable).set({ presenceping: new Date() }).where(eq(jobsTable.jobid, jobId))
+
 	return json({
 		success: true,
 		message: '',
