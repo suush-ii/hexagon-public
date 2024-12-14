@@ -1,8 +1,9 @@
-import { and, eq, SQL } from 'drizzle-orm'
+import { and, eq, sql, SQL } from 'drizzle-orm'
 import { assetTable, gamesTable, placesTable } from '$lib/server/schema'
 import { db } from '$lib/server/db'
 import { imageSql } from './getImage'
 import { alias } from 'drizzle-orm/pg-core'
+import { activeSql } from './activeSql'
 
 export async function gameCardSearch(params: {
 	orderBy: SQL<unknown>
@@ -14,7 +15,7 @@ export async function gameCardSearch(params: {
 
 	const games = await db
 		.select({
-			active: gamesTable.active,
+			active: activeSql,
 			icon: { moderationstate: assetTable.moderationstate, simpleasseturl: imageSql },
 			place: {
 				placeid: placesTable.placeid,
