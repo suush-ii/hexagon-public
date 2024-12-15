@@ -50,8 +50,6 @@ export async function renderClear(userid: number) {
 			}
 		})
 
-		console.log(Objects)
-
 		try {
 			await S3.send(command)
 		} catch (err) {
@@ -81,8 +79,6 @@ export async function renderClear(userid: number) {
 							Objects
 						}
 					})
-
-					console.log(Objects)
 
 					try {
 						await S3.send(command)
