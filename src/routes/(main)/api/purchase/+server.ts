@@ -71,7 +71,7 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 		})
 	}
 
-	if (item.onsale === false) {
+	if (item.onsale === false && user.role === 'normal') {
 		return error(403, {
 			success: false,
 			message: 'This item is not for sale!',

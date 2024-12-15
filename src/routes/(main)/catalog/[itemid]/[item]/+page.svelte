@@ -170,7 +170,8 @@
 						href="/games/{data.associatedgame.place.placeid}/{slugify(
 							data.associatedgame.place.placename
 						)}"
-						><span class="font-semibold hover:underline line-clamp-2 break-words">{data.associatedgame.place.placename}</span
+						><span class="font-semibold hover:underline line-clamp-2 break-words"
+							>{data.associatedgame.place.placename}</span
 						></a
 					>
 				</h1>
@@ -222,7 +223,7 @@
 					<AlertDialog.Root closeOnOutsideClick={true} bind:open>
 						<AlertDialog.Trigger asChild let:builder>
 							{#if (!data.alreadyOwned || data.item.limited === 'limitedu') && data.user.coins >= (data.item.price ?? 0)}
-								{#if data.item.onsale === false}
+								{#if data.item.onsale === false && data.canModerate === false}
 									<Button
 										builders={[builder]}
 										class="w-full font-semibold text-lg select-none"
