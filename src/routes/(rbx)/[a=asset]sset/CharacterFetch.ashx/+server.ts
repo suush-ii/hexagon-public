@@ -29,7 +29,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
 	const placeId = result.data.placeId
 
 	let inventoryWearing = await db
-		.select({
+		.selectDistinctOn([inventoryTable.itemid], {
 			itemid: inventoryTable.itemid,
 			itemtype: inventoryTable.itemtype,
 			gearattributes: assetTable.gearattributes,
