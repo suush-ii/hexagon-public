@@ -5,7 +5,7 @@
 	import ShutdownModal from '$src/components/games/shutdownModal.svelte'
 	import SellModalLimited from '$src/components/catalog/sell/sellModalLimited.svelte'
 	import SellModalLimitedU from '$src/components/catalog/sell/sellModalLimitedU.svelte'
-	import { launchStudio } from '$lib/develop/studio'
+	import { launchStudioScript } from '$lib/develop/studio'
 	import { depluralize } from '$src/lib/utils'
 	import { Menu } from 'lucide-svelte'
 	import type { Infer, SuperValidated } from 'sveltekit-superforms'
@@ -77,7 +77,7 @@
 		{#if assetType === 'games'}
 			<DropdownMenu.Item
 				on:click={() => {
-					launchStudio(placeid ?? 0, authBearer ?? '', baseurl ?? '', downloadModal)
+					launchStudioScript(placeid ?? 0, authBearer ?? '', baseurl ?? '', downloadModal)
 				}}
 				class="cursor-pointer">Edit</DropdownMenu.Item
 			>

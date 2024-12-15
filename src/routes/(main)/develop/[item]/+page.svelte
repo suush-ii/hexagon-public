@@ -5,7 +5,7 @@
 	import DownloadModal from '$src/components/downloadModal.svelte'
 	import { Button } from '$src/components/ui/button'
 	import { Upload, Cog } from 'lucide-svelte'
-	import { launchStudio } from '$lib/develop/studio'
+	import { launchStudio, launchStudioScript } from '$lib/develop/studio'
 	import { getImage } from '$lib/games/getImage'
 
 	import type { PageData } from './$types'
@@ -28,7 +28,17 @@
 <div class="container p-8 flex flex-col gap-y-8">
 	<DownloadModal bind:this={downloadModal} type={'studio'} />
 
-	<h1 class="text-4xl leading-none tracking-tight font-semibold">{data.t('generic.develop')}</h1>
+	<div class="flex gap-x-4 items-center">
+		<h1 class="text-4xl leading-none tracking-tight font-semibold">{data.t('generic.develop')}</h1>
+
+		<Button
+			size="sm"
+			variant="outline"
+			on:click={() => {
+				launchStudio(data.authBearer, downloadModal)
+			}}>Open Studio</Button
+		>
+	</div>
 
 	<Tabs.Root value={data.item} class="w-full flex flex-col gap-y-4">
 		<Tabs.List class="w-full justify-around">
@@ -157,7 +167,7 @@
 								<Button
 									size="sm"
 									on:click={() => {
-										launchStudio(
+										launchStudioScript(
 											creation.placeid ?? 0,
 											data.authBearer,
 											data.baseurl,
