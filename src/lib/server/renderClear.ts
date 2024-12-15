@@ -43,6 +43,10 @@ export async function renderClear(userid: number) {
 			Objects.push({ Key: `${Key}/${render.avatarheadshot}` })
 		}
 
+		if (Objects.length === 0) {
+			return
+		}
+
 		const command = new DeleteObjectsCommand({
 			Bucket: s3BucketName,
 			Delete: {
@@ -71,6 +75,10 @@ export async function renderClear(userid: number) {
 
 					if (data?.obj) {
 						Objects.push({ Key: `${Key}/${data.obj}` })
+					}
+
+					if (Objects.length === 0) {
+						return
 					}
 
 					const command = new DeleteObjectsCommand({
