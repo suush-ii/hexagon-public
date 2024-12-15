@@ -15,14 +15,13 @@ const userSchema = z.object({
 	placeId: z.coerce.number().int().optional()
 })
 
-export const GET: RequestHandler = async ({ url }) => {
+export const GET: RequestHandler = async ({ url, request }) => {
 	const result = await userSchema.safeParseAsync({
 		userId: url.searchParams.get('userId') ?? url.searchParams.get('userid'),
 		placeId: url.searchParams.get('placeId') ?? url.searchParams.get('placeid')
 	})
 
 	if (result.success === false) {
-		console.log(result.error)
 		return error(400, { success: false, message: 'Malformed.', data: {} })
 	}
 
@@ -40,7 +39,12 @@ export const GET: RequestHandler = async ({ url }) => {
 		.where(
 			and(
 				eq(inventoryTable.userid, user),
-				or(eq(inventoryTable.wearing, true), eq(inventoryTable.itemtype, 'gears')) // wear all gear
+				or(
+					eq(inventoryTable.wearing, true),
+					request.headers.get('requester') === 'Server'
+						? undefined
+						: eq(inventoryTable.itemtype, 'gears')
+				) // wear all gear
 			)
 		)
 		.leftJoin(assetTable, eq(inventoryTable.itemid, assetTable.assetid))
