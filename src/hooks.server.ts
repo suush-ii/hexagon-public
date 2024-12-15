@@ -60,7 +60,8 @@ const protectedRoutes = [
 	'/referrals',
 	'/clans',
 	'/leaderboards',
-	'/verify-player/ac'
+	'/verify-player/ac',
+	'/mobileapi/userinfo'
 ]
 const adminProtectedRoutes = ['/admin', '/api/admin']
 
@@ -250,7 +251,7 @@ export const handle: Handle = sequence(
 
 					if (
 						user.role !== 'owner' &&
-						user.role !== 'manager' && 
+						user.role !== 'manager' &&
 						user.role !== 'admin' &&
 						user.role !== 'mod' &&
 						user.role !== 'uploader'

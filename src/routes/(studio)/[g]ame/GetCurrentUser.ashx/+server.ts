@@ -7,7 +7,8 @@ export const GET: RequestHandler = async (event) => {
 	const session = await event.locals.auth.validate()
 
 	if (session?.user?.userid) {
-		return text('1')
+		return text(session.user.userid)
 	}
+
 	return text('0') // 1: logged in 0: logged out
 }
