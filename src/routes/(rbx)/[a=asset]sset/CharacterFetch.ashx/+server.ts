@@ -4,7 +4,7 @@ import { z } from 'zod'
 import { env } from '$env/dynamic/private'
 import { assetTable, inventoryTable, placesTable } from '$lib/server/schema'
 import { db } from '$lib/server/db'
-import { and, eq } from 'drizzle-orm'
+import { and, eq, or } from 'drizzle-orm'
 
 const bodyColorsUrl = `http://${env.BASE_URL}/Asset/BodyColors.ashx`
 
@@ -37,7 +37,12 @@ export const GET: RequestHandler = async ({ url }) => {
 			genres: assetTable.genres
 		})
 		.from(inventoryTable)
-		.where(and(eq(inventoryTable.userid, user), eq(inventoryTable.wearing, true)))
+		.where(
+			and(
+				eq(inventoryTable.userid, user),
+				or(eq(inventoryTable.wearing, true), eq(inventoryTable.itemtype, 'gears')) // wear all gear
+			)
+		)
 		.leftJoin(assetTable, eq(inventoryTable.itemid, assetTable.assetid))
 
 	if (placeId) {
