@@ -373,6 +373,8 @@ export const actions: Actions = {
 					.set({ status: 'denied', denyreason: 'error' })
 					.where(eq(tradesTable.requestid, form.data.requestid))
 
+				tx.rollback()
+
 				return
 			}
 		})
