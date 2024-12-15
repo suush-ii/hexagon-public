@@ -104,7 +104,7 @@ export const actions: Actions = {
 
 		await db
 			.update(assetTable)
-			.set({ simpleasseturl: fileName, assetrender: null, _3dmanifest: null })
+			.set({ simpleasseturl: fileName, assetrender: null, _3dmanifest: null, updated: new Date() })
 			.where(eq(assetTable.assetid, Number(params.assetid)))
 
 		const [assetVersionsCount] = await db
