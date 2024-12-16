@@ -109,19 +109,24 @@ export const GET: RequestHandler = async (event) => {
 		if (assetVersionResult.success) {
 			const versionId = assetVersionResult.data
 
-			const cachedAsset = await db
-				.select({
-					filehash: assetVersionCacheTable.filehash,
-					assettypeid: assetVersionCacheTable.assettypeid,
-					token: assetVersionCacheTable.token,
-					expiration: assetVersionCacheTable.expiration
-				})
-				.from(assetVersionCacheTable)
-				.where(eq(assetVersionCacheTable.assetversionid, versionId))
-				.limit(1)
+			const cachedAsset = await db.query.assetVersionCacheTable.findFirst({
+				where: eq(assetVersionCacheTable.assetversionid, versionId),
+				columns: {
+					filehash: true,
+					assettypeid: true,
+					token: true,
+					expiration: true
+				}
+			})
 
-			if (cachedAsset?.[0]?.filehash && cachedAsset?.[0]?.expiration > new Date()) {
-				redirect(302, getCdnUrl(cachedAsset[0].filehash, cachedAsset[0].token))
+			if (cachedAsset && cachedAsset?.expiration < new Date()) {
+				await db
+					.delete(assetVersionCacheTable)
+					.where(eq(assetVersionCacheTable.assetversionid, versionId))
+			}
+
+			if (cachedAsset?.filehash && cachedAsset?.expiration > new Date()) {
+				redirect(302, getCdnUrl(cachedAsset.filehash, cachedAsset.token))
 			} else {
 				const response = await fetch(
 					'https://assetdelivery.roblox.com/v2/asset/?assetversionid=' + versionId,
@@ -142,11 +147,7 @@ export const GET: RequestHandler = async (event) => {
 
 						const expires = Number(query.get('Expires')) * 1000
 
-						if (
-							(cachedAsset.length === 0 || cachedAsset?.[0]?.expiration < new Date()) &&
-							token &&
-							expires
-						) {
+						if ((!cachedAsset || cachedAsset?.expiration < new Date()) && token && expires) {
 							await db.insert(assetVersionCacheTable).values({
 								assetversionid: versionId,
 								filehash,
@@ -342,6 +343,10 @@ export const GET: RequestHandler = async (event) => {
 			expiration: true
 		}
 	})
+
+	if (cachedAsset && cachedAsset?.expiration < new Date()) {
+		await db.delete(assetCacheTable).where(eq(assetCacheTable.assetid, assetId))
+	}
 
 	if (cachedAsset?.filehash && cachedAsset?.expiration > new Date()) {
 		const url = getCdnUrl(cachedAsset.filehash, cachedAsset.token)
