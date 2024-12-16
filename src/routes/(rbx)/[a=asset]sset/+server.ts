@@ -16,6 +16,8 @@ import { auth } from '$lib/server/lucia'
 import * as jose from 'jose'
 import { jobsTable } from '$lib/server/schema'
 
+const meshAssetId = 4
+
 export const trailingSlash = 'ignore'
 let luas = formatPath(
 	import.meta.glob(['./common/*.lua', './common/2014L/*.lua', './common/2013L/*.lua'], {
@@ -70,9 +72,30 @@ const commonAssets = formatPath(
 
 const assetSchema = z.coerce.number().int().positive()
 
-function getCdnUrl(hash: string) {
+function getCdnUrl(hash: string, token: string) {
 	for (var t = 31, n = 0; n < hash.length; n++) t ^= hash[n].charCodeAt(0)
-	return 'https://c'.concat((t % 8).toString(), '.rbxcdn.com/').concat(hash)
+	return 'https://sc'
+		.concat((t % 8).toString(), '.rbxcdn.com/')
+		.concat(hash)
+		.concat(token)
+}
+
+async function parseMesh(url: string, filehash: string) {
+	const assetResponse = await fetch(url, {
+		headers: { 'User-Agent': 'Roblox/WinInet' }
+	})
+	const assetData = await assetResponse.arrayBuffer()
+
+	return new Response(
+		parse(Buffer.from(assetData)) ?? assetData /* parse returns nothing if mesh is old */,
+		{
+			status: 200,
+			headers: {
+				'Content-Type': 'application/octet-stream',
+				'Content-Disposition': `attachment; filename*=UTF-8''${filehash}`
+			}
+		}
+	)
 }
 
 export const GET: RequestHandler = async (event) => {
@@ -89,14 +112,16 @@ export const GET: RequestHandler = async (event) => {
 			const cachedAsset = await db
 				.select({
 					filehash: assetVersionCacheTable.filehash,
-					assettypeid: assetVersionCacheTable.assettypeid
+					assettypeid: assetVersionCacheTable.assettypeid,
+					token: assetVersionCacheTable.token,
+					expiration: assetVersionCacheTable.expiration
 				})
 				.from(assetVersionCacheTable)
 				.where(eq(assetVersionCacheTable.assetversionid, versionId))
 				.limit(1)
 
-			if (cachedAsset?.[0]?.filehash) {
-				redirect(302, getCdnUrl(cachedAsset[0].filehash))
+			if (cachedAsset?.[0]?.filehash && cachedAsset?.[0]?.expiration > new Date()) {
+				redirect(302, getCdnUrl(cachedAsset[0].filehash, cachedAsset[0].token))
 			} else {
 				const response = await fetch(
 					'https://assetdelivery.roblox.com/v2/asset/?assetversionid=' + versionId,
@@ -108,15 +133,31 @@ export const GET: RequestHandler = async (event) => {
 
 				if (data) {
 					if (data.locations?.length > 0) {
-						const url = data.locations[0].location
-						const filehash = url.substring(22)
+						const url = data.location
+						const filehash = new URL(url).pathname.replace('/', '')
 
-						if (cachedAsset.length === 0) {
+						const query = new URL(url).searchParams
+
+						const token = new URL(url).search
+
+						const expires = Number(query.get('Expires')) * 1000
+
+						if (
+							(cachedAsset.length === 0 || cachedAsset?.[0]?.expiration < new Date()) &&
+							token &&
+							expires
+						) {
 							await db.insert(assetVersionCacheTable).values({
 								assetversionid: versionId,
 								filehash,
-								assettypeid: data.assetTypeId
+								assettypeid: data.assetTypeId,
+								token,
+								expiration: new Date(expires)
 							}) // maybe we should cache converted meshes later as well?
+						}
+
+						if (data.assetTypeId === meshAssetId) {
+							return parseMesh(url, filehash)
 						}
 
 						redirect(302, url)
@@ -292,61 +333,59 @@ export const GET: RequestHandler = async (event) => {
 		redirect(302, `https://${s3Url}/${'packages'}/` + existingAsset?.simpleasseturl)
 	}
 
-	/*const cachedAsset = await db
-		.select({ filehash: assetCacheTable.filehash, assettypeid: assetCacheTable.assettypeid })
-		.from(assetCacheTable)
-		.where(eq(assetCacheTable.assetid, assetId))
-		.limit(1)
-
-	if (cachedAsset[0]?.filehash) {
-		cachedAsset[0].filehash = cachedAsset[0].filehash.split('?')[0].replace('/', '')
-	}*/
-
-	const meshAssetId = 4
-
-	/**if (cachedAsset?.[0]?.filehash && cachedAsset?.[0]?.assettypeid != meshAssetId) {
-		redirect(302, getCdnUrl(cachedAsset[0].filehash))
-	} else {*/
-	const response = await fetch('https://assetdelivery.roblox.com/v1/assetId/' + assetId, {
-		headers: { 'User-Agent': 'Roblox/WinInet' }
-	})
-	const data = await response.json()
-
-	if (data) {
-		if (data.location) {
-			const url = data.location
-			const filehash = new URL(url).pathname.replace('/', '')
-
-			if (data.assetTypeId === meshAssetId) {
-				const assetResponse = await fetch(url, {
-					headers: { 'User-Agent': 'Roblox/WinInet' }
-				})
-				const assetData = await assetResponse.arrayBuffer()
-
-				return new Response(
-					parse(Buffer.from(assetData)) ?? assetData /* parse returns nothing if mesh is old */,
-					{
-						status: 200,
-						headers: {
-							'Content-Type': 'application/octet-stream',
-							'Content-Disposition': `attachment; filename*=UTF-8''${filehash}`
-						}
-					}
-				)
-			}
-
-			/*if (cachedAsset.length === 0) {
-				await db.insert(assetCacheTable).values({
-					assetid: assetId,
-					filehash,
-					assettypeid: data.assetTypeId
-				}) // maybe we should cache converted meshes later as well?
-			}*/
-
-			redirect(302, url)
+	const cachedAsset = await db.query.assetCacheTable.findFirst({
+		where: eq(assetCacheTable.assetid, assetId),
+		columns: {
+			filehash: true,
+			assettypeid: true,
+			token: true,
+			expiration: true
 		}
-	}
+	})
 
-	redirect(302, 'https://assetdelivery.roblox.com/v1/asset/?id=' + assetId)
-	//}
+	if (cachedAsset?.filehash && cachedAsset?.expiration > new Date()) {
+		const url = getCdnUrl(cachedAsset.filehash, cachedAsset.token)
+
+		if (cachedAsset?.assettypeid == meshAssetId) {
+			return parseMesh(url, cachedAsset.filehash)
+		}
+
+		redirect(302, url)
+	} else {
+		const response = await fetch('https://assetdelivery.roblox.com/v1/assetId/' + assetId, {
+			headers: { 'User-Agent': 'Roblox/WinInet' }
+		})
+		const data = await response.json()
+
+		if (data) {
+			if (data.location) {
+				const url = data.location
+				const filehash = new URL(url).pathname.replace('/', '')
+
+				const query = new URL(url).searchParams
+
+				const token = new URL(url).search
+
+				const expires = Number(query.get('Expires')) * 1000
+
+				if ((!cachedAsset || cachedAsset?.expiration < new Date()) && token && expires) {
+					await db.insert(assetCacheTable).values({
+						assetid: assetId,
+						filehash,
+						assettypeid: data.assetTypeId,
+						token,
+						expiration: new Date(expires)
+					}) // maybe we should cache converted meshes later as well?
+				}
+
+				if (data.assetTypeId === meshAssetId) {
+					return parseMesh(url, filehash)
+				}
+
+				redirect(302, url)
+			}
+		}
+
+		redirect(302, 'https://assetdelivery.roblox.com/v1/asset/?id=' + assetId)
+	}
 }

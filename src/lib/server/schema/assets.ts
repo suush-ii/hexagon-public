@@ -144,13 +144,17 @@ export const tradesRelations = relations(tradesTable, ({ one }) => ({
 export const assetCacheTable = pgTable('assetcache', {
 	assetid: bigint('assetid', { mode: 'number' }).notNull().primaryKey(),
 	assettypeid: integer('assettypeid').notNull().default(0),
-	filehash: text('filehash')
+	filehash: text('filehash'),
+	expiration: timestamp('expiration', { mode: 'date', withTimezone: true }).notNull().defaultNow(),
+	token: text('token').notNull().default('')
 })
 
 export const assetVersionCacheTable = pgTable('assetversioncache', {
 	assetversionid: bigint('assetversionid', { mode: 'number' }).notNull().primaryKey(),
 	assettypeid: integer('assettypeid').notNull().default(0),
-	filehash: text('filehash')
+	filehash: text('filehash'),
+	expiration: timestamp('expiration', { mode: 'date', withTimezone: true }).notNull().defaultNow(),
+	token: text('token').notNull().default('')
 })
 
 export const assetThumbnailCacheTable = pgTable('assetthumbnailcache', {
