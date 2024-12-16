@@ -148,13 +148,16 @@ export const GET: RequestHandler = async (event) => {
 						const expires = Number(query.get('Expires')) * 1000
 
 						if ((!cachedAsset || cachedAsset?.expiration < new Date()) && token && expires) {
-							await db.insert(assetVersionCacheTable).values({
-								assetversionid: versionId,
-								filehash,
-								assettypeid: data.assetTypeId,
-								token,
-								expiration: new Date(expires)
-							}) // maybe we should cache converted meshes later as well?
+							await db
+								.insert(assetVersionCacheTable)
+								.values({
+									assetversionid: versionId,
+									filehash,
+									assettypeid: data.assetTypeId,
+									token,
+									expiration: new Date(expires)
+								})
+								.onConflictDoNothing() // maybe we should cache converted meshes later as well?
 						}
 
 						if (data.assetTypeId === meshAssetId) {
@@ -374,13 +377,16 @@ export const GET: RequestHandler = async (event) => {
 				const expires = Number(query.get('Expires')) * 1000
 
 				if ((!cachedAsset || cachedAsset?.expiration < new Date()) && token && expires) {
-					await db.insert(assetCacheTable).values({
-						assetid: assetId,
-						filehash,
-						assettypeid: data.assetTypeId,
-						token,
-						expiration: new Date(expires)
-					}) // maybe we should cache converted meshes later as well?
+					await db
+						.insert(assetCacheTable)
+						.values({
+							assetid: assetId,
+							filehash,
+							assettypeid: data.assetTypeId,
+							token,
+							expiration: new Date(expires)
+						})
+						.onConflictDoNothing() // maybe we should cache converted meshes later as well?
 				}
 
 				if (data.assetTypeId === meshAssetId) {
