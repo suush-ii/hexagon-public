@@ -48,7 +48,9 @@
 		Harassment:
 			'Do not harass other users. Do not say inappropriate or mean things about others on Hexagon.',
 		Scam: 'Do not scam other users.',
-		'Bad Image': 'Do not post inappropriate images.'
+		'Bad Image': 'Do not post inappropriate images.',
+		'Bad Audio': 
+			'Do not attempt to upload egregiously loud audio. This includes any \'bypass\' audio from other platforms, and inappropiately boosted audio.'
 	}
 	$: if ($formData.scrubusername) {
 		$formData.action = 'Delete'
