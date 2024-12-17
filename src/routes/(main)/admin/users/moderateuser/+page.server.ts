@@ -1,6 +1,6 @@
 import { error, fail, redirect, type Actions } from '@sveltejs/kit'
 import type { PageServerLoad } from './$types'
-import { usersTable, bansTable, adminLogsTable, assetTable } from '$lib/server/schema'
+import { usersTable, bansTable, adminLogsTable, assetTable, jobsTable } from '$lib/server/schema'
 import { db } from '$lib/server/db'
 import { z } from 'zod'
 import { count, eq, desc, or } from 'drizzle-orm'
@@ -163,7 +163,8 @@ export const actions: Actions = {
 		const user = await db
 			.select({
 				role: usersTable.role,
-				username: usersTable.username
+				username: usersTable.username,
+				activejob: usersTable.activejob
 			})
 			.from(usersTable)
 			.where(eq(usersTable.userid, result.data))
@@ -288,6 +289,13 @@ export const actions: Actions = {
 		}
 
 		await db.update(usersTable).set({ banid: ban.banid }).where(eq(usersTable.userid, result.data))
+
+		if (user[0].activejob) {
+			await db
+				.update(jobsTable)
+				.set({ toevict: [result.data] })
+				.where(eq(jobsTable.jobid, user[0].activejob))
+		}
 
 		if (queue && form.data.assetid) {
 			const [toDelete] = await db
