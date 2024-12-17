@@ -308,6 +308,10 @@
 							{/if}
 						{/if}
 
+						{#if data.item.onsale === false && data.canModerate}
+							<h5>( Offsale for members )</h5>
+						{/if}
+
 						{interpolate(data.t('catalog.sold'), {
 							count: formatCompactNumber(data.item.sales, false)
 						})}</Card.Description
