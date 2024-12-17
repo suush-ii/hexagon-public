@@ -54,5 +54,6 @@
 	"C_Cpp_Runner.useLinkTimeOptimization": false,
 	"C_Cpp_Runner.msvcSecureNoWarnings": false,
 	"i18n-ally.localesPaths": ["src/lib/poly-i18n/locales"],
-	"i18n-ally.keystyle": "flat"
+	"i18n-ally.keystyle": "flat",
+	"vscord.enabled": false
 }
