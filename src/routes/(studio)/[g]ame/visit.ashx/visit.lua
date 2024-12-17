@@ -41,7 +41,7 @@ pcall(function() game:GetService("SocialService"):SetGroupRoleUrl("http://www.ro
 pcall(function() game:GetService("GamePassService"):SetPlayerHasPassUrl("http://www.roblox.com/Game/GamePass/GamePassHandler.ashx?Action=HasPass&UserID=%d&PassID=%d") end)
 pcall(function() game:GetService("MarketplaceService"):SetProductInfoUrl("http://www.www.roblox.com/marketplace/productinfo?assetId=%d") end)
 pcall(function() game:GetService("MarketplaceService"):SetDevProductInfoUrl("https://www.roblox.com/marketplace/productDetails?productId=%d") end)
-pcall(function() game:GetService("MarketplaceService"):SetPlayerOwnsAssetUrl("https://www.roblox.com/ownership/hasasset?userId=%d&assetId=%d") end)
+pcall(function() game:GetService("MarketplaceService"):SetPlayerOwnsAssetUrl("https://www.roblox.com/ownership/hasAsset?userId=%d&assetId=%d") end)
 pcall(function() game:SetCreatorID(0, Enum.CreatorType.User) end)
 
 ifSeleniumThenSetCookie("SeleniumTest3", "Set creator ID")
