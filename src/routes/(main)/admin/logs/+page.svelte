@@ -14,6 +14,9 @@
 
 	import { page } from '$app/stores'
 	import { depluralize } from '$lib/utils'
+	import * as Select from '$src/components/ui/select'
+	import { goto } from '$app/navigation'
+	import { browser } from '$app/environment'
 
 	function formatAction(
 		action: ActionTypes,
@@ -58,14 +61,86 @@
 		}
 	}
 
+	$: selected = {
+		value: 'all',
+		label: 'All'
+	}
+
+	$: selectedAction = {
+		value: 'all',
+		label: 'All'
+	}
+
+	function changeUser() {
+		let query = new URLSearchParams($page.url.searchParams.toString())
+		if (browser) {
+			query.set('user', selected.value)
+
+			goto(`?${query.toString()}`)
+		}
+	}
+
+	function changeAction() {
+		let query = new URLSearchParams($page.url.searchParams.toString())
+		if (browser) {
+			query.set('action', selectedAction.value)
+
+			goto(`?${query.toString()}`)
+		}
+	}
+
+	$: selected, changeUser()
+
+	$: selectedAction, changeAction()
+
 	export let data: PageData
 </script>
 
 <div class="p-8 flex flex-col space-y-4 grow mx-auto max-w-7xl">
 	{#if data.logs}
 		<div class="h-full flex flex-col justify-around py-4">
-			<div class="mb-auto">
+			<div class="mb-auto space-y-2">
 				<h1>Logs</h1>
+
+				<div class="flex items-center gap-x-2">
+					<h1>User:</h1>
+
+					<Select.Root bind:selected>
+						<Select.Trigger class="w-[300px]">
+							<Select.Value />
+						</Select.Trigger>
+						<Select.Content>
+							<Select.Group>
+								<Select.Item value="all" label="All">All</Select.Item>
+
+								{#each data.users as user}
+									<Select.Item value={user.userid} label={user.username}
+										>{user.username}</Select.Item
+									>
+								{/each}
+							</Select.Group>
+						</Select.Content>
+						<Select.Input name="category" />
+					</Select.Root>
+
+					<h1>Action:</h1>
+
+					<Select.Root bind:selected={selectedAction}>
+						<Select.Trigger class="w-[300px]">
+							<Select.Value />
+						</Select.Trigger>
+						<Select.Content>
+							<Select.Group>
+								<Select.Item value="all" label="All">All</Select.Item>
+
+								{#each Object.entries(data.actionTypes) as [type, action]}
+									<Select.Item value={type} label={action}>{action}</Select.Item>
+								{/each}
+							</Select.Group>
+						</Select.Content>
+						<Select.Input name="category" />
+					</Select.Root>
+				</div>
 				<Table.Root class="">
 					<Table.Header>
 						<Table.Row>
@@ -93,7 +168,7 @@
 													: ''}
 										>{formatAction(
 											log.action,
-											log?.user?.username ?? "",
+											log?.user?.username ?? '',
 											log.associatedid,
 											log?.asset?.assetType ?? '',
 											log?.asset?.assetname ?? '',
