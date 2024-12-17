@@ -14,7 +14,8 @@ local ADMINS =
 	stitch = 'rbxassetid://10847', -- HEXAGON ASSET
 	vista = 'rbxassetid://11686', -- HEXAGON ASSET
 	Chess = 'rbxassetid://11441', -- HEXAGON ASSET
-	brandan = 'rbxassetid://11458' -- HEXAGON ASSET
+	brandan = 'rbxassetid://11458', -- HEXAGON ASSET
+	NailsRails = 'rbxassetid://13124', -- HEXAGON ASSET
 }
 
 
