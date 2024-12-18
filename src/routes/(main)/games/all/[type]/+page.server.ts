@@ -30,7 +30,7 @@ export const load: PageServerLoad = async ({ params, url }) => {
 
 	if (params.type === 'popular') {
 		const popularGames = await gameCardSearch({
-			orderBy: desc(sql`active`),
+			orderBy: desc(sql`active_job`),
 			limit: size,
 			offset: (page - 1) * size
 		})
@@ -76,7 +76,7 @@ export const load: PageServerLoad = async ({ params, url }) => {
 			.where(eq(gamesTable.original, true))
 
 		const originalGames = await gameCardSearch({
-			orderBy: desc(sql`active`),
+			orderBy: desc(sql`active_job`),
 			where: eq(gamesTable.original, true),
 			limit: size,
 			offset: (page - 1) * size
