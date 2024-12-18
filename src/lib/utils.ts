@@ -115,7 +115,7 @@ export function depluralize(str: string) {
 		? str
 		: str.toLowerCase() === 'audio'
 			? str
-			: str.toLowerCase() === 'gamepasses'
+			: str.toLowerCase() === 'gamepasses' || str.toLowerCase() === 'meshes'
 				? str.slice(0, -2)
 				: str.slice(0, -1)
 }

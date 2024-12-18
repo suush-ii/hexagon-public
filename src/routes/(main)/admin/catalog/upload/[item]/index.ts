@@ -10,5 +10,6 @@ export const adminAssets: AssetTypes[] = [
 	'l legs',
 	'r arms',
 	'r legs',
-	'heads'
+	'heads',
+	'meshes'
 ] as const
