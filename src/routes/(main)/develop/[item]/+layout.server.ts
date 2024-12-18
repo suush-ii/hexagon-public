@@ -100,6 +100,11 @@ export const _uploadableAssets: Record<string, assetPrimitive> = {
 	gamepasses: {
 		friendlyName: 'Game Pass',
 		...imagePrimitive
+	},
+	meshes: {
+		friendlyName: 'Mesh',
+		fileTypes: ['.mesh'],
+		mimeTypes: ['application/octet-stream']
 	}
 }
 

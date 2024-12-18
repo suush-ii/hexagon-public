@@ -57,7 +57,13 @@ export async function uploadAsset(
 
 		let moderationState: assetStates = 'pending'
 
-		if (item === 'hats' || item === 'faces' || item === 'gears' || item === 'heads') {
+		if (
+			item === 'hats' ||
+			item === 'faces' ||
+			item === 'gears' ||
+			item === 'heads' ||
+			item === 'meshes'
+		) {
 			moderationState = 'approved' // auto approve these
 		}
 
@@ -198,7 +204,13 @@ export async function uploadAsset(
 			})
 		}
 
-		if (item === 'audio' || item === 'hats' || item === 'faces' || item === 'heads') {
+		if (
+			item === 'audio' ||
+			item === 'hats' ||
+			item === 'faces' ||
+			item === 'heads' ||
+			item === 'meshes'
+		) {
 			const [assetResponse] = await db
 				.insert(assetTable)
 				.values({

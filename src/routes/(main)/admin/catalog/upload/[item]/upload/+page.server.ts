@@ -18,8 +18,9 @@ import { s3BucketName } from '$src/stores'
 import { S3 } from '$lib/server/s3'
 import type { AssetTypes } from '$lib/types'
 import { outfitsTable } from '$lib/server/schema/outfits'
+import parse from 'meshconvert'
 
-const _assetSchema = z.enum(['hats', 'faces', 'gears', 'packages', 'heads'])
+const _assetSchema = z.enum(['hats', 'faces', 'gears', 'packages', 'heads', 'meshes'])
 
 export const load: PageServerLoad = async () => {
 	const assetForm = await superValidate(zod(assetSchema))
@@ -81,7 +82,23 @@ export const actions: Actions = {
 			})
 		}
 
-		const file = form.data.asset
+		if (form.data.stock !== 0 && params.item === 'meshes') {
+			return setError(form, 'stock', 'Stop')
+		}
+
+		let file = form.data.asset
+
+		if (params.item === 'meshes') {
+			const arrayBuffer = await form.data.asset.arrayBuffer()
+
+			const buffer = parse(Buffer.from(arrayBuffer))
+
+			file =
+				new File([buffer], file.name, {
+					type: file.type
+				}) ?? form.data.asset
+		}
+
 		const assetid = await uploadAsset(
 			file,
 			params.item,
@@ -100,6 +117,10 @@ export const actions: Actions = {
 			associatedidtype: 'item',
 			action: 'uploadasset'
 		})
+
+		if (params.item === 'meshes') {
+			return redirect(302, '/catalog/' + numAssetId)
+		}
 
 		return redirect(302, '/admin/catalog/upload/' + params.item)
 	},

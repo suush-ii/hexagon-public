@@ -25,8 +25,10 @@
 				></a
 			>
 			<a href="/admin/catalog/upload/heads" class="w-full"
-				><Tabs.Trigger class="w-full pointer-events-none" value="heads">Heads</Tabs.Trigger
-				></a
+				><Tabs.Trigger class="w-full pointer-events-none" value="heads">Heads</Tabs.Trigger></a
+			>
+			<a href="/admin/catalog/upload/meshes" class="w-full"
+				><Tabs.Trigger class="w-full pointer-events-none" value="meshes">Meshes</Tabs.Trigger></a
 			>
 		</Tabs.List>
 		<Tabs.Content value={data.item}>
