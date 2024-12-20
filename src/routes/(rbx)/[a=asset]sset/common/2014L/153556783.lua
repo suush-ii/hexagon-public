@@ -20,10 +20,10 @@ while not Game.CoreGui:FindFirstChild("RobloxGui") do
 end
 
 local userInputService = Game:GetService("UserInputService")
--- local success = pcall(function() userInputService:IsLuaTouchControls() end)
--- if not success then
--- 	script:Destroy()
--- end
+local success = pcall(function() userInputService:IsLuaTouchControls() end)
+if not success then
+	script:Destroy()
+end
 
 ----------------------------------------------------------------------------
 ----------------------------------------------------------------------------
