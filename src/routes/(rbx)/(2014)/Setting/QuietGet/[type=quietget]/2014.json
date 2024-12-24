@@ -336,7 +336,7 @@
 	"FFlagUseNewSoundEngine3dFix": "True",
 	"FFlagDebugUseDefaultGlobalSettings": "True",
 	"FFlagStudioMiddleMouseTrackCamera": "False",
-	"FFlagTurnOffiOSNativeControls": "True",
+	"FFlagTurnOffiOSNativeControls": "False",
 	"DFFlagUseNewHumanoidHealthGui": "True",
 	"FFlagUS21919": "True",
 	"DFFlagLoggingConsoleEnabled": "True",
