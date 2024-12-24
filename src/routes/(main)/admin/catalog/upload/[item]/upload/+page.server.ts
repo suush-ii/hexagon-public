@@ -91,7 +91,7 @@ export const actions: Actions = {
 		if (params.item === 'meshes') {
 			const arrayBuffer = await form.data.asset.arrayBuffer()
 
-			const buffer = parse(Buffer.from(arrayBuffer))
+			const buffer = parse(Buffer.from(arrayBuffer)) ?? Buffer.from(arrayBuffer) // parse returns nothing if mesh is old
 
 			file =
 				new File([buffer], file.name, {
