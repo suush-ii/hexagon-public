@@ -68,7 +68,7 @@ export const actions: Actions = {
 
 		for (const job of jobs) {
 			const response = await fetch(
-				`http://${env.GAMESERVER_IP}:${env.ARBITER_PORT}/closejob/${job.jobid}/${params.gameid}/2014`
+				`http://${env.ARBITER_HOST}/closejob/${job.jobid}/${params.gameid}/2014`
 			)
 
 			const result = await response.json()
