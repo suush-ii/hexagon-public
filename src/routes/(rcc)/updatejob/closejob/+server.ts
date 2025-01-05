@@ -30,7 +30,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 	})
 
 	fetch(
-		`http://${env.GAMESERVER_IP}:${env.ARBITER_PORT}/closejob/${jobid}/${instance?.placeid ?? 0}/2016`
+		`http://${env.ARBITER_HOST}/closejob/${jobid}/${instance?.placeid ?? 0}/2016`
 	)
 
 	if (!instance) {

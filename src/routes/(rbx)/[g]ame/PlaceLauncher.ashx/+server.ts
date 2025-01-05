@@ -203,7 +203,7 @@ export const fallback: RequestHandler = async (event) => {
 	placeLauncherJson.status = 1
 
 	const response = await fetch(
-		`http://${env.GAMESERVER_IP}:${env.ARBITER_PORT}/opengame2014/${instanceNew.jobid}/${Number(placeid)}/${place.associatedgame.serversize}`
+		`http://${env.ARBITER_HOST}/opengame2014/${instanceNew.jobid}/${Number(placeid)}/${place.associatedgame.serversize}`
 	)
 	const gameresponse = await response.json()
 
