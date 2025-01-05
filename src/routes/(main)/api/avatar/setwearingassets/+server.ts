@@ -62,14 +62,6 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 			)
 		)
 
-	if (wearingCount.count >= 10 && result.data.wear === true) {
-		return error(400, {
-			success: false,
-			message: 'You can only wear up to 10 accessories.',
-			data: {}
-		})
-	}
-
 	const item = await db.query.inventoryTable.findFirst({
 		where: and(
 			eq(inventoryTable.userid, user.userid),
@@ -90,6 +82,18 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 
 	if (!item) {
 		return error(400, { success: false, message: "You don't own this!", data: {} })
+	}
+
+	if (
+		wearingCount.count >= 10 &&
+		result.data.wear === true &&
+		!canOnlyWearOne.includes(item.asset.assetType)
+	) {
+		return error(400, {
+			success: false,
+			message: 'You can only wear up to 10 accessories.',
+			data: {}
+		})
 	}
 
 	if (
