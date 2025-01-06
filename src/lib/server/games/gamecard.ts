@@ -15,7 +15,7 @@ export async function gameCardSearch(params: {
 
 	const games = await db
 		.select({
-			active: activeSql,
+			active: activeSql.as('activecalculated'),
 			icon: { moderationstate: assetTable.moderationstate, simpleasseturl: imageSql },
 			place: {
 				placeid: placesTable.placeid,

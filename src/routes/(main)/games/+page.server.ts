@@ -5,7 +5,7 @@ import { gameCardSearch } from '$lib/server/games/gamecard'
 
 export const load: PageServerLoad = async ({}) => {
 	const popularGames = await gameCardSearch({
-		orderBy: desc(sql`active`),
+		orderBy: sql`${desc(sql`activecalculated`)} nulls last`,
 		limit: 40
 	})
 
