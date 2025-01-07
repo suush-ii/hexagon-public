@@ -355,7 +355,7 @@ ns.ChildAdded:connect(function(replicator) -- mostly from polygon tbh with some 
 
 				--print(player.Name .. " created a new item: " .. item.ClassName .. " " .. item.Name)
 
-				logEvent(player, item, player.Name .. " created a new item: " .. item.ClassName .. " " .. item.Name)
+				logEvent(player, item, player.Name .. " created an instance: ".. item.Name .. " ("..item.ClassName..")")
 			end
 
 			if accepted == true and filtered == false then
@@ -395,7 +395,7 @@ ns.ChildAdded:connect(function(replicator) -- mostly from polygon tbh with some 
 
 				--print(player.Name .. " deleted an item: " .. item.ClassName)
 
-				logEvent(player, item, player.Name .. " deleted an item: " .. item.ClassName)
+				logEvent(player, item, player.Name .. " deleted an item: ".. item.Name .. " ("..item.ClassName..")")
 			end
 
 			if accepted == true and filtered == false then
@@ -425,7 +425,7 @@ ns.ChildAdded:connect(function(replicator) -- mostly from polygon tbh with some 
 
 				--print(player.Name .. " changed a property: " .. item.ClassName .. "." .. member)
 
-				logEvent(player, item, player.Name .. " changed a property: " .. item.ClassName .. "." .. member)
+				logEvent(player, item, player.Name .. " changed a property: ".. item.Name .."." .. member .. " (".. item.ClassName ..")")
 			end
 
 			if accepted == true and filtered == false then
