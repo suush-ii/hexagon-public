@@ -39,6 +39,7 @@
 		Icon?: Component
 		protected?: boolean
 		badge?: number
+		external?: boolean
 	}
 
 	$: pages = {
@@ -48,7 +49,7 @@
 			{ pageUrl: '/catalog', friendlyName: $page.data.t('generic.catalog'), Icon: Wand2 },
 			{ pageUrl: '/people', friendlyName: $page.data.t('generic.people'), Icon: UsersRound },
 			{ pageUrl: '/develop/games', friendlyName: $page.data.t('generic.develop'), Icon: Terminal },
-			{ pageUrl: 'https://blog.hexagon.pw/', friendlyName: 'Blog', Icon: Rss }
+			{ pageUrl: 'https://blog.hexagon.pw/', friendlyName: 'Blog', Icon: Rss, external: true }
 		],
 		authenticated: [
 			{ pageUrl: `/users/${userId}/profile`, friendlyName: $page.data.t('generic.profile') },
@@ -92,6 +93,7 @@
 						(navPage.pageUrl === '/develop/games' && $page.url.pathname.startsWith('/develop'))
 							? ''
 							: 'text-muted-foreground'} transition-colors hover:text-primary group relative"
+						target={navPage.external ? '_blank' : ''}
 					>
 						<div class="flex flex-row space-x-1 sm:space-x-2">
 							<svelte:component this={navPage.Icon} class="h-6 ml-2 sm:ml-0" />
