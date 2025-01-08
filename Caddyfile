@@ -26,3 +26,14 @@ http://api.hexagon.pw, http://hexagon.pw, http://www.hexagon.pw {
         header_up CF-Connecting-IP {header.cf-connecting-ip}
     }
 }
+
+http://blog.hexagon.pw {
+    import hexagon_error
+
+    reverse_proxy {
+        to http://ghost:2368
+            header_up Host "blog.hexagon.pw"
+            header_up Origin "https://blog.hexagon.pw"
+            header_up CF-Connecting-IP {header.cf-connecting-ip}
+    }
+}
