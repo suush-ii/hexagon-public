@@ -5,6 +5,7 @@
 	import { Wand2 } from 'lucide-svelte'
 	import { Home } from 'lucide-svelte'
 	import { X } from 'lucide-svelte'
+	import { Rss } from 'lucide-svelte'
 	import { Terminal } from 'lucide-svelte'
 	import { UsersRound } from 'lucide-svelte'
 	import type { Component } from '$lib/types'
@@ -46,7 +47,8 @@
 			{ pageUrl: '/games', friendlyName: $page.data.t('generic.games'), Icon: Gamepad2 },
 			{ pageUrl: '/catalog', friendlyName: $page.data.t('generic.catalog'), Icon: Wand2 },
 			{ pageUrl: '/people', friendlyName: $page.data.t('generic.people'), Icon: UsersRound },
-			{ pageUrl: '/develop/games', friendlyName: $page.data.t('generic.develop'), Icon: Terminal }
+			{ pageUrl: '/develop/games', friendlyName: $page.data.t('generic.develop'), Icon: Terminal },
+			{ pageUrl: 'https://blog.hexagon.pw/', friendlyName: 'Blog', Icon: Rss }
 		],
 		authenticated: [
 			{ pageUrl: `/users/${userId}/profile`, friendlyName: $page.data.t('generic.profile') },
