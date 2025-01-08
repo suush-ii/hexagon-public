@@ -75,6 +75,26 @@ services:
       timeout: 60s
       retries: 5
       start_period: 80s
+  ghost:
+    image: ghost:5-alpine
+    restart: always
+    networks:
+      - hexagon-nw
+    volumes:
+      - ghost:/var/lib/ghost/content
+    env_file: .env.ghost
+    depends_on:
+      db_ghost:
+        condition: service_started
+  db_ghost:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: hexagon
+    volumes:
+      - db_ghost:/var/lib/mysql
+    networks:
+      - hexagon-nw
 
 volumes:
   hexagon-db:
@@ -82,6 +102,8 @@ volumes:
   caddy_data:
   caddy_config:
   umami-db:
+  ghost:
+  db_ghost:
 
 networks:
   hexagon-nw:
