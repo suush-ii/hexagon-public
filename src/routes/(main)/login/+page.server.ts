@@ -56,6 +56,10 @@ export const actions: Actions = {
 			return message(form, 'Unknown error!') // wtf happened!!
 		}
 
+		if (event.url.searchParams.get('redirect')) {
+			return redirect(302, event.url.searchParams.get('redirect')!)
+		}
+
 		redirect(302, '/home') // success!
 	}
 }

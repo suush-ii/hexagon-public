@@ -235,7 +235,7 @@ export const handle: Handle = sequence(
 					) === true
 				) {
 					if (!user) {
-						redirect(302, '/login')
+						redirect(302, '/login?redirect=' + encodeURIComponent(event.url.pathname))
 					}
 				}
 
@@ -246,7 +246,7 @@ export const handle: Handle = sequence(
 					) === true
 				) {
 					if (!user) {
-						redirect(302, '/login')
+						redirect(302, '/login?redirect=' + encodeURIComponent(event.url.pathname))
 					}
 
 					if (
