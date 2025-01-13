@@ -25,6 +25,8 @@ http://api.hexagon.pw, http://hexagon.pw, http://www.hexagon.pw {
         header_up Origin "https://hexagon.pw"
         header_up CF-Connecting-IP {header.cf-connecting-ip}
     }
+
+    uri path_regexp /{2,} /
 }
 
 http://blog.hexagon.pw {
