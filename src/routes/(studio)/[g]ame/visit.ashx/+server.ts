@@ -23,7 +23,7 @@ export const GET: RequestHandler = async ({ url }) => {
 	}
 
 	if (result.data.userId < 1) {
-		result.data.userId = 1
+		result.data.userId = 0
 	}
 
 	const placeId = result.data.placeId

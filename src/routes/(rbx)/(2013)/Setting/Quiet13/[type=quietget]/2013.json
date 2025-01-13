@@ -140,5 +140,6 @@
 	"SFFlagDisableGuidStringCompression": "True",
 	"SFFlagInfiniteTerrain": "True",
 	"SFFlagUsingTerrainCellIteratorIndicator": "True",
-	"StartPageUrl": "/ide/welcome"
+	"StartPageUrl": "/ide/welcome",
+	"FFlagReconstructAssetUrl": "True"
 }
