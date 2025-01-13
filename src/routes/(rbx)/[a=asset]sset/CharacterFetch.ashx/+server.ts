@@ -11,7 +11,7 @@ const bodyColorsUrl = `http://${env.BASE_URL}/Asset/BodyColors.ashx`
 const assetUrl = `http://${env.BASE_URL}/Asset/`
 
 const userSchema = z.object({
-	userId: z.coerce.number().int().positive(),
+	userId: z.coerce.number().int().optional(),
 	placeId: z.coerce.number().int().optional()
 })
 
@@ -25,8 +25,12 @@ export const GET: RequestHandler = async ({ url, request }) => {
 		return error(400, { success: false, message: 'Malformed.', data: {} })
 	}
 
-	const user = result.data.userId
+	let user = result.data.userId ?? 1
 	const placeId = result.data.placeId
+
+	if (user < 1) {
+		user = 1
+	}
 
 	let inventoryWearing = await db
 		.selectDistinctOn([inventoryTable.itemid], {
