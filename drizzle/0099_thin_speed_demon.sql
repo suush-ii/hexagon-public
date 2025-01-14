@@ -1,0 +1,1 @@
+ALTER TABLE "games" ADD COLUMN "clientversion" text DEFAULT '2014' NOT NULL;

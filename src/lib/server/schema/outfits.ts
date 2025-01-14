@@ -1,4 +1,4 @@
-import { bigserial, bigint, pgTable, smallint } from 'drizzle-orm/pg-core'
+import { bigserial, bigint, pgTable, smallint, text, timestamp } from 'drizzle-orm/pg-core'
 
 export const outfitsTable = pgTable('outfits', {
 	outfitid: bigserial('outfitid', { mode: 'number' }).notNull().primaryKey(),
@@ -10,5 +10,8 @@ export const outfitsTable = pgTable('outfits', {
 	leftlegcolor: smallint('leftlegcolor'),
 	rightarmcolor: smallint('rightarmcolor'),
 	rightlegcolor: smallint('rightlegcolor'),
-	torsocolor: smallint('torsocolor')
+	torsocolor: smallint('torsocolor'),
+	avatarbody: text('avatarbody'),
+	outfitname: text('outfitname'),
+	created: timestamp('created', { mode: 'date', withTimezone: true }).notNull().defaultNow()
 })

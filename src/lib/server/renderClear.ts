@@ -30,7 +30,14 @@ export async function renderClear(userid: number) {
 		}
 	})
 
-	if (!beingUsed || beingUsed.userid == userid) {
+	const outfit = await db.query.outfitsTable.findFirst({
+		where: eq(usersTable.avatarbody, render.avatarbody ?? ''),
+		columns: {
+			avatarbody: true
+		}
+	})
+
+	if ((!beingUsed || beingUsed.userid == userid) && !outfit) {
 		const Key = 'thumbnails'
 
 		let Objects = []

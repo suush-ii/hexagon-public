@@ -30,7 +30,8 @@ export const gamesTable = pgTable('games', {
 	likes: bigint('likes', { mode: 'number' }).notNull().default(0),
 	dislikes: bigint('dislikes', { mode: 'number' }).notNull().default(0),
 	scrubbedgamename: text('scrubbedgamename'),
-	original: boolean('original').notNull().default(false)
+	original: boolean('original').notNull().default(false),
+	clientversion: text('clientversion').$type<clientVersions>().default('2014').notNull()
 })
 
 export const gamesRelations = relations(gamesTable, ({ one, many }) => ({
