@@ -258,6 +258,12 @@
 							createOutfitModal.open()
 						}}>Create New Outfit</Button
 					>
+					{#if data?.outfits?.length === 0}
+						<EmptyCard>
+							<h5>You don't have any outfits yet! Why not create one?</h5>
+						</EmptyCard>
+					{/if}
+
 					<div class="flex flex-wrap gap-4">
 						{#if data.outfits}
 							{#each data.outfits as outfit}
