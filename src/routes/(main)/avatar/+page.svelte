@@ -8,10 +8,16 @@
 	import { Separator } from '$src/components/ui/separator'
 	import EmptyCard from '$src/components/emptyCard.svelte'
 	import AvatarCard from '$src/components/avatar/avatarCard.svelte'
+	import CreateOutfitModal from '$src/components/avatar/createOutfitModal.svelte'
+	import OutfitCard from '$src/components/avatar/outfitCard.svelte'
+
+	let createOutfitModal: CreateOutfitModal
 
 	import PaginationWrapper from '$src/components/pagnationWrapper.svelte'
 
 	import { page } from '$app/stores'
+
+	import type { PageData } from './$types'
 
 	$: categoryParams = $page.url.searchParams.get('category') ?? 'hats'
 
@@ -19,13 +25,21 @@
 
 	pageName.set(data.t('generic.customize'))
 
-	import type { PageData } from './$types'
 	let open = false
 	let redrawing = false
 
-	let bodypart: string
+	type BodyPart = 'Head' | 'Right Arm' | 'Torso' | 'Left Arm' | 'Right Leg' | 'Left Leg'
+	type ColorKey =
+		| 'headColor'
+		| 'rightArmColor'
+		| 'torsoColor'
+		| 'leftArmColor'
+		| 'rightLegColor'
+		| 'leftLegColor'
 
-	let bodyparts = {
+	let bodypart: BodyPart
+
+	let bodyparts: Record<BodyPart, ColorKey> = {
 		Head: 'headColor',
 		'Right Arm': 'rightArmColor',
 		Torso: 'torsoColor',
@@ -36,7 +50,7 @@
 
 	let trig = false
 
-	function changeColor(part: string) {
+	function changeColor(part: BodyPart) {
 		bodypart = part
 		open = true
 	}
@@ -150,79 +164,123 @@
 		</div>
 
 		<div class="flex flex-col gap-y-10 p-8 grow h-full">
-			<Tabs.Root value="wardrobe" class="w-full h-full">
+			<Tabs.Root
+				value={$page.url.searchParams.get('tab') === 'outfits' ? 'outfits' : 'wardrobe'}
+				class="w-full h-full"
+			>
 				<Tabs.List>
-					<Tabs.Trigger value="wardrobe">Wardrobe</Tabs.Trigger>
-					<Tabs.Trigger value="outfits">Outfits</Tabs.Trigger>
+					<a href="?tab=wardrobe"
+						><Tabs.Trigger class="pointer-events-none" value="wardrobe">Wardrobe</Tabs.Trigger></a
+					>
+					<a href="?tab=outfits"
+						><Tabs.Trigger class="pointer-events-none" value="outfits">Outfits</Tabs.Trigger></a
+					>
 				</Tabs.List>
 				<Separator />
+				{#if $page.url.searchParams.get('tab') === 'wardrobe' || !$page.url.searchParams.get('tab')}
+					<Tabs.Content
+						value="wardrobe"
+						class="mx-auto text-center px-32 mt-8 flex flex-col gap-y-8 h-full"
+					>
+						<div>
+							{#each categoriesArray as category}
+								<Button
+									size="lg"
+									variant="minimal"
+									class="!px-4 {category.toLowerCase() === categoryParams?.toLowerCase()
+										? 'font-bold'
+										: ''}"><a href="?category={category.toLowerCase()}">{category}</a></Button
+								>
+								<span>|</span>
+							{/each}
+						</div>
+
+						{#if data?.inventory?.length === 0}
+							<EmptyCard>
+								<h5>
+									Maybe buy some items at the <a
+										href="/catalog"
+										class="hover:underline font-semibold">catalog</a
+									>?
+								</h5>
+							</EmptyCard>
+						{/if}
+
+						<div class="flex flex-wrap gap-4">
+							{#each data?.inventory ?? [] as item}
+								<AvatarCard
+									itemId={item.itemid}
+									itemName={item.asset.assetname}
+									wearing={item.wearing}
+									limited={item.asset.limited}
+									bind:trig
+								/>
+							{/each}
+						</div>
+
+						<PaginationWrapper count={data.count} size={10} url={$page.url} />
+
+						<Separator />
+
+						<h1 class="text-2xl leading-none tracking-tight font-semibold text-left">
+							Currently Wearing
+						</h1>
+
+						<div class="flex flex-wrap gap-4">
+							{#each data?.inventoryWearing ?? [] as item}
+								<AvatarCard
+									itemId={item.itemid}
+									itemName={item.asset.assetname}
+									wearing={item.wearing}
+									limited={item.asset.limited}
+									bind:trig
+								/>
+							{/each}
+						</div>
+
+						<PaginationWrapper
+							count={data.countWearing}
+							size={10}
+							url={$page.url}
+							queryName={'pagewearing'}
+						/>
+					</Tabs.Content>
+				{/if}
 				<Tabs.Content
-					value="wardrobe"
-					class="mx-auto text-center px-32 mt-8 flex flex-col gap-y-8 h-full "
+					value="outfits"
+					class="mx-auto text-center px-32 mt-8 flex flex-col gap-y-8 h-full"
 				>
-					<div>
-						{#each categoriesArray as category}
-							<Button
-								size="lg"
-								variant="minimal"
-								class="!px-4 {category.toLowerCase() === categoryParams?.toLowerCase()
-									? 'font-bold'
-									: ''}"><a href="?category={category.toLowerCase()}">{category}</a></Button
-							>
-							<span>|</span>
-						{/each}
-					</div>
-
-					{#if data?.inventory?.length === 0}
-						<EmptyCard>
-							<h5>
-								Maybe buy some items at the <a href="/catalog" class="hover:underline font-semibold"
-									>catalog</a
-								>?
-							</h5>
-						</EmptyCard>
-					{/if}
-
+					<Button
+						variant="outline"
+						size="sm"
+						class="ml-auto"
+						on:click={() => {
+							createOutfitModal.open()
+						}}>Create New Outfit</Button
+					>
 					<div class="flex flex-wrap gap-4">
-						{#each data?.inventory ?? [] as item}
-							<AvatarCard
-								itemId={item.itemid}
-								itemName={item.asset.assetname}
-								wearing={item.wearing}
-								limited={item.asset.limited}
-								bind:trig
-							/>
-						{/each}
+						{#if data.outfits}
+							{#each data.outfits as outfit}
+								<OutfitCard
+									outfitId={outfit.outfitid}
+									outfitName={outfit.outfitname ?? ''}
+									outfitUrl={outfit.avatarbody ?? ''}
+									created={outfit.created}
+									bind:trig
+								/>
+							{/each}
+						{/if}
 					</div>
 
-					<PaginationWrapper count={data.count} size={10} url={$page.url} />
-
-					<Separator />
-
-					<h1 class="text-2xl leading-none tracking-tight font-semibold text-left">
-						Currently Wearing
-					</h1>
-
-					<div class="flex flex-wrap gap-4">
-						{#each data?.inventoryWearing ?? [] as item}
-							<AvatarCard
-								itemId={item.itemid}
-								itemName={item.asset.assetname}
-								wearing={item.wearing}
-								limited={item.asset.limited}
-								bind:trig
-							/>
-						{/each}
+					<div class="mt-auto">
+						<PaginationWrapper
+							count={data.outfitCount ?? 0}
+							size={10}
+							url={$page.url}
+							queryName={'pageoutfits'}
+						/>
 					</div>
-
-					<PaginationWrapper
-						count={data.countWearing}
-						size={10}
-						url={$page.url}
-						queryName={'pagewearing'}
-					/>
 				</Tabs.Content>
-				<Tabs.Content value="outfits"></Tabs.Content>
 			</Tabs.Root>
 		</div>
 	</div>
@@ -257,3 +315,7 @@
 		</AlertDialog.Description>
 	</AlertDialog.Content>
 </AlertDialog.Root>
+
+{#if CreateOutfitModal}
+	<CreateOutfitModal bind:this={createOutfitModal} createOutfitForm={data.form} />
+{/if}

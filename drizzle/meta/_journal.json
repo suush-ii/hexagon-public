@@ -687,6 +687,20 @@
       "when": 1734304485049,
       "tag": "0098_cute_ego",
       "breakpoints": true
+    },
+    {
+      "idx": 99,
+      "version": "7",
+      "when": 1736640821479,
+      "tag": "0099_thin_speed_demon",
+      "breakpoints": true
+    },
+    {
+      "idx": 100,
+      "version": "7",
+      "when": 1736814749227,
+      "tag": "0100_amazing_stick",
+      "breakpoints": true
     }
   ]
 }

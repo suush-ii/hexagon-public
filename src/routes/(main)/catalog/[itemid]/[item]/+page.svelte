@@ -3,7 +3,6 @@
 	import UserAvatar from '$src/components/users/avatar.svelte'
 	import SaleCard from '$src/components/catalog/saleCard.svelte'
 	import { MoonStar, X } from 'lucide-svelte'
-
 	import { Button } from '$src/components/ui/button'
 	import { Separator } from '$src/components/ui/separator'
 	import * as Card from '$src/components/ui/card'

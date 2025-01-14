@@ -1,16 +1,20 @@
 import type { PageServerLoad } from './$types'
 import { db } from '$src/lib/server/db'
-import { inventoryTable, usersTable } from '$lib/server/schema/users'
-import { eq, count, desc, and, sql } from 'drizzle-orm'
+import { inventoryTable, usersTable, outfitsTable } from '$lib/server/schema'
+import { eq, desc, and, sql, count } from 'drizzle-orm'
 import { getPageNumber } from '$lib/utils'
 import { z } from 'zod'
-
 import { assetTypes } from '$lib'
 import { assetTable } from '$src/lib/server/schema'
+import { fail, setError, superValidate } from 'sveltekit-superforms'
+import { formSchema } from '$lib/schemas/avatar/outfit'
+import { zod } from 'sveltekit-superforms/adapters'
+import type { Actions } from '@sveltejs/kit'
 
 export const load: PageServerLoad = async ({ locals, url }) => {
 	let page = getPageNumber(url)
 	let pageWearing = getPageNumber(url, 'pagewearing')
+	let pageOutfits = getPageNumber(url, 'pageoutfits')
 	const result = await z.enum(assetTypes).safeParseAsync(url.searchParams.get('category'))
 
 	const categoryParams = result.success ? result.data : 'hats'
@@ -87,6 +91,35 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 		.offset((pageWearing - 1) * size)
 		.innerJoin(assetTable, eq(inventoryTable.itemid, assetTable.assetid))
 
+	let outfits
+
+	let outfitCount
+
+	if (url.searchParams.get('tab') === 'outfits') {
+		;[outfitCount] = await db
+			.select({ count: count() })
+			.from(outfitsTable)
+			.where(eq(outfitsTable.ownerid, locals.user.userid))
+
+		if (outfitCount.count < (page - 1) * size) {
+			pageOutfits = 1
+		}
+
+		outfits = await db.query.outfitsTable.findMany({
+			where: eq(outfitsTable.ownerid, locals.user.userid),
+			columns: {
+				assets: true,
+				avatarbody: true,
+				outfitid: true,
+				outfitname: true,
+				created: true
+			},
+			orderBy: desc(outfitsTable.created),
+			limit: size,
+			offset: (pageOutfits - 1) * size
+		})
+	}
+
 	return {
 		colors: {
 			headColor: user?.headcolor,
@@ -99,6 +132,60 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 		inventory,
 		inventoryWearing,
 		count: assetCount[0].count,
-		countWearing: assetWearingCount[0].count
+		countWearing: assetWearingCount[0].count,
+		form: await superValidate(zod(formSchema)),
+		outfits,
+		outfitCount: outfitCount?.count
+	}
+}
+
+export const actions: Actions = {
+	outfits: async (event) => {
+		const form = await superValidate(event, zod(formSchema))
+		if (!form.valid) {
+			return fail(400, {
+				form
+			})
+		}
+
+		const { locals, params } = event
+
+		const [outfitCount] = await db
+			.select({
+				count: count()
+			})
+			.from(outfitsTable)
+			.where(eq(outfitsTable.ownerid, locals.user.userid))
+
+		if (outfitCount.count >= 20) {
+			return setError(form, 'outfitname', 'You can only have 20 outfits!')
+		}
+
+		const user = await db.query.usersTable.findFirst({
+			where: eq(usersTable.userid, locals.user.userid),
+			columns: {
+				avatarbody: true,
+				headcolor: true,
+				leftarmcolor: true,
+				leftlegcolor: true,
+				rightarmcolor: true,
+				rightlegcolor: true,
+				torsocolor: true
+			}
+		})
+
+		const inventoryWearing = await db
+			.selectDistinctOn([inventoryTable.itemid], {
+				itemid: inventoryTable.itemid
+			})
+			.from(inventoryTable)
+			.where(and(eq(inventoryTable.wearing, true), eq(inventoryTable.userid, locals.user.userid)))
+
+		await db.insert(outfitsTable).values({
+			ownerid: locals.user.userid,
+			assets: inventoryWearing.map((item) => item.itemid),
+			outfitname: form.data.outfitname,
+			...user
+		})
 	}
 }
