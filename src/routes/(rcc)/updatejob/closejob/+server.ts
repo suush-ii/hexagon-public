@@ -13,25 +13,10 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 		columns: {
 			placeid: true,
 			players: true
-		},
-		with: {
-			associatedplace: {
-				columns: {},
-				with: {
-					associatedgame: {
-						columns: {
-							active: true,
-							universeid: true
-						}
-					}
-				}
-			}
 		}
 	})
 
-	fetch(
-		`http://${env.ARBITER_HOST}/closejob/${jobid}/${instance?.placeid ?? 0}/2016`
-	)
+	fetch(`http://${env.ARBITER_HOST}/closejob/${jobid}/${instance?.placeid ?? 0}/2016`)
 
 	if (!instance) {
 		return error(400, {
@@ -41,12 +26,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 		})
 	}
 
-	await deleteJob(
-		jobid,
-		instance.players,
-		instance?.associatedplace?.associatedgame.universeid ?? 0,
-		instance?.associatedplace?.associatedgame.active ?? 0
-	)
+	await deleteJob(jobid, instance.players)
 
 	return json({
 		success: true,

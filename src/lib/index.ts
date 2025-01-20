@@ -110,3 +110,5 @@ export const friendlyClanNames: Record<HexagonClans, string> = {
 	jamrio: 'Labour Collective of Hexagon',
 	wuff: 'Euanthe Knights of Hexagon'
 }
+
+export const clientVersionsZod = ['2014', '2013'] as const

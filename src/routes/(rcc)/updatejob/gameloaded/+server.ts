@@ -3,8 +3,8 @@ import { db } from '$lib/server/db'
 import { jobsTable } from '$lib/server/schema'
 import { eq } from 'drizzle-orm'
 
-export const POST: RequestHandler = async ({ request }) => {
-	const jobid = (await request.json()).jobid
+export const POST: RequestHandler = async ({ url }) => {
+	const jobid = url.searchParams.get('jobid')!
 
 	await db.update(jobsTable).set({ status: 2 }).where(eq(jobsTable.jobid, jobid))
 

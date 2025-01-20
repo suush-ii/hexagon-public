@@ -154,7 +154,7 @@
 				}, 3000)
 			} else if (json.status === 2) {
 				loadingText = 'The server is ready. Joining the game...'
-				const uri = `hexagon-player:1+launchmode:play+gameinfo:${json.authenticationTicket}+placelauncherurl:${encodeURIComponent(json.joinScriptUrl)}`
+				const uri = `hexagon-player:1+launchmode:play+gameinfo:${json.authenticationTicket}+placelauncherurl:${encodeURIComponent(json.joinScriptUrl)}+version:${json.version}`
 				document.location = uri
 
 				console.log(json.joinScriptUrl)
@@ -196,6 +196,12 @@
 								alt="Mega"
 							/>
 						{/if}
+
+						<img
+							class="absolute left-0 bottom-0 w-24 pointer-events-none"
+							src="/Images/{data.place.associatedgame.clientversion}.png"
+							alt="Mega"
+						/>
 					</div>
 
 					<div class="flex flex-col w-full">

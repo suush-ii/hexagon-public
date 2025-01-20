@@ -4,7 +4,6 @@ import { jobsTable, placesTable, usersTable } from '$lib/server/schema'
 import { db } from '$lib/server/db'
 import { eq, and, lt } from 'drizzle-orm'
 import { env } from '$env/dynamic/private'
-import * as jose from 'jose'
 import { RateLimiter } from 'sveltekit-rate-limiter/server'
 import { deleteJob } from '$lib/games/deleteJob'
 
@@ -33,7 +32,8 @@ export const fallback: RequestHandler = async (event) => {
 		joinScriptUrl,
 		authenticationUrl,
 		authenticationTicket: authBearer,
-		message: ''
+		message: '',
+		version: '2014'
 	}
 
 	const enabled = locals.config[0].gamesEnabled
@@ -71,6 +71,7 @@ export const fallback: RequestHandler = async (event) => {
 			placeLauncherJson.status = instance.status
 			placeLauncherJson.jobId = instance.jobid
 			placeLauncherJson.joinScriptUrl += '?auth=' + authBearer + '&jobid=' + instance.jobid
+			placeLauncherJson.version = instance.clientversion
 
 			return json(placeLauncherJson)
 		}
@@ -83,7 +84,8 @@ export const fallback: RequestHandler = async (event) => {
 			associatedgame: {
 				columns: {
 					serversize: true,
-					universeid: true
+					universeid: true,
+					clientversion: true
 				}
 			},
 			associatedasset: {
@@ -118,20 +120,7 @@ export const fallback: RequestHandler = async (event) => {
 			eq(placesTable.placeid, Number(placeid)),
 			eq(jobsTable.type, 'game'),
 			lt(jobsTable.active, place.associatedgame.serversize) // we only want jobs that aren't full
-		),
-		with: {
-			associatedplace: {
-				columns: {},
-				with: {
-					associatedgame: {
-						columns: {
-							active: true,
-							universeid: true
-						}
-					}
-				}
-			}
-		}
+		)
 	})
 
 	if (instance && instance.port && (instance.status === 1 || instance.status === 2)) {
@@ -144,26 +133,17 @@ export const fallback: RequestHandler = async (event) => {
 		) {
 			// 5 mins has passed and the instance shows no life?
 			// its probably dead also this should probalby not be possible unless the gameserver goes down because windows updates or something LOL
-			await deleteJob(
-				instance.jobid,
-				instance.players,
-				instance?.associatedplace?.associatedgame.universeid ?? 0,
-				instance?.associatedplace?.associatedgame.active ?? 0
-			)
+			await deleteJob(instance.jobid, instance.players)
 		} else if (
 			instance.presenceping &&
 			new Date().valueOf() - instance.presenceping.valueOf() > 60 * 1000
 		) {
-			await deleteJob(
-				instance.jobid,
-				instance.players,
-				instance?.associatedplace?.associatedgame.universeid ?? 0,
-				instance?.associatedplace?.associatedgame.active ?? 0
-			)
+			await deleteJob(instance.jobid, instance.players)
 		} else {
 			placeLauncherJson.status = instance.status
 			placeLauncherJson.jobId = instance.jobid
 			placeLauncherJson.joinScriptUrl += '?auth=' + authBearer + '&jobid=' + instance.jobid
+			placeLauncherJson.version = instance.clientversion
 
 			return json(placeLauncherJson)
 		}
@@ -173,6 +153,7 @@ export const fallback: RequestHandler = async (event) => {
 		// 2 users at the same time are trying to start a job just send 1
 		placeLauncherJson.status = 1
 		placeLauncherJson.joinScriptUrl += '?auth=' + authBearer + '&jobid='
+		placeLauncherJson.version = instance.clientversion
 
 		return json(placeLauncherJson)
 	}
@@ -187,13 +168,17 @@ export const fallback: RequestHandler = async (event) => {
 		})
 	}
 
+	const clientversion = place.associatedgame.clientversion
+
+	placeLauncherJson.version = clientversion
+
 	const [instanceNew] = await db
 		.insert(jobsTable)
 		.values({
 			placeid: Number(placeid),
 			associatedid: place.associatedgame.universeid,
 			type: 'game',
-			clientversion: '2014',
+			clientversion,
 			status: 1
 		})
 		.returning({ jobid: jobsTable.jobid })
@@ -201,23 +186,28 @@ export const fallback: RequestHandler = async (event) => {
 	placeLauncherJson.joinScriptUrl += '?auth=' + authBearer + '&jobid=' + instanceNew.jobid
 	placeLauncherJson.jobId = instanceNew.jobid
 	placeLauncherJson.status = 1
+	try {
+		const response = await fetch(
+			`http://${env.ARBITER_HOST}/opengame${clientversion}/${instanceNew.jobid}/${Number(placeid)}/${place.associatedgame.serversize}`
+		)
+		const gameresponse = await response.json()
 
-	const response = await fetch(
-		`http://${env.ARBITER_HOST}/opengame2014/${instanceNew.jobid}/${Number(placeid)}/${place.associatedgame.serversize}`
-	)
-	const gameresponse = await response.json()
+		if (gameresponse.success === false) {
+			// error maybe retry or something but for now just kill the instance
+			await db.delete(jobsTable).where(eq(jobsTable.jobid, instanceNew.jobid))
 
-	if (gameresponse.success === false) {
-		// error maybe retry or something but for now just kill the instance
+			return error(400, { success: false, message: 'Error.', data: {} })
+		}
+
+		await db
+			.update(jobsTable)
+			.set({ port: gameresponse.port })
+			.where(eq(jobsTable.jobid, instanceNew.jobid))
+
+		return json(placeLauncherJson)
+	} catch {
 		await db.delete(jobsTable).where(eq(jobsTable.jobid, instanceNew.jobid))
 
-		return error(400, { success: false, message: 'Error.', data: {} })
+		return error(500, { success: false, message: 'Failed to start game.', data: {} })
 	}
-
-	await db
-		.update(jobsTable)
-		.set({ port: gameresponse.port })
-		.where(eq(jobsTable.jobid, instanceNew.jobid))
-
-	return json(placeLauncherJson)
 }

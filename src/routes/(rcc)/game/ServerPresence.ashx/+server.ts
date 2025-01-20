@@ -1,16 +1,8 @@
-import { error, json, text, type RequestHandler } from '@sveltejs/kit'
+import { error, json, type RequestHandler } from '@sveltejs/kit'
 import { db } from '$lib/server/db'
-import {
-	gamesessionsTable,
-	gamesTable,
-	jobsTable,
-	placesTable,
-	usersTable
-} from '$lib/server/schema'
-import { and, eq } from 'drizzle-orm'
-import { env } from '$env/dynamic/private'
+import { jobsTable } from '$lib/server/schema'
+import { eq } from 'drizzle-orm'
 import { z } from 'zod'
-import * as jose from 'jose'
 
 const presenceSchema = z.object({
 	jobId: z.string().uuid()

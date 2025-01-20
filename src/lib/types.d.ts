@@ -1,4 +1,11 @@
-import { assetGenreZod, assetTypes, gearAttributesZod, hexagonBadges, hexagonClans } from '.'
+import {
+	assetGenreZod,
+	assetTypes,
+	gearAttributesZod,
+	hexagonBadges,
+	hexagonClans,
+	clientVersionsZod
+} from '.'
 import type { SvelteComponent } from 'svelte'
 
 export type userState = 'offline' | 'online' | 'game' | 'studio' | 'winner'
@@ -21,7 +28,7 @@ export type HexagonClans = (typeof hexagonClans)[number]
 
 export type renderStatus = 'pending' | 'completed'
 
-export type clientVersions = '2014' | '2013'
+export type clientVersions = (typeof clientVersionsZod)[number]
 
 export type assetStates = 'pending' | 'approved' | 'rejected'
 

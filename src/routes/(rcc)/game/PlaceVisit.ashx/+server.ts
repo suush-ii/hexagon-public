@@ -17,7 +17,7 @@ const visitSchema = z.object({
 	userid: z.coerce.number().int().positive()
 })
 
-export const POST: RequestHandler = async ({ url }) => {
+export const fallback: RequestHandler = async ({ url }) => {
 	const result = await visitSchema.safeParseAsync({
 		placeid: url.searchParams.get('AssociatedPlaceID'),
 		userid: url.searchParams.get('UserID')

@@ -1,9 +1,8 @@
 import type { PageServerLoad, Actions } from './$types.js'
 import { db } from '$lib/server/db'
-import { count, desc, eq } from 'drizzle-orm'
-import { adminLogsTable } from '$lib/server/schema/users'
+import { count, desc } from 'drizzle-orm'
 import { getPageNumber } from '$lib/utils'
-import { gamesessionsTable, placesTable } from '$lib/server/schema/games.js'
+import { gamesessionsTable } from '$lib/server/schema/games.js'
 
 export const load: PageServerLoad = async ({ url }) => {
 	let page = getPageNumber(url)

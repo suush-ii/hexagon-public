@@ -93,6 +93,7 @@
 					description={data.description}
 					genre={data.genres[0]}
 					serversize={data.serversize}
+					clientversion={data.clientversion}
 				/></Tabs.Content
 			>
 			<Tabs.Content value="places">

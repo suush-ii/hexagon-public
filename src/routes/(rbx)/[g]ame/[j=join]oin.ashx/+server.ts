@@ -17,6 +17,8 @@ const scriptNewDefault: string = scriptDefault.replaceAll('roblox.com', env.BASE
 const CharacterAppearance = `http://www.${env.BASE_URL}/Asset/CharacterFetch.ashx`
 const BaseUrl = `http://${env.BASE_URL}/`
 
+const oneDay = 24 * 60 * 60 * 1000
+
 const studioJoinSchema = z.object({
 	userid: z.coerce.number().int(),
 	port: z.coerce.number().int(),
@@ -40,6 +42,10 @@ export const fallback: RequestHandler = async ({ url, locals }) => {
 		scriptNewArgs = scriptNewArgs.replaceAll(
 			'{PlaceId}',
 			studioJoinResult.data.universeid.toString()
+		)
+		scriptNewArgs = scriptNewArgs.replaceAll(
+			'{CharacterAppearance}',
+			CharacterAppearance + '?userId=' + studioJoinResult.data.userid
 		)
 
 		const sign = createSign('SHA1')
@@ -105,7 +111,8 @@ export const fallback: RequestHandler = async ({ url, locals }) => {
 	const user = await db.query.usersTable.findFirst({
 		where: eq(usersTable.userid, session.userid),
 		columns: {
-			discordid: true
+			discordid: true,
+			joindate: true
 		}
 	})
 
@@ -233,6 +240,9 @@ export const fallback: RequestHandler = async ({ url, locals }) => {
 		joinJson.SessionId = `${authBearer}`
 		joinJson.UniverseId = Number(place.associatedgame.universeid)
 		joinJson.PingUrl = `${BaseUrl}game/ClientPresence.ashx?LocationType=Game&UserID=${session.userid}&PlaceID=${place.placeid}`
+		joinJson.AccountAge = Math.round(
+			Math.abs((user.joindate.getTime() - new Date().getTime()) / oneDay)
+		)
 
 		// client ticket
 

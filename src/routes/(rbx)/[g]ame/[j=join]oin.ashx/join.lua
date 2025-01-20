@@ -378,7 +378,7 @@ local success, err = pcall(function()
 	player:SetSuperSafeChat(false)
 	pcall(function() player:SetUnder13(false) end)
 	pcall(function() player:SetMembershipType(Enum.MembershipType.None) end)
-	pcall(function() player:SetAccountAge(365) end)
+	pcall(function() player:SetAccountAge({AccountAge}) end)
 	player.Idled:connect(onPlayerIdled)
 	
 	-- Overriden
