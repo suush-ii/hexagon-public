@@ -141,5 +141,6 @@
 	"SFFlagInfiniteTerrain": "True",
 	"SFFlagUsingTerrainCellIteratorIndicator": "True",
 	"StartPageUrl": "/ide/welcome",
-	"FFlagReconstructAssetUrl": "True"
+	"FFlagReconstructAssetUrl": "True",
+	"DFFlagExplicitPostContentType": "True"
 }
