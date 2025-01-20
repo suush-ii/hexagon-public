@@ -243,146 +243,180 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 	}
 
 	if (type === 'avatar') {
-		const response = await fetch(
-			`http://${env.ARBITER_HOST}/${userRender ? 'openrender2016' : 'openrenderasset2016'}/${instanceNew.jobid}/${packageRender ? encodeURIComponent(assets) : imageRender ? item.associatedImage?.assetid : assetid}${userRender ? '/false' : ''}${'/false'}${item ? `/${item.assetType}` : ''}`
-		)
-
-		const responseJson = await response.json()
-
-		if (responseJson.success === false) {
-			await db.delete(jobsTable).where(eq(jobsTable.jobid, instanceNew.jobid))
-
-			return json({ success: true, message: '', data: { url: '', status: 'pending' } })
-		}
-
-		const fileBuffer = Buffer.from(responseJson.image, 'base64')
-
-		const fileName = Buffer.from(createHash('sha512').update(fileBuffer).digest('hex')).toString()
-
-		const command = new PutObjectCommand({
-			Bucket: s3BucketName,
-			Key: Key + '/' + fileName,
-			Body: fileBuffer,
-			ContentType: 'image/png'
-		})
 		try {
-			await S3.send(command)
-		} catch (err) {
-			console.log(err)
+			const response = await fetch(
+				`http://${env.ARBITER_HOST}/${userRender ? 'openrender2016' : 'openrenderasset2016'}/${instanceNew.jobid}/${packageRender ? encodeURIComponent(assets) : imageRender ? item.associatedImage?.assetid : assetid}${userRender ? '/false' : ''}${'/false'}${item ? `/${item.assetType}` : ''}`
+			)
 
-			return json({
-				success: false,
-				message: 'Unknown error',
-				data: {}
-			})
-		}
+			const responseJson = await response.json()
 
-		if (userRender) {
-			await db
-				.update(usersTable)
-				.set({ avatarbody: fileName })
-				.where(eq(usersTable.userid, assetid))
-		}
+			if (responseJson.success === false) {
+				await db.delete(jobsTable).where(eq(jobsTable.jobid, instanceNew.jobid))
 
-		if (!userRender) {
-			await db
-				.update(assetTable)
-				.set({ assetrender: fileName })
-				.where(eq(assetTable.assetid, assetid))
-		}
-
-		await db.delete(jobsTable).where(eq(jobsTable.jobid, instanceNew.jobid))
-
-		return json({
-			success: true,
-			message: '',
-			data: { url: `https://${s3Url}/${Key}/${fileName}`, status: 'completed' }
-		})
-	}
-
-	if (type === 'obj') {
-		const response = await fetch(
-			`http://${env.ARBITER_HOST}/${userRender ? 'openrender2016' : 'openrenderasset2016'}/${instanceNew.jobid}/${packageRender ? encodeURIComponent(assets) : assetid}${userRender ? '/false' : ''}${'/true'}${item ? `/${item.assetType}` : ''}`
-		)
-
-		const responseJson = await response.json()
-
-		if (responseJson.success === false) {
-			await db.delete(jobsTable).where(eq(jobsTable.jobid, instanceNew.jobid))
-
-			return json({ success: true, message: '', data: { url: '', status: 'pending' } })
-		}
-
-		type axis = { x: number; y: number; z: number }
-
-		const _3dManifest: {
-			camera: { position: axis; direction: axis }
-			AABB: { min: axis; max: axis }
-			files: Record<string, { content: string }>
-		} = JSON.parse(responseJson['_3d'])
-
-		//console.log(_3dManifest.camera)
-
-		//console.log(_3dManifest.AABB)
-
-		const newManifest: {
-			camera: { position: axis; direction: axis; fov: number }
-			aabb: { min: axis; max: axis }
-			mtl: string
-			obj: string
-			textures: string[]
-		} = {
-			camera: {
-				position: _3dManifest.camera.position,
-				direction: _3dManifest.camera.direction,
-				fov: 70
-			},
-			aabb: _3dManifest.AABB,
-			mtl: '',
-			obj: '',
-			textures: []
-		}
-
-		//console.log(Object.keys(_3dManifest.files).reverse())
-
-		const mtlAssets: Record<string, string> = {}
-
-		for (const [key, value] of Object.entries(_3dManifest.files).reverse()) {
-			// reverse is important here so we can list the files first then change them to their hash in the mtl file as the mtl file comes before the textures
-			// loop through all files and upload them / create the manifest for three.js
-			const extension = key.split('.').pop()
-
-			let fileContent: Buffer | string = Buffer.from(value.content, 'base64')
-
-			let fileHash = Buffer.from(createHash('sha512').update(fileContent).digest('hex')).toString()
-
-			if (extension === 'obj') {
-				newManifest['obj'] = fileHash
-			} else if (extension === 'mtl') {
-				const pattern = new RegExp(Object.keys(mtlAssets).join('|'), 'g')
-
-				fileContent = fileContent.toString()
-
-				fileContent = fileContent.replace(pattern, (match) => `${mtlAssets[match]}`)
-
-				fileHash = Buffer.from(createHash('sha512').update(fileContent).digest('hex')).toString()
-
-				newManifest['mtl'] = fileHash
-			} else {
-				newManifest['textures'].push(fileHash)
-				mtlAssets[key] = fileHash
+				return json({ success: true, message: '', data: { url: '', status: 'pending' } })
 			}
+
+			const fileBuffer = Buffer.from(responseJson.image, 'base64')
+
+			const fileName = Buffer.from(createHash('sha512').update(fileBuffer).digest('hex')).toString()
 
 			const command = new PutObjectCommand({
 				Bucket: s3BucketName,
-				Key: 'thumbnails' + '/' + fileHash,
-				Body: fileContent as Buffer,
-				ContentType:
-					extension === 'mtl' || extension === 'obj' ? `model/${extension}` : `image/${extension}`
+				Key: Key + '/' + fileName,
+				Body: fileBuffer,
+				ContentType: 'image/png'
+			})
+			try {
+				await S3.send(command)
+			} catch (err) {
+				console.log(err)
+
+				return json({
+					success: false,
+					message: 'Unknown error',
+					data: {}
+				})
+			}
+
+			if (userRender) {
+				await db
+					.update(usersTable)
+					.set({ avatarbody: fileName })
+					.where(eq(usersTable.userid, assetid))
+			}
+
+			if (!userRender) {
+				await db
+					.update(assetTable)
+					.set({ assetrender: fileName })
+					.where(eq(assetTable.assetid, assetid))
+			}
+
+			await db.delete(jobsTable).where(eq(jobsTable.jobid, instanceNew.jobid))
+
+			return json({
+				success: true,
+				message: '',
+				data: { url: `https://${s3Url}/${Key}/${fileName}`, status: 'completed' }
+			})
+		} catch (err) {
+			await db.delete(jobsTable).where(eq(jobsTable.jobid, instanceNew.jobid))
+
+			return json({ success: true, message: '', data: { url: '', status: 'pending' } })
+		}
+	}
+
+	if (type === 'obj') {
+		try {
+			const response = await fetch(
+				`http://${env.ARBITER_HOST}/${userRender ? 'openrender2016' : 'openrenderasset2016'}/${instanceNew.jobid}/${packageRender ? encodeURIComponent(assets) : assetid}${userRender ? '/false' : ''}${'/true'}${item ? `/${item.assetType}` : ''}`
+			)
+
+			const responseJson = await response.json()
+
+			if (responseJson.success === false) {
+				await db.delete(jobsTable).where(eq(jobsTable.jobid, instanceNew.jobid))
+
+				return json({ success: true, message: '', data: { url: '', status: 'pending' } })
+			}
+
+			type axis = { x: number; y: number; z: number }
+
+			const _3dManifest: {
+				camera: { position: axis; direction: axis }
+				AABB: { min: axis; max: axis }
+				files: Record<string, { content: string }>
+			} = JSON.parse(responseJson['_3d'])
+
+			//console.log(_3dManifest.camera)
+
+			//console.log(_3dManifest.AABB)
+
+			const newManifest: {
+				camera: { position: axis; direction: axis; fov: number }
+				aabb: { min: axis; max: axis }
+				mtl: string
+				obj: string
+				textures: string[]
+			} = {
+				camera: {
+					position: _3dManifest.camera.position,
+					direction: _3dManifest.camera.direction,
+					fov: 70
+				},
+				aabb: _3dManifest.AABB,
+				mtl: '',
+				obj: '',
+				textures: []
+			}
+
+			//console.log(Object.keys(_3dManifest.files).reverse())
+
+			const mtlAssets: Record<string, string> = {}
+
+			for (const [key, value] of Object.entries(_3dManifest.files).reverse()) {
+				// reverse is important here so we can list the files first then change them to their hash in the mtl file as the mtl file comes before the textures
+				// loop through all files and upload them / create the manifest for three.js
+				const extension = key.split('.').pop()
+
+				let fileContent: Buffer | string = Buffer.from(value.content, 'base64')
+
+				let fileHash = Buffer.from(
+					createHash('sha512').update(fileContent).digest('hex')
+				).toString()
+
+				if (extension === 'obj') {
+					newManifest['obj'] = fileHash
+				} else if (extension === 'mtl') {
+					const pattern = new RegExp(Object.keys(mtlAssets).join('|'), 'g')
+
+					fileContent = fileContent.toString()
+
+					fileContent = fileContent.replace(pattern, (match) => `${mtlAssets[match]}`)
+
+					fileHash = Buffer.from(createHash('sha512').update(fileContent).digest('hex')).toString()
+
+					newManifest['mtl'] = fileHash
+				} else {
+					newManifest['textures'].push(fileHash)
+					mtlAssets[key] = fileHash
+				}
+
+				const command = new PutObjectCommand({
+					Bucket: s3BucketName,
+					Key: 'thumbnails' + '/' + fileHash,
+					Body: fileContent as Buffer,
+					ContentType:
+						extension === 'mtl' || extension === 'obj' ? `model/${extension}` : `image/${extension}`
+				})
+
+				try {
+					await S3.send(command)
+				} catch (err) {
+					console.log(err)
+
+					return error(400, {
+						success: false,
+						message: 'Unknown error',
+						data: {}
+					})
+				}
+			}
+
+			// finally upload the manifest
+			const _3dfileHash = Buffer.from(
+				createHash('sha512').update(JSON.stringify(newManifest)).digest('hex')
+			).toString()
+
+			const commandManifest = new PutObjectCommand({
+				Bucket: s3BucketName,
+				Key: 'thumbnails' + '/' + _3dfileHash,
+				Body: Buffer.from(JSON.stringify(newManifest)),
+				ContentType: 'application/json'
 			})
 
 			try {
-				await S3.send(command)
+				await S3.send(commandManifest)
 			} catch (err) {
 				console.log(err)
 
@@ -392,101 +426,87 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 					data: {}
 				})
 			}
-		}
 
-		// finally upload the manifest
-		const _3dfileHash = Buffer.from(
-			createHash('sha512').update(JSON.stringify(newManifest)).digest('hex')
-		).toString()
+			if (userRender) {
+				await db
+					.update(usersTable)
+					.set({ _3dmanifest: _3dfileHash })
+					.where(eq(usersTable.userid, assetid))
+			} else {
+				await db
+					.update(assetTable)
+					.set({ _3dmanifest: _3dfileHash })
+					.where(eq(assetTable.assetid, assetid))
+			}
 
-		const commandManifest = new PutObjectCommand({
-			Bucket: s3BucketName,
-			Key: 'thumbnails' + '/' + _3dfileHash,
-			Body: Buffer.from(JSON.stringify(newManifest)),
-			ContentType: 'application/json'
-		})
+			await db.delete(jobsTable).where(eq(jobsTable.jobid, instanceNew.jobid))
 
-		try {
-			await S3.send(commandManifest)
-		} catch (err) {
-			console.log(err)
-
-			return error(400, {
-				success: false,
-				message: 'Unknown error',
-				data: {}
+			return json({
+				success: true,
+				message: '',
+				data: { url: `https://${s3Url}/${Key}/${_3dfileHash}`, status: 'completed' }
 			})
-		}
-
-		if (userRender) {
-			await db
-				.update(usersTable)
-				.set({ _3dmanifest: _3dfileHash })
-				.where(eq(usersTable.userid, assetid))
-		} else {
-			await db
-				.update(assetTable)
-				.set({ _3dmanifest: _3dfileHash })
-				.where(eq(assetTable.assetid, assetid))
-		}
-
-		await db.delete(jobsTable).where(eq(jobsTable.jobid, instanceNew.jobid))
-
-		return json({
-			success: true,
-			message: '',
-			data: { url: `https://${s3Url}/${Key}/${_3dfileHash}`, status: 'completed' }
-		})
-	}
-
-	if (type === 'headshot') {
-		const response = await fetch(
-			`http://${env.ARBITER_HOST}/openrender2016/${instanceNew.jobid}/${assetid}/true${'/false'}`
-		)
-
-		const responseJson = await response.json()
-
-		if (responseJson.success === false) {
+		} catch {
 			await db.delete(jobsTable).where(eq(jobsTable.jobid, instanceNew.jobid))
 
 			return json({ success: true, message: '', data: { url: '', status: 'pending' } })
 		}
+	}
 
-		const fileBuffer = Buffer.from(responseJson.image, 'base64')
-
-		const fileName = Buffer.from(createHash('sha512').update(fileBuffer).digest('hex')).toString()
-
-		const command = new PutObjectCommand({
-			Bucket: s3BucketName,
-			Key: Key + '/' + fileName,
-			Body: fileBuffer,
-			ContentType: 'image/png'
-		})
-
+	if (type === 'headshot') {
 		try {
-			await S3.send(command)
-		} catch (err) {
-			console.log(err)
+			const response = await fetch(
+				`http://${env.ARBITER_HOST}/openrender2016/${instanceNew.jobid}/${assetid}/true${'/false'}`
+			)
+
+			const responseJson = await response.json()
+
+			if (responseJson.success === false) {
+				await db.delete(jobsTable).where(eq(jobsTable.jobid, instanceNew.jobid))
+
+				return json({ success: true, message: '', data: { url: '', status: 'pending' } })
+			}
+
+			const fileBuffer = Buffer.from(responseJson.image, 'base64')
+
+			const fileName = Buffer.from(createHash('sha512').update(fileBuffer).digest('hex')).toString()
+
+			const command = new PutObjectCommand({
+				Bucket: s3BucketName,
+				Key: Key + '/' + fileName,
+				Body: fileBuffer,
+				ContentType: 'image/png'
+			})
+
+			try {
+				await S3.send(command)
+			} catch (err) {
+				console.log(err)
+
+				return json({
+					success: false,
+					message: 'Unknown error',
+					data: {}
+				})
+			}
+
+			await db
+				.update(usersTable)
+				.set({ avatarheadshot: fileName })
+				.where(eq(usersTable.userid, assetid))
+
+			await db.delete(jobsTable).where(eq(jobsTable.jobid, instanceNew.jobid))
 
 			return json({
-				success: false,
-				message: 'Unknown error',
-				data: {}
+				success: true,
+				message: '',
+				data: { url: `https://${s3Url}/${Key}/${fileName}`, status: 'completed' }
 			})
+		} catch {
+			await db.delete(jobsTable).where(eq(jobsTable.jobid, instanceNew.jobid))
+
+			return json({ success: true, message: '', data: { url: '', status: 'pending' } })
 		}
-
-		await db
-			.update(usersTable)
-			.set({ avatarheadshot: fileName })
-			.where(eq(usersTable.userid, assetid))
-
-		await db.delete(jobsTable).where(eq(jobsTable.jobid, instanceNew.jobid))
-
-		return json({
-			success: true,
-			message: '',
-			data: { url: `https://${s3Url}/${Key}/${fileName}`, status: 'completed' }
-		})
 	}
 
 	return json({ success: true, message: '', data: { url: '', status: 'pending' } }) // we are generating...

@@ -57,7 +57,8 @@ export const load: LayoutServerLoad = async ({
 					genre: true,
 					likes: true,
 					dislikes: true,
-					universeid: true
+					universeid: true,
+					clientversion: true
 				},
 				with: {
 					author: {

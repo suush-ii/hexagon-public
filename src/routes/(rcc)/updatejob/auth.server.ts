@@ -19,7 +19,7 @@ export const rccAuth = (async ({ event, resolve }) => {
 		pathname === '/game/wipeouts.ashx' ||
 		pathname === '/game/badge/awardbadge.ashx' ||
 		pathname === '/game/newpresence.ashx' ||
-		pathname === '/game/Log.ashx'
+		pathname === '/game/log.ashx'
 	) {
 		const accessKey = event.url.searchParams.get('apikey') || event.request.headers.get('accessKey')
 

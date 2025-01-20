@@ -19,6 +19,13 @@ http://api.hexagon.pw, http://hexagon.pw, http://www.hexagon.pw {
     log
     import hexagon_error
 
+    @json_routes {
+        path /game/Log.ashx
+        path_regexp ^/updatejob.*
+    }
+    header @json_routes Content-Type application/json
+    # hack because legacy 2013 doesn't send content type json correctly so svelte rejects it (https://github.com/sveltejs/kit/issues/11842)
+
     reverse_proxy {
 	to http://web:3000
         header_up Host "hexagon.pw"
@@ -27,15 +34,4 @@ http://api.hexagon.pw, http://hexagon.pw, http://www.hexagon.pw {
     }
 
     uri path_regexp /{2,} /
-}
-
-http://blog.hexagon.pw {
-    import hexagon_error
-
-    reverse_proxy {
-        to http://ghost:2368
-            header_up Host "blog.hexagon.pw"
-            header_up Origin "https://blog.hexagon.pw"
-            header_up CF-Connecting-IP {header.cf-connecting-ip}
-    }
 }

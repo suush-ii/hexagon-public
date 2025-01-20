@@ -13,9 +13,10 @@ import { assetTable, gamesTable, placesTable } from '$lib/server/schema'
 import { db } from '$lib/server/db'
 import { and, desc, eq } from 'drizzle-orm'
 import { _assetSchema } from '../../+layout.server'
-import type { AssetGenreDB, assetStates, GearAttributes } from '$lib/types'
+import type { AssetGenreDB, assetStates, GearAttributes, clientVersions } from '$lib/types'
 import { uploadAsset } from '$lib/server/develop/uploadasset'
 import { imageSql } from '$lib/server/games/getImage'
+import { shutdown } from '$src/lib/server/games/shutdown'
 
 export const load: PageServerLoad = async ({ params, locals }) => {
 	const result = await z.number().safeParseAsync(Number(params.assetid))
@@ -31,6 +32,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 	let genres: AssetGenreDB[] = []
 	let gearattributes: GearAttributes[] = []
 	let serversize = 0
+	let clientversion: clientVersions = '2014'
 	let places: {
 		placeid: number
 		startplace: boolean
@@ -49,7 +51,8 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 				description: true,
 				creatoruserid: true,
 				genre: true,
-				serversize: true
+				serversize: true,
+				clientversion: true
 			},
 			with: {
 				places: {
@@ -92,6 +95,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 		genres[0] = game.genre
 		serversize = game.serversize
 		places = game.places
+		clientversion = game.clientversion
 	}
 
 	if (
@@ -161,7 +165,8 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 		genres,
 		gearattributes,
 		serversize,
-		places
+		places,
+		clientversion
 	}
 }
 
@@ -228,7 +233,8 @@ export const actions: Actions = {
 
 		const game = await db.query.gamesTable.findFirst({
 			columns: {
-				creatoruserid: true
+				creatoruserid: true,
+				clientversion: true
 			},
 			where: eq(gamesTable.universeid, Number(params.assetid))
 		})
@@ -243,12 +249,17 @@ export const actions: Actions = {
 
 		const data = form.data
 
+		if (data.clientversion !== game.clientversion) {
+			await shutdown(Number(params.assetid))
+		}
+
 		await db
 			.update(gamesTable)
 			.set({
 				description: data.description,
 				serversize: data.serversize,
-				genre: data.genre
+				genre: data.genre,
+				clientversion: data.clientversion
 			})
 			.where(eq(gamesTable.universeid, Number(params.assetid)))
 

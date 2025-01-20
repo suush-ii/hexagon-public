@@ -8,14 +8,14 @@
 
 	import * as Select from '$src/components/ui/select'
 
-	import { assetGenreZod as genres } from '$lib'
+	import { assetGenreZod as genres, clientVersionsZod } from '$lib'
 
 	import type { FormTextareaEvent } from '$src/components/ui/textarea'
 	import { BookText } from 'lucide-svelte'
 	import { Input } from '$src/components/ui/input'
 	import { Textarea } from '$src/components/ui/textarea'
 	import { zodClient } from 'sveltekit-superforms/adapters'
-	import type { AssetGenreDB } from '$src/lib/types'
+	import type { AssetGenreDB, clientVersions } from '$src/lib/types'
 	import { page } from '$app/stores'
 
 	export let data: SuperValidated<Infer<GameSchema>>
@@ -37,6 +37,8 @@
 
 	export let genre: AssetGenreDB
 
+	export let clientversion: clientVersions
+
 	function handleUpdate(e: FormTextareaEvent<any>) {
 		description = e?.target?.value
 	}
@@ -48,10 +50,15 @@
 			}
 		: undefined
 
+	$: selectedClientVersion = $formData.clientversion
+		? { label: $formData.clientversion, value: $formData.clientversion }
+		: undefined
+
 	$formData.name = name
 	$formData.description = description
 	$formData.serversize = serversize
 	$formData.genre = genre
+	$formData.clientversion = clientversion
 </script>
 
 <form method="POST" action="?/game" enctype="multipart/form-data" class="max-w-4xl" use:enhance>
@@ -121,6 +128,30 @@
 				</Select.Content>
 			</Select.Root>
 			<input hidden bind:value={$formData.genre} name={attrs.name} />
+		</Form.Control>
+		<Form.FieldErrors />
+	</Form.Field>
+
+	<Form.Field {form} name="clientversion">
+		<Form.Control let:attrs>
+			<Form.Label>Client Version</Form.Label>
+			<Select.Root
+				selected={selectedClientVersion}
+				onSelectedChange={(v) => {
+					v && ($formData.clientversion = v.value)
+				}}
+				disabled={$submitting}
+			>
+				<Select.Trigger {...attrs}>
+					<Select.Value />
+				</Select.Trigger>
+				<Select.Content>
+					{#each clientVersionsZod as value}
+						<Select.Item {value} label={value} />
+					{/each}
+				</Select.Content>
+			</Select.Root>
+			<input hidden bind:value={$formData.clientversion} name={attrs.name} />
 		</Form.Control>
 		<Form.FieldErrors />
 	</Form.Field>

@@ -3,9 +3,8 @@ import type { Actions } from './$types'
 import { RateLimiter } from 'sveltekit-rate-limiter/server'
 import { db } from '$lib/server/db'
 import { eq } from 'drizzle-orm'
-import { gamesTable, jobsTable, placesTable, usersTable } from '$lib/server/schema'
-import { env } from '$env/dynamic/private'
-import { deleteJob } from '$lib/games/deleteJob'
+import { gamesTable, placesTable } from '$lib/server/schema'
+import { shutdown } from '$lib/server/games/shutdown'
 
 const limiter = new RateLimiter({
 	IP: [1, '30s']
@@ -44,44 +43,7 @@ export const actions: Actions = {
 			return error(403, { success: false, message: 'Unauthorized.' })
 		}
 
-		const jobs = await db.query.jobsTable.findMany({
-			where: eq(jobsTable.placeid, Number(params.gameid)),
-			columns: {
-				jobid: true,
-				players: true
-			},
-			limit: 10,
-			with: {
-				associatedplace: {
-					columns: {},
-					with: {
-						associatedgame: {
-							columns: {
-								active: true,
-								universeid: true
-							}
-						}
-					}
-				}
-			}
-		})
-
-		for (const job of jobs) {
-			const response = await fetch(
-				`http://${env.ARBITER_HOST}/closejob/${job.jobid}/${params.gameid}/2014`
-			)
-
-			const result = await response.json()
-
-			if (result.success === false) {
-				await deleteJob(
-					job.jobid,
-					job.players,
-					job?.associatedplace?.associatedgame.universeid ?? 0,
-					job?.associatedplace?.associatedgame.active ?? 0
-				)
-			}
-		}
+		await shutdown(Number(params.gameid))
 
 		return redirect(302, `/games/${params.gameid}/${params.game}`)
 	},
