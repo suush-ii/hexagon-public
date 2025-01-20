@@ -55,6 +55,7 @@ const protectedRoutes = [
 	'/ide/upload.aspx',
 	'/ide/publishing',
 	'/ide/newplace',
+	'/UI',
 	'/trades',
 	'/currency',
 	'/referrals',
@@ -143,7 +144,11 @@ export const handle: Handle = sequence(
 						}
 					} else {
 						if (event.url.pathname != '/maintenance') {
-							return redirect(302, '/maintenance')
+							const currentIp = event.getClientAddress()
+
+							if (currentIp !== env.GAMESERVER_IP) {
+								return redirect(302, '/maintenance')
+							}
 						}
 					}
 				}
