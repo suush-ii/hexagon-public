@@ -297,7 +297,7 @@ end
 
 local function presenceCheck(blocking)
 	pcall(function()
-		local response = game:HttpGet(url .. "/game/ServerPresence.ashx?" .. "&jobId=" .. JobId .. "&" .. access, "", blocking)
+		local response = game:HttpPost(url .. "/game/ServerPresence.ashx?" .. "&jobId=" .. JobId .. "&" .. access, "", blocking)
 
 		local data = HttpService:JSONDecode(response)
 
@@ -313,6 +313,8 @@ local function presenceCheck(blocking)
 			end
 		end
 	end)
+
+	sendLogs(false)
 end
 
 local function find(t, pred)
@@ -606,7 +608,6 @@ if access then
   delay(25, function()
     while true do
 		presenceCheck(false)
-		sendLogs(false)
 
 		wait(10)
 	end
