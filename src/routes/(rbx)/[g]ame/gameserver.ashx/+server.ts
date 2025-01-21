@@ -24,7 +24,7 @@ export const GET: RequestHandler = async ({ url }) => {
 
 	const scriptNewArgs = scriptNew.replace(
 		'{1}',
-		`"apikey=${url.searchParams.get('apikey')}", ${url.searchParams.get('placeId')}, ${url.searchParams.get('port')}, "${url.searchParams.get('jobId')}", ${url.searchParams.get('maxPlayers')}`
+		`"apikey=${url.searchParams.get('apikey')}", ${url.searchParams.get('placeId')}, ${url.searchParams.get('port')}, "${url.searchParams.get('jobId')}", ${url.searchParams.get('maxPlayers')}, "${url.searchParams.get('version')}"`
 	)
 
 	const sign = createSign('SHA1')
