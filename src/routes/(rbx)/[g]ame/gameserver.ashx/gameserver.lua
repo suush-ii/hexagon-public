@@ -3,7 +3,7 @@
 
 local sleeptime, url, timeout = 0, "http://www.roblox.com", 0
 
-local access, placeId, port, JobId, maxPlayers = {1}
+local access, placeId, port, JobId, maxPlayers, version = {1}
 
 local logs = {}
 
@@ -297,8 +297,10 @@ end
 
 local function presenceCheck(blocking)
 	pcall(function()
-		local response = game:HttpPost(url .. "/game/ServerPresence.ashx?" .. "&jobId=" .. JobId .. "&" .. access, "", blocking)
+		if version == "2014" then
 
+		local response = game:HttpPost(url .. "/game/ServerPresence.ashx?" .. "&jobId=" .. JobId .. "&" .. access, "", blocking)
+		
 		local data = HttpService:JSONDecode(response)
 
 		if data["status"] == "close" then
@@ -312,7 +314,11 @@ local function presenceCheck(blocking)
 				end
 			end
 		end
-	end)
+
+	else
+		game:HttpPost(url .. "/game/ServerPresence.ashx?" .. "&jobId=" .. JobId .. "&" .. access, "", blocking)
+	end
+end)
 end
 
 local function find(t, pred)
@@ -602,7 +608,7 @@ if access then
   game.Close:connect(function()
     sendLogs(true)
   end)
-  
+
   coroutine.resume(coroutine.create(function()delay(10, function()
     while true do
 		presenceCheck(false)
