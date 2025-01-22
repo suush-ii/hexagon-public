@@ -78,10 +78,10 @@ function onDied(victim, humanoid)
 	if killer then
 		victorId = killer.userId
 		print("STAT: kill by " .. victorId .. " of " .. victim.userId)
-		game:HttpPost(url .. "/Game/Knockouts.ashx?UserID=" .. victorId .. "&" .. access, "")
+		game:HttpPost(url .. "/Game/Knockouts.ashx?UserID=" .. victorId .. "&" .. access, "H")
 	end
 	print("STAT: death of " .. victim.userId .. " by " .. victorId)
-	game:HttpPost(url .. "/Game/Wipeouts.ashx?UserID=" .. victim.userId .. "&" .. access, "")
+	game:HttpPost(url .. "/Game/Wipeouts.ashx?UserID=" .. victim.userId .. "&" .. access, "H")
 end
 
 -----------------------------------END UTILITY FUNCTIONS -------------------------
@@ -223,7 +223,7 @@ game:GetService("Players").PlayerRemoving:connect(function(player)
 	print("Player " .. player.userId .. " leaving")
 
 	if url and access and placeId and player and player.userId then
-		game:HttpPost(url .. "/game/ClientPresence.ashx?action=disconnect&" .. access .. "&PlaceID=" .. placeId .. "&JobID=" .. JobId .. "&UserID=" .. player.userId, "")
+		game:HttpGet(url .. "/game/ClientPresence.ashx?action=disconnect&" .. access .. "&PlaceID=" .. placeId .. "&JobID=" .. JobId .. "&UserID=" .. player.userId)
 		wait(5)
 		check()
 
@@ -297,9 +297,7 @@ end
 
 local function presenceCheck(blocking)
 	pcall(function()
-		if version == "2014" then
-
-		local response = game:HttpPost(url .. "/game/ServerPresence.ashx?" .. "&jobId=" .. JobId .. "&" .. access, "", blocking)
+		local response = game:HttpPost(url .. "/game/ServerPresence.ashx?" .. "&jobId=" .. JobId .. "&" .. access, "H", blocking)
 		
 		local data = HttpService:JSONDecode(response)
 
@@ -314,10 +312,6 @@ local function presenceCheck(blocking)
 				end
 			end
 		end
-
-	else
-		game:HttpPost(url .. "/game/ServerPresence.ashx?" .. "&jobId=" .. JobId .. "&" .. access, "", blocking)
-	end
 end)
 end
 
@@ -710,7 +704,7 @@ end)
 
 end)
 
-if not ok and err ~= "Internal Server Error" then
+if not ok --[[and err ~= "Internal Server Error" ]] then
 	print(tostring(err))
 	Instance.new("Message", workspace).Text = tostring(err)
 	game:SetMessage(tostring(err))
