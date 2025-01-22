@@ -360,7 +360,7 @@ local success, err = pcall(function()
 	end)
 
 	-- negotiate an auth token
-	if true then
+	--[[if true then
 		pcall(function() game:HttpPost("https://www.roblox.com/auth/negotiate?ticket=", "negotiate") end)
 		delay(300, function()
 			while true do
@@ -368,7 +368,7 @@ local success, err = pcall(function()
 				wait(300)
 			end
 		end)
-	end
+	end]]
 
 	ticket = Instance.new("StringValue")
 	ticket.Name = "HexagonTicket"
