@@ -603,23 +603,15 @@ if access then
     sendLogs(true)
   end)
 
-  coroutine.resume(coroutine.create(function()delay(10, function()
+  delay(10, function()
     while true do
 		presenceCheck(false)
 
-		wait(10)
-	end
-end)
- end))
-
- coroutine.resume(coroutine.create(function()delay(25, function()
-    while true do
 		sendLogs(false)
 
 		wait(10)
 	end
 end)
- end))
   
 end
 
