@@ -132,29 +132,5 @@
 		<Form.FieldErrors />
 	</Form.Field>
 
-	<Form.Field {form} name="clientversion">
-		<Form.Control let:attrs>
-			<Form.Label>Client Version</Form.Label>
-			<Select.Root
-				selected={selectedClientVersion}
-				onSelectedChange={(v) => {
-					v && ($formData.clientversion = v.value)
-				}}
-				disabled={$submitting}
-			>
-				<Select.Trigger {...attrs}>
-					<Select.Value />
-				</Select.Trigger>
-				<Select.Content>
-					{#each clientVersionsZod as value}
-						<Select.Item {value} label={value} />
-					{/each}
-				</Select.Content>
-			</Select.Root>
-			<input hidden bind:value={$formData.clientversion} name={attrs.name} />
-		</Form.Control>
-		<Form.FieldErrors />
-	</Form.Field>
-
 	<Form.Button disabled={$submitting}>{$page.data.t('develop.save')}</Form.Button>
 </form>
