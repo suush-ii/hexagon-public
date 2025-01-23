@@ -3,7 +3,7 @@
 
 local sleeptime, url, timeout = 0, "http://www.roblox.com", 0
 
-local access, placeId, port, JobId, maxPlayers, version = {1}
+local access, placeId, port, JobId, maxPlayers = {1}
 
 local logs = {}
 
