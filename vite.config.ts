@@ -25,7 +25,7 @@ export default defineConfig({
 			output: {
 				sourcemap: 'hidden' // hide inline source maps
 			},
-			external: ['meshconvert']
+			external: ['meshconvert', 'rbxmconvert']
 		}
 	},
 	ssr: {
