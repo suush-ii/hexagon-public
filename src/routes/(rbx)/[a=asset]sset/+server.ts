@@ -18,6 +18,10 @@ import { jobsTable } from '$lib/server/schema'
 import rbxmParse from 'rbxmconvert'
 
 const meshAssetId = 4
+const hatAssetId = 8
+const faceAssetId = 18
+const gearAssetId = 18
+const animationAssetId = 24
 
 export const trailingSlash = 'ignore'
 let luas = formatPath(
@@ -386,6 +390,15 @@ export const GET: RequestHandler = async (event) => {
 			return parseMesh(url, cachedAsset.filehash)
 		}
 
+		if (
+			cachedAsset?.assettypeid == hatAssetId ||
+			cachedAsset?.assettypeid == faceAssetId ||
+			cachedAsset?.assettypeid == gearAssetId ||
+			cachedAsset?.assettypeid == animationAssetId
+		) {
+			return parseRbxm(url, assetId)
+		}
+
 		redirect(302, url)
 	} else {
 		const response = await fetch('https://assetdelivery.roblox.com/v1/assetId/' + assetId, {
@@ -419,6 +432,15 @@ export const GET: RequestHandler = async (event) => {
 
 				if (data.assetTypeId === meshAssetId) {
 					return parseMesh(url, filehash)
+				}
+
+				if (
+					data.assetTypeId === hatAssetId ||
+					data.assetTypeId === faceAssetId ||
+					data.assetTypeId === gearAssetId ||
+					data.assetTypeId === animationAssetId
+				) {
+					return parseRbxm(url, assetId)
 				}
 
 				redirect(302, url)
