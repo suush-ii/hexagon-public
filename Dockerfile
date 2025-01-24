@@ -19,6 +19,7 @@ RUN npm run build
 FROM base AS release
 COPY ./drizzle ./drizzle
 COPY ./meshconvert ./meshconvert
+COPY ./rbxmconvert ./rbxmconvert
 COPY --from=install /temp/prod/node_modules ./node_modules
 COPY --from=build /usr/src/app/build/ ./
 COPY --from=build /usr/src/app/package.json ./

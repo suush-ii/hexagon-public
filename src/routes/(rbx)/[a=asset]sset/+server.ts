@@ -15,6 +15,7 @@ import { building } from '$app/environment'
 import { auth } from '$lib/server/lucia'
 import * as jose from 'jose'
 import { jobsTable } from '$lib/server/schema'
+import rbxmParse from 'rbxmconvert'
 
 const meshAssetId = 4
 
@@ -93,6 +94,24 @@ async function parseMesh(url: string, filehash: string) {
 			headers: {
 				'Content-Type': 'application/octet-stream',
 				'Content-Disposition': `attachment; filename*=UTF-8''${filehash}`
+			}
+		}
+	)
+}
+
+async function parseRbxm(url: string, assetid: number) {
+	const assetResponse = await fetch(url, {
+		headers: { 'User-Agent': 'Roblox/WinInet' }
+	})
+	const assetData = await assetResponse.arrayBuffer()
+
+	return new Response(
+		rbxmParse(Buffer.from(assetData)) ?? assetData /* parse returns nothing if mesh is old */,
+		{
+			status: 200,
+			headers: {
+				'Content-Type': 'application/octet-stream',
+				'Content-Disposition': `attachment; filename*=UTF-8''${assetid}`
 			}
 		}
 	)
@@ -227,13 +246,21 @@ export const GET: RequestHandler = async (event) => {
 	if (
 		existingAsset?.assetType === 'audio' ||
 		existingAsset?.assetType === 'images' ||
-		existingAsset?.assetType === 'hats' ||
-		existingAsset?.assetType === 'faces' ||
-		existingAsset?.assetType === 'gears' ||
-		existingAsset?.assetType === 'heads' ||
 		existingAsset?.assetType === 'meshes'
 	) {
 		redirect(302, `https://${s3Url}/${existingAsset.assetType}/` + existingAsset?.simpleasseturl)
+	}
+
+	if (
+		existingAsset?.assetType === 'hats' ||
+		existingAsset?.assetType === 'faces' ||
+		existingAsset?.assetType === 'gears' ||
+		existingAsset?.assetType === 'heads'
+	) {
+		return parseRbxm(
+			`https://${s3Url}/${existingAsset.assetType}/` + existingAsset?.simpleasseturl,
+			assetId
+		)
 	}
 
 	if (existingAsset?.assetType === 'shirts') {
