@@ -302,6 +302,10 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 		} catch (err) {
 			await db.delete(jobsTable).where(eq(jobsTable.jobid, instanceNew.jobid))
 
+			try {
+				await fetch(`http://${env.ARBITER_HOST}/closejob/${instanceNew.jobid}/1/2014`)
+			} catch {}
+
 			return json({ success: true, message: '', data: { url: '', status: 'pending' } })
 		}
 	}
@@ -449,6 +453,10 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 		} catch {
 			await db.delete(jobsTable).where(eq(jobsTable.jobid, instanceNew.jobid))
 
+			try {
+				await fetch(`http://${env.ARBITER_HOST}/closejob/${instanceNew.jobid}/1/2014`)
+			} catch {}
+
 			return json({ success: true, message: '', data: { url: '', status: 'pending' } })
 		}
 	}
@@ -504,6 +512,10 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 			})
 		} catch {
 			await db.delete(jobsTable).where(eq(jobsTable.jobid, instanceNew.jobid))
+
+			try {
+				await fetch(`http://${env.ARBITER_HOST}/closejob/${instanceNew.jobid}/1/2014`)
+			} catch {}
 
 			return json({ success: true, message: '', data: { url: '', status: 'pending' } })
 		}
