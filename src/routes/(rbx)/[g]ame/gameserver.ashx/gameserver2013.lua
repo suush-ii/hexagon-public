@@ -78,10 +78,10 @@ function onDied(victim, humanoid)
 	if killer then
 		victorId = killer.userId
 		print("STAT: kill by " .. victorId .. " of " .. victim.userId)
-		game:HttpPost(url .. "/Game/Knockouts.ashx?UserID=" .. victorId .. "&" .. access, "")
+		game:HttpPost(url .. "/Game/Knockouts.ashx?UserID=" .. victorId .. "&" .. access, "H")
 	end
 	print("STAT: death of " .. victim.userId .. " by " .. victorId)
-	game:HttpPost(url .. "/Game/Wipeouts.ashx?UserID=" .. victim.userId .. "&" .. access, "")
+	game:HttpPost(url .. "/Game/Wipeouts.ashx?UserID=" .. victim.userId .. "&" .. access, "H")
 end
 
 -----------------------------------END UTILITY FUNCTIONS -------------------------
@@ -197,6 +197,10 @@ end)
 local HttpService = game:GetService("HttpService")
 
 local function sendLogs(blocking)
+	if HttpService:JSONEncode(logs) == "[\n\n]" then
+		return
+	end
+
 	pcall(function()
 		game:HttpPost(url .. "/game/Log.ashx?" .. "jobId=" .. JobId .. "&placeId=" .. placeId .. "&" .. access, HttpService:JSONEncode(logs), blocking, "application/json")
 	end)
@@ -219,17 +223,11 @@ game:GetService("Players").PlayerRemoving:connect(function(player)
 	print("Player " .. player.userId .. " leaving")
 
 	if url and access and placeId and player and player.userId then
-		game:HttpPost(url .. "/game/ClientPresence.ashx?action=disconnect&" .. access .. "&PlaceID=" .. placeId .. "&JobID=" .. JobId .. "&UserID=" .. player.userId, "")
+		game:HttpGet(url .. "/game/ClientPresence.ashx?action=disconnect&" .. access .. "&PlaceID=" .. placeId .. "&JobID=" .. JobId .. "&UserID=" .. player.userId)
 		wait(5)
 		check()
 
 	end
-end)
-
-spawn(function()
-    -- if a player doesn't join in 60 seconds because of failed job or they didn't join close the job
-	wait(60)
-	check()
 end)
 
 if placeId~=nil and url~=nil then
@@ -299,8 +297,8 @@ end
 
 local function presenceCheck(blocking)
 	pcall(function()
-		local response = game:HttpPost(url .. "/game/ServerPresence.ashx?" .. "&jobId=" .. JobId .. "&" .. access, "", blocking)
-
+		local response = game:HttpPost(url .. "/game/ServerPresence.ashx?" .. "&jobId=" .. JobId .. "&" .. access, "H", blocking)
+		
 		local data = HttpService:JSONDecode(response)
 
 		if data["status"] == "close" then
@@ -314,7 +312,7 @@ local function presenceCheck(blocking)
 				end
 			end
 		end
-	end)
+end)
 end
 
 local function find(t, pred)
@@ -327,6 +325,8 @@ local function find(t, pred)
 end
 
 local filtered = false
+pcall(function()
+	workspace.FilteringEnabled = true
 
 if workspace.FilteringEnabled == true then
 	filtered = true
@@ -334,6 +334,7 @@ if workspace.FilteringEnabled == true then
 	workspace.FilteringEnabled = false
 end
 
+end)
 local whitelistedEvents = {"OnServerEvent",
 "PromptProductPurchaseFinished", "PromptPurchaseFinished",
 "PromptPurchaseRequested", "ClientPurchaseSuccess", "ServerPurchaseVerification",
@@ -540,7 +541,7 @@ ns.ChildAdded:connect(function(replicator) -- mostly from polygon tbh with some 
 
 		if url and access and placeId and player and player.userId then
 			game:HttpGet(url .. "/game/ClientPresence.ashx?action=connect&" .. access .. "&PlaceID=" .. placeId .. "&JobID=" .. JobId .. "&UserID=" .. player.userId)
-			game:HttpPost(url .. "/game/PlaceVisit.ashx?UserID=" .. player.userId .. "&AssociatedPlaceID=" .. placeId .. "&" .. access, "")
+			game:HttpGet(url .. "/game/PlaceVisit.ashx?UserID=" .. player.userId .. "&AssociatedPlaceID=" .. placeId .. "&" .. access)
 		end
     end)
 
@@ -583,7 +584,7 @@ if not success then
 	-- failed job close it
 	game:HttpPostAsync(url .. "/updatejob/closejob?"..access,HttpService:JSONEncode(arguments),"application/json")
 else
-	game:HttpPostAsync(url .. "/updatejob/gameloaded?"..access,HttpService:JSONEncode(arguments),"application/json")
+	game:HttpPostAsync(url .. "/updatejob/gameloaded?"..access .. "&jobid=" .. JobId,HttpService:JSONEncode(arguments),"application/json")
 end
 
 if timeout then
@@ -602,16 +603,16 @@ if access then
     sendLogs(true)
   end)
 
-  delay(25, function()
-	spawn(function()
-    	while true do
-			presenceCheck(false)
-			sendLogs(false)
+  delay(10, function()
+    while true do
+		presenceCheck(false)
 
-			wait(10)
-		end
-	end)
- end)
+		sendLogs(false)
+
+		wait(10)
+	end
+end)
+  
 end
 
 ------------------------------END START GAME SHARED SCRIPT--------------------------
@@ -689,9 +690,13 @@ end)
 
 game:GetService("RunService"):Run()
 
+delay(60, function()
+    check()
 end)
 
-if not ok then
+end)
+
+if not ok --[[and err ~= "Internal Server Error" ]] then
 	print(tostring(err))
 	Instance.new("Message", workspace).Text = tostring(err)
 	game:SetMessage(tostring(err))
