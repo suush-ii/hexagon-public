@@ -2232,7 +2232,7 @@ function InsertPlayerFrame(nplayer)
 	local nfriendstatus = GetFriendStatus(nplayer)
 	
 	nFrame:FindFirstChild('BCLabel').Image = getMembershipTypeIcon(nplayer.MembershipType,nplayer.Name, nplayer.userId)
-	nFrame:FindFirstChild('FriendLabel').Image = getFriendStatusIcon(nfriendstatus)
+	--nFrame:FindFirstChild('FriendLabel').Image = getFriendStatusIcon(nfriendstatus)
 	nFrame.Name = nplayer.Name
 	WaitForChild(WaitForChild(nFrame,'TitleFrame'),'Title').Text = playerName
 	
