@@ -208,6 +208,10 @@ export const fallback: RequestHandler = async (event) => {
 	} catch {
 		await db.delete(jobsTable).where(eq(jobsTable.jobid, instanceNew.jobid))
 
+		try {
+			await fetch(`http://${env.ARBITER_HOST}/closejob/${instanceNew.jobid}/${placeid}/2014`)
+		} catch {}
+
 		return error(500, { success: false, message: 'Failed to start game.', data: {} })
 	}
 }
