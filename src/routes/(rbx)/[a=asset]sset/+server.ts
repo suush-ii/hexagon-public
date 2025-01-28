@@ -305,7 +305,11 @@ export const GET: RequestHandler = async (event) => {
 
 	if (existingAsset?.assetType === 'games') {
 		// authenticate this
-		const accessKey = event.url.searchParams.get('apikey') ?? event.cookies.get('.ROBLOSECURITY')
+
+		const accessKey =
+			event.url.searchParams.get('apikey') ??
+			event.cookies.get('.ROBLOSECURITY') ??
+			event.request.headers.get('accesskey')
 
 		try {
 			const { payload } = await jose.jwtVerify(

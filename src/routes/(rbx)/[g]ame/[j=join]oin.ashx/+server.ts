@@ -273,14 +273,9 @@ export const fallback: RequestHandler = async ({ url, locals }) => {
 
 		// joinscript signature
 
-		let scriptNewArgs = scriptNew
-
-		for (const key in joinJson) {
-			scriptNewArgs = scriptNewArgs.replaceAll(`{${key}}`, joinJson[key].toString())
-		}
-
 		const sign = createSign('SHA1')
-		sign.update('\r\n' + scriptNewArgs)
+		sign.update('\r\n' + JSON.stringify(joinJson))
+
 		const signature = sign.sign(env.CLIENT_PRIVATE_KEY as string, 'base64')
 
 		await db.insert(gamesessionsTable).values({
@@ -289,7 +284,7 @@ export const fallback: RequestHandler = async ({ url, locals }) => {
 			userid: Number(session.userid)
 		})
 
-		return text('--rbxsig%' + signature + '%\r\n' + scriptNewArgs)
+		return text('--rbxsig%' + signature + '%\r\n' + JSON.stringify(joinJson))
 	}
 
 	return json({})

@@ -370,8 +370,6 @@
 	"FFlagStudioPasteAsSiblingEnabled": "True",
 	"FFlagStudioDuplicateActionEnabled": "True",
 	"FFlagPreventInterpolationOnCFrameChange": "True",
-	"FLogNetworkPacketsReceive": 5,
-	"FLogNetworkReadItem": 5,
 	"FFlagPlayPauseFix": "True",
 	"DFFlagCrashOnNetworkPacketError": "False",
 	"FFlagHumanoidStateInterfaces": "True",
@@ -578,5 +576,18 @@
 	"FFlagKKTChecks": "False",
 	"DFFlagUseApiProxyThrottling": "True",
 	"FFlagNewLoadingScreen": "True",
-	"FFlagDebugLocalRccServerConnection": "False"
+	"FFlagDebugLocalRccServerConnection": "False",
+	"FFlagWebkitDeveloperToolsEnabled": "True",
+	"_DFFlagReadDeSerializeProcessFlow": "False",
+	"_DFFlagNetworkOwnershipRuleReplicates": "False",
+	" FLogNetwork": 7,
+	" DFLogNetworkJoin": 7,
+	" FLogNetworkReadItem": 7,
+	" FLogNetworkWriteItem": 7,
+	" FLogNetworkInstances": 7,
+	" FLogNetworkPacketsReceive": 7,
+	" FLogError": 7,
+	" FLogDataModelJobs": 0,
+	" DFIntJoinDataCompressionLevel": 1,
+	"SFFlagEquipToolOnClient": "True"
 }
