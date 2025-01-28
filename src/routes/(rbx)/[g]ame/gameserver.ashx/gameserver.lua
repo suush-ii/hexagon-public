@@ -1,7 +1,9 @@
 -- Start Game Script Arguments
 --local placeId, port, gameId, sleeptime, access, url, killID, deathID, timeout, machineAddress, gsmInterval, gsmUrl, maxPlayers, maxSlotsUpperLimit, maxSlotsLowerLimit, maxGameInstances, injectScriptAssetID, apiKey, libraryRegistrationScriptAssetID = ...
 
-local sleeptime, url, timeout = 0, "http://www.roblox.com", 0
+local sleeptime, baseUrl, timeout = 0, "roblox.com", 0
+local protocol = "http://"
+local assetGameSubdomain = "www"
 
 local access, placeId, port, JobId, maxPlayers = {1}
 
@@ -18,83 +20,14 @@ function RemoveTableDupes(tab)
 	end
 	return res
 end
---defining jobid here is a hack for now
-
-
--- REQUIRES: StartGanmeSharedArgs.txt
--- REQUIRES: MonitorGameStatus.txt
-
-------------------- UTILITY FUNCTIONS --------------------------
-local ok, err = ypcall(function()
-local cdnSuccess = 0
-local cdnFailure = 0
-
-function reportCdn(blocking)
-	pcall(function()
-		local newCdnSuccess = settings().Diagnostics.CdnSuccessCount
-		local newCdnFailure = settings().Diagnostics.CdnFailureCount
-		local successDelta = newCdnSuccess - cdnSuccess
-		local failureDelta = newCdnFailure - cdnFailure
-		cdnSuccess = newCdnSuccess
-		cdnFailure = newCdnFailure
-		if successDelta > 0 or failureDelta > 0 then
-			--game:HttpGet(url .. "/Game/Cdn.ashx?source=server&success=" .. successDelta .. "&failure=" .. failureDelta, blocking)
-		end
-	end)
-end
-
-function waitForChild(parent, childName)
-	while true do
-		local child = parent:findFirstChild(childName)
-		if child then
-			return child
-		end
-		parent.ChildAdded:wait()
-	end
-end
-
--- returns the player object that killed this humanoid
--- returns nil if the killer is no longer in the game
-function getKillerOfHumanoidIfStillInGame(humanoid)
-
-	-- check for kill tag on humanoid - may be more than one - todo: deal with this
-	local tag = humanoid:findFirstChild("creator")
-
-	-- find player with name on tag
-	if tag then
-		local killer = tag.Value
-		if killer.Parent then -- killer still in game
-			return killer
-		end
-	end
-
-	return nil
-end
-
--- send kill and death stats when a player dies
-function onDied(victim, humanoid)
-	local killer = getKillerOfHumanoidIfStillInGame(humanoid)
-	local victorId = 0
-	if killer then
-		victorId = killer.userId
-		print("STAT: kill by " .. victorId .. " of " .. victim.userId)
-		game:HttpPost(url .. "/Game/Knockouts.ashx?UserID=" .. victorId .. "&" .. access, "")
-	end
-	print("STAT: death of " .. victim.userId .. " by " .. victorId)
-	game:HttpPost(url .. "/Game/Wipeouts.ashx?UserID=" .. victim.userId .. "&" .. access, "")
-end
-
------------------------------------END UTILITY FUNCTIONS -------------------------
 
 -----------------------------------"CUSTOM" SHARED CODE----------------------------------
 
 pcall(function() settings().Network.UseInstancePacketCache = true end)
 pcall(function() settings().Network.UsePhysicsPacketCache = true end)
---pcall(function() settings()["Task Scheduler"].PriorityMethod = Enum.PriorityMethod.FIFO end)
 pcall(function() settings()["Task Scheduler"].PriorityMethod = Enum.PriorityMethod.AccumulatedError end)
 
---settings().Network.PhysicsSend = 1 -- 1==RoundRobin
---settings().Network.PhysicsSend = Enum.PhysicsSendMethod.ErrorComputation2
+
 settings().Network.PhysicsSend = Enum.PhysicsSendMethod.TopNErrors
 settings().Network.ExperimentalPhysicsEnabled = true
 settings().Network.WaitingForCharacterLogRate = 100
@@ -103,95 +36,79 @@ pcall(function() settings().Diagnostics:LegacyScriptMode() end)
 -----------------------------------START GAME SHARED SCRIPT------------------------------
 
 local assetId = placeId -- might be able to remove this now
+local url = nil
+local assetGameUrl = nil
+if baseUrl~=nil and protocol ~= nil then
+	url = protocol .. "www." .. baseUrl --baseUrl is actually the domain, no leading .
+	assetGameUrl = protocol .. assetGameSubdomain .. "." .. baseUrl
+end
 
 local scriptContext = game:GetService('ScriptContext')
-pcall(function() scriptContext:AddStarterScript(libraryRegistrationScriptAssetID) end)
+--pcall(function() scriptContext:AddStarterScript(libraryRegistrationScriptAssetID) end)
 scriptContext.ScriptsDisabled = true
 
-game:SetPlaceID(assetId, true)
+game:SetPlaceID(assetId, false)
+--pcall(function () if universeId ~= nil then game:SetUniverseId(universeId) end end)
 game:GetService("ChangeHistoryService"):SetEnabled(false)
 
 -- establish this peer as the Server
 local ns = game:GetService("NetworkServer")
 
+local badgeUrlFlagExists, badgeUrlFlagValue = pcall(function () return settings():GetFFlag("NewBadgeServiceUrlEnabled") end)
+local newBadgeUrlEnabled = badgeUrlFlagExists and badgeUrlFlagValue
 if url~=nil then
+	local apiProxyUrl = "https://api." .. baseUrl -- baseUrl is really the domain
+
 	pcall(function() game:GetService("Players"):SetAbuseReportUrl(url .. "/AbuseReport/InGameChatHandler.ashx") end)
-	pcall(function() game:GetService("ScriptInformationProvider"):SetAssetUrl(url .. "/Asset/") end)
+	pcall(function() game:GetService("ScriptInformationProvider"):SetAssetUrl(assetGameUrl .. "/Asset/") end)
 	pcall(function() game:GetService("ContentProvider"):SetBaseUrl(url .. "/") end)
-	--pcall(function() game:GetService("Players"):SetChatFilterUrl(url .. "/Game/ChatFilter.ashx") end)
+	--pcall(function() game:GetService("Players"):SetChatFilterUrl(assetGameUrl .. "/game/ChatFilter.ashx") end)
 
 	game:GetService("BadgeService"):SetPlaceId(placeId)
-	if access~=nil then
-		game:GetService("BadgeService"):SetAwardBadgeUrl(url .. "/game/Badge/AwardBadge.ashx?UserID=%d&BadgeID=%d&PlaceID=%d&" .. access)
-		game:GetService("BadgeService"):SetHasBadgeUrl(url .. "/Game/Badge/HasBadge.ashx?UserID=%d&BadgeID=%d&" .. access)
-		game:GetService("BadgeService"):SetIsBadgeDisabledUrl(url .. "/Game/Badge/IsBadgeDisabled.ashx?BadgeID=%d&PlaceID=%d&" .. access)
 
-		game:GetService("FriendService"):SetMakeFriendUrl(url .. "/Game/CreateFriend?firstUserId=%d&secondUserId=%d")
-		game:GetService("FriendService"):SetBreakFriendUrl(url .. "/Game/BreakFriend?firstUserId=%d&secondUserId=%d")
-		game:GetService("FriendService"):SetGetFriendsUrl(url .. "/Game/AreFriends?userId=%d")
+	if newBadgeUrlEnabled then
+		game:GetService("BadgeService"):SetAwardBadgeUrl(apiProxyUrl .. "/assets/award-badge?userId=%d&badgeId=%d&placeId=%d")
+	end
+
+	if access ~= nil then
+		if not newBadgeUrlEnabled then
+			game:GetService("BadgeService"):SetAwardBadgeUrl(assetGameUrl .. "/game/Badge/AwardBadge.ashx?UserID=%d&BadgeID=%d&PlaceID=%d")
+		end
+
+		game:GetService("BadgeService"):SetHasBadgeUrl(assetGameUrl .. "/game/Badge/HasBadge.ashx?UserID=%d&BadgeID=%d")
+		game:GetService("BadgeService"):SetIsBadgeDisabledUrl(assetGameUrl .. "/game/Badge/IsBadgeDisabled.ashx?BadgeID=%d&PlaceID=%d")
+
+		game:GetService("FriendService"):SetMakeFriendUrl(assetGameUrl .. "/game/CreateFriend?firstUserId=%d&secondUserId=%d")
+		game:GetService("FriendService"):SetBreakFriendUrl(assetGameUrl .. "/game/BreakFriend?firstUserId=%d&secondUserId=%d")
+		game:GetService("FriendService"):SetGetFriendsUrl(assetGameUrl .. "/game/AreFriends?userId=%d")
 	end
 	game:GetService("BadgeService"):SetIsBadgeLegalUrl("")
-	game:GetService("InsertService"):SetBaseSetsUrl(url .. "/Game/Tools/InsertAsset.ashx?nsets=10&type=base")
-	game:GetService("InsertService"):SetUserSetsUrl(url .. "/Game/Tools/InsertAsset.ashx?nsets=20&type=user&userid=%d")
-	game:GetService("InsertService"):SetCollectionUrl(url .. "/Game/Tools/InsertAsset.ashx?sid=%d")
-	game:GetService("InsertService"):SetAssetUrl(url .. "/Asset/?id=%d")
-	game:GetService("InsertService"):SetAssetVersionUrl(url .. "/Asset/?assetversionid=%d")
-	game:GetService("InsertService"):SetTrustLevel(0) -- i dont know what this does... it just works...
-
-	pcall(function() loadfile(url .. "/Game/LoadPlaceInfo.ashx?PlaceId=" .. placeId)() end)
-
-	pcall(function()
+	game:GetService("InsertService"):SetBaseSetsUrl(assetGameUrl .. "/game/Tools/InsertAsset.ashx?nsets=10&type=base")
+	game:GetService("InsertService"):SetUserSetsUrl(assetGameUrl .. "/game/Tools/InsertAsset.ashx?nsets=20&type=user&userid=%d")
+	game:GetService("InsertService"):SetCollectionUrl(assetGameUrl .. "/game/Tools/InsertAsset.ashx?sid=%d")
+	game:GetService("InsertService"):SetAssetUrl(assetGameUrl .. "/Asset/?id=%d")
+	game:GetService("InsertService"):SetAssetVersionUrl(assetGameUrl .. "/Asset/?assetversionid=%d")
+	
+	if access then
+		pcall(function() loadfile(assetGameUrl .. "/game/LoadPlaceInfo.ashx?PlaceId=" .. placeId .. "&" .. tostring(access))() end)
+	end
+	
+	pcall(function() 
 				if access then
-					loadfile(url .. "/Game/PlaceSpecificScript.ashx?PlaceId=" .. placeId .. "&" .. access)()
+					loadfile(assetGameUrl .. "/game/PlaceSpecificScript.ashx?PlaceId=" .. placeId)()
 				end
 			end)
 end
 
-pcall(function() game:GetService("NetworkServer"):SetIsPlayerAuthenticationRequired(false) end)
+pcall(function() game:GetService("NetworkServer"):SetIsPlayerAuthenticationRequired(true) end)
 settings().Diagnostics.LuaRamLimit = 0
---settings().Network:SetThroughputSensitivity(0.08, 0.01)
---settings().Network.SendRate = 35
---settings().Network.PhysicsSend = 0  -- 1==RoundRobin
-
---shared["__time"] = 0
---game:GetService("RunService").Stepped:connect(function (time) shared["__time"] = time end)
-
-
-
-
-if placeId~=nil --[[ and killID~=nil and deathID~=nil --]] and url~=nil then
-	-- listen for the death of a Player
-	function createDeathMonitor(player)
-		-- we don't need to clean up old monitors or connections since the Character will be destroyed soon
-		if player.Character then
-			local humanoid = waitForChild(player.Character, "Humanoid")
-			humanoid.Died:connect(
-				function ()
-					onDied(player, humanoid)
-				end
-			)
-		end
-	end
-
-	-- listen to all Players' Characters
-	game:GetService("Players").ChildAdded:connect(
-		function (player)
-			createDeathMonitor(player)
-			player.Changed:connect(
-				function (property)
-					if property=="Character" then
-						createDeathMonitor(player)
-					end
-				end
-			)
-		end
-	)
-end
 
 game:GetService("Players").PlayerAdded:connect(function(player)
 	print("Player " .. player.userId .. " added")
-
-	
+	if assetGameUrl and access and placeId and player and player.userId then
+		game:HttpGet(assetGameUrl .. "/game/ClientPresence.ashx?action=connect&PlaceID=" .. placeId .. "&UserID=" .. player.userId .. "&JobID=" .. JobId .. "&" .. access)
+		game:HttpPost(assetGameUrl .. "/game/PlaceVisit.ashx?UserID=" .. player.userId .. "&AssociatedPlaceID=" .. placeId .. "&=" .. access, "")
+	end
 end)
 
 local HttpService = game:GetService("HttpService")
@@ -214,15 +131,14 @@ local function check()
 	end
 end
 
-
 game:GetService("Players").PlayerRemoving:connect(function(player)
-	print("Player " .. player.userId .. " leaving")
+	print("Player " .. player.userId .. " leaving")	
 
-	if url and access and placeId and player and player.userId then
-		game:HttpPost(url .. "/game/ClientPresence.ashx?action=disconnect&" .. access .. "&PlaceID=" .. placeId .. "&JobID=" .. JobId .. "&UserID=" .. player.userId, "")
+	if assetGameUrl and access and placeId and player and player.userId then
+		game:HttpGet(assetGameUrl .. "/game/ClientPresence.ashx?action=disconnect&PlaceID=" .. placeId .. "&UserID=" .. player.userId .. "&JobID=" .. JobId .. "&" .. access)
+
 		wait(5)
 		check()
-
 	end
 end)
 
@@ -232,35 +148,20 @@ spawn(function()
 	check()
 end)
 
-if placeId~=nil and url~=nil then
+local onlyCallGameLoadWhenInRccWithAccessKey = newBadgeUrlEnabled
+if placeId ~= nil and assetGameUrl ~= nil and ((not onlyCallGameLoadWhenInRccWithAccessKey) or access ~= nil) then
 	-- yield so that file load happens in the heartbeat thread
 	wait()
-
+	
 	-- load the game
 	local success, result = pcall(function()
-		game:Load(url .. "/asset/?id=" .. placeId .. "&" .. access)
+		game:Load(assetGameUrl .. "/asset/?id=" .. placeId)
 	end)
 
 	if not success then
     	local msg = Instance.new("Message", workspace)
     	msg.Text = "place failed to load."
 	end
-
-	print("DataModel Loading http://www.hexagon.pw/asset/?id=" .. placeId)
-end
-
-
-local function char_to_hex(c)
-    return string.format("%%%02X", string.byte(c))
-end
-
-local function urlencode(url)
-    if url == nil then
-        return
-    end
-    url = url:gsub("\n", "\r\n")
-    url = url:gsub("([^%w%-%.%_%~%!%*%'%(%)])", char_to_hex)
-    return url
 end
 
 local function pullUserLog(player)
@@ -269,7 +170,6 @@ local function pullUserLog(player)
 
 	return logs["" .. player.userId]
 end
-
 
 local function logEvent(player, item, event)
 	local player_log = pullUserLog(player)
@@ -326,254 +226,54 @@ local function find(t, pred)
     return nil
 end
 
-local filtered = false
-
-if workspace.FilteringEnabled == true then
-	filtered = true
-
-	workspace.FilteringEnabled = false
-end
-
-local whitelistedEvents = {"OnServerEvent",
-"PromptProductPurchaseFinished", "PromptPurchaseFinished",
-"PromptPurchaseRequested", "ClientPurchaseSuccess", "ServerPurchaseVerification",
-"Activated", "Deactivated", "SimulationRadiusChanged", "LuaDialogCallbackSignal", "ServerAdVerification",
-"ClientAdVerificationResults", "Player", "InsertService"}
-
-ns.ChildAdded:connect(function(replicator) -- mostly from polygon tbh with some added changes
-	local accepted = false
-
+ns.ChildAdded:connect(function(replicator)
 		replicator:SetBasicFilteringEnabled(true)
-
-		if filtered == true then
-			replicator:PreventTerrainChanges()
-		end
 
 		replicator.NewFilter = function(item)
 			if(replicator:GetPlayer()) then
 				local player = replicator:GetPlayer()
 
-				--print(player.Name .. " created a new item: " .. item.ClassName .. " " .. item.Name)
-
 				logEvent(player, item, player.Name .. " created an instance: ".. item.Name .. " ("..item.ClassName..")")
 			end
 
-			if accepted == true and filtered == false then
-				return Enum.FilterResult.Accepted
-			end
-
-			if item and item:IsA("StringValue") then return Enum.FilterResult.Accepted end -- ticket
-
-			if item and item:IsA("Animation") then return Enum.FilterResult.Accepted end
-
-			if item and item:IsA("AnimationTrack") then return Enum.FilterResult.Accepted end
-
-			if item and item:IsA("StarterPack") then return Enum.FilterResult.Accepted end
-
-			if item and item:IsA("StarterGear") then return Enum.FilterResult.Accepted end
-
-			if item and item:IsA("Player") then return Enum.FilterResult.Accepted end
-
-			if item and item:IsA("Weld") then
-				if(replicator:GetPlayer()) then
-					local player = replicator:GetPlayer()
-
-					if player.Character ~= nil then
-						if item:IsDescendantOf(player.Character) then
-							return Enum.FilterResult.Accepted
-						end
-					end
-				end
-			end
-			
-			return Enum.FilterResult.Rejected
+			return Enum.FilterResult.Accepted
 		end		
 		
 		replicator.DeleteFilter = function(item)
 			if(replicator:GetPlayer()) then
 				local player = replicator:GetPlayer()
 
-				--print(player.Name .. " deleted an item: " .. item.ClassName)
-
 				logEvent(player, item, player.Name .. " deleted an item: ".. item.Name .. " ("..item.ClassName..")")
 			end
 
-			if accepted == true and filtered == false then
-				return Enum.FilterResult.Accepted
-			end
-
-			if(replicator:GetPlayer()) then
-				local player = replicator:GetPlayer()
-
-				if item:IsDescendantOf(player) then
-					return Enum.FilterResult.Accepted
-				end
-				
-				if player.Character ~= nil then
-					if item:IsDescendantOf(player.Character) then
-						return Enum.FilterResult.Accepted
-					end
-				end
-			end
-
-			return Enum.FilterResult.Rejected
+			return Enum.FilterResult.Accepted
 		end
 	
 		replicator.PropertyFilter = function(item, member, value)
 			if(replicator:GetPlayer()) then
 				local player = replicator:GetPlayer()
 
-				--print(player.Name .. " changed a property: " .. item.ClassName .. "." .. member)
-
 				logEvent(player, item, player.Name .. " changed a property: ".. item.Name .."." .. member .. " (".. item.ClassName ..")")
 			end
 
-			if accepted == true and filtered == false then
-				return Enum.FilterResult.Accepted
-			end
-
-			if item and item:IsA("Tool") then	
-				return Enum.FilterResult.Accepted
-			end 
-
-			if item and item:IsA("Humanoid") and member == "TargetPoint" then return Enum.FilterResult.Accepted end 
-	
-			if item and item:IsA("StringValue") then return Enum.FilterResult.Accepted end -- ticket
-
-			if item and item:IsA("Animation") then return Enum.FilterResult.Accepted end
-
-			if item and item:IsA("AnimationTrack") then return Enum.FilterResult.Accepted end
-
-			if item and item:IsA("StarterPack") then return Enum.FilterResult.Accepted end
-
-			if item and item:IsA("StarterGear") then return Enum.FilterResult.Accepted end
-
-			return Enum.FilterResult.Rejected
+			return Enum.FilterResult.Accepted
 		end		
 		
 		replicator.EventFilter = function(item)	
 			if(replicator:GetPlayer()) then
 				local player = replicator:GetPlayer()
 
-				--print(player.Name .. " fired an event: " .. item.ClassName)
-
 				logEvent(player, item, player.Name .. " fired an event: " .. item.ClassName)
 			end
 
-			if accepted == true and filtered == false then
-				return Enum.FilterResult.Accepted
-			end
-
-
-			if item and item:IsA("Tool") then return Enum.FilterResult.Accepted end
-
-			if item and item:IsA("Animation") then return Enum.FilterResult.Accepted end
-
-			if item and item:IsA("AnimationTrack") then return Enum.FilterResult.Accepted end
-
-			if item and item:IsA("StarterPack") then return Enum.FilterResult.Accepted end
-
-			if item and item:IsA("StarterGear") then return Enum.FilterResult.Accepted end
-
-			if item and find(whitelistedEvents, item.ClassName) then
-				return Enum.FilterResult.Accepted
-			end
-
-			return Enum.FilterResult.Rejected
+			return Enum.FilterResult.Accepted
 		end
-
-	while not replicator:GetPlayer() do
-		wait()
-	end
-
-	if(replicator:GetPlayer()) then
-
-    local ok, err = ypcall(function()
-
-		local player = replicator:GetPlayer()
-
-		replicator:DisableProcessPackets()
-
-        if player.CharacterAppearance ~= url .. "/Asset/CharacterFetch.ashx?userId=" ..player.userId .. "&jobId=" .. JobId .. "&placeId=" .. placeId then
-            replicator:CloseConnection()
-            print("[paclib] kicked " .. player.Name .. " because player does not have correct character appearance for this server")
-            print("[paclib] correct character appearance url: " .. url .. "/Asset/CharacterFetch.ashx?userId=" .. player.userId .. "&jobId=" .. JobId .. "&placeId=" .. placeId)
-            print("[paclib] appearance that the server received: " .. player.CharacterAppearance)
-            return
-        end
-
-        if maxPlayers ~= nil and #game:GetService("Players"):GetPlayers() > maxPlayers then
-            replicator:CloseConnection()
-            print("[paclib] kicked incoming connection because max players reached")
-            return
-        end
-
-
-
-        if player:FindFirstChild("HexagonTicket") == nil or (player:FindFirstChild("HexagonTicket") ~= nil and not player.HexagonTicket:IsA("StringValue")) then
-            replicator:CloseConnection()
-            print("[paclib] kicked " .. player.Name .. " because player does not have an authentication ticket")
-            return
-        end
-
-		local HexagonTicket = player.HexagonTicket.Value
-
-		player.HexagonTicket:Remove()
-
-
-        local response = game:HttpGet(url .. "/verify-player?Username=" .. player.Name .. "&UserID=" .. player.userId .. "&Ticket=" .. urlencode(HexagonTicket) .. "&JobID=" .. JobId .. "&PlaceID=" .. placeId .. "&MembershipType=" .. player.MembershipType.Name .. "&CharacterAppearance=".. player.CharacterAppearance .. "&" .. access, true)
-        if response ~= "True" then
-            replicator:CloseConnection()
-            print("[paclib] kicked " .. player.Name .. " because could not validate player")
-            print("[paclib] validation handler returned: " .. response)
-            return
-        end
-
-		replicator:EnableProcessPackets()
-
-		accepted = true
-
-		replicator:SetBasicFilteringEnabled(false)
-        
-
-		--print("[paclib] " .. player.Name .. " has been authenticated")
-
-		if url and access and placeId and player and player.userId then
-			game:HttpGet(url .. "/game/ClientPresence.ashx?action=connect&" .. access .. "&PlaceID=" .. placeId .. "&JobID=" .. JobId .. "&UserID=" .. player.userId)
-			game:HttpPost(url .. "/game/PlaceVisit.ashx?UserID=" .. player.userId .. "&AssociatedPlaceID=" .. placeId .. "&" .. access, "")
-		end
-    end)
-
-    if not ok then
-        print(tostring(err))
-        replicator:CloseConnection()
-
-        print("[paclib] kicked because could not validate player")
-        return
-    end
-
-
-	
-	while wait(0.5) do
-		local player = replicator:GetPlayer()
-
-		if player == nil then
-			game:HttpPost(url .. "/game/NewPresence.ashx?action=disconnect&" .. access .. "&PlaceID=" .. placeId .. "&JobID=" .. JobId .. "&UserID=" .. player.userId, "")
-		end
-	end
-else
-
-	replicator:DisableProcessPackets()
-
-end
-
-	
-
-    
 end)
 
+
 -- Now start the connection
-local success, message = pcall(function() ns:Start(port) end)
+local success, message = pcall(function() ns:Start(port, sleeptime) end)
+
 local HttpService = game:GetService("HttpService")
 local arguments = {
 	["jobid"] = JobId
@@ -586,35 +286,27 @@ else
 	game:HttpPostAsync(url .. "/updatejob/gameloaded?"..access,HttpService:JSONEncode(arguments),"application/json")
 end
 
+if access then
+	game.Close:connect(function()
+	  sendLogs(true)
+	end)
+  
+	delay(25, function()
+	  spawn(function()
+		  while true do
+			  presenceCheck(false)
+			  sendLogs(false)
+  
+			  wait(10)
+		  end
+	  end)
+   end)
+  end
+
 if timeout then
 	scriptContext:SetTimeout(timeout)
 end
 scriptContext.ScriptsDisabled = false
-
---[[ analytics...
-delay(1, function()
-	loadfile(url .. "/analytics/GamePerfMonitor.ashx")(JobId, placeId)
-end)
-]]
-
-if access then
-  game.Close:connect(function()
-    sendLogs(true)
-  end)
-
-  delay(25, function()
-	spawn(function()
-    	while true do
-			presenceCheck(false)
-			sendLogs(false)
-
-			wait(10)
-		end
-	end)
- end)
-end
-
-------------------------------END START GAME SHARED SCRIPT--------------------------
 
 -- START CHAT LOGS --
 --[[
@@ -688,15 +380,3 @@ end)
 -- StartGame --
 
 game:GetService("RunService"):Run()
-
-end)
-
-if not ok then
-	print(tostring(err))
-	Instance.new("Message", workspace).Text = tostring(err)
-	game:SetMessage(tostring(err))
-	end
-
---settings().Network.PrintProperties = true
---settings().Network.PrintInstances = true
---settings().Network.PrintEvents = true

@@ -21,7 +21,10 @@ export const rccAuth = (async ({ event, resolve }) => {
 		pathname === '/game/newpresence.ashx' ||
 		pathname === '/game/log.ashx'
 	) {
-		const accessKey = event.url.searchParams.get('apikey') || event.request.headers.get('accessKey')
+		const accessKey =
+			event.url.searchParams.get('apikey') ||
+			event.request.headers.get('accessKey') ||
+			event.request.headers.get('accesskey')
 
 		try {
 			await jose.jwtVerify(accessKey ?? '', new TextEncoder().encode(env.RCC_ACCESS_KEY as string))
