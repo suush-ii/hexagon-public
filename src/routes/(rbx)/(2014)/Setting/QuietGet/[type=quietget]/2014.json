@@ -423,6 +423,7 @@
 	"DFFlagPathfindingEnabled": "True",
 	"FFlagEnableiOSSettingsLeave": "True",
 	"FFlagUseFollowCamera": "True",
+	"DFFlagUseFolder": "True",
 	"FFlagDefaultToFollowCameraOnTouch": "True",
 	"DFFlagAllowMoveToInMouseLookMove": "True",
 	"DFFlagAllowHumanoidDecalTransparency": "True",
