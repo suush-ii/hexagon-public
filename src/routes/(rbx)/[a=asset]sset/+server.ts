@@ -256,10 +256,11 @@ export const GET: RequestHandler = async (event) => {
 	}
 
 	if (
-		existingAsset?.assetType === 'hats' ||
-		existingAsset?.assetType === 'faces' ||
-		existingAsset?.assetType === 'gears' ||
-		existingAsset?.assetType === 'heads'
+		(existingAsset?.assetType === 'hats' ||
+			existingAsset?.assetType === 'faces' ||
+			existingAsset?.assetType === 'gears' ||
+			existingAsset?.assetType === 'heads') &&
+		event.request.headers.get('user-agent') === '2013ox/WinInet'
 	) {
 		return parseRbxm(
 			`https://${s3Url}/${existingAsset.assetType}/` + existingAsset?.simpleasseturl,
@@ -395,10 +396,11 @@ export const GET: RequestHandler = async (event) => {
 		}
 
 		if (
-			cachedAsset?.assettypeid == hatAssetId ||
-			cachedAsset?.assettypeid == faceAssetId ||
-			cachedAsset?.assettypeid == gearAssetId ||
-			cachedAsset?.assettypeid == animationAssetId
+			(cachedAsset?.assettypeid == hatAssetId ||
+				cachedAsset?.assettypeid == faceAssetId ||
+				cachedAsset?.assettypeid == gearAssetId ||
+				cachedAsset?.assettypeid == animationAssetId) &&
+			event.request.headers.get('user-agent') === '2013ox/WinInet'
 		) {
 			return parseRbxm(url, assetId)
 		}
@@ -439,10 +441,11 @@ export const GET: RequestHandler = async (event) => {
 				}
 
 				if (
-					data.assetTypeId === hatAssetId ||
-					data.assetTypeId === faceAssetId ||
-					data.assetTypeId === gearAssetId ||
-					data.assetTypeId === animationAssetId
+					(data.assetTypeId === hatAssetId ||
+						data.assetTypeId === faceAssetId ||
+						data.assetTypeId === gearAssetId ||
+						data.assetTypeId === animationAssetId) &&
+					event.request.headers.get('user-agent') === '2013ox/WinInet'
 				) {
 					return parseRbxm(url, assetId)
 				}
