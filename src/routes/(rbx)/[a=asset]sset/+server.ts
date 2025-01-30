@@ -268,6 +268,15 @@ export const GET: RequestHandler = async (event) => {
 		)
 	}
 
+	if (
+		existingAsset?.assetType === 'hats' ||
+		existingAsset?.assetType === 'faces' ||
+		existingAsset?.assetType === 'gears' ||
+		existingAsset?.assetType === 'heads'
+	) {
+		redirect(302, `https://${s3Url}/${existingAsset.assetType}/` + existingAsset?.simpleasseturl)
+	}
+
 	if (existingAsset?.assetType === 'shirts') {
 		return text(
 			shirtTemplate.replace(
