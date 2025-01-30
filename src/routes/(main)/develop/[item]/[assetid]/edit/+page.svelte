@@ -63,24 +63,24 @@
 		/>
 	{:else if data.item === 'games'}
 		<Tabs.Root value={$page.url.searchParams.get('page') ?? 'settings'}>
-			<Tabs.List>
+			<Tabs.List class="!rounded-b-none rounded-t-xl">
 				<a href="?page=settings" class="w-full"
-					><Tabs.Trigger value="settings" class="pointer-events-none"
+					><Tabs.Trigger value="settings" class="pointer-events-none !rounded-b-none rounded-t-xl"
 						>{data.t('generic.settings')}</Tabs.Trigger
 					></a
 				>
 				<a href="?page=places" class="w-full"
-					><Tabs.Trigger value="places" class="pointer-events-none"
+					><Tabs.Trigger value="places" class="pointer-events-none !rounded-b-none rounded-t-xl"
 						>{data.t('develop.places')}</Tabs.Trigger
 					></a
 				>
 				<a href="?page=icon" class="w-full"
-					><Tabs.Trigger value="icon" class="pointer-events-none"
+					><Tabs.Trigger value="icon" class="pointer-events-none !rounded-b-none rounded-t-xl"
 						>{data.t('develop.icon')}</Tabs.Trigger
 					>
 				</a>
 				<a href="?page=thumbnail" class="w-full"
-					><Tabs.Trigger value="thumbnail" class="pointer-events-none"
+					><Tabs.Trigger value="thumbnail" class="pointer-events-none !rounded-b-none rounded-t-xl"
 						>{data.t('develop.thumbnail')}</Tabs.Trigger
 					></a
 				>

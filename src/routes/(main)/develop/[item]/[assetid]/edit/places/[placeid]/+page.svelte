@@ -53,13 +53,16 @@
 	<h1 class="text-4xl leading-none tracking-tight font-semibold">
 		{data.t('develop.configure')} Place
 	</h1>
-	<Tabs.Root value={$page.url.searchParams.get('page') ?? 'settings'} class="h-full">
-		<Tabs.List>
+	<Tabs.Root value={$page.url.searchParams.get('page') ?? 'settings'} class="h-full ">
+		<Tabs.List class="!rounded-b-none rounded-t-xl">
 			<a href="?page=settings" class="w-full"
-				><Tabs.Trigger value="settings" class="pointer-events-none">Settings</Tabs.Trigger></a
+				><Tabs.Trigger value="settings" class="pointer-events-none !rounded-b-none rounded-t-xl"
+					>Settings</Tabs.Trigger
+				></a
 			>
 			<a href="?page=versions" class="w-full"
-				><Tabs.Trigger value="versions" class="pointer-events-none">Version History</Tabs.Trigger
+				><Tabs.Trigger value="versions" class="pointer-events-none !rounded-b-none rounded-t-xl"
+					>Version History</Tabs.Trigger
 				></a
 			>
 		</Tabs.List>
