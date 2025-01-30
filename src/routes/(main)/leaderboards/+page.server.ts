@@ -14,7 +14,13 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 			knockoutsCone: sql<number>`SUM(${usersTable.knockouts}) FILTER (WHERE ${usersTable.registeredclan} = 'cone')`,
 			averageKnockoutsWuff: sql<number>`AVG(${usersTable.knockouts}) FILTER (WHERE ${usersTable.registeredclan} = 'wuff')`,
 			averageKnockoutsJamrio: sql<number>`AVG(${usersTable.knockouts}) FILTER (WHERE ${usersTable.registeredclan} = 'jamrio')`,
-			averageKnockoutsCone: sql<number>`AVG(${usersTable.knockouts}) FILTER (WHERE ${usersTable.registeredclan} = 'cone')`
+			averageKnockoutsCone: sql<number>`AVG(${usersTable.knockouts}) FILTER (WHERE ${usersTable.registeredclan} = 'cone')`,
+			moonsWuff: sql<number>`SUM(${usersTable.coins}) FILTER (WHERE ${usersTable.registeredclan} = 'wuff')`,
+			moonsJamrio: sql<number>`SUM(${usersTable.coins}) FILTER (WHERE ${usersTable.registeredclan} = 'jamrio')`,
+			moonsCone: sql<number>`SUM(${usersTable.coins}) FILTER (WHERE ${usersTable.registeredclan} = 'cone')`,
+			averageMoonsWuff: sql<number>`AVG(${usersTable.coins}) FILTER (WHERE ${usersTable.registeredclan} = 'wuff')`,
+			averageMoonsJamrio: sql<number>`AVG(${usersTable.coins}) FILTER (WHERE ${usersTable.registeredclan} = 'jamrio')`,
+			averageMoonsCone: sql<number>`AVG(${usersTable.coins}) FILTER (WHERE ${usersTable.registeredclan} = 'cone')`
 		})
 		.from(usersTable)
 		.limit(1)
