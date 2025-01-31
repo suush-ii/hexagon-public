@@ -27,6 +27,8 @@
 	export let favorites: number
 
 	export let limited: string | null
+
+	export let recentaverageprice: number | null
 </script>
 
 <div
@@ -47,8 +49,28 @@
 		<h1 class="line-clamp-2 tracking-tighter break-words 2xl:text-xl hover:underline">
 			{itemName}
 		</h1>
-		<h1 class="tracking-tighter truncate text-sm flex flex-row">
-			<MoonStar class="h-5" />{formatCompactNumber(cost ?? 0, false)}
+		<h1 class="tracking-tighter truncate text-sm flex flex-col gap-y-1">
+			{#if limited && recentaverageprice}
+				<h5 class="flex gap-x-[0.35rem]">
+					<span class="font-semibold">was</span><MoonStar class="h-5" />{formatCompactNumber(
+						cost ?? 0,
+						false
+					)}
+				</h5>
+
+				<h5 class="flex gap-x-1">
+					<span>now</span><MoonStar class="h-5" />{formatCompactNumber(
+						recentaverageprice ?? 0,
+						false
+					)}
+				</h5>
+			{/if}
+
+			{#if !limited || !recentaverageprice}
+				<div class="flex">
+					<MoonStar class="h-5" />{formatCompactNumber(cost ?? 0, false)}
+				</div>
+			{/if}
 		</h1>
 	</a>
 	<div class="invisible group-hover:visible flex text-xs pt-2 flex-col gap-y-1">
