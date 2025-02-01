@@ -12,11 +12,16 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 		where: and(eq(jobsTable.jobid, jobid), eq(jobsTable.type, 'game')),
 		columns: {
 			placeid: true,
-			players: true
+			players: true,
+			type: true
 		}
 	})
 
-	fetch(`http://${env.ARBITER_HOST}/closejob/${jobid}/${instance?.placeid ?? 0}/2016`)
+	if (instance?.type === 'render') {
+		fetch(`http://${env.RENDER_HOST}/closejob/${jobid}/${instance?.placeid ?? 0}/2016`)
+	} else {
+		fetch(`http://${env.ARBITER_HOST}/closejob/${jobid}/${instance?.placeid ?? 0}/2016`)
+	}
 
 	if (!instance) {
 		return error(400, {
