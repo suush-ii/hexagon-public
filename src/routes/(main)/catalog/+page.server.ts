@@ -53,7 +53,8 @@ export const load: PageServerLoad = async ({ url }) => {
 				updated: true,
 				sales: true,
 				favorites: true,
-				limited: true
+				limited: true,
+				recentaverageprice: true
 			},
 			with: {
 				author: {
@@ -108,7 +109,8 @@ export const load: PageServerLoad = async ({ url }) => {
 				updated: true,
 				sales: true,
 				favorites: true,
-				limited: true
+				limited: true,
+				recentaverageprice: true
 			},
 			with: {
 				author: {
@@ -151,7 +153,8 @@ export const load: PageServerLoad = async ({ url }) => {
 				updated: true,
 				sales: true,
 				favorites: true,
-				limited: true
+				limited: true,
+				recentaverageprice: true
 			},
 			with: {
 				author: {
@@ -194,7 +197,8 @@ export const load: PageServerLoad = async ({ url }) => {
 				updated: true,
 				sales: true,
 				favorites: true,
-				limited: true
+				limited: true,
+				recentaverageprice: true
 			},
 			with: {
 				author: {
@@ -239,7 +243,8 @@ export const load: PageServerLoad = async ({ url }) => {
 				updated: true,
 				sales: true,
 				favorites: true,
-				limited: true
+				limited: true,
+				recentaverageprice: true
 			},
 			with: {
 				author: {
@@ -282,7 +287,8 @@ export const load: PageServerLoad = async ({ url }) => {
 				updated: true,
 				sales: true,
 				favorites: true,
-				limited: true
+				limited: true,
+				recentaverageprice: true
 			},
 			with: {
 				author: {

@@ -168,12 +168,16 @@
 				value={$page.url.searchParams.get('tab') === 'outfits' ? 'outfits' : 'wardrobe'}
 				class="w-full h-full"
 			>
-				<Tabs.List>
+				<Tabs.List class="!rounded-b-none rounded-t-xl">
 					<a href="?tab=wardrobe"
-						><Tabs.Trigger class="pointer-events-none" value="wardrobe">Wardrobe</Tabs.Trigger></a
+						><Tabs.Trigger class="pointer-events-none !rounded-b-none rounded-t-xl" value="wardrobe"
+							>Wardrobe</Tabs.Trigger
+						></a
 					>
 					<a href="?tab=outfits"
-						><Tabs.Trigger class="pointer-events-none" value="outfits">Outfits</Tabs.Trigger></a
+						><Tabs.Trigger class="pointer-events-none !rounded-b-none rounded-t-xl" value="outfits"
+							>Outfits</Tabs.Trigger
+						></a
 					>
 				</Tabs.List>
 				<Separator />

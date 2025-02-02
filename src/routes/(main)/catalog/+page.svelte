@@ -194,6 +194,7 @@
 								updated={item.updated}
 								favorites={item.favorites}
 								limited={item.limited}
+								recentaverageprice={item.recentaverageprice}
 							/>
 						{/each}
 					{/if}
