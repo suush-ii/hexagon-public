@@ -36,10 +36,12 @@ export default defineConfig({
 		strictPort: false,
 		watch: {
 			usePolling: true
-		}
+		},
+		allowedHosts: true
 	},
 	preview: {
 		port: 9000,
-		strictPort: false
+		strictPort: false,
+		allowedHosts: true
 	}
 })
