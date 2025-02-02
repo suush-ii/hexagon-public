@@ -18,6 +18,14 @@
 http://api.hexagon.pw, http://hexagon.pw, http://www.hexagon.pw {
     log
     import hexagon_error
+
+    @blockMetrics {
+        path /metrics
+    }
+
+    handle @blockMetrics {
+        respond "Forbidden" 403
+    }
     
     reverse_proxy {
 	to http://web:3000

@@ -11,7 +11,7 @@
 
 	export let data: PageData
 
-	type StatType = 'members' | 'knockouts' | 'averageKnockouts'
+	type StatType = 'members' | 'knockouts' | 'averageKnockouts' | 'moons' | 'averageMoons'
 
 	const getClanStat = (clan: HexagonClans, stat: StatType) => {
 		const statKey =
@@ -38,7 +38,7 @@
 				<div class="flex flex-col gap-y-8 w-full">
 					<h1 class="text-xl">{friendlyClanNames[clan]}</h1>
 
-					<div class="flex flex-wrap justify-around text-center max-w-lg">
+					<div class="flex flex-wrap justify-around text-center max-w-3xl">
 						<div>
 							<p class="font-bold text-muted-foreground">Members</p>
 							<p>{formatCompactNumber(Math.round(getClanStat(clan, 'members')), false)}</p>
@@ -52,6 +52,14 @@
 						<div>
 							<p class="font-bold text-muted-foreground">Average Knockouts</p>
 							<p>{formatCompactNumber(Math.round(getClanStat(clan, 'averageKnockouts')), false)}</p>
+						</div>
+						<div>
+							<p class="font-bold text-muted-foreground">Moons</p>
+							<p>{formatCompactNumber(Math.round(getClanStat(clan, 'moons')), false)}</p>
+						</div>
+						<div>
+							<p class="font-bold text-muted-foreground">Average Moons</p>
+							<p>{formatCompactNumber(Math.round(getClanStat(clan, 'averageMoons')), false)}</p>
 						</div>
 					</div>
 				</div>

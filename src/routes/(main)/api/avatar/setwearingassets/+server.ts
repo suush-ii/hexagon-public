@@ -105,7 +105,7 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 		return error(400, { success: false, message: 'You cannot wear this asset.', data: {} })
 	}
 
-	if (item.asset.moderationstate !== 'approved') {
+	if (item.asset.moderationstate !== 'approved' && result.data.wear === true) {
 		return error(400, { success: false, message: 'This asset is not approved.', data: {} })
 	}
 

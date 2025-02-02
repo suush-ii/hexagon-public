@@ -95,6 +95,20 @@ services:
       - db_ghost:/var/lib/mysql
     networks:
       - hexagon-nw
+  prometheus:
+    image: prom/prometheus:latest
+    restart: always
+    networks:
+      - hexagon-nw
+    volumes:
+      - ./monitoring/:/etc/prometheus/
+  grafana:
+    image: grafana/grafana:latest
+    restart: always
+    networks:
+      - hexagon-nw
+    volumes:
+      - ./monitoring/datasources.yml:/etc/grafana/provisioning/datasources/datasources.yml
 
 volumes:
   hexagon-db:

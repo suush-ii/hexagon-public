@@ -245,7 +245,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 	if (type === 'avatar') {
 		try {
 			const response = await fetch(
-				`http://${env.ARBITER_HOST}/${userRender ? 'openrender2016' : 'openrenderasset2016'}/${instanceNew.jobid}/${packageRender ? encodeURIComponent(assets) : imageRender ? item.associatedImage?.assetid : assetid}${userRender ? '/false' : ''}${'/false'}${item ? `/${item.assetType}` : ''}`
+				`http://${env.RENDER_HOST}/${userRender ? 'openrender2016' : 'openrenderasset2016'}/${instanceNew.jobid}/${packageRender ? encodeURIComponent(assets) : imageRender ? item.associatedImage?.assetid : assetid}${userRender ? '/false' : ''}${'/false'}${item ? `/${item.assetType}` : ''}`
 			)
 
 			const responseJson = await response.json()
@@ -303,7 +303,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 			await db.delete(jobsTable).where(eq(jobsTable.jobid, instanceNew.jobid))
 
 			try {
-				await fetch(`http://${env.ARBITER_HOST}/closejob/${instanceNew.jobid}/1/2014`)
+				await fetch(`http://${env.RENDER_HOST}/closejob/${instanceNew.jobid}/1/2014`)
 			} catch {}
 
 			return json({ success: true, message: '', data: { url: '', status: 'pending' } })
@@ -313,7 +313,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 	if (type === 'obj') {
 		try {
 			const response = await fetch(
-				`http://${env.ARBITER_HOST}/${userRender ? 'openrender2016' : 'openrenderasset2016'}/${instanceNew.jobid}/${packageRender ? encodeURIComponent(assets) : assetid}${userRender ? '/false' : ''}${'/true'}${item ? `/${item.assetType}` : ''}`
+				`http://${env.RENDER_HOST}/${userRender ? 'openrender2016' : 'openrenderasset2016'}/${instanceNew.jobid}/${packageRender ? encodeURIComponent(assets) : assetid}${userRender ? '/false' : ''}${'/true'}${item ? `/${item.assetType}` : ''}`
 			)
 
 			const responseJson = await response.json()
@@ -454,7 +454,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 			await db.delete(jobsTable).where(eq(jobsTable.jobid, instanceNew.jobid))
 
 			try {
-				await fetch(`http://${env.ARBITER_HOST}/closejob/${instanceNew.jobid}/1/2014`)
+				await fetch(`http://${env.RENDER_HOST}/closejob/${instanceNew.jobid}/1/2014`)
 			} catch {}
 
 			return json({ success: true, message: '', data: { url: '', status: 'pending' } })
@@ -464,7 +464,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 	if (type === 'headshot') {
 		try {
 			const response = await fetch(
-				`http://${env.ARBITER_HOST}/openrender2016/${instanceNew.jobid}/${assetid}/true${'/false'}`
+				`http://${env.RENDER_HOST}/openrender2016/${instanceNew.jobid}/${assetid}/true${'/false'}`
 			)
 
 			const responseJson = await response.json()
@@ -514,7 +514,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 			await db.delete(jobsTable).where(eq(jobsTable.jobid, instanceNew.jobid))
 
 			try {
-				await fetch(`http://${env.ARBITER_HOST}/closejob/${instanceNew.jobid}/1/2014`)
+				await fetch(`http://${env.RENDER_HOST}/closejob/${instanceNew.jobid}/1/2014`)
 			} catch {}
 
 			return json({ success: true, message: '', data: { url: '', status: 'pending' } })
