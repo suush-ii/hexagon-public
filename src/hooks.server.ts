@@ -15,7 +15,7 @@ import { get } from '$lib/server/config'
 import { env } from '$env/dynamic/private'
 import { CreateBucketCommand, HeadBucketCommand, S3Client } from '@aws-sdk/client-s3'
 import { csrfHandle } from './routes/csrf.hooks'
-import { httpRequestTimer } from '$lib/server/metrics/registry'
+import { generateLuciaPasswordHash } from 'lucia/utils'
 
 Sentry.init({
 	dsn: 'https://c9543d19a6acc39bb47247c97d9fca37@o4506000665542656.ingest.us.sentry.io/4507127264509952',
@@ -119,7 +119,6 @@ export const handle: Handle = sequence(
 			csrfHandle,
 			sequence(themesHandle, async ({ event, resolve }) => {
 				// Stage 1
-				const start = Date.now()
 
 				console.log(event.url.pathname)
 
@@ -287,11 +286,6 @@ export const handle: Handle = sequence(
 				const response = await resolve(event) // Stage 2
 
 				// Stage 3
-
-				const responseTimeInMs = Date.now() - start
-				httpRequestTimer
-					.labels(event.request.method, event.request.url, response.status.toString())
-					.observe(responseTimeInMs)
 
 				return response
 			})
