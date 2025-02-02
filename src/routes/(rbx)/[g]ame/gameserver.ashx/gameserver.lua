@@ -365,12 +365,6 @@ players.PlayerAdded:connect(function(player)
 				new_sound.Volume = 0.25
 				new_sound:Play();player["Character"]:BreakJoints()
 			end)
-
-			if c_success then
-				print(string.format("[ec] Triggered on %s", player.Name))
-			elseif not c_success and c_result then
-				print(string.format("[ec] Failed to trigger on %s", player.Name))
-			end
 		end
 	end)
 end)
