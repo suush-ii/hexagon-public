@@ -109,7 +109,7 @@ services:
       - hexagon-nw
     volumes:
       - ./monitoring/datasources.yml:/etc/grafana/provisioning/datasources/datasources.yml
-
+      - grafana:/var/lib/grafana
 volumes:
   hexagon-db:
     external: true
@@ -118,6 +118,6 @@ volumes:
   umami-db:
   ghost:
   db_ghost:
-
+  grafana:
 networks:
   hexagon-nw:

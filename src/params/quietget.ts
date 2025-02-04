@@ -4,4 +4,5 @@ export const match: ParamMatcher = (param) =>
 	param === 'ClientAppSettings' ||
 	param === 'ClientSharedSettings' ||
 	param === 'RCCService' ||
-	param === 'AndroidAppSettings'
+	param === 'AndroidAppSettings' ||
+	param === 'iOSAppSettings'

@@ -33,7 +33,17 @@ export const codes = {
 	murdle: 'Cheat Engine Stable Methods (0)',
 	suzanne: 'Debugger found (10)',
 	richard: 'Speedhack. (21)',
-	mcc: 'MCC'
+	mcc: 'MCC',
+	ghector: 'SecurityException',
+	Guardian: 'NetPmc Pending P7.',
+	hector: 'MemHashError',
+	jesper: 'invalid number of hashes',
+	Nyx: 'Range has been modified',
+	WorldEdit: 'NetPmc Error P2.',
+	Zek: 'SecurityException',
+	Zix: 'SecurityException',
+	Zot: 'Api Token Tamper',
+	baseball: 'Hash Mismatch'
 }
 
 export const codesZod = [
@@ -71,5 +81,15 @@ export const codesZod = [
 	'murdle',
 	'suzanne',
 	'richard',
-	'mcc'
+	'mcc',
+	'ghector',
+	'Guardian',
+	'hector',
+	'jesper',
+	'Nyx',
+	'WorldEdit',
+	'Zek',
+	'Zix',
+	'Zot',
+	'baseball'
 ] as const
