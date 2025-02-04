@@ -43,7 +43,8 @@ export const load: PageServerLoad = async ({ locals }) => {
 			time: ban.time,
 			offensivetext: ban.offensivetext
 		},
-		expired: new Date(ban.expiration) < currentTime
+		expired:
+			new Date(ban.expiration) < currentTime && ban.action !== 'Delete' && ban.action !== 'Poison'
 	}
 }
 
