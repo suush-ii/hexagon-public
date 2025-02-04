@@ -7,7 +7,7 @@ export const GET: RequestHandler = async () => {
 			'0.176.0pcplayer',
 			'2.183.0androidapp',
 			'INTERNALandroidapp',
-			'INTERNAiosapp'
+			'INTERNALiosapp'
 		]
 	})
 }
