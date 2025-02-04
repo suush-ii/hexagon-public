@@ -40,7 +40,7 @@
 </script>
 
 <div class="w-24 2xl:w-32 relative">
-	<a href="/catalog/{itemId}/{slugify(itemName)}">
+	<button on:click={toggle}>
 		<Avatar
 			css="w-24 2xl:w-32 2xl:h-32 rounded-xl aspect-square"
 			{itemId}
@@ -50,9 +50,11 @@
 			{#if limited}
 				<div class="h-7 absolute left-0 bottom-0">
 					<img class="w-full h-full" src="/Images/{limited}.svg" alt={limited} />
-				</div>{/if}</Avatar
-		>
-
+				</div>
+			{/if}
+		</Avatar>
+	</button>
+	<a href="/catalog/{itemId}/{slugify(itemName)}">
 		<h1 class="line-clamp-2 tracking-tighter break-words text-xl hover:underline text-left">
 			{itemName}
 		</h1>
