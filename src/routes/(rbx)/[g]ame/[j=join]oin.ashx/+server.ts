@@ -237,7 +237,6 @@ export const fallback: RequestHandler = async ({ url, locals }) => {
 		joinJson.PlaceId = Number(place.placeid)
 
 		joinJson.CreatorId = place.associatedgame.author.userid
-		joinJson.SessionId = `${authBearer}`
 		joinJson.UniverseId = Number(place.associatedgame.universeid)
 		joinJson.PingUrl = `${BaseUrl}game/ClientPresence.ashx?LocationType=Game&UserID=${session.userid}&PlaceID=${place.placeid}`
 		joinJson.AccountAge = Math.round(
