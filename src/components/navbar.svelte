@@ -230,15 +230,15 @@
 			<div
 				class="supports-backdrop-blur:bg-background/60 fixed top-24 z-40 w-full border-b bg-orange shadow-sm backdrop-blur flex"
 			>
-				<div class="container flex h-6 items-center">
-					<nav class="flex items-center space-x-4 lg:space-x-6">
+				<div class="container flex h-7 items-center">
+					<nav class="flex items-center space-x-4 lg:space-x-6 mx-auto">
 						<h1 class="text-lg font-semibold">{sitealert}</h1>
 					</nav>
 					<button
 						on:click={() => {
 							storedalert.set(sitealert)
 						}}
-						class="ml-auto"><X /></button
+						class=""><X /></button
 					>
 				</div>
 			</div>
