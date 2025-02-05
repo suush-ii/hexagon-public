@@ -21,6 +21,24 @@ function RemoveTableDupes(tab)
 	return res
 end
 
+-- returns the player object that killed this humanoid
+-- returns nil if the killer is no longer in the game
+function getKillerOfHumanoidIfStillInGame(humanoid)
+
+	-- check for kill tag on humanoid - may be more than one - todo: deal with this
+	local tag = humanoid:findFirstChild("creator")
+
+	-- find player with name on tag
+	if tag then
+		local killer = tag.Value
+		if killer.Parent then -- killer still in game
+			return killer
+		end
+	end
+
+	return nil
+end
+
 -----------------------------------"CUSTOM" SHARED CODE----------------------------------
 
 pcall(function() settings().Network.UseInstancePacketCache = true end)
@@ -41,6 +59,19 @@ local assetGameUrl = nil
 if baseUrl~=nil and protocol ~= nil then
 	url = protocol .. "www." .. baseUrl --baseUrl is actually the domain, no leading .
 	assetGameUrl = protocol .. assetGameSubdomain .. "." .. baseUrl
+end
+
+-- send kill and death stats when a player dies
+function onDied(victim, humanoid)
+	local killer = getKillerOfHumanoidIfStillInGame(humanoid)
+	local victorId = 0
+	if killer then
+		victorId = killer.userId
+		print("STAT: kill by " .. victorId .. " of " .. victim.userId)
+		game:HttpPost(url .. "/Game/Knockouts.ashx?UserID=" .. victorId .. "&" .. access, "")
+	end
+	print("STAT: death of " .. victim.userId .. " by " .. victorId)
+	game:HttpPost(url .. "/Game/Wipeouts.ashx?UserID=" .. victim.userId .. "&" .. access, "")
 end
 
 local scriptContext = game:GetService('ScriptContext')
@@ -102,6 +133,45 @@ end
 
 pcall(function() game:GetService("NetworkServer"):SetIsPlayerAuthenticationRequired(true) end)
 settings().Diagnostics.LuaRamLimit = 0
+
+function waitForChild(parent, childName)
+	while true do
+		local child = parent:findFirstChild(childName)
+		if child then
+			return child
+		end
+		parent.ChildAdded:wait()
+	end
+end
+
+if placeId~=nil --[[ and killID~=nil and deathID~=nil --]] and url~=nil then
+	-- listen for the death of a Player
+	function createDeathMonitor(player)
+		-- we don't need to clean up old monitors or connections since the Character will be destroyed soon
+		if player.Character then
+			local humanoid = waitForChild(player.Character, "Humanoid")
+			humanoid.Died:connect(
+				function ()
+					onDied(player, humanoid)
+				end
+			)
+		end
+	end
+
+	-- listen to all Players' Characters
+	game:GetService("Players").ChildAdded:connect(
+		function (player)
+			createDeathMonitor(player)
+			player.Changed:connect(
+				function (property)
+					if property=="Character" then
+						createDeathMonitor(player)
+					end
+				end
+			)
+		end
+	)
+end
 
 game:GetService("Players").PlayerAdded:connect(function(player)
 	print("Player " .. player.userId .. " added")
