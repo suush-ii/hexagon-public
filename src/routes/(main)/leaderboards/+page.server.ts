@@ -1,5 +1,5 @@
 import { db } from '$lib/server/db'
-import { sql, desc, eq, count, sum } from 'drizzle-orm'
+import { sql, desc, eq, count, sum, isNotNull } from 'drizzle-orm'
 import type { PageServerLoad } from './$types'
 import { assetTable, inventoryTable, usersTable } from '$lib/server/schema'
 
@@ -91,32 +91,32 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 		.select({
 			userid: usersTable.userid,
 			username: usersTable.username,
-			rap: sum(assetTable.recentaverageprice)
+			rap: sum(assetTable.recentaverageprice).as('totalrap')
 		})
-		.from(usersTable)
-		.innerJoin(inventoryTable, eq(inventoryTable.userid, usersTable.userid))
+		.from(inventoryTable)
 		.innerJoin(assetTable, eq(assetTable.assetid, inventoryTable.itemid))
-		.orderBy(desc(sum(assetTable.recentaverageprice)))
+		.innerJoin(usersTable, eq(usersTable.userid, inventoryTable.userid))
+		.orderBy(desc(sql`totalrap`))
 		.groupBy(usersTable.userid, usersTable.username)
+		.where(isNotNull(assetTable.limited))
 		.limit(25)
 
 	const [top1Rap] = await db
 		.select({
 			userid: usersTable.userid,
 			username: usersTable.username,
-			rap: sum(assetTable.recentaverageprice)
+			rap: sum(assetTable.recentaverageprice).as('totalrap')
 		})
-		.from(usersTable)
-		.innerJoin(inventoryTable, eq(inventoryTable.userid, usersTable.userid))
+		.from(inventoryTable)
 		.innerJoin(assetTable, eq(assetTable.assetid, inventoryTable.itemid))
-		.orderBy(desc(sum(assetTable.recentaverageprice)))
+		.innerJoin(usersTable, eq(usersTable.userid, inventoryTable.userid))
+		.orderBy(desc(sql`totalrap`))
 		.groupBy(usersTable.userid, usersTable.username)
+		.where(isNotNull(assetTable.limited))
 		.limit(1)
 
 	const labelsRap = top25Rap.map((user) => user.username)
 	const usersDataRap = top25Rap.map((user) => user.rap)
-
-	console.log(top25Rap)
 
 	const signupHistory = await db
 		.select({
