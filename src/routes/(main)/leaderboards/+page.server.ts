@@ -101,20 +101,6 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 		.where(isNotNull(assetTable.limited))
 		.limit(25)
 
-	const [top1Rap] = await db
-		.select({
-			userid: usersTable.userid,
-			username: usersTable.username,
-			rap: sum(assetTable.recentaverageprice).as('totalrap')
-		})
-		.from(inventoryTable)
-		.innerJoin(assetTable, eq(assetTable.assetid, inventoryTable.itemid))
-		.innerJoin(usersTable, eq(usersTable.userid, inventoryTable.userid))
-		.orderBy(desc(sql`totalrap`))
-		.groupBy(usersTable.userid, usersTable.username)
-		.where(isNotNull(assetTable.limited))
-		.limit(1)
-
 	const labelsRap = top25Rap.map((user) => user.username)
 	const usersDataRap = top25Rap.map((user) => user.rap)
 
@@ -143,6 +129,6 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 		signupHistory,
 		labelsRap,
 		usersDataRap,
-		top1Rap
+		top1Rap: top25Rap[0]
 	}
 }
