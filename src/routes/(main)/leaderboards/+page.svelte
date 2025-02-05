@@ -99,7 +99,7 @@
 						/>
 					</a>
 
-					<h5 class="mx-auto">Top 25 Wealth ( Members Only )</h5>
+					<h5 class="mx-auto">Top 25 Wealth ( Non Staff )</h5>
 
 					<PieChart usersData={data.usersDataStaffLess} labels={data.labelsStaffLess} />
 				</div>
@@ -119,6 +119,23 @@
 					<h5 class="mx-auto">Top 25 Knockouts</h5>
 
 					<PieChart usersData={data.usersDataKnockouts} labels={data.labelsKnockouts} />
+				</div>
+			{/if}
+
+			{#if data.top1Rap}
+				<div class="w-54 h-54 flex flex-col space-y-4">
+					<a href="/users/{data.top1Rap.userid}/profile">
+						<UserAvatar
+							state={'winner'}
+							userid={data.top1Rap.userid}
+							username={data.top1Rap.username}
+							css="w-16 h-16 mx-auto"
+						/>
+					</a>
+
+					<h5 class="mx-auto">Top 25 RAP</h5>
+
+					<PieChart usersData={data.usersDataRap} labels={data.labelsRap} />
 				</div>
 			{/if}
 		</div>
