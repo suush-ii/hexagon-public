@@ -129,6 +129,6 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 		signupHistory,
 		labelsRap,
 		usersDataRap,
-		top1Rap: top25Rap[0]
+		top1Rap: top25Rap.sort((a, b) => Number(b.rap) - Number(a.rap))[0]
 	}
 }
