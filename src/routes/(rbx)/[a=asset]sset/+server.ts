@@ -250,7 +250,8 @@ export const GET: RequestHandler = async (event) => {
 	if (
 		existingAsset?.assetType === 'audio' ||
 		existingAsset?.assetType === 'images' ||
-		existingAsset?.assetType === 'meshes'
+		existingAsset?.assetType === 'meshes' ||
+		existingAsset?.assetType === 'models'
 	) {
 		redirect(302, `https://${s3Url}/${existingAsset.assetType}/` + existingAsset?.simpleasseturl)
 	}

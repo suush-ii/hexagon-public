@@ -41,7 +41,7 @@ export const load: PageServerLoad = async ({ params }) => {
 	const clothingForm = await superValidate(zod(clothingSchema))
 	const assetForm = await superValidate(zod(assetSchema))
 
-	if (params.item === 'gamepasses' || params.item === 'badges') {
+	if (params.item === 'gamepasses' || params.item === 'badges' || params.item === 'models') {
 		return redirect(302, '/develop/' + params.item)
 	}
 

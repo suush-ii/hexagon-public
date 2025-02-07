@@ -79,9 +79,12 @@
 					>Game Passes</Tabs.Trigger
 				></a
 			>
+			<a href="/develop/models" class="w-full"
+				><Tabs.Trigger class="w-full pointer-events-none" value="models">Models</Tabs.Trigger></a
+			>
 		</Tabs.List>
 		<Tabs.Content value={data.item}>
-			{#if data.item !== 'gamepasses' && data.item !== 'badges'}
+			{#if data.item !== 'gamepasses' && data.item !== 'badges' && data.item !== 'models'}
 				<a href="/develop/{data.item}/upload">
 					<div
 						class="h-40 supports-backdrop-blur:bg-background/60 w-full border-b bg-muted-foreground/5 shadow-sm backdrop-blur p-4 select-none outline-dashed outline-muted-foreground/20 rounded-xl flex flex-col"
@@ -104,7 +107,7 @@
 						href="/{creation.placeid ? 'games' : 'catalog'}/{creation.placeid ??
 							creation.assetid}/{slugify(creation.assetName)}"
 					>
-						{#if data.params === 'shirts' || data.params === 'pants' || data.params === 't-shirts' || data.params === 'gamepasses' || data.params === 'badges'}
+						{#if data.params === 'shirts' || data.params === 'pants' || data.params === 't-shirts' || data.params === 'gamepasses' || data.params === 'badges' || data.params === 'models'}
 							<CatalogAvatar
 								css="w-24 h-24 rounded-xl aspect-square"
 								itemId={creation.assetid}
