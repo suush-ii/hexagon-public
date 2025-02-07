@@ -112,7 +112,8 @@
 					  data.item.assetType === 'faces' ||
 					  data.item.assetType === 't-shirts' ||
 					  data.item.assetType === 'gamepasses' ||
-					  data.item.assetType === 'badges'
+					  data.item.assetType === 'badges' ||
+					  data.item.assetType === 'models'
 					? true
 					: false}
 		>

@@ -8,6 +8,7 @@ import { env } from '$env/dynamic/private'
 import parse from 'meshconvert'
 import { createSign } from 'node:crypto'
 import pantsTemplate from './templates/pantsTemplate.xml?raw'
+import audioTemplate from './templates/audioTemplate.xml?raw'
 import shirtTemplate from './templates/shirtTemplate.xml?raw'
 import tshirtTemplate from './templates/tshirtTemplate.xml?raw'
 import decalTemplate from './templates/decalTemplate.xml?raw'
@@ -122,7 +123,9 @@ async function parseRbxm(url: string, assetid: number) {
 }
 
 export const GET: RequestHandler = async (event) => {
-	const result = await assetSchema.safeParseAsync(event.url.searchParams.get('id'))
+	const result = await assetSchema.safeParseAsync(
+		event.url.searchParams.get('id') ?? event.url.searchParams.get('studioid')
+	)
 
 	if (!result.success) {
 		const assetVersionResult = await assetSchema.safeParseAsync(
@@ -250,8 +253,15 @@ export const GET: RequestHandler = async (event) => {
 	if (
 		existingAsset?.assetType === 'audio' ||
 		existingAsset?.assetType === 'images' ||
-		existingAsset?.assetType === 'meshes'
+		existingAsset?.assetType === 'meshes' ||
+		existingAsset?.assetType === 'models'
 	) {
+		if (existingAsset?.assetType === 'audio') {
+			if (!event.url.searchParams.get('id') && event.url.searchParams.get('studioid')) {
+				return text(audioTemplate.replace('{1}', 'http://' + env.BASE_URL + '/asset?id=' + assetId))
+			}
+		}
+
 		redirect(302, `https://${s3Url}/${existingAsset.assetType}/` + existingAsset?.simpleasseturl)
 	}
 
