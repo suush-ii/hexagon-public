@@ -12,7 +12,7 @@
 	<script type="text/javascript" src="/ide/jquery-1.11.1.min.js"></script>
 	<script type="text/javascript" src="/ide/jquery-migrate-1.2.1.min.js"></script>
 
-	<script type="text/javascript" src="/ide/js/c3bd87c55384d381d7f38923c361e408.js"></script>
+	<script type="text/javascript" src="/ide/js/c3bd87c55384d381d7f38923c361e4088.js"></script>
 </svelte:head>
 <body ng-app="clientToolbox">
 	{@html `
