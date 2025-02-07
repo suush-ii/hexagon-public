@@ -54,7 +54,7 @@
 		'Exploit1D':
 			'Your account has been detected as exploiting on Hexagon. Please discontinue this behavior immediately, as this is your only warning to not exploit on Hexagon.',
 		'ExploitDEL':
-			'Your account has been detected as exploiting on Hexagon. You are no longer welcome on Hexagon.
+			'Your account has been detected as exploiting on Hexagon. You are no longer welcome on Hexagon.'
 	}
 	$: if ($formData.scrubusername) {
 		$formData.action = 'Delete'
