@@ -12,7 +12,7 @@ const toolboxSchema = z.object({
 		'FreeModels',
 		'FreeDecals',
 		'FreeMeshes',
-		'FreeAudio',
+		'FreeAudios',
 		'RecentDecals',
 		'RecentModels',
 		'MyModels',
@@ -64,7 +64,7 @@ export const GET: RequestHandler = async ({ url }) => {
 		assetType = 'decals'
 	} else if (category === 'FreeMeshes') {
 		assetType = 'meshes'
-	} else if (category === 'FreeAudio') {
+	} else if (category === 'FreeAudios') {
 		assetType = 'audio'
 	} else {
 		error(400, { success: false, message: 'Invalid category.' })
