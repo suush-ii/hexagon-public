@@ -1,10 +1,13 @@
 import { db } from '$lib/server/db'
-import { assetTable, assetThumbnailCacheTable, placesTable } from '$lib/server/schema'
+import { assetTable, assetThumbnailCacheTable, jobsTable, placesTable } from '$lib/server/schema'
 import { getImage } from '$lib/games/getImage'
 import { imageSql } from '$lib/server/games/getImage'
 import { type RequestHandler, redirect, error } from '@sveltejs/kit'
-import { and, eq, or, sql } from 'drizzle-orm'
+import { eq, sql } from 'drizzle-orm'
+import { s3Url } from '$src/stores'
 import { z } from 'zod'
+import { env } from '$env/dynamic/private'
+import audio from '$lib/icons/audio.png'
 const assetSchema = z.number().int().positive()
 
 export const GET: RequestHandler = async ({ url }) => {
@@ -25,7 +28,13 @@ export const GET: RequestHandler = async ({ url }) => {
 		.limit(1)
 
 	if (cachedAsset.length > 0) {
-		redirect(302, `https://tr.rbxcdn.com/${cachedAsset[0].filehash}/700/700/Model/Png`)
+		if (cachedAsset[0].filehash === '180DAY-cf6ebcadd5f361127dcdd159743b15af') {
+			// script
+
+			return redirect(302, '/Thumbs/Script.png')
+		}
+
+		redirect(302, `https://tr.rbxcdn.com/${cachedAsset[0].filehash}/700/700/Model/Png/noFilter`)
 	}
 
 	const place = await db.query.placesTable.findFirst({
@@ -60,22 +69,67 @@ export const GET: RequestHandler = async ({ url }) => {
 	}
 
 	const asset = await db.query.assetTable.findFirst({
-		where: and(
-			eq(assetTable.assetid, assetId),
-			or(eq(assetTable.assetType, 'gamepasses'), eq(assetTable.assetType, 'badges'))
-		), // for ingame purchase prompt
+		where: eq(assetTable.assetid, assetId),
+		// for ingame purchase prompt
 		columns: {
-			moderationstate: true
+			moderationstate: true,
+			assetType: true
 		},
 		extras: {
 			simpleasseturl:
 				sql`CASE WHEN ${assetTable.moderationstate} = 'approved' THEN ${assetTable.assetrender} ELSE NULL END`.as(
 					'simpleasseturl'
 				)
+		},
+		with: {
+			associatedImage: {
+				columns: {
+					assetid: true,
+					assetType: true
+				},
+				extras: {
+					simpleasseturl: imageSql
+				}
+			}
 		}
 	})
 
 	if (asset) {
+		if (asset.associatedImage) {
+			return redirect(
+				302,
+				`https://${s3Url}/${asset.associatedImage?.assetType}/${asset.associatedImage?.simpleasseturl}`
+			)
+		}
+
+		if (asset.assetType === 'audio') {
+			return redirect(302, audio)
+		}
+
+		if (!asset?.simpleasseturl) {
+			const [instanceNew] = await db
+				.insert(jobsTable)
+				.values({
+					associatedid: assetId,
+					type: 'render',
+					clientversion: '2014',
+					rendertype: 'asset'
+				})
+				.returning({ jobid: jobsTable.jobid })
+
+			await fetch(`http://${env.RENDER_HOST}/openrenderasset2016`, {
+				method: 'POST',
+				body: JSON.stringify({
+					jobid: instanceNew.jobid,
+					associatedid: assetId.toString(),
+					headshot: false,
+					obj: false,
+					itemtype: asset.assetType,
+					returnimg: false
+				})
+			})
+		}
+
 		return redirect(302, getImage(asset?.simpleasseturl, asset.moderationstate, 'icon', true))
 	}
 
@@ -90,6 +144,15 @@ export const GET: RequestHandler = async ({ url }) => {
 			assetid: assetId,
 			filehash: json.data[0].imageUrl.split('/')[3]
 		})
+
+		if (
+			json.data[0].imageUrl ===
+			'https://tr.rbxcdn.com/180DAY-cf6ebcadd5f361127dcdd159743b15af/700/700/Model/Png'
+		) {
+			// script
+
+			return redirect(302, '/Thumbs/Script.png')
+		}
 
 		redirect(302, json.data[0].imageUrl)
 	}

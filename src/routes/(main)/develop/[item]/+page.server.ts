@@ -161,7 +161,8 @@ export const load: PageServerLoad = async ({ params, locals, url, cookies }) => 
 		params.item === 'pants' ||
 		params.item === 't-shirts' ||
 		params.item === 'gamepasses' ||
-		params.item === 'badges'
+		params.item === 'badges' ||
+		params.item === 'models'
 	) {
 		itemscount = await db
 			.select({ count: count() })
@@ -190,7 +191,7 @@ export const load: PageServerLoad = async ({ params, locals, url, cookies }) => 
 					}
 				}
 			},
-			orderBy: desc(assetTable.created),
+			orderBy: desc(assetTable.updated),
 			limit: size,
 			offset: (page - 1) * size
 		})
@@ -209,7 +210,7 @@ export const load: PageServerLoad = async ({ params, locals, url, cookies }) => 
 								: asset.assetType === 'audio'
 									? audio
 									: null, //TODO: make an audio default icon
-				updated: asset.created,
+				updated: asset.updated,
 				assetType: params.item,
 				totalStat: asset.sales,
 				last7DaysStat: await last7daysasset(

@@ -1273,13 +1273,13 @@ input.btn-large {
 }
 .pager.previous {
 	display: inline-block;
-	background: url('/ide/assets/Arrows/btn-silver-left-27.png') no-repeat top left;
+	background: url('/ide/assets/btn-silver-left-27.png') no-repeat top left;
 	width: 27px;
 	height: 27px;
 }
 .pager.next {
 	display: inline-block;
-	background: url('/ide/assets/Arrows/btn-silver-right-27.png') no-repeat top left;
+	background: url('/ide/assets/btn-silver-right-27.png') no-repeat top left;
 	width: 27px;
 	height: 27px;
 }

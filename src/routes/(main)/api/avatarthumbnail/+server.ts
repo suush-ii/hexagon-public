@@ -115,7 +115,8 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 			item?.assetType === 'audio' ||
 			item?.assetType === 't-shirts' ||
 			item?.assetType === 'gamepasses' ||
-			item?.assetType === 'badges')
+			item?.assetType === 'badges' ||
+			item?.assetType === 'models')
 	) {
 		error(400, { success: false, message: 'Malformed JSON.', data: {} })
 	}
@@ -245,7 +246,23 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 	if (type === 'avatar') {
 		try {
 			const response = await fetch(
-				`http://${env.RENDER_HOST}/${userRender ? 'openrender2016' : 'openrenderasset2016'}/${instanceNew.jobid}/${packageRender ? encodeURIComponent(assets) : imageRender ? item.associatedImage?.assetid : assetid}${userRender ? '/false' : ''}${'/false'}${item ? `/${item.assetType}` : ''}`
+				`http://${env.RENDER_HOST}/${userRender ? 'openrender2016' : 'openrenderasset2016'}`,
+				{
+					method: 'POST',
+					body: JSON.stringify({
+						jobid: instanceNew.jobid,
+						associatedid: (packageRender
+							? assets
+							: imageRender
+								? item.associatedImage?.assetid
+								: assetid
+						)?.toString(),
+						headshot: false,
+						obj: false,
+						itemtype: item ? item.assetType : null,
+						returnimg: true
+					})
+				}
 			)
 
 			const responseJson = await response.json()
@@ -313,7 +330,23 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 	if (type === 'obj') {
 		try {
 			const response = await fetch(
-				`http://${env.RENDER_HOST}/${userRender ? 'openrender2016' : 'openrenderasset2016'}/${instanceNew.jobid}/${packageRender ? encodeURIComponent(assets) : assetid}${userRender ? '/false' : ''}${'/true'}${item ? `/${item.assetType}` : ''}`
+				`http://${env.RENDER_HOST}/${userRender ? 'openrender2016' : 'openrenderasset2016'}`,
+				{
+					method: 'POST',
+					body: JSON.stringify({
+						jobid: instanceNew.jobid,
+						associatedid: (packageRender
+							? assets
+							: imageRender
+								? item.associatedImage?.assetid
+								: assetid
+						)?.toString(),
+						headshot: false,
+						obj: true,
+						itemtype: item ? item.assetType : null,
+						returnimg: true
+					})
+				}
 			)
 
 			const responseJson = await response.json()
@@ -463,9 +496,16 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 
 	if (type === 'headshot') {
 		try {
-			const response = await fetch(
-				`http://${env.RENDER_HOST}/openrender2016/${instanceNew.jobid}/${assetid}/true${'/false'}`
-			)
+			const response = await fetch(`http://${env.RENDER_HOST}/openrender2016`, {
+				method: 'POST',
+				body: JSON.stringify({
+					jobid: instanceNew.jobid,
+					associatedid: assetid.toString(),
+					headshot: true,
+					obj: false,
+					returnimg: true
+				})
+			})
 
 			const responseJson = await response.json()
 
