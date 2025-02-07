@@ -7,6 +7,7 @@ import { eq, sql } from 'drizzle-orm'
 import { s3Url } from '$src/stores'
 import { z } from 'zod'
 import { env } from '$env/dynamic/private'
+import audio from '$lib/icons/audio.png'
 const assetSchema = z.number().int().positive()
 
 export const GET: RequestHandler = async ({ url }) => {
@@ -99,6 +100,10 @@ export const GET: RequestHandler = async ({ url }) => {
 				302,
 				`https://${s3Url}/${asset.associatedImage?.assetType}/${asset.associatedImage?.simpleasseturl}`
 			)
+		}
+
+		if (asset.assetType === 'audio') {
+			return redirect(302, audio)
 		}
 
 		if (!asset?.simpleasseturl) {

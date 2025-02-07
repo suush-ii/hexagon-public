@@ -38,11 +38,12 @@
         Roblox.AssetType = {
             "10": "FreeModels",
             "13": "FreeDecals",
+			"3": "FreeAudios",
         };
         Roblox.ClientToolboxModel = {
             // type cast to boolean for javascript
             IsUserAuthenticated: ${data.userid ? 'true' : 'false'},
-            ContentUrl: "http://www.roblox.com/asset/",
+            ContentUrl: "http://www.${data.baseurl}/asset/",
             UserId: "${data.userid ? data.userid : '-1'}",
             ShowGroupCategories: false
         };
