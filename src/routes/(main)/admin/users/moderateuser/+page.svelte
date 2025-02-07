@@ -81,6 +81,20 @@
 			<Form.FieldErrors />
 		</Form.Fieldset>
 
+		<div class="flex flex-col gap-y-4">
+			<h5 class="text-sm font-medium leading-none">Auto-fill fields</h5>
+			{#each Object.entries(autoFill) as [name, value]}
+				<Button
+					size="sm"
+					class="h-8"
+					on:click={() => {
+						$formData.note = value
+						$formData.internalnote = name
+					}}>{name}</Button
+				>
+			{/each}
+		</div>
+
 		<div class="grow space-y-3 max-w-4xl">
 			<Form.Field {form} name="note">
 				<Form.Control let:attrs>
@@ -123,20 +137,6 @@
 				Submit</Form.Button
 			>
 			{#if $message}<Warntext text={$message} />{/if}
-		</div>
-
-		<div class="flex flex-col gap-y-4">
-			<h5 class="text-sm font-medium leading-none">Auto-fill fields</h5>
-			{#each Object.entries(autoFill) as [name, value]}
-				<Button
-					size="sm"
-					class="h-8"
-					on:click={() => {
-						$formData.note = value
-						$formData.internalnote = name
-					}}>{name}</Button
-				>
-			{/each}
 		</div>
 
 		{#if data.asset}
