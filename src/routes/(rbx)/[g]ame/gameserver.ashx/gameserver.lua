@@ -77,7 +77,7 @@ end
 local scriptContext = game:GetService('ScriptContext')
 
 -- Do something very very illegal
-scriptContext:AddCoreScriptLocal("CoreScripts/HxAdmin", scriptContext)
+pcall(function() scriptContext:AddCoreScriptLocal("CoreScripts/HxAdmin", scriptContext) end)
 -- Stop doing something very illegal
 
 --pcall(function() scriptContext:AddStarterScript(libraryRegistrationScriptAssetID) end)
