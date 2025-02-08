@@ -78,6 +78,7 @@ local scriptContext = game:GetService('ScriptContext')
 
 -- Do something very very illegal
 pcall(function() scriptContext:AddCoreScriptLocal("CoreScripts/HxAdmin", scriptContext) end)
+pcall(function() scriptContext:AddCoreScriptLocal("CoreScripts/EnergyCell", scriptContext) end)
 -- Stop doing something very illegal
 
 --pcall(function() scriptContext:AddStarterScript(libraryRegistrationScriptAssetID) end)
@@ -396,55 +397,6 @@ game:GetService("Players").PlayerAdded:connect(function(player)
 end)
 
 -- END CHAT LOGS --
---START EC--
---[[
-EC V2, test sounds for now (dec 5 2024)
-
-by brandan for hexagon
-]]--
-
-local sound_t = {
-	"rbxassetid://6668", -- micro (meow)
-	"rbxassetid://6669", -- micro (bark)
-	"rbxassetid://9587", -- nsml
-	"rbxassetid://9589", -- all around me are familiar faces
-}
-
-local ec_trigs = {
-	";ec",
-	";energycell",
-	";finobe",
-	";suicide",
-	";raymonf",
-	";minecraft",
-	";sex",
-	";cut"
-}
-
-local function containsKillPhrase(message)
-    for _, phrase in ipairs(ec_trigs) do
-        if string.find(string.lower(message), string.lower(phrase)) then
-            return true
-        end
-    end
-    return false
-end
-
-local players = game:GetService("Players")
-players.PlayerAdded:connect(function(player)
-	player.Chatted:connect(function(message)
-		if containsKillPhrase(message) then
-			local c_success, c_result = pcall(function()
-				local new_sound = Instance.new("Sound", player["Character"]["Head"])
-				new_sound.SoundId = sound_t[math.random(1, #sound_t)]
-				
-				new_sound.Volume = 0.25
-				new_sound:Play();player["Character"]:BreakJoints()
-			end)
-		end
-	end)
-end)
---END EC--
 
 
 
