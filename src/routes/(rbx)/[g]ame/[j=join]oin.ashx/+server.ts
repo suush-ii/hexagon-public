@@ -10,6 +10,7 @@ import { z } from 'zod'
 import { createSign } from 'node:crypto'
 import script from './join.lua?raw'
 import scriptDefault from './join_studio.lua?raw'
+import type { HexagonClans } from '$lib/types'
 
 const scriptNew: string = script.replaceAll('roblox.com', env.BASE_URL as string)
 const scriptNewDefault: string = scriptDefault.replaceAll('roblox.com', env.BASE_URL as string)
@@ -24,6 +25,19 @@ const studioJoinSchema = z.object({
 	port: z.coerce.number().int(),
 	universeid: z.coerce.number().int()
 })
+
+function clanToMembership(clan: HexagonClans | null) {
+	switch (clan) {
+		case 'wuff':
+			return 'BuildersClub'
+		case 'cone':
+			return 'TurboBuildersClub'
+		case 'jamrio':
+			return 'OutrageousBuildersClub'
+		default:
+			return 'None'
+	}
+}
 
 export const fallback: RequestHandler = async ({ url, locals }) => {
 	const studioJoinResult = await studioJoinSchema.safeParseAsync({
@@ -112,7 +126,8 @@ export const fallback: RequestHandler = async ({ url, locals }) => {
 		where: eq(usersTable.userid, session.userid),
 		columns: {
 			discordid: true,
-			joindate: true
+			joindate: true,
+			registeredclan: true
 		}
 	})
 
@@ -242,6 +257,7 @@ export const fallback: RequestHandler = async ({ url, locals }) => {
 		joinJson.AccountAge = Math.round(
 			Math.abs((user.joindate.getTime() - new Date().getTime()) / oneDay)
 		)
+		joinJson.MembershipType = clanToMembership(user.registeredclan)
 
 		// client ticket
 
