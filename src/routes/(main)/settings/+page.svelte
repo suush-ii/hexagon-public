@@ -10,8 +10,14 @@
 	import type { PageData } from './$types'
 	import * as Form from '$src/components/ui/form'
 	import ChangePasswordModal from '$src/components/changePasswordModal.svelte'
+	import M_2FAModal from '$src/components/_2FAModal.svelte'
+	import M_2FADisableModal from '$src/components/_2FADisableModal.svelte'
 
 	let changePasswordModal: ChangePasswordModal
+
+	let _2faModal: M_2FAModal
+
+	let _2faDisableModal: M_2FADisableModal
 
 	export let data: PageData
 
@@ -99,8 +105,10 @@
 			<tr>
 				<td class="w-32">{data.t('signUpLogin.password')}:</td>
 				<td
-					>********** <Button variant="outline" size="sm" on:click={() => changePasswordModal.open()}
-						>{data.t('settings.changePassword')}</Button
+					>********** <Button
+						variant="outline"
+						size="sm"
+						on:click={() => changePasswordModal.open()}>{data.t('settings.changePassword')}</Button
 					></td
 				>
 			</tr>
@@ -131,6 +139,22 @@
 							size="sm">{data.t('settings.linkDiscord')}</Button
 						>
 					</td>
+				{/if}
+			</tr>
+
+			<tr>
+				<td class="w-32">2FA Authenticator:</td>
+				{#if data._2faEnabled}
+					<td
+						>Enabled<Button variant="outline" size="sm" on:click={() => _2faDisableModal.open()}
+							>Disable</Button
+						>
+					</td>
+				{:else}
+					<td
+						>None<Button variant="outline" size="sm" on:click={() => _2faModal.open()}>Setup</Button
+						></td
+					>
 				{/if}
 			</tr>
 		</tbody>
@@ -188,3 +212,7 @@
 </form>
 
 <ChangePasswordModal bind:this={changePasswordModal} changePasswordForm={data.changePasswordForm} />
+
+<M_2FAModal bind:this={_2faModal} _2faForm={data._2faForm} url={data.url} secret={data.secret} />
+
+<M_2FADisableModal bind:this={_2faDisableModal} _2faForm={data._2faDisableForm} />

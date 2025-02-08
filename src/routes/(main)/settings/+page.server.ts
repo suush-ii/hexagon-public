@@ -2,15 +2,24 @@ import type { PageServerLoad, Actions } from './$types'
 import { superValidate } from 'sveltekit-superforms/server'
 import { formSchema, formSchemaDiscord } from '$lib/schemas/settingsschema'
 import { formSchema as changePasswordSchema } from '$lib/schemas/changepasswordschema'
+import { formSchema as _2faSchema } from '$src/lib/schemas/2faenableschema'
+import { formSchema as _2faDisableSchema } from '$src/lib/schemas/2faschema'
 import { zod } from 'sveltekit-superforms/adapters'
 import { fail, setError } from 'sveltekit-superforms'
 import { db } from '$lib/server/db'
 import { usersTable } from '$lib/server/schema'
 import { and, eq, not } from 'drizzle-orm'
 import { getOAuthTokens, getOAuthUrl, getUserData, pushMetadata } from '$lib/server/discord'
-import { error, redirect } from '@sveltejs/kit'
+import { redirect } from '@sveltejs/kit'
+import { authenticator } from '@otplib/preset-default'
 import { auth } from '$src/lib/server/lucia'
 import { LuciaError } from 'lucia'
+import { RateLimiter } from 'sveltekit-rate-limiter/server'
+import qrcode from 'qrcode'
+
+const limiter = new RateLimiter({
+	IP: [1, '30s']
+})
 
 export const load: PageServerLoad = async ({ locals }) => {
 	const blurb = await db
@@ -19,21 +28,33 @@ export const load: PageServerLoad = async ({ locals }) => {
 		.where(eq(usersTable.userid, locals.user.userid))
 		.limit(1)
 
-	const discordId = await db.query.usersTable.findFirst({
+	const user = await db.query.usersTable.findFirst({
 		columns: {
-			discordid: true
+			discordid: true,
+			_2fasecret: true
 		},
 		where: eq(usersTable.userid, locals.user.userid)
 	})
 
 	const changePasswordForm = await superValidate(zod(changePasswordSchema))
 
+	const secret = authenticator.generateSecret()
+
+	const otpauth = authenticator.keyuri(locals.user.username, 'Hexagon', secret)
+
+	const url = await qrcode.toDataURL(otpauth)
+
 	return {
 		form: await superValidate(zod(formSchema)),
 		changePasswordForm,
 		blurb: blurb[0].blurb,
 		discordAuth: getOAuthUrl(),
-		discordId: discordId?.discordid
+		discordId: user?.discordid,
+		_2faEnabled: user?._2fasecret ? true : false,
+		url,
+		secret,
+		_2faForm: await superValidate(zod(_2faSchema)),
+		_2faDisableForm: await superValidate(zod(_2faDisableSchema))
 	}
 }
 
@@ -156,5 +177,58 @@ export const actions: Actions = {
 		}
 
 		await auth.updateKeyPassword('username', locals.user.username.toLowerCase(), newpassword)
+	},
+	_2fa: async (event) => {
+		const form = await superValidate(event, zod(_2faSchema))
+		if (!form.valid) {
+			return fail(400, {
+				form
+			})
+		}
+
+		const { code, secret } = form.data
+
+		if (authenticator.check(code.toString(), secret)) {
+			await db
+				.update(usersTable)
+				.set({ _2fasecret: secret })
+				.where(eq(usersTable.userid, event.locals.user.userid))
+		} else {
+			return setError(form, 'code', 'Invalid code')
+		}
+	},
+	_2fadisable: async (event) => {
+		const form = await superValidate(event, zod(_2faDisableSchema))
+		if (!form.valid) {
+			return fail(400, {
+				form
+			})
+		}
+
+		const { code } = form.data
+
+		const user = await db.query.usersTable.findFirst({
+			where: eq(usersTable.userid, event.locals.user.userid),
+			columns: {
+				_2fasecret: true
+			}
+		})
+
+		if (!user?._2fasecret) {
+			return setError(form, 'code', '2FA is not enabled')
+		}
+
+		if (await limiter.isLimited(event)) {
+			return setError(form, 'code', 'Your submitting too fast!')
+		}
+
+		if (authenticator.check(code.toString(), user._2fasecret)) {
+			await db
+				.update(usersTable)
+				.set({ _2fasecret: null })
+				.where(eq(usersTable.userid, event.locals.user.userid))
+		} else {
+			return setError(form, 'code', 'Invalid code')
+		}
 	}
 }

@@ -12,6 +12,9 @@
 	import { pageName } from '$src/stores'
 	import { Button } from '$src/components/ui/button'
 	import { interpolate } from '$lib/poly-i18n/interpolate'
+	import M_2FALoginModal from '$src/components/_2FALoginModal.svelte'
+
+	let _2FALoginModal: M_2FALoginModal
 
 	export let data: PageData
 
@@ -21,8 +24,14 @@
 	import { zodClient } from 'sveltekit-superforms/adapters'
 	import { Input } from '$src/components/ui/input'
 
-	const form = superForm(data.form, {
-		validators: zodClient(formSchema)
+	let form = superForm(data.form, {
+		validators: zodClient(formSchema),
+		onError({ result }) {
+			if (result.error.message === '2fa_required') {
+				_2FALoginModal.open()
+			}
+		},
+		resetForm: false
 	})
 
 	const { form: formData, enhance, submitting, message } = form
@@ -82,6 +91,8 @@
 				</Form.Control>
 			</Form.Field>
 
+			<input type="hidden" name="_2facode" bind:value={$formData._2facode} />
+
 			<div class="flex flex-row gap-x-2">
 				<Form.Button disabled={$submitting} class="w-full">
 					{#if $submitting}
@@ -104,3 +115,5 @@
 		</p>
 	</div>
 </div>
+
+<M_2FALoginModal bind:this={_2FALoginModal} bind:_2faForm={form} />

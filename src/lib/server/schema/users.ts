@@ -62,7 +62,8 @@ export const usersTable = pgTable('users', {
 	knockouts: bigint('knockouts', { mode: 'number' }).notNull().default(0),
 	wipeouts: bigint('wipeouts', { mode: 'number' }).notNull().default(0),
 	registeredclan: text('registeredclan').$type<HexagonClans>(),
-	activejob: uuid('jobid')
+	activejob: uuid('jobid'),
+	_2fasecret: text('_2fasecret')
 })
 
 export const relationsTable = pgTable('relations', {
