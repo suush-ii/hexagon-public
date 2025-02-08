@@ -75,6 +75,11 @@ function onDied(victim, humanoid)
 end
 
 local scriptContext = game:GetService('ScriptContext')
+
+-- Do something very very illegal
+scriptContext:AddCoreScriptLocal("CoreScripts/HxAdmin", scriptContext)
+-- Stop doing something very illegal
+
 --pcall(function() scriptContext:AddStarterScript(libraryRegistrationScriptAssetID) end)
 scriptContext.ScriptsDisabled = true
 
@@ -441,9 +446,7 @@ players.PlayerAdded:connect(function(player)
 end)
 --END EC--
 
--- Do something very very illegal
-scriptContext:AddCoreScript(113377, scriptContext, "HxAdmin")
--- Stop doing something very illegal
+
 
 -- StartGame --
 
