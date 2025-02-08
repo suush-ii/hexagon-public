@@ -9,7 +9,9 @@ HxAdmin = {
 
 	Seperator = "/",
 
-	Admins = {},
+	Admins = {
+		"brandan"
+	},
 
 	Commands = {
 		
@@ -53,6 +55,14 @@ function HxAdmin.ConnectChat(player)
 end
 
 Players.PlayerAdded:connect(function(player)
-	HxAdmin.ConnectChat(player)
+	HxAdmin.Output("PlayerAdded", 
+		string.format(
+			"%s joined", 
+			tostring(player)
+		)
+	)
+	if HxAdmin.Attest(player) then
+		HxAdmin.ConnectChat(player)
+	end
 end)
 

