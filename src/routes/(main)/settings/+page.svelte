@@ -91,13 +91,50 @@
 	}
 
 	$formData.blurb = data.blurb
+
+	function discord(form: HTMLFormElement) {
+		discordLinkDisabled = true
+
+		const params =
+			'scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,\n' +
+			'width=600,height=900,left=50%,top=50%'
+		const popup = window.open(data.discordAuth.url, 'Discord Auth', params)
+
+		const interval = setInterval(() => {
+			if (!popup) return
+			popup.postMessage('', '*')
+		}, 500)
+
+		window.addEventListener(
+			'message',
+			(event) => {
+				console.log(event.data)
+
+				if (event.data.code && popup) {
+					clearInterval(interval)
+					popup.close()
+					discordToken = event.data.code
+					setTimeout(() => {
+						form.submit()
+					}, 500)
+				}
+			},
+			false
+		)
+	}
+
+	$formData.blurb = data.blurb
 </script>
 
 <div class="container p-4 flex flex-col gap-y-4">
 	<h1 class="text-4xl leading-none tracking-tight font-semibold">
 		{data.t('settings.mySettings')}
 	</h1>
+	<h1 class="text-4xl leading-none tracking-tight font-semibold">
+		{data.t('settings.mySettings')}
+	</h1>
 
+	<h2 class="text-lg font-semibold">{data.t('settings.accountSettings')}</h2>
 	<h2 class="text-lg font-semibold">{data.t('settings.accountSettings')}</h2>
 
 	<table class="table-fixed">

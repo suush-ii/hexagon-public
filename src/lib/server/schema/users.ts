@@ -10,10 +10,16 @@ import {
 	boolean,
 	primaryKey,
 	uuid
+	boolean,
+	primaryKey,
+	uuid
 } from 'drizzle-orm/pg-core'
 import type { userRole, userGenders, AssetTypes, HexagonBadges, HexagonClans } from '$lib/types'
 import { relations, sql } from 'drizzle-orm'
+import type { userRole, userGenders, AssetTypes, HexagonBadges, HexagonClans } from '$lib/types'
+import { relations, sql } from 'drizzle-orm'
 import { keyTable } from './keys'
+import { gamesTable, logsTable, placesTable } from './games'
 import { gamesTable, logsTable, placesTable } from './games'
 import type { ActionTypes } from '../admin'
 import { assetTable } from './assets'
@@ -27,8 +33,11 @@ export const usersTable = pgTable('users', {
 	username: text('username').notNull().unique(),
 	coins: bigint('coins', { mode: 'number' }).notNull(),
 	discordid: text('discordid'),
+	discordid: text('discordid'),
 	joindate: timestamp('joindate', { mode: 'date', withTimezone: true }).defaultNow().notNull(),
 	role: text('role').$type<userRole>().notNull(),
+	studiopresencelocation: bigint('studiopresencelocation', { mode: 'number' }),
+	studiopresenceping: timestamp('studiopresenceping', { mode: 'date', withTimezone: true }),
 	studiopresencelocation: bigint('studiopresencelocation', { mode: 'number' }),
 	studiopresenceping: timestamp('studiopresenceping', { mode: 'date', withTimezone: true }),
 	gender: text('gender').$type<userGenders>().notNull().default('nonbinary'),
@@ -50,6 +59,7 @@ export const usersTable = pgTable('users', {
 	registerip: text('registerip'),
 	lastip: text('lastip'),
 	banid: bigint('banid', { mode: 'number' }),
+	blurb: text('blurb').notNull().default(''),
 	blurb: text('blurb').notNull().default(''),
 	scrubbedusername: text('scrubbedusername'),
 	activegame: bigint('activegame', { mode: 'number' }),
@@ -84,6 +94,8 @@ export const inventoryTable = pgTable('inventory', {
 		.defaultNow(),
 	itemtype: text('itemtype').$type<AssetTypes>().notNull(),
 	serialid: integer('serialid')
+	itemtype: text('itemtype').$type<AssetTypes>().notNull(),
+	serialid: integer('serialid')
 })
 
 export const transactionsTable = pgTable('transactions', {
@@ -91,6 +103,9 @@ export const transactionsTable = pgTable('transactions', {
 	userid: bigint('userid', { mode: 'number' }).notNull(),
 	itemid: bigint('itemid', { mode: 'number' }),
 	time: timestamp('time', { mode: 'date', withTimezone: true }).notNull().defaultNow(),
+	type: text('type')
+		.$type<'stipend' | 'purchase' | 'sales' | 'adjustment' | 'visit' | 'trade' | 'referral'>()
+		.notNull(),
 	type: text('type')
 		.$type<'stipend' | 'purchase' | 'sales' | 'adjustment' | 'visit' | 'trade' | 'referral'>()
 		.notNull(),
@@ -143,6 +158,19 @@ export const macAddressesTable = pgTable(
 	}
 )
 
+export const macAddressesTable = pgTable(
+	'macaddresses',
+	{
+		userid: bigint('userid', { mode: 'number' }).notNull(),
+		macAddress: text('macaddress').notNull(),
+		banned: boolean('banned').notNull().default(false),
+		time: timestamp('time', { mode: 'date', withTimezone: true }).notNull().defaultNow()
+	},
+	(table) => {
+		return { pk: primaryKey({ columns: [table.userid, table.macAddress] }) }
+	}
+)
+
 export const transactionsRelations = relations(transactionsTable, ({ one }) => ({
 	member: one(usersTable, {
 		fields: [transactionsTable.sourceuserid],
@@ -166,6 +194,10 @@ export const adminLogsRelations = relations(adminLogsTable, ({ one }) => ({
 	asset: one(assetTable, {
 		fields: [adminLogsTable.associatedid],
 		references: [assetTable.assetid]
+	}),
+	user: one(usersTable, {
+		fields: [adminLogsTable.associatedid],
+		references: [usersTable.userid]
 	}),
 	user: one(usersTable, {
 		fields: [adminLogsTable.associatedid],
