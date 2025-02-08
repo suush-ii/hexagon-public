@@ -3,6 +3,7 @@
 	import ReportButton from '$src/components/reportButton.svelte'
 	import * as AlertDialog from '$src/components/ui/alert-dialog'
 	import Configure from '$src/components/develop/edit/configure.svelte'
+	import GameLeaderboard from '$src/components/games/gameLeaderboard.svelte'
 
 	import GameThumbnail from '$src/components/games/gameThumbnail.svelte'
 
@@ -377,7 +378,9 @@
 							? 'servers'
 							: $page.url.searchParams.get('page') === 'store'
 								? 'store'
-								: 'about'}
+								: $page.url.searchParams.get('page') === 'leaderboards'
+									? 'leaderboards'
+									: 'about'}
 						class="flex flex-col gap-y-4 w-full"
 					>
 						<Tabs.List class="justify-around w-full">
@@ -388,6 +391,11 @@
 							>
 							<a href="?page=store" class="w-full"
 								><Tabs.Trigger class="w-full pointer-events-none" value="store">Store</Tabs.Trigger
+								></a
+							>
+							<a href="?page=leaderboards" class="w-full"
+								><Tabs.Trigger class="w-full pointer-events-none" value="leaderboards"
+									>Leaderboards</Tabs.Trigger
 								></a
 							>
 							<a href="?page=servers" class="w-full"
@@ -487,6 +495,23 @@
 										<EmptyCard class="p-8 m-auto" />
 									{/if}
 								</div>
+							</Tabs.Content>
+						{/if}
+
+						{#if $page.url.searchParams.get('page') === 'leaderboards'}
+							<Tabs.Content
+								value="store"
+								class="flex flex-col gap-y-4 max-h-[60rem] overflow-y-auto"
+							>
+								<h1 class="text-2xl font-semibold">Players</h1>
+
+								<Separator />
+
+								<GameLeaderboard
+									leaderboard={data.leaderboard}
+									leaderboardCount={data.leaderboardCount}
+									placeId={data.place.placeid}
+								/>
 							</Tabs.Content>
 						{/if}
 					</Tabs.Root>

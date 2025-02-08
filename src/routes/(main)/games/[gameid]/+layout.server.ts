@@ -1,5 +1,5 @@
 import type { LayoutServerLoad } from './$types'
-import { gamesTable, placesTable } from '$lib/server/schema/games'
+import { gamesTable, placesTable, pointsTable } from '$lib/server/schema/games'
 import { db } from '$lib/server/db'
 import { eq, and, count, desc, asc, sql } from 'drizzle-orm'
 import { error, redirect } from '@sveltejs/kit'
@@ -117,6 +117,17 @@ export const load: LayoutServerLoad = async ({
 		wonever: number
 	})[] = []
 
+	let leaderboard: {
+		amount: number
+		associateduser: {
+			userid: number
+			username: string
+		}
+		rank: string
+	}[] = []
+
+	let leaderboardCount = 0
+
 	if (url.searchParams.get('page') === 'servers') {
 		servers = await db
 			.select({ jobid: jobsTable.jobid, active: jobsTable.active, players: jobsTable.players })
@@ -144,6 +155,36 @@ export const load: LayoutServerLoad = async ({
                         where ${inventoryTable.itemid} = ${assetTable.assetid}
                         and ${inventoryTable.userid} = ${locals.user.userid}
                     )`.as('own')
+			}
+		})
+	}
+
+	if (url.searchParams.get('page') === 'leaderboards') {
+		leaderboardCount = (
+			await db
+				.select({ count: count() })
+				.from(pointsTable)
+				.where(eq(pointsTable.placeid, Number(params.gameid)))
+				.limit(1)
+		)[0].count
+
+		leaderboard = await db.query.pointsTable.findMany({
+			where: eq(pointsTable.placeid, Number(params.gameid)),
+			orderBy: desc(pointsTable.amount),
+			limit: 30,
+			columns: {
+				amount: true
+			},
+			with: {
+				associateduser: {
+					columns: {
+						username: true,
+						userid: true
+					}
+				}
+			},
+			extras: {
+				rank: sql<string>`rank() over (order by ${pointsTable.amount} desc)`.as('rank')
 			}
 		})
 	}
@@ -245,6 +286,8 @@ export const load: LayoutServerLoad = async ({
 		baseurl: env.BASE_URL,
 		passes,
 		badges,
-		joinedGameCount: joinedGameCount.count
+		joinedGameCount: joinedGameCount.count,
+		leaderboard,
+		leaderboardCount
 	}
 }

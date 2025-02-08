@@ -163,6 +163,25 @@ export const persistenceTable = pgTable(
 	}
 )
 
+export const pointsTable = pgTable(
+	'points',
+	{
+		userid: bigint('userid', { mode: 'number' }).notNull(),
+		placeid: bigint('placeid', { mode: 'number' }).notNull(),
+		amount: bigint('amount', { mode: 'number' }).notNull()
+	},
+	(table) => {
+		return { pk: primaryKey({ columns: [table.userid, table.placeid] }) }
+	}
+)
+
+export const pointsRelations = relations(pointsTable, ({ one }) => ({
+	associateduser: one(usersTable, {
+		fields: [pointsTable.userid],
+		references: [usersTable.userid]
+	})
+}))
+
 export const jobsRelations = relations(jobsTable, ({ one, many }) => ({
 	associatedplace: one(placesTable, {
 		// games

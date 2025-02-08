@@ -7,6 +7,7 @@ export const rccAuth = (async ({ event, resolve }) => {
 
 	if (
 		pathname.startsWith('/updatejob') ||
+		pathname.startsWith('/points') ||
 		pathname === '/getallowedmd5hashes' ||
 		pathname === '/getallowedsecurityversions' ||
 		pathname === '/game/placevisit.ashx' ||
