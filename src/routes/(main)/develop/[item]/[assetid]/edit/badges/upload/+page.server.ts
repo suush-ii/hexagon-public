@@ -29,7 +29,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 		return error(404, { success: false, message: 'Asset not found!' })
 	}
 
-	if (asset.creatoruserid !== locals.user.userid) {
+	if (asset.creatoruserid != locals.user.userid) {
 		return error(403, { success: false, message: 'You do not have permission to edit this asset!' })
 	}
 
@@ -70,7 +70,7 @@ export const actions: Actions = {
 			return error(404, { success: false, message: 'Asset not found!' })
 		}
 
-		if (asset.creatoruserid !== locals.user.userid) {
+		if (asset.creatoruserid != locals.user.userid) {
 			return error(403, {
 				success: false,
 				message: 'You do not have permission to edit this asset!'
