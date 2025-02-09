@@ -55,8 +55,8 @@ export const actions: Actions = {
 			)
 			.limit(1)
 
-		if (badgeCount.count >= 10) {
-			return setError(form, 'asset', 'You have reached the maximum number of passes for this game!')
+		if (badgeCount.count >= 50) {
+			return setError(form, 'asset', 'You have reached the maximum number of badges for this game!')
 		}
 
 		if (await limiter.isLimited(event)) {
