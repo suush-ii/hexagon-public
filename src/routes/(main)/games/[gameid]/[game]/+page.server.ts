@@ -24,7 +24,8 @@ export const actions: Actions = {
 			with: {
 				associatedgame: {
 					columns: {
-						creatoruserid: true
+						creatoruserid: true,
+						universeid: true
 					}
 				}
 			}
@@ -43,7 +44,7 @@ export const actions: Actions = {
 			return error(403, { success: false, message: 'Unauthorized.' })
 		}
 
-		await shutdown(Number(params.gameid))
+		await shutdown(game.associatedgame.universeid)
 
 		return redirect(302, `/games/${params.gameid}/${params.game}`)
 	},
