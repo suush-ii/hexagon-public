@@ -2,9 +2,10 @@ import type { PageServerLoad } from './$types'
 import { assetGenreZod as genres } from '$lib'
 import { getPageNumber } from '$lib/utils'
 import { db } from '$lib/server/db'
-import { and, count, desc, eq, ilike } from 'drizzle-orm'
+import { and, count, desc, eq, ilike, sql } from 'drizzle-orm'
 import { assetTable, gamesTable, placesTable } from '$lib/server/schema'
 import { imageSql } from '$lib/server/games/getImage'
+import { activeSql } from '$lib/server/games/activeSql'
 
 export const load: PageServerLoad = async ({ url }) => {
 	const search = url.searchParams.get('search') ?? ''
@@ -35,7 +36,7 @@ export const load: PageServerLoad = async ({ url }) => {
 
 	const games = await db
 		.select({
-			active: gamesTable.active,
+			active: activeSql.as('activecalculated'),
 			iconid: gamesTable.iconid,
 			places: { placeid: placesTable.placeid, placename: placesTable.placename },
 			icon: { moderationstate: assetTable.moderationstate, simpleasseturl: imageSql }
@@ -54,7 +55,7 @@ export const load: PageServerLoad = async ({ url }) => {
 		)
 		.limit(size)
 		.offset((page - 1) * size)
-		.orderBy(desc(gamesTable.active))
+		.orderBy(sql`${desc(sql`activecalculated`)} nulls last`)
 
 	return {
 		games,
