@@ -6,7 +6,7 @@ import { _assetSchema } from '../../../../+layout.server'
 import { fail } from 'sveltekit-superforms'
 import { db } from '$lib/server/db'
 import { and, count, eq } from 'drizzle-orm'
-import { assetTable, inventoryTable } from '$lib/server/schema'
+import { assetTable, gamesTable, inventoryTable } from '$lib/server/schema'
 import { RateLimiter } from 'sveltekit-rate-limiter/server'
 import { uploadAsset } from '$lib/server/develop/uploadasset'
 import { error, redirect } from '@sveltejs/kit'
@@ -18,11 +18,10 @@ const limiter = new RateLimiter({
 export const load: PageServerLoad = async ({ params, locals }) => {
 	const badgeForm = await superValidate(zod(badgeSchema))
 
-	const asset = await db.query.assetTable.findFirst({
-		where: eq(assetTable.assetid, Number(params.assetid)),
+	const asset = await db.query.gamesTable.findFirst({
+		where: eq(gamesTable.universeid, Number(params.assetid)),
 		columns: {
-			creatoruserid: true,
-			assetType: true
+			creatoruserid: true
 		}
 	})
 
@@ -32,10 +31,6 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 
 	if (asset.creatoruserid !== locals.user.userid) {
 		return error(403, { success: false, message: 'You do not have permission to edit this asset!' })
-	}
-
-	if (asset.assetType !== 'games') {
-		return error(400, { success: false, message: 'This asset is not a game!' })
 	}
 
 	return {
@@ -64,11 +59,10 @@ export const actions: Actions = {
 			})
 		}
 
-		const asset = await db.query.assetTable.findFirst({
-			where: eq(assetTable.assetid, Number(params.assetid)),
+		const asset = await db.query.gamesTable.findFirst({
+			where: eq(gamesTable.universeid, Number(params.assetid)),
 			columns: {
-				creatoruserid: true,
-				assetType: true
+				creatoruserid: true
 			}
 		})
 
@@ -81,10 +75,6 @@ export const actions: Actions = {
 				success: false,
 				message: 'You do not have permission to edit this asset!'
 			})
-		}
-
-		if (asset.assetType !== 'games') {
-			return error(400, { success: false, message: 'This asset is not a game!' })
 		}
 
 		const [badgeCount] = await db
