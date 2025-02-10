@@ -132,6 +132,7 @@
 									serial={offer.serial ?? 0}
 									sold={offer.sold ?? 0}
 									selected={true}
+									limited={undefined}
 									on:move={() => {
 										value.items = value.items.filter((i) => i.inventoryid !== offer.inventoryid)
 										value.value -= offer.recentaverageprice
@@ -210,6 +211,7 @@
 							serial={item.serial ?? 0}
 							sold={item.sold ?? 0}
 							selected={false}
+							limited={undefined}
 							on:move={() => {
 								add('offering', {
 									itemName: item.assetname,
@@ -248,6 +250,7 @@
 							serial={item.serial ?? 0}
 							sold={item.sold ?? 0}
 							selected={false}
+							limited={undefined}
 							on:move={() => {
 								add('requesting', {
 									itemName: item.assetname,

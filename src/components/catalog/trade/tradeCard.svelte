@@ -25,7 +25,7 @@
 
 	export let tradeRequest: boolean = false
 
-	export let limited: string | null
+	export let limited: string | null | undefined
 </script>
 
 <div
@@ -39,7 +39,7 @@
 		><div class="flex flex-col">
 			<a href="/catalog/{itemId}/{slugify(itemName)}" class="text-center"
 				><h1
-					class="line-clamp-2 tracking-tighter break-words {selected
+					class="line-clamp-1 tracking-tighter break-words {selected
 						? ''
 						: tradeRequest
 							? ''
