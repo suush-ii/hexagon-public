@@ -1,6 +1,6 @@
 import type { PageServerLoad, Actions } from './$types.js'
 import { db } from '$lib/server/db'
-import { count, desc, eq, and } from 'drizzle-orm'
+import { count, desc, eq, and, or } from 'drizzle-orm'
 import { transactionsTable } from '$lib/server/schema/users'
 import { getPageNumber } from '$lib/utils'
 
@@ -15,12 +15,19 @@ export const load: PageServerLoad = async ({ url, locals }) => {
 		category = 'purchase'
 	}
 
+	const purchase = category === 'purchase'
+
 	if (category === 'sales' || category === 'purchase' || category === 'stipend') {
 		const transactionsCount = await db
 			.select({ count: count() })
 			.from(transactionsTable)
 			.where(
-				and(eq(transactionsTable.userid, locals.user.userid), eq(transactionsTable.type, category))
+				and(
+					eq(transactionsTable.userid, locals.user.userid),
+					purchase
+						? or(eq(transactionsTable.type, category), eq(transactionsTable.type, 'purchasebid'))
+						: eq(transactionsTable.type, category)
+				)
 			)
 			.limit(1)
 
@@ -46,7 +53,9 @@ export const load: PageServerLoad = async ({ url, locals }) => {
 			offset: (page - 1) * size,
 			where: and(
 				eq(transactionsTable.userid, locals.user.userid),
-				eq(transactionsTable.type, category)
+				purchase
+					? or(eq(transactionsTable.type, category), eq(transactionsTable.type, 'purchasebid'))
+					: eq(transactionsTable.type, category)
 			)
 		})
 

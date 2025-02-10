@@ -11,7 +11,8 @@ export const _assetSchema = z.enum([
 	't-shirts',
 	'badges',
 	'gamepasses',
-	'models'
+	'models',
+	'userads'
 ])
 
 interface assetPrimitive {
@@ -111,6 +112,10 @@ export const _uploadableAssets: Record<string, assetPrimitive> = {
 		friendlyName: 'Model',
 		fileTypes: ['.rbxm'],
 		mimeTypes: ['application/octet-stream']
+	},
+	userads: {
+		friendlyName: 'User Ad',
+		...imagePrimitive
 	}
 }
 

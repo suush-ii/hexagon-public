@@ -92,7 +92,16 @@ export const transactionsTable = pgTable('transactions', {
 	itemid: bigint('itemid', { mode: 'number' }),
 	time: timestamp('time', { mode: 'date', withTimezone: true }).notNull().defaultNow(),
 	type: text('type')
-		.$type<'stipend' | 'purchase' | 'sales' | 'adjustment' | 'visit' | 'trade' | 'referral'>()
+		.$type<
+			| 'stipend'
+			| 'purchase'
+			| 'sales'
+			| 'adjustment'
+			| 'visit'
+			| 'trade'
+			| 'referral'
+			| 'purchasebid'
+		>()
 		.notNull(),
 	amount: bigint('amount', { mode: 'number' }).notNull(),
 	sourceuserid: bigint('sourceuserid', { mode: 'number' })
@@ -129,7 +138,6 @@ export const recentlyPlayedTable = pgTable('recentlyplayed', {
 	gameid: bigint('gameid', { mode: 'number' }).notNull(),
 	time: timestamp('time', { mode: 'date', withTimezone: true }).notNull().defaultNow()
 })
-
 
 export const macAddressesTable = pgTable(
 	'macaddresses',
@@ -171,7 +179,7 @@ export const adminLogsRelations = relations(adminLogsTable, ({ one }) => ({
 	user: one(usersTable, {
 		fields: [adminLogsTable.associatedid],
 		references: [usersTable.userid]
-	}),
+	})
 }))
 
 export const recentlyPlayedRelations = relations(recentlyPlayedTable, ({ one }) => ({

@@ -9,7 +9,7 @@ import {
 	boolean,
 	primaryKey
 } from 'drizzle-orm/pg-core'
-import { placesTable } from './games'
+import { gamesTable, placesTable } from './games'
 import type {
 	assetStates,
 	AssetTypes,
@@ -195,3 +195,39 @@ export const clanItemsTable = pgTable(
 		return { pk: primaryKey({ columns: [table.clan, table.awardid] }) }
 	}
 )
+
+export const userAdsTable = pgTable('userads', {
+	useradid: bigserial('useradid', { mode: 'number' }).notNull().primaryKey(),
+	assetname: text('assetname').notNull(),
+	created: timestamp('created', { mode: 'date', withTimezone: true }).notNull().defaultNow(),
+	creatoruserid: bigint('creatoruserid', { mode: 'number' }).notNull(),
+	impressionscurrent: bigint('impressionscurrent', { mode: 'number' }).notNull().default(0),
+	impressionstotal: bigint('impressionstotal', { mode: 'number' }).notNull().default(0),
+	clickscurrent: bigint('clicks', { mode: 'number' }).notNull().default(0),
+	clickstotal: bigint('clickstotal', { mode: 'number' }).notNull().default(0),
+	clickthroughrate: integer('clickthroughrate').notNull().default(0),
+	totalclickthroughrate: integer('totalclickthroughrate').notNull().default(0),
+	bid: bigint('bid', { mode: 'number' }).notNull().default(0),
+	totalbid: bigint('totalbid', { mode: 'number' }).notNull().default(0),
+	associatedimageid: bigint('associatedimageid', { mode: 'number' }).notNull(),
+	scrubbedassetname: text('scrubbedassetname'),
+	assocatedassetid: bigint('assocatedassetid', { mode: 'number' }).notNull(), // game / shirt / pants / etc
+	associatedassetype: text('associatedassetype').$type<AssetTypes>().notNull(),
+	bidexpires: timestamp('bidexpires', { mode: 'date', withTimezone: true }).notNull(),
+	adsize: text('adsize').$type<'skyscraper' | 'rectangle' | 'banner'>().notNull()
+})
+
+export const userAdsRelations = relations(userAdsTable, ({ one }) => ({
+	associatedImage: one(assetTable, {
+		fields: [userAdsTable.associatedimageid],
+		references: [assetTable.assetid]
+	}),
+	associatedAsset: one(assetTable, {
+		fields: [userAdsTable.assocatedassetid],
+		references: [assetTable.assetid]
+	}),
+	associatedGame: one(gamesTable, {
+		fields: [userAdsTable.assocatedassetid],
+		references: [gamesTable.universeid]
+	})
+}))

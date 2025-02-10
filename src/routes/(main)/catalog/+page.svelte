@@ -11,6 +11,7 @@
 	import CatalogCard from '$src/components/catalog/catalogCard.svelte'
 	import EmptyCard from '$src/components/emptyCard.svelte'
 	import PaginationWrapper from '$src/components/pagnationWrapper.svelte'
+	import UserImage from '$src/components/userimage.svelte'
 
 	import { categories } from './'
 
@@ -49,6 +50,10 @@
 </script>
 
 <div class="container p-4 flex flex-col gap-y-6">
+	<div class="max-w-[728px] mx-auto">
+		<UserImage type="banner" />
+	</div>
+
 	<div class="flex flex-row justify-between gap-x-20 md:gap-x-96">
 		<h1 class="text-4xl leading-none tracking-tight font-semibold">{data.t('generic.catalog')}</h1>
 

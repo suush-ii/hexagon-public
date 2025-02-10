@@ -2,7 +2,7 @@ import { setError, type SuperValidated } from 'sveltekit-superforms/server'
 
 import { _uploadableAssets } from '$src/routes/(main)/develop/[item]/+layout.server'
 import { createHash } from 'node:crypto'
-import { assetTable, gamesTable, placesTable } from '$src/lib/server/schema'
+import { assetTable, gamesTable, placesTable, userAdsTable } from '$src/lib/server/schema'
 import type { assetStates } from '$src/lib/types'
 import { PutObjectCommand } from '@aws-sdk/client-s3'
 import { s3BucketName } from '$src/stores'
@@ -95,7 +95,8 @@ export async function uploadAsset(
 			Key === 't-shirts' ||
 			Key === 'decals' ||
 			Key === 'badges' ||
-			Key === 'gamepasses'
+			Key === 'gamepasses' ||
+			Key === 'userads'
 		) {
 			Key = 'images'
 		}
@@ -257,7 +258,7 @@ export async function uploadAsset(
 			const [assetResponse] = await db
 				.insert(assetTable)
 				.values({
-					assetname: assetname ?? '',
+					assetname: assetname ?? form.data.name ?? '',
 					assetType: item,
 					creatoruserid: userid,
 					simpleasseturl: fileName,

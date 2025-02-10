@@ -1,0 +1,20 @@
+CREATE TABLE IF NOT EXISTS "userads" (
+	"useradid" bigserial PRIMARY KEY NOT NULL,
+	"assetname" text NOT NULL,
+	"created" timestamp with time zone DEFAULT now() NOT NULL,
+	"creatoruserid" bigint NOT NULL,
+	"impressionscurrent" bigint DEFAULT 0 NOT NULL,
+	"impressionstotal" bigint DEFAULT 0 NOT NULL,
+	"clicks" bigint DEFAULT 0 NOT NULL,
+	"clickstotal" bigint DEFAULT 0 NOT NULL,
+	"clickthroughrate" integer DEFAULT 0 NOT NULL,
+	"totalclickthroughrate" integer DEFAULT 0 NOT NULL,
+	"bid" bigint DEFAULT 0 NOT NULL,
+	"totalbid" bigint DEFAULT 0 NOT NULL,
+	"associatedimageid" bigint NOT NULL,
+	"scrubbedassetname" text,
+	"assocatedassetid" bigint NOT NULL,
+	"associatedassetype" text NOT NULL,
+	"bidexpires" timestamp with time zone NOT NULL,
+	"adsize" text NOT NULL
+);

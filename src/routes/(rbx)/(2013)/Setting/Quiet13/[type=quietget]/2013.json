@@ -95,7 +95,7 @@
 	"FFlagRenderLightGridShadows": "True",
 	"FFlagRenderLightGridTerrainOccupancy": "False",
 	"FFlagRenderLoopExplicit": "False",
-	"FFlagRenderNewMaterials": "True",
+	"FFlagRenderNewMaterials": "False",
 	"FFlagRenderNewMegaCluster": "True",
 	"FFlagRenderNoLegacy": "True",
 	"FFlagRenderOptimizedTextureUpload": "False",
