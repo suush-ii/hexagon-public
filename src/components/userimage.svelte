@@ -34,31 +34,33 @@
 	})
 </script>
 
-<a target="_blank" href="/userads/{useradid}" {title}>
-	{#if type === 'skyscraper'}
-		<Avatar.Root class="h-[600px] w-[160px] rounded-xl aspect-auto sm:block hidden">
-			<Avatar.Image {src} loading="lazy" />
-			<Avatar.Fallback />
-		</Avatar.Root>
-	{:else if type === 'banner'}
-		<Avatar.Root
-			class="h-[90px] w-full max-w-[728px] rounded-xl mx-auto aspect-auto sm:block hidden"
-		>
-			<Avatar.Image {src} loading="lazy" />
-			<Avatar.Fallback />
-		</Avatar.Root>
-	{:else if type === 'rectangle'}
-		<Avatar.Root
-			class="h-[250px] w-full max-w-[300px] rounded-xl mx-auto aspect-auto sm:block hidden"
-		>
-			<Avatar.Image {src} loading="lazy" />
-			<Avatar.Fallback />
-		</Avatar.Root>
-	{/if}
-</a>
+<div class="text-center">
+	<a target="_blank" href="/userads/{useradid}" {title}>
+		{#if type === 'skyscraper'}
+			<Avatar.Root class="h-[600px] w-[160px] rounded-xl aspect-auto sm:block hidden">
+				<Avatar.Image {src} loading="lazy" />
+				<Avatar.Fallback />
+			</Avatar.Root>
+		{:else if type === 'banner'}
+			<Avatar.Root
+				class="h-[90px] w-full max-w-[728px] rounded-xl mx-auto aspect-auto sm:block hidden"
+			>
+				<Avatar.Image {src} loading="lazy" />
+				<Avatar.Fallback />
+			</Avatar.Root>
+		{:else if type === 'rectangle'}
+			<Avatar.Root
+				class="h-[250px] w-full max-w-[300px] rounded-xl mx-auto aspect-auto sm:block hidden"
+			>
+				<Avatar.Image {src} loading="lazy" />
+				<Avatar.Fallback />
+			</Avatar.Root>
+		{/if}
+	</a>
 
-{#if $page.data.user.role !== 'normal' && assetid !== 0}
-	<a href="/admin/catalog/assetadmin/{assetid}" class="text-center text-xs text-destructive mt-2"
-		>Moderate</a
-	>
-{/if}
+	{#if $page.data.user.role !== 'normal' && assetid !== 0}
+		<a href="/admin/catalog/assetadmin/{assetid}" class="text-center text-xs text-destructive mt-2"
+			>Moderate</a
+		>
+	{/if}
+</div>
