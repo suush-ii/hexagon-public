@@ -29,11 +29,19 @@ export const GET: RequestHandler = async ({ url }) => {
 				),
 				total_weight: sql`sum(${userAdsTable.bid}) over()`.as('total_weight'),
 				url: assetTable.simpleasseturl,
-				useradid: userAdsTable.useradid
+				useradid: userAdsTable.useradid,
+				assetname: userAdsTable.assetname,
+				assetid: assetTable.assetid
 			})
 			.from(userAdsTable)
 			.leftJoin(assetTable, eq(userAdsTable.associatedimageid, assetTable.assetid))
-			.where(and(eq(userAdsTable.adsize, type), gt(userAdsTable.bidexpires, sql`NOW()`)))
+			.where(
+				and(
+					eq(userAdsTable.adsize, type),
+					gt(userAdsTable.bidexpires, sql`NOW()`),
+					eq(assetTable.moderationstate, 'approved')
+				)
+			)
 	)
 
 	const [ad] = await db
@@ -42,7 +50,9 @@ export const GET: RequestHandler = async ({ url }) => {
 			//bid: weighted_rows.bid,
 			//percentage: sql`ROUND((bid::decimal / total_weight * 100), 1)`.as('percentage'),
 			url: weighted_rows.url,
-			useradid: weighted_rows.useradid
+			useradid: weighted_rows.useradid,
+			assetname: weighted_rows.assetname,
+			assetid: weighted_rows.assetid
 		})
 		.from(weighted_rows)
 		.where(sql`cumulative_weight > (random() * total_weight)`)
@@ -51,13 +61,26 @@ export const GET: RequestHandler = async ({ url }) => {
 
 	if (!ad) {
 		if (type === 'skyscraper') {
-			return json({ url: `/ads/AdSkyscraperTemplate.png`, useradid: 0 })
+			return json({
+				url: `/ads/AdSkyscraperTemplate.png`,
+				useradid: 0,
+				assetname: 'AdSkyscraperTemplate',
+				assetid: 0
+			})
 		} else if (type === 'rectangle') {
-			console.log('hi')
-
-			return json({ url: `/ads/AdRectangleTemplate.png`, useradid: 0 })
+			return json({
+				url: `/ads/AdRectangleTemplate.png`,
+				useradid: 0,
+				assetname: 'AdRectangleTemplate',
+				assetid: 0
+			})
 		} else {
-			return json({ url: `/ads/AdBannerTemplate.png`, useradid: 0 })
+			return json({
+				url: `/ads/AdBannerTemplate.png`,
+				useradid: 0,
+				assetname: 'AdBannerTemplate',
+				assetid: 0
+			})
 		}
 	}
 
@@ -69,5 +92,10 @@ export const GET: RequestHandler = async ({ url }) => {
 		})
 		.where(eq(userAdsTable.useradid, ad.useradid))
 
-	return json({ url: `https://${s3Url}/images/${ad.url}`, useradid: ad.useradid })
+	return json({
+		url: `https://${s3Url}/images/${ad.url}`,
+		useradid: ad.useradid,
+		assetname: ad.assetname,
+		assetid: ad.assetid
+	})
 }
