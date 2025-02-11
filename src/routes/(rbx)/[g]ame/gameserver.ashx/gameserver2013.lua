@@ -297,7 +297,7 @@ end
 
 local function presenceCheck(blocking)
 	pcall(function()
-		local response = game:HttpPost(url .. "/game/ServerPresence.ashx?" .. "&jobId=" .. JobId .. "&" .. access, "H", blocking)
+		local response = game:HttpPost(url .. "/game/ServerPresence.ashx?" .. "jobId=" .. JobId .. "&" .. access, "H", blocking)
 		
 		local data = HttpService:JSONDecode(response)
 

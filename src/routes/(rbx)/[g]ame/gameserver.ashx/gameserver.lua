@@ -275,7 +275,7 @@ end
 
 local function presenceCheck(blocking)
 	pcall(function()
-		local response = game:HttpPost(url .. "/game/ServerPresence.ashx?" .. "&jobId=" .. JobId .. "&" .. access, "", blocking)
+		local response = game:HttpPost(url .. "/game/ServerPresence.ashx?" .. "jobId=" .. JobId .. "&" .. access, "", blocking)
 
 		local data = HttpService:JSONDecode(response)
 
@@ -309,7 +309,11 @@ ns.ChildAdded:connect(function(replicator)
 			if(replicator:GetPlayer()) then
 				local player = replicator:GetPlayer()
 
-				logEvent(player, item, player.Name .. " created an instance: ".. item.Name .. " ("..item.ClassName..")")
+				pcall(function()
+					if item then
+						logEvent(player, item, player.Name .. " created an instance: ".. item.Name .. " ("..item.ClassName..")")
+					end 
+				end)
 			end
 
 			return Enum.FilterResult.Accepted
@@ -319,7 +323,11 @@ ns.ChildAdded:connect(function(replicator)
 			if(replicator:GetPlayer()) then
 				local player = replicator:GetPlayer()
 
-				logEvent(player, item, player.Name .. " deleted an item: ".. item.Name .. " ("..item.ClassName..")")
+				pcall(function()
+					if item then
+						logEvent(player, item, player.Name .. " deleted an item: ".. item.Name .. " ("..item.ClassName..")")
+					end 
+				end)
 			end
 
 			return Enum.FilterResult.Accepted
@@ -329,7 +337,11 @@ ns.ChildAdded:connect(function(replicator)
 			if(replicator:GetPlayer()) then
 				local player = replicator:GetPlayer()
 
-				logEvent(player, item, player.Name .. " changed a property: ".. item.Name .."." .. member .. " (".. item.ClassName ..")")
+				pcall(function()
+					if item then
+						logEvent(player, item, player.Name .. " changed a property: ".. item.Name .."." .. member .. " (".. item.ClassName ..")")
+					end 
+				end)
 			end
 
 			return Enum.FilterResult.Accepted
@@ -339,7 +351,11 @@ ns.ChildAdded:connect(function(replicator)
 			if(replicator:GetPlayer()) then
 				local player = replicator:GetPlayer()
 
-				logEvent(player, item, player.Name .. " fired an event: " .. item.ClassName)
+				pcall(function()
+					if item then
+						logEvent(player, item, player.Name .. " fired an event: " .. item.ClassName)
+					end 
+				end)
 			end
 
 			return Enum.FilterResult.Accepted
