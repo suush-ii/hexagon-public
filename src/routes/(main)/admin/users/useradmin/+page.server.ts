@@ -2,9 +2,10 @@ import { error, redirect } from '@sveltejs/kit'
 import type { PageServerLoad } from './$types'
 import { z } from 'zod'
 import { db } from '$lib/server/db'
-import { usersTable, bansTable, applicationsTable } from '$lib/server/schema'
-import { count, eq, desc } from 'drizzle-orm'
+import { usersTable, bansTable, applicationsTable, macAddressesTable } from '$lib/server/schema'
+import { count, eq, desc, or, and, ne } from 'drizzle-orm'
 import { getPageNumber } from '$lib/utils'
+import type { userRole } from '$src/lib/types'
 
 export const load: PageServerLoad = async ({ url }) => {
 	if (!url.searchParams.get('id')) {
@@ -72,6 +73,62 @@ export const load: PageServerLoad = async ({ url }) => {
 	})
 
 	if (user) {
+		const ips = await db
+			.select({ lastip: usersTable.lastip, registerip: usersTable.registerip })
+			.from(usersTable)
+			.where(eq(usersTable.userid, result.data))
+			.limit(1)
+
+		const altsIp = await db
+			.select({
+				username: usersTable.username,
+				userid: usersTable.userid,
+				role: usersTable.role,
+				joindate: usersTable.joindate
+			})
+			.from(usersTable)
+			.where(
+				and(
+					or(
+						eq(usersTable.lastip, ips[0].lastip ?? ''),
+						eq(usersTable.registerip, ips[0].registerip ?? ''),
+						eq(usersTable.registerip, ips[0].lastip ?? ''),
+						eq(usersTable.lastip, ips[0].registerip ?? '')
+					),
+					ne(usersTable.userid, result.data)
+				)
+			)
+			.limit(50) // how
+
+		const [mac] = await db
+			.select()
+			.from(macAddressesTable)
+			.where(eq(macAddressesTable.userid, result.data))
+			.limit(1)
+
+		let altsMac: {
+			username: string
+			userid: number
+			role: userRole
+			joindate: Date
+		}[] = []
+
+		if (mac) {
+			altsMac = await db
+				.select({
+					username: usersTable.username,
+					userid: usersTable.userid,
+					role: usersTable.role,
+					joindate: usersTable.joindate
+				})
+				.from(macAddressesTable)
+				.innerJoin(usersTable, eq(usersTable.userid, macAddressesTable.userid))
+				.where(
+					and(eq(macAddressesTable.macAddress, mac.macAddress), ne(usersTable.userid, result.data))
+				)
+				.limit(50) // how
+		}
+
 		return {
 			username: user.username,
 			userid: user.userid,
@@ -81,7 +138,9 @@ export const load: PageServerLoad = async ({ url }) => {
 			punishmentsCount: punishmentsCount[0].count,
 			banid: user.banid,
 			discordid: user.discordid,
-			application
+			application,
+			altsIp,
+			altsMac
 		}
 	}
 
