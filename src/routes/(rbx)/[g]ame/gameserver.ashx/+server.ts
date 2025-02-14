@@ -1,7 +1,7 @@
 import { error, text, type RequestHandler } from '@sveltejs/kit'
 import { env } from '$env/dynamic/private'
 import script from './gameserver.lua?raw'
-import script2013 from './gameserver.lua?raw'
+import script2013 from './gameserver2013.lua?raw'
 import scriptDefault from './gameserver_studio.lua?raw'
 import { createSign } from 'node:crypto'
 import * as jose from 'jose'

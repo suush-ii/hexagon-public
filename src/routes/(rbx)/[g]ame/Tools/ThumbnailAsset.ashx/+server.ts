@@ -21,7 +21,7 @@ export const GET: RequestHandler = async ({ url }) => {
 		.limit(1)
 
 	if (cachedAsset.length > 0) {
-		redirect(302, `https://tr.rbxcdn.com/${cachedAsset[0].filehash}/700/700/Model/Png`)
+		redirect(302, `https://tr.rbxcdn.com/${cachedAsset[0].filehash}/700/700/Model/Png/noFilter`)
 	}
 
 	const res = await fetch(
