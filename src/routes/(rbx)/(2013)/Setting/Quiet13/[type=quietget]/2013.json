@@ -22,7 +22,7 @@
 	"DFFlagUseKeyframeHumanoidAnimations": "True",
 	"DFFlagUserHttpAPIEnabled": "True",
 	"DFFlagUseSaferChatMetadataLoading": "True",
-	"DFFlagWinHttpDisableCookies": "True",
+	"DFFlagWinHttpDisableCookies": "False",
 	"DFIntDataStoreMaxUrlLength": "1200",
 	"DFIntLuaExceptionPlaceFilter": "124175297",
 	"DFIntLuaExceptionThrottlingPercentage": "50",
