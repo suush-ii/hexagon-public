@@ -107,7 +107,8 @@ const skipAuth = [
 	'/game/MachineConfiguration.ashx',
 	'/game/report-stats',
 	'/api/clicker',
-	'/settings/discord/callback'
+	'/settings/discord/callback',
+	'/api/playercount'
 ] // speeds requests significantly
 
 await migrate(db, { migrationsFolder: './drizzle' })
