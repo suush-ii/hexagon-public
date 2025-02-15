@@ -7,13 +7,23 @@ import { and, eq, isNull } from 'drizzle-orm'
 import { applicationsTable, usersTable } from '$lib/server/schema'
 import { getOAuthTokens, getOAuthUrl, getUserData } from '$lib/server/discord'
 import { formSchemaDiscord } from '$lib/schemas/settingsschema'
+import { RateLimiter } from 'sveltekit-rate-limiter/server'
 import { z } from 'zod'
+const limiter = new RateLimiter({
+	IP: [1, '2s']
+})
 
-export const load: PageServerLoad = async ({ params }) => {
+export const load: PageServerLoad = async (event) => {
+	const { params } = event
+
 	const applicationid = await z.string().uuid().safeParseAsync(params.applicationid)
 
 	if (!applicationid.success) {
 		return redirect(302, '/applications')
+	}
+
+	if (await limiter.isLimited(event)) {
+		return error(429, { success: false, message: 'You are submitting too fast!' })
 	}
 
 	const application = await db.query.applicationsTable.findFirst({

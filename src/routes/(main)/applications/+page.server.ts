@@ -6,6 +6,10 @@ import { zod } from 'sveltekit-superforms/adapters'
 import { db } from '$lib/server/db'
 import { eq } from 'drizzle-orm'
 import { applicationsTable } from '$src/lib/server/schema'
+import { RateLimiter } from 'sveltekit-rate-limiter/server'
+const limiter = new RateLimiter({
+	IP: [1, '2s']
+})
 
 export const load: PageServerLoad = async (event) => {
 	return {
@@ -22,6 +26,10 @@ export const actions: Actions = {
 			})
 		}
 		const { applicationid } = form.data
+
+		if (await limiter.isLimited(event)) {
+			return message(form, 'Your submitting too fast!')
+		}
 
 		const application = await db.query.applicationsTable.findFirst({
 			where: eq(applicationsTable.applicationid, applicationid)
