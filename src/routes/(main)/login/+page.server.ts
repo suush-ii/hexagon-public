@@ -36,6 +36,10 @@ export const actions: Actions = {
 		}
 		const { username, password, _2facode } = form.data
 
+		if (await limiter.isLimited(event)) {
+			return message(form, 'Your submitting too fast!')
+		}
+
 		try {
 			const user = await auth.useKey(
 				'username',
@@ -53,10 +57,6 @@ export const actions: Actions = {
 			if (userKey?._2fasecret) {
 				if (!_2facode) {
 					return error(401, { success: false, message: '2fa_required' })
-				}
-
-				if (await limiter.isLimited(event)) {
-					return message(form, 'Your submitting too fast!')
 				}
 
 				if (!authenticator.check(_2facode.toString(), userKey._2fasecret)) {
