@@ -43,7 +43,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
 	return json({
 		data: {
-			white: getGoodWords(form.data.text.toLowerCase(), badWords),
+			white: getGoodWords(form.data.text, badWords),
 			black: badWords.join(' ')
 		}
 	})
