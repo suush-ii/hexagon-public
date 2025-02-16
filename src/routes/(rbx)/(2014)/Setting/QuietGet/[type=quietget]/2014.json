@@ -576,7 +576,7 @@
 	"FFlagFastLPSolver": "True",
 	"FFlagKKTChecks": "False",
 	"DFFlagUseApiProxyThrottling": "True",
-	"FFlagNewLoadingScreen": "True",
+	"FFlagNewLoadingScreen": "False",
 	"FFlagDebugLocalRccServerConnection": "False",
 	"FFlagWebkitDeveloperToolsEnabled": "False",
 	"_DFFlagReadDeSerializeProcessFlow": "False",
