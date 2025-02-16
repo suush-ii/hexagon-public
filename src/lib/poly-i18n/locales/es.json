@@ -3,13 +3,23 @@
 		"recentlyPlayed": "Jugado Recientemente",
 		"friends": "({count}) Amigos"
 	},
+	"avatar": {
+		"wardrobe": "Vestuario",
+		"outfits": "Atuendos",
+		"characterCustomizer": "Personalización de Avatar",
+		"avatarColors": "Colores de Avatar",
+		"currentlyWearing": "Usando Actualmente",
+	},
 	"games": {
 		"about": "Acerca de",
+		"originalGames": "Juegos Originales de Hexagon",
+		"topRated": "Mejor Valorado",
+	    "newest": "Más Recientes",
 		"servers": "Servidores",
 		"description": "Descripción",
 		"visits": "Visitas",
 		"maxPlayers": "Número Máximo de Jugadores",
-		"genre": "Género",
+		"genre": "Géneros",
 		"allowedGear": "Equipamiento Permitido",
 		"recommendedGames": "Juegos Recomendados",
 		"playing": "{count} Jugando"
@@ -42,21 +52,21 @@
 		"decals": "Adhesivos",
 		"shirts": "Camisas",
 		"pants": "Pantalones",
-		"uploadHere": "Subálo aquí",
+		"uploadHere": "Subir archivo",
 		"edit": "Editar",
 		"totalVistors": "Visitantes totales:",
-		"totalSales": "Vendas totales:",
+		"totalSales": "Ventas totales:",
 		"last7Days": "Últimos 7 dias:",
 		"configure": "Configurar",
 		"places": "Juego",
-		"icon": "Ícono",
+		"icon": "Icono",
 		"thumbnail": "Portada",
 		"save": "Guardar"
 	},
 	"profile": {
 		"about": "Acerca de {name}",
 		"joinDate": "Fecha de Entrada",
-		"lastOnline": "Último en línea en",
+		"lastOnline": "Última vez en línea",
 		"placeVisits": "Visitas totales",
 		"activePlaces": "Juegos Activos",
 		"friends": "Amigos de {name}!",
@@ -66,15 +76,15 @@
 	},
 	"signUpLogin": {
 		"create": "Crear una cuenta",
-		"loginText": "Iniciar Sesion Hexagon",
+		"loginText": "Iniciar sesión en Hexagon",
 		"clicked": "Pincharon aqui {count} veces.",
 		"details": "Introduzca sus datos para registrarse.",
-		"username": "Nombre de Usuário",
+		"username": "Nombre de Usuario",
 		"password": "Contraseña",
 		"invite": "Llave de invitación",
 		"gender": "Genero",
 		"signUp": "Registrarse!",
-		"logIn": "Engresar",
+		"logIn": "Ingresar",
 		"terms": "Condiciones de Servicio",
 		"privacy": "Política de Privacidad",
 		"agreement": "Al hacer clic en {button}, acepta nuestras {terms} y nuestra {privacy}.",
@@ -101,16 +111,16 @@
 	},
 	"people": {
 		"name": "Nombre",
-		"blurb": "Descripcion",
+		"blurb": "Descripción",
 		"lastSeen": "Ultima vez visto"
 	},
 	"settings": {
 		"mySettings": "Ajustes",
-		"accountSettings": "Informacion de la cuenta",
-		"otherSettings": "Otros ajustes",
+		"accountSettings": "Información de cuenta",
+		"otherSettings": "Ajustes adicionales",
 		"linkDiscord": "Conectar Discord",
 		"theme": "Tema",
-		"blurb": "Descripcion",
+		"blurb": "Descripción",
 		"changePassword": "Cambiar Contraseña",
 		"linked": "Conectado"
 	},
@@ -122,6 +132,8 @@
 		"myAccount": "Mi Cuenta",
 		"settings": "Ajustes",
 		"logout": "Salir",
+		"referrals": "Invitaciones",
+		"trades": "Intercambios",
 		"profile": "Perfil",
 		"friends": "Amigos",
 		"customize": "Personalizar",
@@ -134,6 +146,6 @@
 		"next": "Siguiente"
 	},
 	"emptyCard": {
-		"empty": "Que wea... Parece que no hay nadie aquí... 😕"
+		"empty": "Que extraño... Parece que no hay nada aquí... 😕"
 	}
 }
