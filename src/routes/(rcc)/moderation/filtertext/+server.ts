@@ -39,11 +39,11 @@ export const POST: RequestHandler = async ({ request }) => {
 		return error(400, { success: false, message: 'Malformed input.' })
 	}
 
-	const badWords = getBadWords(form.data.text)
+	const badWords = getBadWords(form.data.text.toLowerCase())
 
 	return json({
 		data: {
-			white: getGoodWords(form.data.text, badWords),
+			white: getGoodWords(form.data.text.toLowerCase(), badWords),
 			black: badWords.join(' ')
 		}
 	})
