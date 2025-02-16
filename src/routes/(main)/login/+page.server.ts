@@ -16,6 +16,10 @@ const limiter = new RateLimiter({
 	IP: [1, '2s']
 })
 
+const strictLimiter = new RateLimiter({
+	IP: [25, '45m']
+})
+
 export const load: PageServerLoad = async (event) => {
 	const session = await event.locals.auth.validate()
 	if (session) redirect(302, '/home')
@@ -36,7 +40,7 @@ export const actions: Actions = {
 		}
 		const { username, password, _2facode } = form.data
 
-		if (await limiter.isLimited(event)) {
+		if ((await limiter.isLimited(event)) || (await strictLimiter.isLimited(event))) {
 			return message(form, 'Your submitting too fast!')
 		}
 

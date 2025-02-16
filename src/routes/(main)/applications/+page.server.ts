@@ -11,6 +11,10 @@ const limiter = new RateLimiter({
 	IP: [1, '2s']
 })
 
+const strictLimiter = new RateLimiter({
+	IP: [25, '45m']
+})
+
 export const load: PageServerLoad = async (event) => {
 	return {
 		form: await superValidate(zod(formSchema))
@@ -27,7 +31,7 @@ export const actions: Actions = {
 		}
 		const { applicationid } = form.data
 
-		if (await limiter.isLimited(event)) {
+		if ((await limiter.isLimited(event)) || (await strictLimiter.isLimited(event))) {
 			return message(form, 'Your submitting too fast!')
 		}
 

@@ -13,6 +13,10 @@ const limiter = new RateLimiter({
 	IP: [1, '2s']
 })
 
+const strictLimiter = new RateLimiter({
+	IP: [25, '45m']
+})
+
 export const load: PageServerLoad = async (event) => {
 	const { params } = event
 
@@ -22,7 +26,7 @@ export const load: PageServerLoad = async (event) => {
 		return redirect(302, '/applications')
 	}
 
-	if (await limiter.isLimited(event)) {
+	if ((await limiter.isLimited(event)) || (await strictLimiter.isLimited(event))) {
 		return error(429, { success: false, message: 'You are submitting too fast!' })
 	}
 
