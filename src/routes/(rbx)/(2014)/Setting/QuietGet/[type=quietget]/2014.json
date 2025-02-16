@@ -9,7 +9,7 @@
 	"FLogAsserts": "1",
 	"NonScriptableAccessEnabled": "True",
 	"FFlagNonScriptableAccessEnabled": "True",
-	"FFlagUsesNewCameraFrustum": "False",
+	"FFlagUsesNewCameraFrustum": "True",
 	"FLogCloseDataModel": "3",
 	"FFlagImmediateYieldResultsEnabled": "True",
 	"FFlagIsChangeHistoryRunAware": "True",
