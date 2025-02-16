@@ -6,6 +6,7 @@
 	import EditGameImageFormPrimitive from '$src/components/develop/edit/game/editGameImageFormPrimitive.svelte'
 	import EditBadgeFormPrimitive from '$src/components/develop/edit/editBadgeFormPrimitive.svelte'
 	import EditGamepassFormPrimitive from '$src/components/develop/edit/editGamepassFormPrimitive.svelte'
+	import EditUserAdFormPrimitive from '$src/components/develop/edit/editUserAdFormPrimitive.svelte'
 	import GameThumbnail from '$src/components/games/gameThumbnail.svelte'
 	import * as Tabs from '$src/components/ui/tabs/index.js'
 	import { Button } from '$src/components/ui/button'
@@ -22,7 +23,11 @@
 <div class="container p-8 flex flex-col gap-y-8">
 	<h1 class="text-4xl leading-none tracking-tight font-semibold">
 		{data.t('develop.configure')}
-		{depluralize(itemName)}
+		{#if data.item === 'userads'}
+			User Ad
+		{:else}
+			{depluralize(itemName)}
+		{/if}
 	</h1>
 
 	{#if data.item === 'shirts' || data.item === 'pants'}
@@ -60,6 +65,12 @@
 			description={data.description}
 			onsale={data.onsale}
 			price={data.price}
+		/>
+	{:else if data.item === 'userads'}
+		<EditUserAdFormPrimitive
+			data={data.userAdForm}
+			friendlyName={data.friendlyName}
+			name={data.assetname}
 		/>
 	{:else if data.item === 'games'}
 		<Tabs.Root value={$page.url.searchParams.get('page') ?? 'settings'}>

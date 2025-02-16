@@ -3,7 +3,7 @@ import type { PageServerLoad } from './$types'
 import { usersTable, bansTable, adminLogsTable, assetTable, jobsTable } from '$lib/server/schema'
 import { db } from '$lib/server/db'
 import { z } from 'zod'
-import { count, eq, desc, or } from 'drizzle-orm'
+import { count, eq, desc, or, ne, and } from 'drizzle-orm'
 import { superValidate } from 'sveltekit-superforms'
 import { defaultValues, message } from 'sveltekit-superforms/server'
 import { zod } from 'sveltekit-superforms/adapters'
@@ -252,11 +252,14 @@ export const actions: Actions = {
 					.select({ userid: usersTable.userid })
 					.from(usersTable)
 					.where(
-						or(
-							eq(usersTable.lastip, ips[0].lastip ?? ''),
-							eq(usersTable.registerip, ips[0].registerip ?? ''),
-							eq(usersTable.registerip, ips[0].lastip ?? ''),
-							eq(usersTable.lastip, ips[0].registerip ?? '')
+						and(
+							or(
+								eq(usersTable.lastip, ips[0].lastip ?? ''),
+								eq(usersTable.registerip, ips[0].registerip ?? ''),
+								eq(usersTable.registerip, ips[0].lastip ?? ''),
+								eq(usersTable.lastip, ips[0].registerip ?? '')
+							),
+							ne(usersTable.userid, result.data)
 						)
 					)
 					.limit(50) // how

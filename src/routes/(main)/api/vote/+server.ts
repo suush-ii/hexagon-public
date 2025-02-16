@@ -48,56 +48,58 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 		})
 	}
 
-	const existingVote = await db
-		.select()
-		.from(votesTable)
-		.where(and(eq(votesTable.userid, user.userid), eq(votesTable.gameid, gameid)))
-		.limit(1)
+	await db.transaction(async (tx) => {
+		const existingVote = await tx
+			.select()
+			.from(votesTable)
+			.where(and(eq(votesTable.userid, user.userid), eq(votesTable.gameid, gameid)))
+			.limit(1)
 
-	if (existingVote.length !== 0) {
-		if (existingVote[0].type === type) {
-			// they want to undo their vote
+		if (existingVote.length !== 0) {
+			if (existingVote[0].type === type) {
+				// they want to undo their vote
 
-			await db
-				.update(gamesTable)
-				.set({
-					likes: game[0].likes - (type === 'like' ? 1 : 0),
-					dislikes: game[0].dislikes - (type === 'dislike' ? 1 : 0)
-				})
-				.where(eq(gamesTable.universeid, gameid))
+				await tx
+					.update(gamesTable)
+					.set({
+						likes: game[0].likes - (type === 'like' ? 1 : 0),
+						dislikes: game[0].dislikes - (type === 'dislike' ? 1 : 0)
+					})
+					.where(eq(gamesTable.universeid, gameid))
 
-			await db
-				.delete(votesTable)
-				.where(and(eq(votesTable.userid, user.userid), eq(votesTable.gameid, gameid)))
-		} else {
-			// they want to change their vote
+				await tx
+					.delete(votesTable)
+					.where(and(eq(votesTable.userid, user.userid), eq(votesTable.gameid, gameid)))
+			} else {
+				// they want to change their vote
 
-			await db
-				.update(gamesTable)
-				.set({
-					likes: game[0].likes + (type === 'like' ? 1 : -1),
-					dislikes: game[0].dislikes + (type === 'dislike' ? 1 : -1)
-				})
-				.where(eq(gamesTable.universeid, gameid))
+				await tx
+					.update(gamesTable)
+					.set({
+						likes: game[0].likes + (type === 'like' ? 1 : -1),
+						dislikes: game[0].dislikes + (type === 'dislike' ? 1 : -1)
+					})
+					.where(eq(gamesTable.universeid, gameid))
 
-			await db
-				.update(votesTable)
-				.set({ type })
-				.where(and(eq(votesTable.userid, user.userid), eq(votesTable.gameid, gameid)))
+				await tx
+					.update(votesTable)
+					.set({ type })
+					.where(and(eq(votesTable.userid, user.userid), eq(votesTable.gameid, gameid)))
+			}
+
+			return json({ success: true, message: '', data: {} })
 		}
 
-		return json({ success: true, message: '', data: {} })
-	}
+		await tx.insert(votesTable).values({ userid: user.userid, type, gameid })
 
-	await db.insert(votesTable).values({ userid: user.userid, type, gameid })
-
-	await db
-		.update(gamesTable)
-		.set({
-			likes: game[0].likes + (type === 'like' ? 1 : 0),
-			dislikes: game[0].dislikes + (type === 'dislike' ? 1 : 0)
-		})
-		.where(eq(gamesTable.universeid, gameid))
+		await tx
+			.update(gamesTable)
+			.set({
+				likes: game[0].likes + (type === 'like' ? 1 : 0),
+				dislikes: game[0].dislikes + (type === 'dislike' ? 1 : 0)
+			})
+			.where(eq(gamesTable.universeid, gameid))
+	})
 
 	return json({ success: true, message: '', data: {} })
 }

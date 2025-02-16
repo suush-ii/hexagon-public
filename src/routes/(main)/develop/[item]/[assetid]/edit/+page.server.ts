@@ -7,9 +7,10 @@ import { formSchema as assetSchema } from '$src/lib/schemas/edit/editassetschema
 import { formSchema as gameImageSchema } from '$src/lib/schemas/edit/game/editimageschema'
 import { formSchema as badgeSchema } from '$src/lib/schemas/edit/editbadgeschema'
 import { formSchema as gamepassSchema } from '$src/lib/schemas/edit/editgamepassschema'
+import { formSchema as userAdSchema } from '$src/lib/schemas/edit/edituseradschema'
 import { zod } from 'sveltekit-superforms/adapters'
 import { z } from 'zod'
-import { assetTable, gamesTable, placesTable } from '$lib/server/schema'
+import { assetTable, gamesTable, placesTable, userAdsTable } from '$lib/server/schema'
 import { db } from '$lib/server/db'
 import { and, desc, eq } from 'drizzle-orm'
 import { _assetSchema } from '../../+layout.server'
@@ -144,12 +145,33 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 		gearattributes = asset[0].gearattributes ?? []
 	}
 
+	if (params.item === 'userads') {
+		const ad = await db.query.userAdsTable.findFirst({
+			where: eq(userAdsTable.useradid, result.data),
+			columns: {
+				assetname: true,
+				creatoruserid: true
+			}
+		})
+
+		if (!ad) {
+			error(404, { success: false, message: 'Ad not found.' })
+		}
+
+		if (ad.creatoruserid != locals.user.userid) {
+			error(403, { success: false, message: 'You do not have permission to edit this ad.' })
+		}
+
+		name = ad.assetname
+	}
+
 	const gameForm = await superValidate(zod(gameSchema))
 	const clothingForm = await superValidate(zod(clothingSchema))
 	const assetForm = await superValidate(zod(assetSchema))
 	const gameImageForm = await superValidate(zod(gameImageSchema))
 	const badgeForm = await superValidate(zod(badgeSchema))
 	const gamepassForm = await superValidate(zod(gamepassSchema))
+	const userAdForm = await superValidate(zod(userAdSchema))
 
 	return {
 		gameForm,
@@ -167,7 +189,8 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 		gearattributes,
 		serversize,
 		places,
-		clientversion
+		clientversion,
+		userAdForm
 	}
 }
 
@@ -461,5 +484,44 @@ export const actions: Actions = {
 		)
 
 		return { form }
+	},
+	userad: async ({ request, params, locals }) => {
+		const form = await superValidate(request, zod(userAdSchema))
+
+		const result = await _assetSchema.safeParseAsync(params.item)
+
+		if (result.success === false) {
+			return fail(400, {
+				form
+			})
+		}
+
+		if (!form.valid) {
+			return fail(400, {
+				form
+			})
+		}
+
+		const asset = await db.query.userAdsTable.findFirst({
+			where: eq(userAdsTable.useradid, Number(params.assetid)),
+			columns: {
+				creatoruserid: true
+			}
+		})
+
+		if (!asset) {
+			error(404, { success: false, message: 'Asset not found.' })
+		}
+
+		if (asset.creatoruserid != asset.creatoruserid) {
+			error(403, { success: false, message: 'You do not have permission to edit this asset.' })
+		}
+
+		await db
+			.update(userAdsTable)
+			.set({
+				assetname: form.data.name
+			})
+			.where(eq(userAdsTable.useradid, Number(params.assetid)))
 	}
 }

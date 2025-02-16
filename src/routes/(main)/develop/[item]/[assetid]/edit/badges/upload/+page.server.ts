@@ -6,17 +6,32 @@ import { _assetSchema } from '../../../../+layout.server'
 import { fail } from 'sveltekit-superforms'
 import { db } from '$lib/server/db'
 import { and, count, eq } from 'drizzle-orm'
-import { assetTable, inventoryTable } from '$lib/server/schema'
+import { assetTable, gamesTable, inventoryTable } from '$lib/server/schema'
 import { RateLimiter } from 'sveltekit-rate-limiter/server'
 import { uploadAsset } from '$lib/server/develop/uploadasset'
-import { redirect } from '@sveltejs/kit'
+import { error, redirect } from '@sveltejs/kit'
 
 const limiter = new RateLimiter({
 	IP: [1, '15s']
 })
 
-export const load: PageServerLoad = async () => {
+export const load: PageServerLoad = async ({ params, locals }) => {
 	const badgeForm = await superValidate(zod(badgeSchema))
+
+	const asset = await db.query.gamesTable.findFirst({
+		where: eq(gamesTable.universeid, Number(params.assetid)),
+		columns: {
+			creatoruserid: true
+		}
+	})
+
+	if (!asset) {
+		return error(404, { success: false, message: 'Asset not found!' })
+	}
+
+	if (asset.creatoruserid != locals.user.userid) {
+		return error(403, { success: false, message: 'You do not have permission to edit this asset!' })
+	}
 
 	return {
 		badgeForm
@@ -41,6 +56,24 @@ export const actions: Actions = {
 		if (!form.valid) {
 			return fail(400, {
 				form
+			})
+		}
+
+		const asset = await db.query.gamesTable.findFirst({
+			where: eq(gamesTable.universeid, Number(params.assetid)),
+			columns: {
+				creatoruserid: true
+			}
+		})
+
+		if (!asset) {
+			return error(404, { success: false, message: 'Asset not found!' })
+		}
+
+		if (asset.creatoruserid != locals.user.userid) {
+			return error(403, {
+				success: false,
+				message: 'You do not have permission to edit this asset!'
 			})
 		}
 

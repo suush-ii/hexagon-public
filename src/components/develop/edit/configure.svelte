@@ -112,6 +112,10 @@
 			>
 		{/if}
 
+		<a href="/develop/{assetType}/{itemid}/edit/userads/upload"
+			><DropdownMenu.Item class="cursor-pointer">Create an Ad</DropdownMenu.Item></a
+		>
+
 		{#if assetType === 'games' && canModerate}
 			<DropdownMenu.Item
 				on:click={() => {

@@ -43,7 +43,8 @@ export const codes = {
 	Zek: 'SecurityException',
 	Zix: 'SecurityException',
 	Zot: 'Api Token Tamper',
-	baseball: 'Hash Mismatch'
+	baseball: 'Hash Mismatch',
+	unknown: 'Unknown Error'
 }
 
 export const codesZod = [
@@ -91,5 +92,6 @@ export const codesZod = [
 	'Zek',
 	'Zix',
 	'Zot',
-	'baseball'
+	'baseball',
+	'unknown'
 ] as const

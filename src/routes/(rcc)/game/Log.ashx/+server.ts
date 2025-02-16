@@ -1,14 +1,7 @@
 import { db } from '$lib/server/db'
-import {
-	inventoryTable,
-	assetTable,
-	placesTable,
-	usersTable,
-	eventItemsTable,
-	logsTable
-} from '$lib/server/schema'
-import { type RequestHandler, error, json, text } from '@sveltejs/kit'
-import { eq, and, count } from 'drizzle-orm'
+import { placesTable, logsTable } from '$lib/server/schema'
+import { type RequestHandler, error, text } from '@sveltejs/kit'
+import { eq, and } from 'drizzle-orm'
 import { z } from 'zod'
 import pako from 'pako'
 

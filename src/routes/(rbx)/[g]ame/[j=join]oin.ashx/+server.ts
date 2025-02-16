@@ -153,7 +153,8 @@ export const fallback: RequestHandler = async ({ url, locals }) => {
 			associatedgame: {
 				columns: {
 					serversize: true,
-					universeid: true
+					universeid: true,
+					clientversion: true
 				},
 				with: {
 					author: {
@@ -288,16 +289,30 @@ export const fallback: RequestHandler = async ({ url, locals }) => {
 
 		// joinscript signature
 
-		const sign = createSign('SHA1')
-		sign.update('\r\n' + JSON.stringify(joinJson))
-
-		const signature = sign.sign(env.CLIENT_PRIVATE_KEY as string, 'base64')
-
 		await db.insert(gamesessionsTable).values({
 			jobid: instance.jobid,
 			placeid: place.placeid,
 			userid: Number(session.userid)
 		})
+
+		if (place.associatedgame.clientversion === '2013') {
+			let scriptNewArgs = scriptNew
+
+			for (const key in joinJson) {
+				scriptNewArgs = scriptNewArgs.replaceAll(`{${key}}`, joinJson[key].toString())
+			}
+
+			const sign = createSign('SHA1')
+			sign.update('\r\n' + scriptNewArgs)
+			const signature = sign.sign(env.CLIENT_PRIVATE_KEY as string, 'base64')
+
+			return text('--rbxsig%' + signature + '%\r\n' + scriptNewArgs)
+		}
+
+		const sign = createSign('SHA1')
+		sign.update('\r\n' + JSON.stringify(joinJson))
+
+		const signature = sign.sign(env.CLIENT_PRIVATE_KEY as string, 'base64')
 
 		return text('--rbxsig%' + signature + '%\r\n' + JSON.stringify(joinJson))
 	}

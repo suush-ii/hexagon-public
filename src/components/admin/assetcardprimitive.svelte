@@ -61,7 +61,11 @@
 		<Avatar.Root
 			class="w-80 h-80 rounded-xl peer-active/invert:invert  peer-active/brightness:brightness-200 {imageFilter}"
 		>
-			<Avatar.Image src={`https://${s3Url}/${assetType}/${assetUrl}`} loading="lazy" />
+			<Avatar.Image
+				class="object-scale-down"
+				src={`https://${s3Url}/${assetType}/${assetUrl}`}
+				loading="lazy"
+			/>
 		</Avatar.Root>
 
 		<div class="mx-auto text-center">

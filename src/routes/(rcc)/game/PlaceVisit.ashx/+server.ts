@@ -49,6 +49,19 @@ export const fallback: RequestHandler = async ({ url }) => {
 		})
 	}
 
+	const user = await db.query.usersTable.findFirst({
+		where: eq(usersTable.userid, userid),
+		columns: { coins: true }
+	})
+
+	if (!user) {
+		return error(404, {
+			success: false,
+			message: 'User not found',
+			data: {}
+		})
+	}
+
 	if (
 		new Date().valueOf() - place.associatedasset.lastweekreset.valueOf() >
 		7 * 24 * 60 * 60 * 1000 // 7 days

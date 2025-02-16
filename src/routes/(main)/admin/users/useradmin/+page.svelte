@@ -72,8 +72,8 @@
 			</table>
 		</div>
 
-		<div class="w-full max-w-2xl">
-			{#if data.application && data.application.questions}
+		{#if data.application && data.application.questions}
+			<div class="w-full max-w-2xl">
 				<h1 class="text-lg">Application</h1>
 				{#each data.application.questions as question}
 					<div>
@@ -96,7 +96,57 @@
 						{data.application.internalreason ?? 'N/A'}
 					</p>
 				</div>
-			{/if}
+			</div>
+		{/if}
+
+		<div class="w-full max-w-2xl">
+			<h1 class="text-lg">Possible Alts</h1>
+
+			<Table.Root class="text-center">
+				<Table.Header>
+					<Table.Row>
+						<Table.Head class="w-[100px]">Username</Table.Head>
+						<Table.Head>UserID</Table.Head>
+						<Table.Head>Role</Table.Head>
+						<Table.Head>Moderation Status</Table.Head>
+						<Table.Head class="text-right">Joined</Table.Head>
+						<Table.Head class="text-right">Matched</Table.Head>
+					</Table.Row>
+				</Table.Header>
+				<Table.Body>
+					{#each data.altsIp as user}
+						<Table.Row>
+							<Table.Cell
+								><a href="/admin/users/useradmin?id={user.userid}" class="hover:underline"
+									>{user.username}</a
+								></Table.Cell
+							>
+							<Table.Cell>{user.userid}</Table.Cell>
+							<Table.Cell>{user.role}</Table.Cell>
+							<Table.Cell>Ok</Table.Cell>
+							<Table.Cell class="text-right">{user.joindate.toLocaleDateString('en-US')}</Table.Cell
+							>
+							<Table.Cell class="text-right">{'IP'}</Table.Cell>
+						</Table.Row>
+					{/each}
+
+					{#each data.altsMac as user}
+						<Table.Row>
+							<Table.Cell
+								><a href="/admin/users/useradmin?id={user.userid}" class="hover:underline"
+									>{user.username}</a
+								></Table.Cell
+							>
+							<Table.Cell>{user.userid}</Table.Cell>
+							<Table.Cell>{user.role}</Table.Cell>
+							<Table.Cell>Ok</Table.Cell>
+							<Table.Cell class="text-right">{user.joindate.toLocaleDateString('en-US')}</Table.Cell
+							>
+							<Table.Cell class="text-right">{'Mac'}</Table.Cell>
+						</Table.Row>
+					{/each}
+				</Table.Body>
+			</Table.Root>
 		</div>
 	</div>
 

@@ -70,6 +70,7 @@
 		"date-fns": "^4.1.0",
 		"dotenv": "^16.3.1",
 		"drizzle-orm": "^0.33.0",
+		"image-size": "^1.2.0",
 		"jose": "^5.2.4",
 		"lucia": "^2.7.7",
 		"lucide-svelte": "^0.372.0",

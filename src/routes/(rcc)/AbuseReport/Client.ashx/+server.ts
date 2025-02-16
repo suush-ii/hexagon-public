@@ -4,7 +4,7 @@ import { codes, codesZod } from './codes'
 import { env } from '$env/dynamic/private'
 
 const sysStatsSchema = z.object({
-	message: z.enum(codesZod),
+	message: z.string().pipe(z.enum(codesZod).catch('unknown')),
 	userid: z.coerce.number().int(),
 	resolution: z.string(),
 	placeid: z.coerce.number().int(),

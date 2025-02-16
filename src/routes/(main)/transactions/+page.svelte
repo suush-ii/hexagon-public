@@ -72,16 +72,16 @@
 				{#each data.transactions as transaction}
 					<Table.Row>
 						<Table.Cell>{transaction.time.toLocaleDateString('en-US')}</Table.Cell>
-						{#if transaction.type === 'stipend' || transaction.type === 'adjustment'}
+						{#if transaction.type === 'stipend' || transaction.type === 'adjustment' || !transaction.sourceuserid}
 							<Table.Cell class="flex gap-x-2 items-center"
 								><img src={'/hexagon128.png'} class="h-7 w-7" alt="Hexagon" />Hexagon</Table.Cell
 							>
 						{:else}
-							<a href="/users/{transaction.sourceuserid ?? 0}/profile">
+							<a href="/users/{transaction.sourceuserid}/profile">
 								<Table.Cell class="flex gap-x-2 items-center truncate w-[150px] hover:underline"
 									><Avatar
 										state={'offline'}
-										userid={transaction.sourceuserid ?? 0}
+										userid={transaction.sourceuserid}
 										css="h-7 w-7"
 										disableoutline={true}
 									/>
@@ -94,6 +94,8 @@
 							<Table.Cell>{data.t('transactions.dailyStipend')}</Table.Cell>
 						{:else if transaction.type === 'adjustment'}
 							<Table.Cell>{data.t('transactions.adjustment')}</Table.Cell>
+						{:else if transaction.type === 'purchasebid'}
+							<Table.Cell>{data.t('transactions.purchased')} Bid</Table.Cell>
 						{:else if transaction.type === 'sales'}
 							<Table.Cell
 								>{data.t('transactions.sold')}
