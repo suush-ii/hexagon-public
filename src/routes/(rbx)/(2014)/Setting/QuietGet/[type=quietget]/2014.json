@@ -19,6 +19,7 @@
 	"FFlagDE4510Fixed": "True",
 	"FFlagDE4528Fixed": "True",
 	"FFlagDE4508Fixed": "False",
+	"DFFlagUseLuaCameraAndControl": "True",
 	"FFlagFastClone": "False",
 	"CaptureQTStudioCountersEnabled": "True",
 	"CaptureMFCStudioCountersEnabled": "True",
