@@ -27,7 +27,7 @@ export const GET: RequestHandler = async ({ url }) => {
 	if (url.searchParams.get('version') === '2013') {
 		const scriptNew2013Args = script2013New.replace(
 			'{1}',
-			`"apikey=${url.searchParams.get('apikey')}", ${url.searchParams.get('placeId')}, ${url.searchParams.get('port')}, "${url.searchParams.get('jobId')}", ${url.searchParams.get('maxPlayers')}`
+			`"apikey=${url.searchParams.get('apikey')}", ${url.searchParams.get('placeId')}, ${url.searchParams.get('port')}, "${url.searchParams.get('jobId')}", ${url.searchParams.get('maxPlayers')}, "${url.searchParams.get('key')}"`
 		)
 
 		const sign = createSign('SHA1')
@@ -37,14 +37,9 @@ export const GET: RequestHandler = async ({ url }) => {
 		return text('--rbxsig%' + signature + '%\r\n' + scriptNew2013Args)
 	}
 
-	const scriptNewArgs = scriptNew.replace(
-		'{1}',
-		`"apikey=${url.searchParams.get('apikey')}", ${url.searchParams.get('placeId')}, ${url.searchParams.get('port')}, "${url.searchParams.get('jobId')}", ${url.searchParams.get('maxPlayers')}`
-	)
-
 	const sign = createSign('SHA1')
-	sign.update('\r\n' + scriptNewArgs)
+	sign.update('\r\n' + scriptNew)
 	const signature = sign.sign(env.CLIENT_PRIVATE_KEY as string, 'base64')
 
-	return text('--rbxsig%' + signature + '%\r\n' + scriptNewArgs)
+	return text('--rbxsig%' + signature + '%\r\n' + scriptNew)
 }

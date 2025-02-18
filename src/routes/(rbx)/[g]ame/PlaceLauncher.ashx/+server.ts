@@ -6,6 +6,7 @@ import { eq, and, lt } from 'drizzle-orm'
 import { env } from '$env/dynamic/private'
 import { RateLimiter } from 'sveltekit-rate-limiter/server'
 import { deleteJob } from '$lib/games/deleteJob'
+import * as jose from 'jose'
 
 const limiter = new RateLimiter({
 	IP: [2, '10s']
@@ -187,8 +188,18 @@ export const fallback: RequestHandler = async (event) => {
 	placeLauncherJson.jobId = instanceNew.jobid
 	placeLauncherJson.status = 1
 	try {
+		const secret = new TextEncoder().encode(env.ASSET_ACCESS_KEY as string)
+
+		const alg = 'HS256'
+
+		const jwt = await new jose.SignJWT({ jobid: instanceNew.jobid })
+			.setProtectedHeader({ alg })
+			.setIssuedAt()
+			.setExpirationTime('1h')
+			.sign(secret)
+
 		const response = await fetch(
-			`http://${env.ARBITER_HOST}/opengame${clientversion}/${instanceNew.jobid}/${Number(placeid)}/${place.associatedgame.serversize}`
+			`http://${env.ARBITER_HOST}/opengame${clientversion}/${instanceNew.jobid}/${Number(placeid)}/${place.associatedgame.serversize}/${jwt}`
 		)
 		const gameresponse = await response.json()
 
