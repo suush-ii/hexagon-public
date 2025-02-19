@@ -6,6 +6,7 @@
 	import * as Tabs from '$src/components/ui/tabs'
 	import { Button } from '$src/components/ui/button'
 	import { Separator } from '$src/components/ui/separator'
+	import { Search } from 'lucide-svelte'
 	import EmptyCard from '$src/components/emptyCard.svelte'
 	import AvatarCard from '$src/components/avatar/avatarCard.svelte'
 	import CreateOutfitModal from '$src/components/avatar/createOutfitModal.svelte'
@@ -18,6 +19,8 @@
 	import { page } from '$app/stores'
 
 	import type { PageData } from './$types'
+	import { Input } from '$src/components/ui/input'
+	import { goto } from '$app/navigation'
 
 	$: categoryParams = $page.url.searchParams.get('category') ?? 'hats'
 
@@ -86,6 +89,19 @@
 
 	function brickColorToBg(color: number | undefined) {
 		return colorArray.find((x) => x.number === color)?.color
+	}
+
+	let searchQuery = $page.url.searchParams.get('search')
+
+	function search() {
+		let query = new URLSearchParams($page.url.searchParams.toString())
+
+		query.delete('search')
+		if (searchQuery) {
+			query.set('search', searchQuery)
+		}
+
+		goto(`?${query.toString()}`)
 	}
 </script>
 
@@ -168,18 +184,37 @@
 				value={$page.url.searchParams.get('tab') === 'outfits' ? 'outfits' : 'wardrobe'}
 				class="w-full h-full"
 			>
-				<Tabs.List class="!rounded-b-none rounded-t-xl">
-					<a href="?tab=wardrobe"
-						><Tabs.Trigger class="pointer-events-none !rounded-b-none rounded-t-xl" value="wardrobe"
-							>Wardrobe</Tabs.Trigger
-						></a
-					>
-					<a href="?tab=outfits"
-						><Tabs.Trigger class="pointer-events-none !rounded-b-none rounded-t-xl" value="outfits"
-							>Outfits</Tabs.Trigger
-						></a
-					>
-				</Tabs.List>
+				<div class="flex gap-x-20">
+					<Tabs.List class="!rounded-b-none rounded-t-xl">
+						<a href="?tab=wardrobe"
+							><Tabs.Trigger
+								class="pointer-events-none !rounded-b-none rounded-t-xl"
+								value="wardrobe">Wardrobe</Tabs.Trigger
+							></a
+						>
+						<a href="?tab=outfits"
+							><Tabs.Trigger
+								class="pointer-events-none !rounded-b-none rounded-t-xl"
+								value="outfits">Outfits</Tabs.Trigger
+							></a
+						>
+					</Tabs.List>
+
+					<Input
+						bind:value={searchQuery}
+						on:keyup={(event) => {
+							if (event.key === 'Enter') {
+								search()
+							}
+						}}
+						type="text"
+						maxlength={128}
+						class="w-fit ml-auto"
+						direction="r"
+						icon={Search}
+					/>
+				</div>
+
 				<Separator />
 				{#if $page.url.searchParams.get('tab') === 'wardrobe' || !$page.url.searchParams.get('tab')}
 					<Tabs.Content
@@ -229,6 +264,12 @@
 						<h1 class="text-2xl leading-none tracking-tight font-semibold text-left">
 							Currently Wearing
 						</h1>
+
+						{#if data?.inventoryWearing?.length === 0}
+							<EmptyCard>
+								<h5>You're not wearing anything! Why not put something on?</h5>
+							</EmptyCard>
+						{/if}
 
 						<div class="flex flex-wrap gap-4">
 							{#each data?.inventoryWearing ?? [] as item}

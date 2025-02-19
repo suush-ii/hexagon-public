@@ -1,7 +1,7 @@
 import type { PageServerLoad } from './$types'
 import { db } from '$src/lib/server/db'
 import { inventoryTable, usersTable, outfitsTable } from '$lib/server/schema'
-import { eq, desc, and, sql, count } from 'drizzle-orm'
+import { eq, desc, and, sql, count, ilike } from 'drizzle-orm'
 import { getPageNumber } from '$lib/utils'
 import { z } from 'zod'
 import { assetTypes } from '$lib'
@@ -16,6 +16,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 	let pageWearing = getPageNumber(url, 'pagewearing')
 	let pageOutfits = getPageNumber(url, 'pageoutfits')
 	const result = await z.enum(assetTypes).safeParseAsync(url.searchParams.get('category'))
+	const search = url.searchParams.get('search') ?? ''
 
 	const categoryParams = result.success ? result.data : 'hats'
 
@@ -36,11 +37,13 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 	const assetCount = await db
 		.select({ count: sql<number>`count(DISTINCT ${inventoryTable.itemid})::INTEGER`.as('count') })
 		.from(inventoryTable)
+		.innerJoin(assetTable, eq(inventoryTable.itemid, assetTable.assetid))
 		.where(
 			and(
 				eq(inventoryTable.userid, locals.user.userid),
 				eq(inventoryTable.wearing, false),
-				eq(inventoryTable.itemtype, categoryParams)
+				eq(inventoryTable.itemtype, categoryParams),
+				ilike(assetTable.assetname, `%${search}%`)
 			)
 		)
 		.limit(1)
@@ -48,6 +51,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 	const assetWearingCount = await db
 		.select({ count: sql<number>`count(DISTINCT ${inventoryTable.itemid})::INTEGER`.as('count') })
 		.from(inventoryTable)
+		.innerJoin(assetTable, eq(inventoryTable.itemid, assetTable.assetid))
 		.where(and(eq(inventoryTable.userid, locals.user.userid), eq(inventoryTable.wearing, true)))
 		.limit(1)
 
@@ -70,7 +74,8 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 			and(
 				eq(inventoryTable.wearing, false),
 				eq(inventoryTable.itemtype, categoryParams),
-				eq(inventoryTable.userid, locals.user.userid)
+				eq(inventoryTable.userid, locals.user.userid),
+				ilike(assetTable.assetname, `%${search}%`)
 			)
 		)
 		.orderBy(desc(inventoryTable.itemid), desc(inventoryTable.obatineddate))
@@ -99,14 +104,22 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 		;[outfitCount] = await db
 			.select({ count: count() })
 			.from(outfitsTable)
-			.where(eq(outfitsTable.ownerid, locals.user.userid))
+			.where(
+				and(
+					eq(outfitsTable.ownerid, locals.user.userid),
+					ilike(outfitsTable.outfitname, `%${search}%`)
+				)
+			)
 
 		if (outfitCount.count < (page - 1) * size) {
 			pageOutfits = 1
 		}
 
 		outfits = await db.query.outfitsTable.findMany({
-			where: eq(outfitsTable.ownerid, locals.user.userid),
+			where: and(
+				eq(outfitsTable.ownerid, locals.user.userid),
+				ilike(outfitsTable.outfitname, `%${search}%`)
+			),
 			columns: {
 				assets: true,
 				avatarbody: true,
