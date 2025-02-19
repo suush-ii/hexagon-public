@@ -23,11 +23,11 @@
 	export let itemsCount: number
 </script>
 
-<div class="flex gap-x-2">
+<div class="flex gap-x-2 min-h-[85rem] h-full">
 	<div class="flex flex-col w-full max-w-[14rem]">
 		{#each categories as category}
 			<button
-				class="p-4 rounded-xl {category.value === selected.value
+				class="p-3 rounded-xl {category.value === selected.value
 					? 'bg-muted-foreground/10'
 					: 'hover:bg-muted-foreground/10'}"
 				on:click={() => {
