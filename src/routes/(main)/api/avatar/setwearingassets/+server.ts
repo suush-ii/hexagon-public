@@ -100,7 +100,10 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 		item.asset.assetType === 'games' ||
 		item.asset.assetType === 'audio' ||
 		item.asset.assetType === 'images' ||
-		item.asset.assetType === 'decals'
+		item.asset.assetType === 'decals' ||
+		item.asset.assetType === 'models' ||
+		item.asset.assetType === 'gamepasses' ||
+		item.asset.assetType === 'badges'
 	) {
 		return error(400, { success: false, message: 'You cannot wear this asset.', data: {} })
 	}
