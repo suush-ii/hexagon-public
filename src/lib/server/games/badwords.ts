@@ -130,6 +130,8 @@ export const badwords = [
 	'guinne',
 	'hardcoresex',
 	'hardon',
+	'heil',
+	'hitler',
 	'hoe',
 	'hooker',
 	'horniest',
