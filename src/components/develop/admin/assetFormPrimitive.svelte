@@ -144,7 +144,7 @@
 				type="number"
 				min={0}
 				max={10000}
-				bind:value={$formData.stock}
+				bind:value={$formData.stocklimit}
 			/>
 			<Form.Description>Up to 10000. Leave at 0 to ignore.</Form.Description>
 		</Form.Control>
