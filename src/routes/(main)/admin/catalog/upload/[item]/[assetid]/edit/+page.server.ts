@@ -125,7 +125,7 @@ export const actions: Actions = {
 		}
 
 		if (item.limited && data.limited === true) {
-			return setError(form, 'limited', 'This item is already limited.')
+			data.limited = false
 		}
 
 		await updateAsset(
