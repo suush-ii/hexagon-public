@@ -250,47 +250,49 @@
 						/>
 					</Tabs.Content>
 				{/if}
-				<Tabs.Content
-					value="outfits"
-					class="mx-auto text-center px-32 mt-8 flex flex-col gap-y-8 h-full"
-				>
-					<Button
-						variant="outline"
-						size="sm"
-						class="ml-auto"
-						on:click={() => {
-							createOutfitModal.open()
-						}}>Create New Outfit</Button
+				{#if $page.url.searchParams.get('tab') === 'outfits'}
+					<Tabs.Content
+						value="outfits"
+						class="mx-auto text-center px-32 mt-8 flex flex-col gap-y-8 h-full"
 					>
-					{#if data?.outfits?.length === 0}
-						<EmptyCard>
-							<h5>You don't have any outfits yet! Why not create one?</h5>
-						</EmptyCard>
-					{/if}
-
-					<div class="flex flex-wrap gap-4">
-						{#if data.outfits}
-							{#each data.outfits as outfit}
-								<OutfitCard
-									outfitId={outfit.outfitid}
-									outfitName={outfit.outfitname ?? ''}
-									outfitUrl={outfit.avatarbody ?? ''}
-									created={outfit.created}
-									bind:trig
-								/>
-							{/each}
+						<Button
+							variant="outline"
+							size="sm"
+							class="ml-auto"
+							on:click={() => {
+								createOutfitModal.open()
+							}}>Create New Outfit</Button
+						>
+						{#if data?.outfits?.length === 0}
+							<EmptyCard>
+								<h5>You don't have any outfits yet! Why not create one?</h5>
+							</EmptyCard>
 						{/if}
-					</div>
 
-					<div class="mt-auto">
-						<PaginationWrapper
-							count={data.outfitCount ?? 0}
-							size={10}
-							url={$page.url}
-							queryName={'pageoutfits'}
-						/>
-					</div>
-				</Tabs.Content>
+						<div class="flex flex-wrap gap-4">
+							{#if data.outfits}
+								{#each data.outfits as outfit}
+									<OutfitCard
+										outfitId={outfit.outfitid}
+										outfitName={outfit.outfitname ?? ''}
+										outfitUrl={outfit.avatarbody ?? ''}
+										created={outfit.created}
+										bind:trig
+									/>
+								{/each}
+							{/if}
+						</div>
+
+						<div class="mt-auto">
+							<PaginationWrapper
+								count={data.outfitCount ?? 0}
+								size={10}
+								url={$page.url}
+								queryName={'pageoutfits'}
+							/>
+						</div>
+					</Tabs.Content>
+				{/if}
 			</Tabs.Root>
 		</div>
 	</div>
