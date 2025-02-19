@@ -31,7 +31,7 @@ export const load: LayoutServerLoad = async ({
 	const result = await z.number().safeParseAsync(Number(params.gameid))
 
 	if (result.success === false) {
-		error(400, { success: false, message: 'Malformed input.' })
+		redirect(302, '/games')
 	}
 
 	const place = await db.query.placesTable.findFirst({
