@@ -22,7 +22,7 @@
 	class="flex flex-col gap-y-4 p-6 supports-backdrop-blur:bg-background/60 border-b bg-muted-foreground/5 shadow-sm backdrop-blur w-[26rem]"
 >
 	<div class="flex gap-x-4">
-		<Avatar {state} {userid} {username} />
+		<a href="/users/{userid}/profile"><Avatar {state} {userid} {username} /></a>
 
 		<h1 class="text-xl truncate">{username}</h1>
 	</div>
