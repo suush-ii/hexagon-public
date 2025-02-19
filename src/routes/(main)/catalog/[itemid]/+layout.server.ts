@@ -217,7 +217,7 @@ export const load: LayoutServerLoad = async ({ params, locals, url }) => {
 				}
 			}
 		},
-		limit: 10,
+		limit: 14,
 		orderBy: sql<number>`random()`
 	})
 

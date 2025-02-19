@@ -10,7 +10,7 @@ import {
 	assetTable,
 	inventoryTable
 } from '$src/lib/server/schema'
-import { and, count, desc, eq, or, sum } from 'drizzle-orm'
+import { and, count, desc, eq, or, sql, sum } from 'drizzle-orm'
 import { z } from 'zod'
 import type { HexagonBadges, userState } from '$lib/types'
 import { getUserState } from '$lib/server/userState'
@@ -401,6 +401,28 @@ export const load: PageServerLoad = async ({ params, locals, url }) => {
 		.limit(sizeInventory)
 		.offset((pageInventory - 1) * sizeInventory)
 
+	const recommendations = await db.query.assetTable.findMany({
+		where: and(
+			eq(assetTable.assetType, category.value),
+			eq(assetTable.moderationstate, 'approved'),
+			eq(assetTable.onsale, true)
+		),
+		columns: {
+			assetname: true,
+			assetid: true,
+			creatoruserid: true
+		},
+		with: {
+			author: {
+				columns: {
+					username: true
+				}
+			}
+		},
+		limit: 14,
+		orderBy: sql<number>`random()`
+	})
+
 	return {
 		username: user.username,
 		userid: user.userid,
@@ -429,6 +451,7 @@ export const load: PageServerLoad = async ({ params, locals, url }) => {
 		registeredclan: user.registeredclan,
 		inventoryWearing,
 		inventory,
-		inventoryCount: inventoryCount.count
+		inventoryCount: inventoryCount.count,
+		recommendations
 	}
 }
