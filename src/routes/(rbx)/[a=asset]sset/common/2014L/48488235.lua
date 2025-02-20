@@ -129,7 +129,6 @@ function getMembershipTypeIcon(membershipType,playerName, playerId)
 			["wuff"] = "http://www.roblox.com/asset/?id=120826306242727",
 			["jamrio"] = "http://www.roblox.com/asset/?id=87827241009264",
 			["cone"] = "http://www.roblox.com/asset/?id=96531513565043",
-			["breen"] = "",
 		}
 
 		-- if response == "none" then
