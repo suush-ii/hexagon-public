@@ -42,6 +42,9 @@ local Images = {
 	LightPopupBottom = '97109175',
 }
 
+
+local PERFORM_CLAN_CHECK = false
+
 local BASE_TWEEN = .25 
 
 local MOUSE_HOLD_TIME = .15
@@ -117,35 +120,27 @@ function getMembershipTypeIcon(membershipType,playerName, playerId)
 		end
 	elseif membershipType == Enum.MembershipType.None then
 		
-		local url =  game:GetService("ContentProvider").BaseUrl:lower() .. "api/clan?userId=" .. tostring(playerId)
+		-- do clan check 
+		if not PERFORM_CLAN_CHECK then
+			return ""
+		end
 		
-		local response = "none"
-		
-		ypcall(function() 
-			response = game:HttpPostAsync(url, "HexagonClanRequest") 
-		end)
-	
 		local hex_clans = {
 			["wuff"] = "http://www.roblox.com/asset/?id=120826306242727",
 			["jamrio"] = "http://www.roblox.com/asset/?id=87827241009264",
 			["cone"] = "http://www.roblox.com/asset/?id=96531513565043",
+			["none"] = "",
 		}
+		local url =  game:GetService("ContentProvider").BaseUrl:lower() .. "api/clan?userId=" .. tostring(playerId) -- collect clan 
 
-		-- if response == "none" then
-		-- 	return ""
-		-- elseif response == "wuff" then
-		-- 	return "http://www.roblox.com/asset/?id=120826306242727"
-		-- elseif response == "jamrio" then
-		-- 	return "http://www.roblox.com/asset/?id=87827241009264"
-		-- elseif response == "cone" then
-		-- 	return "http://www.roblox.com/asset/?id=96531513565043"
-		-- end
-		
-		if response ~= "none" then
-			return hex_clans[response]
-		else
+		local req_success, req_res = ypcall(game.HttpPostAsync, game, url, "HexagonClanRequest")
+
+		if not req_success then
 			return ""
+		elseif req_success and req_res ~= nil then
+			return hex_clans[req_res]
 		end
+		-- end clan check
 
 		return ""
 	elseif membershipType == Enum.MembershipType.BuildersClub then

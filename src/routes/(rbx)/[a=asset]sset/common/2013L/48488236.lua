@@ -43,6 +43,8 @@ local Images = {
 	LightPopupBottom = '97109175',
 }
 
+local PERFORM_CLAN_CHECK = true
+
 local BASE_TWEEN = .25 
 
 local MOUSE_HOLD_TIME = .15
@@ -94,7 +96,8 @@ end
 	membershipType		Enum of membership status
 	@Return: 			string of image asset
 --]]
-function getMembershipTypeIcon(membershipType,playerName)
+function getMembershipTypeIcon(membershipType,playerName,playerId)
+
 	if ADMINS[string.lower(playerName)]~=nil then
 		if ADMINS[string.lower(playerName)] == 1 then
 			return "http://www.roblox.com/asset/?id=99727663"
@@ -102,6 +105,27 @@ function getMembershipTypeIcon(membershipType,playerName)
 			return ADMINS[string.lower(playerName)]
 		end
 	elseif membershipType == Enum.MembershipType.None then
+		if not PERFORM_CLAN_CHECK then
+			return ""
+		end
+		-- do clan check 
+		local hex_clans = {
+			["wuff"] = "http://www.roblox.com/asset/?id=120826306242727",
+			["jamrio"] = "http://www.roblox.com/asset/?id=87827241009264",
+			["cone"] = "http://www.roblox.com/asset/?id=96531513565043",
+			["none"] = "",
+		}
+		local url =  game:GetService("ContentProvider").BaseUrl:lower() .. "api/clan?userId=" .. tostring(playerId) -- collect clan 
+
+		local req_success, req_res = ypcall(game.HttpPostAsync, game, url, "HexagonClanRequest")
+
+		if not req_success then
+			return ""
+		elseif req_success and req_res ~= nil then
+			return hex_clans[req_res]
+		end
+		-- end clan check
+
 		return ""
 	elseif membershipType == Enum.MembershipType.BuildersClub then
 		return "rbxasset://textures/ui/TinyBcIcon.png"
