@@ -45,9 +45,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
 				eq(inventoryTable.userid, user),
 				or(
 					eq(inventoryTable.wearing, true),
-					request.headers.get('requester') === 'Server' || !placeId
-						? undefined
-						: eq(inventoryTable.itemtype, 'gears')
+					!placeId ? undefined : eq(inventoryTable.itemtype, 'gears')
 				) // wear all gear
 			)
 		)

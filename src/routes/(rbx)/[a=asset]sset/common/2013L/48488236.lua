@@ -17,8 +17,8 @@ local ADMINS =
 	vista = 'rbxassetid://11686', -- HEXAGON ASSET
 	Chess = 'rbxassetid://11441', -- HEXAGON ASSET
 	brandan = 'rbxassetid://11458', -- HEXAGON ASSET
-	NailsRails = 'rbxassetid://13124', -- HEXAGON ASSET
-	Radmaster = 'rbxassetid://13676', -- HEXAGON ASSET
+	nailsrails = 'rbxassetid://25262', -- HEXAGON ASSET
+	radmaster = 'rbxassetid://13676', -- HEXAGON ASSET
 }
 
 local Images = {

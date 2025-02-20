@@ -3,7 +3,7 @@
 
 local sleeptime, url, timeout = 0, "http://www.roblox.com", 0
 
-local access, placeId, port, JobId, maxPlayers = {1}
+local access, placeId, port, JobId, maxPlayers, key = {1}
 
 local logs = {}
 
@@ -98,6 +98,7 @@ pcall(function() settings()["Task Scheduler"].PriorityMethod = Enum.PriorityMeth
 settings().Network.PhysicsSend = Enum.PhysicsSendMethod.TopNErrors
 settings().Network.ExperimentalPhysicsEnabled = true
 settings().Network.WaitingForCharacterLogRate = 100
+game:GetService("CookiesService"):SetCookieValue("TEST", "WWWWWWWdfs")
 pcall(function() settings().Diagnostics:LegacyScriptMode() end)
 
 -----------------------------------START GAME SHARED SCRIPT------------------------------
@@ -236,7 +237,7 @@ if placeId~=nil and url~=nil then
 
 	-- load the game
 	local success, result = pcall(function()
-		game:Load(url .. "/asset/?id=" .. placeId .. "&" .. access)
+		game:Load(url .. "/asset/" .. key)
 	end)
 
 	if not success then

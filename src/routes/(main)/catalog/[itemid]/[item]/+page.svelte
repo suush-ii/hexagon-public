@@ -14,6 +14,7 @@
 	import Favorite from '$src/components/favorite.svelte'
 	import PaginationWrapper from '$src/components/pagnationWrapper.svelte'
 	import UserImage from '$src/components/userimage.svelte'
+	import Recommendations from '$src/components/catalog/recommendations.svelte'
 
 	import { toast } from 'svelte-sonner'
 	import { interpolate } from '$lib/poly-i18n/interpolate'
@@ -400,28 +401,12 @@
 			<div class="flex flex-row flex-wrap gap-8">
 				{#if data.recommendations.length > 0}
 					{#each data.recommendations as item}
-						<div class="text-center text-lg w-40">
-							<a href="/catalog/{item.assetid}/{slugify(item.assetname)}">
-								<Avatar
-									css="w-40 h-40 rounded-xl aspect-square"
-									itemId={item.assetid}
-									itemName={item.assetname}
-									disable3d={true}
-								/></a
-							>
-							<a href="/catalog/{item.assetid}/{slugify(item.assetname)}">
-								<h1 class="line-clamp-2 tracking-tighter break-words text-xl hover:underline">
-									{item.assetname}
-								</h1></a
-							>
-
-							<h1 class="text-base text-muted-foreground mt-2 line-clamp-2">
-								{data.t('catalog.creator')}:
-								<a href="/users/{item.creatoruserid}/profile"
-									><span class="text-primary hover:underline">{item.author.username}</span></a
-								>
-							</h1>
-						</div>
+						<Recommendations
+							assetid={item.assetid}
+							assetname={item.assetname}
+							creatoruserid={item.creatoruserid}
+							username={item.author.username}
+						/>
 					{/each}
 				{:else}
 					<EmptyCard />

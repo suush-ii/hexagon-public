@@ -5,7 +5,7 @@ local sleeptime, baseUrl, timeout = 0, "roblox.com", 0
 local protocol = "http://"
 local assetGameSubdomain = "www"
 
-local access, placeId, port, JobId, maxPlayers = {1}
+local access, placeId, port, JobId, maxPlayers = ...
 
 local logs = {}
 

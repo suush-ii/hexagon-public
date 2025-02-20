@@ -1,6 +1,6 @@
 import { db } from '$src/lib/server/db'
 import { auth } from '$src/lib/server/lucia'
-import { assetTable } from '$src/lib/server/schema'
+import { assetTable, inventoryTable } from '$src/lib/server/schema'
 import { error, fail, text, type RequestHandler } from '@sveltejs/kit'
 import { LuciaError } from 'lucia'
 import { createHash } from 'node:crypto'
@@ -86,15 +86,25 @@ export const POST: RequestHandler = async ({ cookies, request, url }) => {
 		}
 	}
 
-	await db.insert(assetTable).values({
-		assetname: result.data.Name,
-		assetType: 'models',
-		creatoruserid: session.userid,
-		simpleasseturl: fileName,
-		moderationstate: moderationState,
-		price: 0,
-		description: result.data.Description,
-		genres: [result.data.Genre]
+	const [assetResponse] = await db
+		.insert(assetTable)
+		.values({
+			assetname: result.data.Name,
+			assetType: 'models',
+			creatoruserid: session.userid,
+			simpleasseturl: fileName,
+			moderationstate: moderationState,
+			price: 0,
+			description: result.data.Description,
+			genres: [result.data.Genre]
+		})
+		.returning({ assetid: assetTable.assetid })
+
+	await db.insert(inventoryTable).values({
+		itemid: assetResponse.assetid,
+		userid: session.userid,
+		wearing: false,
+		itemtype: 'models'
 	})
 
 	return text('')

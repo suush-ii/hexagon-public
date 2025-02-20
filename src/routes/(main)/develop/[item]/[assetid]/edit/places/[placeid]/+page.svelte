@@ -88,7 +88,7 @@
 					{#each versions as version}
 						<Table.Row>
 							<Table.Cell>{version.rank}</Table.Cell>
-							<Table.Cell>{version.time.toLocaleDateString('en-US')}</Table.Cell>
+							<Table.Cell>{version.time.toLocaleString('en-US')}</Table.Cell>
 							<Table.Cell
 								><Button
 									size="sm"

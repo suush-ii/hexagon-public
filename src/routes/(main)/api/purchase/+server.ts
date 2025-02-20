@@ -3,7 +3,7 @@ import type { RequestHandler } from './$types'
 import { db } from '$src/lib/server/db'
 import { assetTable } from '$lib/server/schema/assets'
 import { transactionsTable, inventoryTable, usersTable, outfitsTable } from '$lib/server/schema'
-import { and, eq, ne } from 'drizzle-orm'
+import { and, count, eq, ne } from 'drizzle-orm'
 import { z } from 'zod'
 
 const itemSchema = z.object({
@@ -43,7 +43,8 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 			last7dayscounter: true,
 			lastweekreset: true,
 			stock: true,
-			limited: true
+			limited: true,
+			stocklimit: true
 		},
 		with: {
 			author: {
@@ -107,6 +108,22 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 			message: 'You already own this item!',
 			data: {}
 		})
+	}
+
+	if (item.stocklimit !== null && item.limited === 'limitedu') {
+		const [owned] = await db
+			.select({ count: count() })
+			.from(inventoryTable)
+			.where(and(eq(inventoryTable.userid, locals.user.userid), eq(inventoryTable.itemid, itemid)))
+			.limit(1)
+
+		if (owned.count >= item.stocklimit) {
+			return error(400, {
+				success: false,
+				message: 'You have reached the buy limit of this item!',
+				data: {}
+			})
+		}
 	}
 
 	if (user.coins < item.price) {

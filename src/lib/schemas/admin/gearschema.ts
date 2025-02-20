@@ -12,7 +12,8 @@ export const formSchema = z.object({
 	asset: shape.asset,
 	genres: shape.genres,
 	gearattributes: shape.gearattributes,
-	stock: shapeAsset.stock
+	stock: shapeAsset.stock,
+	stocklimit: shapeAsset.stocklimit
 })
 
 export type FormSchema = typeof formSchema

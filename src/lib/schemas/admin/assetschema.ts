@@ -9,7 +9,8 @@ export const formSchema = z.object({
 	price: shape.price,
 	asset: shape.asset,
 	genres: shape.genres,
-	stock: z.coerce.number().int().min(0).max(10000).default(0)
+	stock: z.coerce.number().int().min(0).max(10000).default(0),
+	stocklimit: z.coerce.number().int().min(0).max(10000).default(0)
 })
 
 export type FormSchema = typeof formSchema

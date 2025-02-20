@@ -87,6 +87,16 @@ export async function uploadAsset(
 			rap = 0
 		}
 
+		let stocklimit = undefined
+
+		if (form.data.stocklimit) {
+			stocklimit = form.data.stocklimit
+		}
+
+		if (form.data.stocklimit === 0) {
+			stocklimit = undefined
+		}
+
 		let Key = item
 
 		if (
@@ -225,6 +235,7 @@ export async function uploadAsset(
 					genres: form.data.genres,
 					stock,
 					limited,
+					stocklimit,
 					recentaverageprice: rap
 				})
 				.returning({ assetid: assetTable.assetid })
@@ -247,6 +258,7 @@ export async function uploadAsset(
 					gearattributes: form.data.gearattributes,
 					stock,
 					limited,
+					stocklimit,
 					recentaverageprice: rap
 				})
 				.returning({ assetid: assetTable.assetid })

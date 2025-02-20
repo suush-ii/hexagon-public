@@ -6,6 +6,7 @@
 	import * as Tabs from '$src/components/ui/tabs'
 	import { Button } from '$src/components/ui/button'
 	import { Separator } from '$src/components/ui/separator'
+	import { Search } from 'lucide-svelte'
 	import EmptyCard from '$src/components/emptyCard.svelte'
 	import AvatarCard from '$src/components/avatar/avatarCard.svelte'
 	import CreateOutfitModal from '$src/components/avatar/createOutfitModal.svelte'
@@ -18,6 +19,8 @@
 	import { page } from '$app/stores'
 
 	import type { PageData } from './$types'
+	import { Input } from '$src/components/ui/input'
+	import { goto } from '$app/navigation'
 
 	$: categoryParams = $page.url.searchParams.get('category') ?? 'hats'
 
@@ -86,6 +89,19 @@
 
 	function brickColorToBg(color: number | undefined) {
 		return colorArray.find((x) => x.number === color)?.color
+	}
+
+	let searchQuery = $page.url.searchParams.get('search')
+
+	function search() {
+		let query = new URLSearchParams($page.url.searchParams.toString())
+
+		query.delete('search')
+		if (searchQuery) {
+			query.set('search', searchQuery)
+		}
+
+		goto(`?${query.toString()}`)
 	}
 </script>
 
@@ -168,18 +184,37 @@
 				value={$page.url.searchParams.get('tab') === 'outfits' ? 'outfits' : 'wardrobe'}
 				class="w-full h-full"
 			>
-				<Tabs.List class="!rounded-b-none rounded-t-xl">
-					<a href="?tab=wardrobe"
-						><Tabs.Trigger class="pointer-events-none !rounded-b-none rounded-t-xl" value="wardrobe"
-							>Wardrobe</Tabs.Trigger
-						></a
-					>
-					<a href="?tab=outfits"
-						><Tabs.Trigger class="pointer-events-none !rounded-b-none rounded-t-xl" value="outfits"
-							>Outfits</Tabs.Trigger
-						></a
-					>
-				</Tabs.List>
+				<div class="flex gap-x-20">
+					<Tabs.List class="!rounded-b-none rounded-t-xl">
+						<a href="?tab=wardrobe"
+							><Tabs.Trigger
+								class="pointer-events-none !rounded-b-none rounded-t-xl"
+								value="wardrobe">Wardrobe</Tabs.Trigger
+							></a
+						>
+						<a href="?tab=outfits"
+							><Tabs.Trigger
+								class="pointer-events-none !rounded-b-none rounded-t-xl"
+								value="outfits">Outfits</Tabs.Trigger
+							></a
+						>
+					</Tabs.List>
+
+					<Input
+						bind:value={searchQuery}
+						on:keyup={(event) => {
+							if (event.key === 'Enter') {
+								search()
+							}
+						}}
+						type="text"
+						maxlength={128}
+						class="w-fit ml-auto"
+						direction="r"
+						icon={Search}
+					/>
+				</div>
+
 				<Separator />
 				{#if $page.url.searchParams.get('tab') === 'wardrobe' || !$page.url.searchParams.get('tab')}
 					<Tabs.Content
@@ -230,6 +265,12 @@
 							Currently Wearing
 						</h1>
 
+						{#if data?.inventoryWearing?.length === 0}
+							<EmptyCard>
+								<h5>You're not wearing anything! Why not put something on?</h5>
+							</EmptyCard>
+						{/if}
+
 						<div class="flex flex-wrap gap-4">
 							{#each data?.inventoryWearing ?? [] as item}
 								<AvatarCard
@@ -250,47 +291,49 @@
 						/>
 					</Tabs.Content>
 				{/if}
-				<Tabs.Content
-					value="outfits"
-					class="mx-auto text-center px-32 mt-8 flex flex-col gap-y-8 h-full"
-				>
-					<Button
-						variant="outline"
-						size="sm"
-						class="ml-auto"
-						on:click={() => {
-							createOutfitModal.open()
-						}}>Create New Outfit</Button
+				{#if $page.url.searchParams.get('tab') === 'outfits'}
+					<Tabs.Content
+						value="outfits"
+						class="mx-auto text-center px-32 mt-8 flex flex-col gap-y-8 h-full"
 					>
-					{#if data?.outfits?.length === 0}
-						<EmptyCard>
-							<h5>You don't have any outfits yet! Why not create one?</h5>
-						</EmptyCard>
-					{/if}
-
-					<div class="flex flex-wrap gap-4">
-						{#if data.outfits}
-							{#each data.outfits as outfit}
-								<OutfitCard
-									outfitId={outfit.outfitid}
-									outfitName={outfit.outfitname ?? ''}
-									outfitUrl={outfit.avatarbody ?? ''}
-									created={outfit.created}
-									bind:trig
-								/>
-							{/each}
+						<Button
+							variant="outline"
+							size="sm"
+							class="ml-auto"
+							on:click={() => {
+								createOutfitModal.open()
+							}}>Create New Outfit</Button
+						>
+						{#if data?.outfits?.length === 0}
+							<EmptyCard>
+								<h5>You don't have any outfits yet! Why not create one?</h5>
+							</EmptyCard>
 						{/if}
-					</div>
 
-					<div class="mt-auto">
-						<PaginationWrapper
-							count={data.outfitCount ?? 0}
-							size={10}
-							url={$page.url}
-							queryName={'pageoutfits'}
-						/>
-					</div>
-				</Tabs.Content>
+						<div class="flex flex-wrap gap-4">
+							{#if data.outfits}
+								{#each data.outfits as outfit}
+									<OutfitCard
+										outfitId={outfit.outfitid}
+										outfitName={outfit.outfitname ?? ''}
+										outfitUrl={outfit.avatarbody ?? ''}
+										created={outfit.created}
+										bind:trig
+									/>
+								{/each}
+							{/if}
+						</div>
+
+						<div class="mt-auto">
+							<PaginationWrapper
+								count={data.outfitCount ?? 0}
+								size={10}
+								url={$page.url}
+								queryName={'pageoutfits'}
+							/>
+						</div>
+					</Tabs.Content>
+				{/if}
 			</Tabs.Root>
 		</div>
 	</div>

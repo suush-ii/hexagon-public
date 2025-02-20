@@ -10,13 +10,14 @@ import {
 	assetTable,
 	inventoryTable
 } from '$src/lib/server/schema'
-import { and, count, desc, eq, or, sum } from 'drizzle-orm'
+import { and, count, desc, eq, or, sql, sum } from 'drizzle-orm'
 import { z } from 'zod'
 import type { HexagonBadges, userState } from '$lib/types'
 import { getUserState } from '$lib/server/userState'
 import { getPageNumber } from '$lib/utils'
 import { imageSql, aliasedimageSql } from '$lib/server/games/getImage'
 import { alias } from 'drizzle-orm/pg-core'
+import { categories } from '$lib/users/inventoryCategories'
 
 async function addBadge(userId: number, badge: HexagonBadges, badges: string[]) {
 	if (badges.includes(badge)) {
@@ -351,6 +352,77 @@ export const load: PageServerLoad = async ({ params, locals, url }) => {
 		.orderBy(desc(inventoryTable.itemid), desc(inventoryTable.obatineddate))
 		.innerJoin(assetTable, eq(inventoryTable.itemid, assetTable.assetid))
 
+	const category =
+		categories.find((o) => o.value === url.searchParams.get('category')) ?? categories[3]
+
+	let pageInventory = getPageNumber(url, 'inventoryPage')
+
+	const sizeInventory = 28
+
+	const [inventoryCount] = await db
+		.select({ count: count() })
+		.from(inventoryTable)
+		.innerJoin(assetTable, eq(inventoryTable.itemid, assetTable.assetid))
+		.where(
+			and(
+				eq(inventoryTable.userid, Number(params.userId)),
+				eq(assetTable.assetType, category.value)
+			)
+		)
+		.limit(1)
+
+	if (inventoryCount.count < (pageInventory - 1) * sizeInventory) {
+		pageInventory = 1
+	}
+
+	const inventory = await db
+		.select({
+			assetname: assetTable.assetname,
+			price: assetTable.price,
+			assetid: assetTable.assetid,
+			creatoruserid: assetTable.creatoruserid,
+			updated: assetTable.updated,
+			sales: assetTable.sales,
+			favorites: assetTable.favorites,
+			limited: assetTable.limited,
+			recentaverageprice: assetTable.recentaverageprice,
+			author: { username: usersTable.username }
+		})
+		.from(inventoryTable)
+		.innerJoin(assetTable, eq(inventoryTable.itemid, assetTable.assetid))
+		.innerJoin(usersTable, eq(assetTable.creatoruserid, usersTable.userid))
+		.where(
+			and(
+				eq(inventoryTable.userid, Number(params.userId)),
+				eq(assetTable.assetType, category.value)
+			)
+		)
+		.orderBy(desc(inventoryTable.obatineddate))
+		.limit(sizeInventory)
+		.offset((pageInventory - 1) * sizeInventory)
+
+	const recommendations = await db.query.assetTable.findMany({
+		where: and(
+			eq(assetTable.assetType, category.value),
+			eq(assetTable.moderationstate, 'approved'),
+			eq(assetTable.onsale, true)
+		),
+		columns: {
+			assetname: true,
+			assetid: true,
+			creatoruserid: true
+		},
+		with: {
+			author: {
+				columns: {
+					username: true
+				}
+			}
+		},
+		limit: 14,
+		orderBy: sql<number>`random()`
+	})
+
 	return {
 		username: user.username,
 		userid: user.userid,
@@ -377,6 +449,9 @@ export const load: PageServerLoad = async ({ params, locals, url }) => {
 		playerbadges: badges,
 		badgeCount: badgeCount.count,
 		registeredclan: user.registeredclan,
-		inventoryWearing
+		inventoryWearing,
+		inventory,
+		inventoryCount: inventoryCount.count,
+		recommendations
 	}
 }

@@ -28,7 +28,7 @@
 
 		query.set(queryName, (pageNumber - 1).toString())
 
-		goto(`?${query.toString()}`)
+		goto(`?${query.toString()}`, { noScroll: true, keepFocus: true })
 	}
 
 	function nextPage() {
@@ -36,7 +36,7 @@
 
 		query.set(queryName, (pageNumber + 1).toString())
 
-		goto(`?${query.toString()}`)
+		goto(`?${query.toString()}`, { noScroll: true, keepFocus: true })
 	}
 
 	function pagebutton(value: number) {

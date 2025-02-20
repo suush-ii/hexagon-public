@@ -135,6 +135,22 @@
 		<Form.FieldErrors />
 	</Form.Field>
 
+	<Form.Field {form} name="stocklimit">
+		<Form.Control let:attrs>
+			<Form.Label>Purchase Limit (Per Person)</Form.Label>
+			<Input
+				{...attrs}
+				disabled={$submitting}
+				type="number"
+				min={0}
+				max={10000}
+				bind:value={$formData.stocklimit}
+			/>
+			<Form.Description>Up to 10000. Leave at 0 to ignore.</Form.Description>
+		</Form.Control>
+		<Form.FieldErrors />
+	</Form.Field>
+
 	<Form.Field {form} name="asset">
 		<Form.Control let:attrs>
 			<Form.Label>{friendlyName}</Form.Label>

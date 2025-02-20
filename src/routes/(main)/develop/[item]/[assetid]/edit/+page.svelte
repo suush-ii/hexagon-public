@@ -113,20 +113,20 @@
 						{#if place.startplace}
 							<div class="space-y-4">
 								<h1>Start Place</h1>
-								<div class="flex gap-x-4 items-center max-w-2xl">
-									<GameThumbnail
-										assetUrl={place.associatedgame.thumbnail?.simpleasseturl}
-										moderationState={place.associatedgame.thumbnail?.moderationstate}
-										gamename={data.assetname}
-										size="xl:h-[120px] h-fit w-fit"
-									/>
+								<a href="/develop/games/{data.assetid}/edit/places/{place.placeid}">
+									<div class="flex gap-x-4 items-center max-w-2xl">
+										<GameThumbnail
+											assetUrl={place.associatedgame.thumbnail?.simpleasseturl}
+											moderationState={place.associatedgame.thumbnail?.moderationstate}
+											gamename={data.assetname}
+											size="xl:h-[120px] h-fit w-fit"
+										/>
 
-									<a href="/develop/games/{data.assetid}/edit/places/{place.placeid}"
-										><h1 class="line-clamp-2 w-full max-w-xl hover:underline">
+										<h1 class="line-clamp-2 w-full max-w-xl hover:underline">
 											{data.assetname}
-										</h1></a
-									>
-								</div>
+										</h1>
+									</div>
+								</a>
 							</div>
 						{/if}
 					{/each}

@@ -35,6 +35,8 @@
 
 	import ViewItems from '$src/components/users/viewItems.svelte'
 
+	import Inventory from '$src/components/users/inventory.svelte'
+
 	import { clanImages } from '$lib'
 
 	const relativeTime = new RelativeTime()
@@ -439,5 +441,15 @@
 				/>
 			</div>
 		</div>
+	</div>
+
+	<div class="flex flex-col gap-y-2">
+		<h1 class="text-3xl font-semibold tracking-tight">Inventory</h1>
+
+		<Inventory
+			items={data.inventory}
+			itemsCount={data.inventoryCount}
+			recommendations={data.recommendations}
+		/>
 	</div>
 </div>
