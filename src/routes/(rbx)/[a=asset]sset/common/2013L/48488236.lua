@@ -123,6 +123,8 @@ function getMembershipTypeIcon(membershipType,playerName,playerId)
 			return ""
 		elseif req_success and req_res ~= nil then
 			return hex_clans[req_res]
+		elseif req_success and req_res == nil then
+			return ""
 		end
 		-- end clan check
 

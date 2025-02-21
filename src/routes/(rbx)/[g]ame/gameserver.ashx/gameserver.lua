@@ -78,11 +78,13 @@ local ReplicatedStorage = game:GetService('ReplicatedStorage')
 local scriptContext = game:GetService('ScriptContext')
 
 -- Do something very very illegal
+
 if ReplicatedStorage:FindFirstChild("HxOptout") then
 	return false
 else
 	pcall(function() scriptContext:AddCoreScriptLocal("CoreScripts/HxAdmin", scriptContext) end)
 end
+
 pcall(function() scriptContext:AddCoreScriptLocal("CoreScripts/EnergyCell", scriptContext) end)
 -- Stop doing something very illegal
 
