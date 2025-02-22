@@ -19,6 +19,7 @@ local ADMINS =
 	brandan = 'rbxassetid://11458', -- HEXAGON ASSET
 	nailsrails = 'rbxassetid://25262', -- HEXAGON ASSET
 	radmaster = 'rbxassetid://13676', -- HEXAGON ASSET
+	mallory = 'rbxassetid://161078086'
 }
 
 local Images = {
@@ -41,6 +42,8 @@ local Images = {
 	DarkPopupBottom = '100869219',
 	LightPopupBottom = '97109175',
 }
+
+local PERFORM_CLAN_CHECK = true
 
 local BASE_TWEEN = .25 
 
@@ -93,7 +96,8 @@ end
 	membershipType		Enum of membership status
 	@Return: 			string of image asset
 --]]
-function getMembershipTypeIcon(membershipType,playerName)
+function getMembershipTypeIcon(membershipType,playerName,playerId)
+
 	if ADMINS[string.lower(playerName)]~=nil then
 		if ADMINS[string.lower(playerName)] == 1 then
 			return "http://www.roblox.com/asset/?id=99727663"
