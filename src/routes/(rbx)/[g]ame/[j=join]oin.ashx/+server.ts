@@ -127,12 +127,21 @@ export const fallback: RequestHandler = async ({ url, locals }) => {
 		columns: {
 			discordid: true,
 			joindate: true,
-			registeredclan: true
+			registeredclan: true,
+			banid: true
 		}
 	})
 
 	if (!user?.discordid) {
 		return error(401, { success: false, message: 'Please link your discord account.', data: {} })
+	}
+
+	if (user.banid) {
+		return error(403, {
+			success: false,
+			message: 'You are banned.',
+			data: {}
+		})
 	}
 
 	const instance = await db.query.jobsTable.findFirst({
