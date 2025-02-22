@@ -30,7 +30,7 @@
 	$: outline = stateOutlineMap[state]
 
 	if (browser && !disable3d) {
-		dimension = localStorage.getItem('profileAvatarMode') === '3D' ? '3D' : '2D' // get preferred dimension
+		dimension = localStorage?.getItem('profileAvatarMode') === '3D' ? '3D' : '2D' // get preferred dimension
 	}
 
 	let attempt = 0

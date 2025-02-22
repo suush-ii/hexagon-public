@@ -24,7 +24,7 @@
 	export let disable3d = false
 
 	if (browser && !disable3d) {
-		dimension = localStorage.getItem('itemAvatarMode') === '3D' ? '3D' : '2D' // get preferred dimension
+		dimension = localStorage?.getItem('itemAvatarMode') === '3D' ? '3D' : '2D' // get preferred dimension
 	}
 
 	let src: string | undefined
@@ -138,10 +138,12 @@
 			class="absolute right-2 top-2"
 			on:click={() => {
 				dimension === '3D' ? (dimension = '2D') : (dimension = '3D')
-				localStorage.setItem('itemAvatarMode', dimension)
+				if (localStorage) {
+					localStorage.setItem('itemAvatarMode', dimension)
+				}
 				attempt = 0
 			}}>{dimension === '2D' ? '3D' : '2D'}</Button
 		>{/if}
 
-		<slot/>
+	<slot />
 </div>
