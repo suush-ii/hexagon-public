@@ -60,5 +60,5 @@
     "src/lib/poly-i18n/locales"
   ],
   "i18n-ally.keystyle": "flat",
-  "vscord.enabled": false
+  "vscord.app.privacyMode.enable": true,
 }
