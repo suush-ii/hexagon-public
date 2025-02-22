@@ -109,7 +109,7 @@ export const POST: RequestHandler = async ({ url }) => {
 		if (eventItem) {
 			const eventItemAward = await db.query.assetTable.findFirst({
 				where: eq(assetTable.assetid, eventItem.awardid),
-				columns: { assetType: true }
+				columns: { assetType: true, sales: true }
 			})
 
 			if (eventItemAward) {
@@ -128,6 +128,11 @@ export const POST: RequestHandler = async ({ url }) => {
 						wearing: false,
 						itemtype: eventItemAward.assetType
 					})
+
+					await tx
+						.update(assetTable)
+						.set({ sales: eventItemAward.sales + 1 })
+						.where(eq(assetTable.assetid, eventItem.awardid))
 				}
 			}
 		}
