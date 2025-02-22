@@ -347,7 +347,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 						obj: true,
 						itemtype: item ? item.assetType : null,
 						returnimg: true,
-						pose: userRender ? user[0].pose : null
+						pose: null
 					})
 				}
 			)
@@ -507,7 +507,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 					headshot: true,
 					obj: false,
 					returnimg: true,
-					pose: userRender ? user[0].pose : null
+					pose: null
 				})
 			})
 
