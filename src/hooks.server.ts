@@ -53,7 +53,6 @@ const protectedRoutes = [
 	'/users',
 	'/not-approved',
 	'/game/PlaceLauncher.ashx', // Join.ashx uses special auth
-	'/game/Join.ashx', // I might be crazy - brandan
 	'/ide/upload.aspx',
 	'/ide/publishing',
 	'/ide/newplace',
