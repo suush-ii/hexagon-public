@@ -22,7 +22,13 @@ const strictLimiter = new RateLimiter({
 
 export const load: PageServerLoad = async (event) => {
 	const session = await event.locals.auth.validate()
-	if (session) redirect(302, '/home')
+	if (session) {
+		if (event.url.searchParams.get('redirect')) {
+			return redirect(302, event.url.searchParams.get('redirect')!)
+		}
+
+		return redirect(302, '/home')
+	}
 
 	return {
 		form: await superValidate(zod(formSchema)),
