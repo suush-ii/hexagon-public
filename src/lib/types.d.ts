@@ -4,7 +4,8 @@ import {
 	gearAttributesZod,
 	hexagonBadges,
 	hexagonClans,
-	clientVersionsZod
+	clientVersionsZod,
+	posesZod
 } from '.'
 import type { SvelteComponent } from 'svelte'
 
@@ -31,6 +32,8 @@ export type renderStatus = 'pending' | 'completed'
 export type clientVersions = (typeof clientVersionsZod)[number]
 
 export type assetStates = 'pending' | 'approved' | 'rejected'
+
+export type poses = (typeof posesZod)[number]
 
 export type Component = $$Generic<typeof SvelteComponent<any, any, any>>
 

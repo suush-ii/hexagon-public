@@ -45,7 +45,8 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 			rightlegcolor: true,
 			torsocolor: true,
 			assets: true,
-			avatarbody: true
+			avatarbody: true,
+			pose: true
 		}
 	})
 
@@ -69,7 +70,8 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 				rightarmcolor: outfit.rightarmcolor!,
 				rightlegcolor: outfit.rightlegcolor!,
 				torsocolor: outfit.torsocolor!,
-				avatarbody: outfit.avatarbody!
+				avatarbody: outfit.avatarbody!,
+				pose: outfit.pose!
 			})
 			.where(eq(usersTable.userid, user.userid))
 

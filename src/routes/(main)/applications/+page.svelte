@@ -32,7 +32,7 @@
 	const { form: formData, enhance, submitting, message } = form
 
 	if (browser) {
-		let applicationid = localStorage.getItem('applicationid') ?? ''
+		let applicationid = localStorage?.getItem('applicationid') ?? ''
 
 		goto(`/applications/${applicationid}`)
 	}

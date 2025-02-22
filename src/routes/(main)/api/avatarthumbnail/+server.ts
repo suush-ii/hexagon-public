@@ -49,7 +49,8 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 					.select({
 						avatarbody: usersTable.avatarbody,
 						_3dmanifest: usersTable._3dmanifest,
-						avatarheadshot: usersTable.avatarheadshot
+						avatarheadshot: usersTable.avatarheadshot,
+						pose: usersTable.pose
 					})
 					.from(usersTable)
 					.where(eq(usersTable.userid, assetid))
@@ -260,7 +261,8 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 						headshot: false,
 						obj: false,
 						itemtype: item ? item.assetType : null,
-						returnimg: true
+						returnimg: true,
+						pose: userRender ? user[0].pose : null
 					})
 				}
 			)
@@ -344,7 +346,8 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 						headshot: false,
 						obj: true,
 						itemtype: item ? item.assetType : null,
-						returnimg: true
+						returnimg: true,
+						pose: userRender ? user[0].pose : null
 					})
 				}
 			)
@@ -503,7 +506,8 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 					associatedid: assetid.toString(),
 					headshot: true,
 					obj: false,
-					returnimg: true
+					returnimg: true,
+					pose: userRender ? user[0].pose : null
 				})
 			})
 

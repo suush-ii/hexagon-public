@@ -29,7 +29,8 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 			leftlegcolor: true,
 			rightarmcolor: true,
 			rightlegcolor: true,
-			torsocolor: true
+			torsocolor: true,
+			pose: true
 		},
 		where: eq(usersTable.userid, locals.user.userid)
 	})
@@ -148,7 +149,8 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 		countWearing: assetWearingCount[0].count,
 		form: await superValidate(zod(formSchema)),
 		outfits,
-		outfitCount: outfitCount?.count
+		outfitCount: outfitCount?.count,
+		pose: user?.pose
 	}
 }
 
@@ -183,7 +185,8 @@ export const actions: Actions = {
 				leftlegcolor: true,
 				rightarmcolor: true,
 				rightlegcolor: true,
-				torsocolor: true
+				torsocolor: true,
+				pose: true
 			}
 		})
 

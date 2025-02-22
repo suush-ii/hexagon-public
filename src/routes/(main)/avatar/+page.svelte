@@ -30,6 +30,7 @@
 
 	let open = false
 	let redrawing = false
+	let poseDraw = false
 
 	type BodyPart = 'Head' | 'Right Arm' | 'Torso' | 'Left Arm' | 'Right Leg' | 'Left Leg'
 	type ColorKey =
@@ -50,6 +51,13 @@
 		'Right Leg': 'rightLegColor',
 		'Left Leg': 'leftLegColor'
 	}
+
+	const poses = [
+		{ name: 'Normal', value: 'normal' },
+		{ name: 'Walking', value: 'walking' },
+		{ name: 'Sitting', value: 'sitting' },
+		{ name: 'Overlord', value: 'overlord' }
+	]
 
 	let trig = false
 
@@ -72,6 +80,23 @@
 		})
 
 		trig = !trig
+	}
+
+	async function savePose(pose: string) {
+		if (poseDraw === false) {
+			poseDraw = true
+
+			await fetch(`/api/avatar/setpose`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({ pose })
+			})
+
+			trig = !trig
+			poseDraw = false
+		}
 	}
 
 	async function redraw() {
@@ -124,6 +149,20 @@
 				<Button size="lg" variant="minimal" class="!px-0 hover:underline" on:click={redraw}
 					>Click here to re-draw it!</Button
 				>
+
+				<Tabs.Root bind:value={data.pose} class="w-full">
+					<Tabs.List class="w-full justify-around">
+						{#each poses as pose}
+							<Tabs.Trigger
+								class="w-full"
+								value={pose.value}
+								on:click={() => {
+									savePose(pose.value)
+								}}>{pose.name}</Tabs.Trigger
+							>
+						{/each}
+					</Tabs.List>
+				</Tabs.Root>
 			</div>
 
 			<h1 class="text-2xl leading-none tracking-tight font-semibold">Avatar Colors</h1>

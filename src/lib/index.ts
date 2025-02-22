@@ -76,6 +76,8 @@ export const hexagonBadges = [
 	'bloxxer'
 ]
 
+export const posesZod = ['normal', 'walking', 'sitting', 'overlord'] as const
+
 export const badgeImages: Record<HexagonBadges, string> = {
 	admin: '/hexagon128.png',
 	veteran,

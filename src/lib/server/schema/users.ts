@@ -18,6 +18,7 @@ import { gamesTable, logsTable, placesTable } from './games'
 import type { ActionTypes } from '../admin'
 import { assetTable } from './assets'
 import type { Action as moderationTypes } from '$src/routes/(main)/admin/users/moderateuser/schema'
+import type { poses } from '$lib/types'
 
 // with timestamps ALWAYS USE WITHTIMEZONE!!!
 
@@ -63,7 +64,8 @@ export const usersTable = pgTable('users', {
 	wipeouts: bigint('wipeouts', { mode: 'number' }).notNull().default(0),
 	registeredclan: text('registeredclan').$type<HexagonClans>(),
 	activejob: uuid('jobid'),
-	_2fasecret: text('_2fasecret')
+	_2fasecret: text('_2fasecret'),
+	pose: text('pose').$type<poses>().notNull().default('normal')
 })
 
 export const relationsTable = pgTable('relations', {

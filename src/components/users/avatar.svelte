@@ -183,7 +183,9 @@
 				class="absolute right-0"
 				on:click={() => {
 					dimension === '3D' ? (dimension = '2D') : (dimension = '3D')
-					localStorage.setItem('profileAvatarMode', dimension)
+					if (localStorage) {
+						localStorage.setItem('profileAvatarMode', dimension)
+					}
 					attempt = 0
 				}}>{dimension === '2D' ? '3D' : '2D'}</Button
 			>
