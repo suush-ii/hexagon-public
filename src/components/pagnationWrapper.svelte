@@ -70,7 +70,7 @@
 					<Pagination.Ellipsis />
 				</Pagination.Item>
 			{:else}
-				<a href="?{pagebutton(page.value)}">
+				<a href="?{pagebutton(page.value)}" data-sveltekit-noscroll>
 					<Pagination.Item>
 						<Pagination.Link {page} isActive={currentPage === page.value}>
 							{page.value}
