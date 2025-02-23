@@ -34,6 +34,7 @@
 		<li>Do not try to spam the website with requests to waste bandwidth, and slow the website.</li>
 		<li>Try to avoid real life politics, we are just here to have fun.</li>
 		<li>Use common sense at all times, if you think something breaks a rule just don't do it.</li>
+		<li>Do not use AI as part of the creation process for any Hexagon game or asset.</li>
 	</ul>
 	<p>
 		Hexagon is not responsible for any user actions. We do not agree with any user opinion nor
