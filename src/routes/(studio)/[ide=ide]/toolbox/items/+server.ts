@@ -13,10 +13,13 @@ const toolboxSchema = z.object({
 		'FreeDecals',
 		'FreeMeshes',
 		'FreeAudios',
+		'FreeAnimations',
 		'RecentDecals',
 		'RecentModels',
 		'MyModels',
-		'MyDecals'
+		'MyDecals',
+		'MyAudios',
+		'MyAnimations'
 	]),
 	keyword: z.string(),
 	sort: z.enum(['Relevance']),
@@ -59,13 +62,15 @@ export const GET: RequestHandler = async ({ url }) => {
 	let assetType: AssetTypes[]
 
 	if (category === 'FreeModels' || category === 'RecentModels' || category === 'MyModels') {
-		assetType = ['models', 'animations']
+		assetType = ['models']
 	} else if (category === 'FreeDecals' || category === 'RecentDecals' || category === 'MyDecals') {
 		assetType = ['decals']
 	} else if (category === 'FreeMeshes') {
 		assetType = ['meshes']
-	} else if (category === 'FreeAudios') {
+	} else if (category === 'FreeAudios' || category === 'MyAudios') {
 		assetType = ['audio']
+	} else if (category === 'FreeAnimations' || category === 'MyAnimations') {
+		assetType = ['animations']
 	} else {
 		error(400, { success: false, message: 'Invalid category.' })
 	}
