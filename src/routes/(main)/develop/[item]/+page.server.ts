@@ -15,6 +15,7 @@ import { s3Url } from '$src/stores'
 import pending from '$lib/icons/iconpending.png'
 import rejected from '$lib/icons/iconrejected.png'
 import audio from '$lib/icons/audio.png'
+import animation from '$lib/icons/animation.png'
 import { getPageNumber } from '$lib/utils'
 import { env } from '$env/dynamic/private'
 import { imageSql } from '$lib/server/games/getImage'
@@ -278,7 +279,8 @@ export const load: PageServerLoad = async ({ params, locals, url, cookies }) => 
 		params.item === 't-shirts' ||
 		params.item === 'gamepasses' ||
 		params.item === 'badges' ||
-		params.item === 'models'
+		params.item === 'models' ||
+		params.item === 'animations'
 	) {
 		itemscount = await db
 			.select({ count: count() })
@@ -325,7 +327,9 @@ export const load: PageServerLoad = async ({ params, locals, url, cookies }) => 
 								? `https://${s3Url}/images/` + asset?.associatedImage?.simpleasseturl
 								: asset.assetType === 'audio'
 									? audio
-									: null, //TODO: make an audio default icon
+									: asset.assetType === 'animations'
+										? animation
+										: null, //TODO: make an audio default icon
 				updated: asset.updated,
 				assetType: params.item,
 				totalStat: asset.sales,

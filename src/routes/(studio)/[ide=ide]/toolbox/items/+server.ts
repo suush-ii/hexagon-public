@@ -4,7 +4,7 @@ import { assetTable } from '$src/lib/server/schema'
 import type { AssetTypes } from '$src/lib/types'
 import { getPageNumber } from '$src/lib/utils'
 import { type RequestHandler, error, json } from '@sveltejs/kit'
-import { and, count, desc, eq, ilike } from 'drizzle-orm'
+import { and, count, desc, eq, ilike, inArray } from 'drizzle-orm'
 import { z } from 'zod'
 
 const toolboxSchema = z.object({
@@ -56,16 +56,16 @@ export const GET: RequestHandler = async ({ url }) => {
 
 	const size = 30
 
-	let assetType: AssetTypes
+	let assetType: AssetTypes[]
 
 	if (category === 'FreeModels' || category === 'RecentModels' || category === 'MyModels') {
-		assetType = 'models'
+		assetType = ['models', 'animations']
 	} else if (category === 'FreeDecals' || category === 'RecentDecals' || category === 'MyDecals') {
-		assetType = 'decals'
+		assetType = ['decals']
 	} else if (category === 'FreeMeshes') {
-		assetType = 'meshes'
+		assetType = ['meshes']
 	} else if (category === 'FreeAudios') {
-		assetType = 'audio'
+		assetType = ['audio']
 	} else {
 		error(400, { success: false, message: 'Invalid category.' })
 	}
@@ -83,7 +83,7 @@ export const GET: RequestHandler = async ({ url }) => {
 			and(
 				commonWhereLibrary,
 				ilike(assetTable.assetname, `%${keyword}%`),
-				eq(assetTable.assetType, assetType),
+				inArray(assetTable.assetType, assetType),
 				creatorWhere
 			)
 		)
@@ -96,12 +96,13 @@ export const GET: RequestHandler = async ({ url }) => {
 		where: and(
 			commonWhereLibrary,
 			ilike(assetTable.assetname, `%${keyword}%`),
-			eq(assetTable.assetType, assetType),
+			inArray(assetTable.assetType, assetType),
 			creatorWhere
 		), // library assets
 		columns: {
 			assetname: true,
-			assetid: true
+			assetid: true,
+			assetType: true
 		},
 		with: {
 			author: {
@@ -120,7 +121,7 @@ export const GET: RequestHandler = async ({ url }) => {
 		Asset: {
 			Id: item.assetid,
 			Name: item.assetname,
-			TypeId: enumFromAssetType(assetType),
+			TypeId: enumFromAssetType(item.assetType),
 			IsEndorsed: false
 		},
 		Creator: {

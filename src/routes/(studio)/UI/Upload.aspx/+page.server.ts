@@ -3,6 +3,7 @@ import type { PageServerLoad } from './$types'
 export const csr = false
 import { error } from '@sveltejs/kit'
 import { ideAssetSchema } from './schema'
+import { z } from 'zod'
 
 export const load: PageServerLoad = async ({ locals, url }) => {
 	if (!locals.user) {
@@ -14,13 +15,19 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 		Description: url.searchParams.get('Description'),
 		Genre: url.searchParams.get('Genre')
 	})
+	const animation = await z.coerce
+		.string()
+		.transform((val) => val === 'true')
+		.default('false')
+		.safeParseAsync(url.searchParams.get('Animation'))
 
-	if (!result.success) {
+	if (!result.success || !animation.success) {
 		return error(400, { success: false, message: 'invalid form', data: {} })
 	}
 
 	return {
 		baseurl: env.BASE_URL,
-		form: result.data
+		form: result.data,
+		animation: animation.data
 	}
 }

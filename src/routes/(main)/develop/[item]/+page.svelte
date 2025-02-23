@@ -86,9 +86,14 @@
 			<a href="/develop/userads" class="w-full"
 				><Tabs.Trigger class="w-full pointer-events-none" value="userads">User Ads</Tabs.Trigger></a
 			>
+			<a href="/develop/animations" class="w-full"
+				><Tabs.Trigger class="w-full pointer-events-none" value="animations"
+					>Animations</Tabs.Trigger
+				></a
+			>
 		</Tabs.List>
 		<Tabs.Content value={data.item}>
-			{#if data.item !== 'gamepasses' && data.item !== 'badges' && data.item !== 'models' && data.item !== 'userads'}
+			{#if data.item !== 'gamepasses' && data.item !== 'badges' && data.item !== 'models' && data.item !== 'userads' && data.item !== 'animations'}
 				<a href="/develop/{data.item}/upload">
 					<div
 						class="h-40 supports-backdrop-blur:bg-background/60 w-full border-b bg-muted-foreground/5 shadow-sm backdrop-blur p-4 select-none outline-dashed outline-muted-foreground/20 rounded-xl flex flex-col"

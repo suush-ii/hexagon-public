@@ -107,7 +107,8 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 		params.item === 't-shirts' ||
 		params.item === 'badges' ||
 		params.item === 'gamepasses' ||
-		params.item === 'models'
+		params.item === 'models' ||
+		params.item === 'animations'
 	) {
 		const asset = await db
 			.select({

@@ -254,7 +254,8 @@ export const GET: RequestHandler = async (event) => {
 		existingAsset?.assetType === 'audio' ||
 		existingAsset?.assetType === 'images' ||
 		existingAsset?.assetType === 'meshes' ||
-		existingAsset?.assetType === 'models'
+		existingAsset?.assetType === 'models' ||
+		existingAsset?.assetType === 'animations'
 	) {
 		if (existingAsset?.assetType === 'audio') {
 			if (!event.url.searchParams.get('id') && event.url.searchParams.get('studioid')) {

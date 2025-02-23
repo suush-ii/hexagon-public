@@ -8,6 +8,7 @@ import { s3Url } from '$src/stores'
 import { z } from 'zod'
 import { env } from '$env/dynamic/private'
 import audio from '$lib/icons/audio.png'
+import animation from '$lib/icons/animation.png'
 const assetSchema = z.number().int().positive()
 
 export const GET: RequestHandler = async ({ url }) => {
@@ -104,6 +105,10 @@ export const GET: RequestHandler = async ({ url }) => {
 
 		if (asset.assetType === 'audio') {
 			return redirect(302, audio)
+		}
+
+		if (asset.assetType === 'animations') {
+			return redirect(302, animation)
 		}
 
 		if (!asset?.simpleasseturl) {

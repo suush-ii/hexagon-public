@@ -12,7 +12,7 @@
 
 <svelte:head>
 	<head>
-		<title>Publish New Model</title>
+		<title>Publish New {data.animation ? 'Animation' : 'Model'}</title>
 
 		<script
 			data-monitor="true"
@@ -32,12 +32,21 @@
 	</head>
 </svelte:head>
 
-<div class="boxed-body" data-return-url="http://www.{data.baseurl}/UI/Save.aspx">
+<div
+	class="boxed-body"
+	data-return-url="http://www.{data.baseurl}/{data.animation
+		? 'studio/animations/publish'
+		: 'UI/Save.aspx'}"
+>
 	<div id="placeForm">
 		<div class="headline">
 			<h2>Basic Settings</h2>
 		</div>
-		<form id="basicSettingsForm" method="post" action="http://www.{data.baseurl}/UI/New.aspx">
+		<form
+			id="basicSettingsForm"
+			method="post"
+			action="http://www.{data.baseurl}/UI/New.aspx?animation={data.animation}"
+		>
 			<input
 				data-val="true"
 				data-val-number="The field GroupId must be a number."

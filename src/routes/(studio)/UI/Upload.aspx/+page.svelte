@@ -35,8 +35,8 @@
 		<div id="progressBarWrapper">
 			<div
 				id="uploadProgressBar"
-				data-upload-url={`http://www.${data.baseurl}/UI/Upload.aspx?Name=${data.form.Name}&Description=${data.form.Description}&Genre=${data.form.Genre}`}
-				data-previous-url="http://www.{data.baseurl}/UI/Save.aspx"
+				data-upload-url={`http://www.${data.baseurl}/UI/Upload.aspx?Name=${data.form.Name}&Description=${data.form.Description}&Genre=${data.form.Genre}&Animation=${data.animation}`}
+				data-previous-url="http://www.{data.baseurl}/UI/Save.aspx?Animation={data.animation}"
 				data-newupload="True"
 				data-isplace="False"
 				data-ispackage="False"

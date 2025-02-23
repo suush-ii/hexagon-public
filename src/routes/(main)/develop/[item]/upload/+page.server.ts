@@ -45,7 +45,8 @@ export const load: PageServerLoad = async ({ params }) => {
 		params.item === 'gamepasses' ||
 		params.item === 'badges' ||
 		params.item === 'models' ||
-		params.item === 'userads'
+		params.item === 'userads' ||
+		params.item === 'animations'
 	) {
 		return redirect(302, '/develop/' + params.item)
 	}

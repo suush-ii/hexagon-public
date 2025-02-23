@@ -11,6 +11,7 @@ import { PutObjectCommand } from '@aws-sdk/client-s3'
 import { s3BucketName } from '$src/stores'
 import { S3 } from '$src/lib/server/s3'
 import { ideAssetSchema } from './schema'
+import { z } from 'zod'
 
 export const POST: RequestHandler = async ({ cookies, request, url }) => {
 	const result = await ideAssetSchema.safeParseAsync({
@@ -19,7 +20,13 @@ export const POST: RequestHandler = async ({ cookies, request, url }) => {
 		Genre: url.searchParams.get('Genre')
 	})
 
-	if (!result.success) {
+	const animation = await z.coerce
+		.string()
+		.transform((val) => val === 'true')
+		.default('false')
+		.safeParseAsync(url.searchParams.get('Animation'))
+
+	if (!result.success || !animation.success) {
 		return error(400, { success: false, message: 'invalid form', data: {} })
 	}
 
@@ -56,7 +63,7 @@ export const POST: RequestHandler = async ({ cookies, request, url }) => {
 		return error(400, { message: 'File is too large!', success: false, data: {} })
 	}
 
-	const Key = 'models'
+	const Key = animation.data ? 'animations' : 'models'
 
 	const fileName = Buffer.from(createHash('sha512').update(file).digest('hex')).toString()
 
@@ -90,7 +97,7 @@ export const POST: RequestHandler = async ({ cookies, request, url }) => {
 		.insert(assetTable)
 		.values({
 			assetname: result.data.Name,
-			assetType: 'models',
+			assetType: animation.data ? 'animations' : 'models',
 			creatoruserid: session.userid,
 			simpleasseturl: fileName,
 			moderationstate: moderationState,
@@ -104,7 +111,7 @@ export const POST: RequestHandler = async ({ cookies, request, url }) => {
 		itemid: assetResponse.assetid,
 		userid: session.userid,
 		wearing: false,
-		itemtype: 'models'
+		itemtype: animation.data ? 'animations' : 'models'
 	})
 
 	return text('')

@@ -16,9 +16,20 @@ const ideAssetSchema = z.object({
 	Genre: z.enum(assetGenreZod).default('All')
 })
 
-export const load: PageServerLoad = async () => {
+export const load: PageServerLoad = async ({ url }) => {
+	const animation = await z.coerce
+		.string()
+		.transform((val) => val === 'true')
+		.default('false')
+		.safeParseAsync(url.searchParams.get('animation'))
+
+	if (!animation.success) {
+		return error(400, { success: false, message: 'invalid form', data: {} })
+	}
+
 	return {
-		baseurl: env.BASE_URL
+		baseurl: env.BASE_URL,
+		animation: animation.data
 	}
 }
 
@@ -26,6 +37,16 @@ export const actions: Actions = {
 	default: async (event) => {
 		const form = await superValidate(event, zod(ideAssetSchema))
 		if (!form.valid) {
+			return error(400, { success: false, message: 'invalid form', data: {} })
+		}
+
+		const animation = await z.coerce
+			.string()
+			.transform((val) => val === 'true')
+			.default('false')
+			.safeParseAsync(event.url.searchParams.get('animation'))
+
+		if (!animation.success) {
 			return error(400, { success: false, message: 'invalid form', data: {} })
 		}
 
@@ -37,9 +58,11 @@ export const actions: Actions = {
 
 		const { Name, Description, Genre } = form.data
 
+		console.log(animation)
+
 		return redirect(
 			302,
-			`/UI/Upload.aspx?Name=${encodeURIComponent(Name)}&Description=${encodeURIComponent(Description)}&Genre=${encodeURIComponent(Genre)}`
+			`/UI/Upload.aspx?Name=${encodeURIComponent(Name)}&Description=${encodeURIComponent(Description)}&Genre=${encodeURIComponent(Genre)}&Animation=${animation.data}`
 		)
 	}
 }

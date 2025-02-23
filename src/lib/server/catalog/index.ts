@@ -10,6 +10,7 @@ export const commonWhere = and(
 	not(eq(assetTable.assetType, 'badges')),
 	not(eq(assetTable.assetType, 'meshes')),
 	not(eq(assetTable.assetType, 'models')),
+	not(eq(assetTable.assetType, 'animations')),
 	eq(assetTable.moderationstate, 'approved'),
 	eq(assetTable.onsale, true)
 ) // library assets
