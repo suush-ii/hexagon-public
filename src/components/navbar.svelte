@@ -75,7 +75,9 @@
 </script>
 
 <header
-	class="supports-backdrop-blur:bg-background/60 fixed top-0 z-40 w-screen border-b bg-background/95 shadow-sm flex"
+	class="supports-backdrop-blur:bg-background/60 fixed top-0 z-40 w-screen border-b bg-background/95 shadow-sm flex {signUpButton
+		? 'bg-transparent backdrop-blur shadow-xl'
+		: ''}"
 >
 	<div class="pl-1 sm:container flex h-14 items-center select-none">
 		<nav class="flex items-center space-x-3 sm:space-x-4 lg:space-x-6 w-full">
@@ -114,8 +116,10 @@
 				{/each}
 			</div>
 			{#if signUpButton}
-				<Button href="/" class="absolute right-0 hidden sm:block md:right-6" variant="outline"
-					>{$page.data.t('signUpLogin.signUp')}</Button
+				<Button
+					href="/"
+					class="absolute right-0 hidden sm:block md:right-6 bg-transparent"
+					variant="outline">{$page.data.t('signUpLogin.signUp')}</Button
 				>
 			{/if}
 

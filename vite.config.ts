@@ -29,7 +29,13 @@ export default defineConfig({
 		}
 	},
 	ssr: {
-		noExternal: ['three']
+		noExternal: [
+			'three',
+			'tsparticles',
+			'@tsparticles/slim',
+			'@tsparticles/engine',
+			'@tsparticles/svelte'
+		]
 	},
 	server: {
 		port: 9000,
