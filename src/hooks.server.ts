@@ -226,6 +226,12 @@ export const handle: Handle = sequence(
 								.orderBy(desc(transactionsTable.transactionid))
 								.limit(1)
 
+							if (lastTransaction?.type === 'stipend') {
+								if (currentTime.valueOf() - lastTransaction.time.valueOf() < _24hours) {
+									return
+								}
+							}
+
 							try {
 								await tx
 									.update(usersTable)
