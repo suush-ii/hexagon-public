@@ -214,9 +214,18 @@ export const handle: Handle = sequence(
 						}
 					}
 
-					if (currentTime.valueOf() - Date.parse(user.laststipend) > 24 * 60 * 60 * 1000) {
+					const _24hours = 24 * 60 * 60 * 1000
+
+					if (currentTime.valueOf() - Date.parse(user.laststipend) > _24hours) {
 						// 24 hours
 						await db.transaction(async (tx) => {
+							const [lastTransaction] = await tx
+								.select({ type: transactionsTable.type, time: transactionsTable.time })
+								.from(transactionsTable)
+								.where(eq(transactionsTable.userid, user.userid))
+								.orderBy(desc(transactionsTable.transactionid))
+								.limit(1)
+
 							try {
 								await tx
 									.update(usersTable)
