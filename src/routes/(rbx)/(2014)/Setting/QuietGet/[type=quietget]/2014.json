@@ -349,6 +349,7 @@
 	"FFlagShowAlmostAllItemsInExplorer": "True",
 	"FFlagStudioFindInAllScriptsEnabled": "True",
 	"FFlagImprovedNameOcclusion": "True",
+	"DFFlagUpdateHumanoidNameAndHealth": "True",
 	"FFlagHumanoidMoveToDefaultValueEnabled": "True",
 	"FFlagEnableDisplayDistances": "True",
 	"FFlagUseMinMaxZoomDistance": "True",
