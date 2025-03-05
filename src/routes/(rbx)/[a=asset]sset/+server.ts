@@ -23,6 +23,7 @@ const hatAssetId = 8
 const faceAssetId = 18
 const gearAssetId = 18
 const animationAssetId = 24
+const modelAssetId = 10
 
 export const trailingSlash = 'ignore'
 let luas = formatPath(
@@ -251,6 +252,20 @@ export const GET: RequestHandler = async (event) => {
 	}
 
 	if (
+		(existingAsset?.assetType === 'hats' ||
+			existingAsset?.assetType === 'faces' ||
+			existingAsset?.assetType === 'gears' ||
+			existingAsset?.assetType === 'heads' ||
+			existingAsset?.assetType === 'models') &&
+		event.request.headers.get('user-agent') === '2013ox/WinInet'
+	) {
+		return parseRbxm(
+			`https://${s3Url}/${existingAsset.assetType}/` + existingAsset?.simpleasseturl,
+			assetId
+		)
+	}
+
+	if (
 		existingAsset?.assetType === 'audio' ||
 		existingAsset?.assetType === 'images' ||
 		existingAsset?.assetType === 'meshes' ||
@@ -264,19 +279,6 @@ export const GET: RequestHandler = async (event) => {
 		}
 
 		redirect(302, `https://${s3Url}/${existingAsset.assetType}/` + existingAsset?.simpleasseturl)
-	}
-
-	if (
-		(existingAsset?.assetType === 'hats' ||
-			existingAsset?.assetType === 'faces' ||
-			existingAsset?.assetType === 'gears' ||
-			existingAsset?.assetType === 'heads') &&
-		event.request.headers.get('user-agent') === '2013ox/WinInet'
-	) {
-		return parseRbxm(
-			`https://${s3Url}/${existingAsset.assetType}/` + existingAsset?.simpleasseturl,
-			assetId
-		)
 	}
 
 	if (
@@ -419,7 +421,8 @@ export const GET: RequestHandler = async (event) => {
 			(cachedAsset?.assettypeid == hatAssetId ||
 				cachedAsset?.assettypeid == faceAssetId ||
 				cachedAsset?.assettypeid == gearAssetId ||
-				cachedAsset?.assettypeid == animationAssetId) &&
+				cachedAsset?.assettypeid == animationAssetId ||
+				cachedAsset?.assettypeid == modelAssetId) &&
 			event.request.headers.get('user-agent') === '2013ox/WinInet'
 		) {
 			return parseRbxm(url, assetId)
@@ -464,7 +467,8 @@ export const GET: RequestHandler = async (event) => {
 					(data.assetTypeId === hatAssetId ||
 						data.assetTypeId === faceAssetId ||
 						data.assetTypeId === gearAssetId ||
-						data.assetTypeId === animationAssetId) &&
+						data.assetTypeId === animationAssetId ||
+						data.assetTypeId === modelAssetId) &&
 					event.request.headers.get('user-agent') === '2013ox/WinInet'
 				) {
 					return parseRbxm(url, assetId)

@@ -159,7 +159,9 @@
 						</h1>
 					</div>
 				</div>
-				<h1 class="text-lg leading-relaxed tracking-tight max-h-96 overflow-y-auto">
+				<h1
+					class="text-lg leading-relaxed tracking-tight max-h-96 overflow-y-auto whitespace-pre-line"
+				>
 					{data.item.description ?? ''}
 				</h1>
 				{#if data.item.associatedgameid && data.associatedgame}
