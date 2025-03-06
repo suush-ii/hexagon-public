@@ -11,6 +11,7 @@
 	import type { Infer, SuperValidated } from 'sveltekit-superforms'
 	import { type FormSchema as SellLimitedSchema } from '$lib/schemas/catalog/selllimitedschema'
 	import { type FormSchema as SellLimitedSchemaU } from '$lib/schemas/catalog/selllimiteduschema'
+	import type { clientVersions } from '$lib/types'
 
 	let downloadModal: DownloadModal
 
@@ -51,6 +52,8 @@
 	export let canSell = false
 
 	export let limited: string | undefined | null = undefined
+
+	export let version: clientVersions | undefined | null = undefined
 </script>
 
 <DownloadModal bind:this={downloadModal} type={'studio'} />
@@ -77,7 +80,15 @@
 		{#if assetType === 'games'}
 			<DropdownMenu.Item
 				on:click={() => {
-					launchStudioScript(placeid ?? 0, authBearer ?? '', baseurl ?? '', downloadModal)
+					launchStudioScript(
+						placeid ?? 0,
+						authBearer ?? '',
+						baseurl ?? '',
+						downloadModal,
+						'ide',
+						0,
+						version ?? '2014'
+					)
 				}}
 				class="cursor-pointer">Edit</DropdownMenu.Item
 			>

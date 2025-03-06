@@ -20,7 +20,7 @@ import { getPageNumber } from '$lib/utils'
 import { env } from '$env/dynamic/private'
 import { imageSql } from '$lib/server/games/getImage'
 import { formSchema as bidSchema } from '$src/lib/schemas/develop/bidschema'
-import type { assetStates } from '$lib/types'
+import type { assetStates, clientVersions } from '$lib/types'
 import { fail, setError, superValidate } from 'sveltekit-superforms'
 import { zod } from 'sveltekit-superforms/adapters'
 
@@ -106,6 +106,7 @@ export const load: PageServerLoad = async ({ params, locals, url, cookies }) => 
 		iconModerationState?: assetStates
 		totalStat: number
 		last7DaysStat: number
+		version?: clientVersions
 		adStats:
 			| {
 					impressionscurrent: number
@@ -143,7 +144,8 @@ export const load: PageServerLoad = async ({ params, locals, url, cookies }) => 
 			columns: {
 				universeid: true,
 				updated: true,
-				visits: true
+				visits: true,
+				clientversion: true
 			},
 			with: {
 				places: {
@@ -176,7 +178,8 @@ export const load: PageServerLoad = async ({ params, locals, url, cookies }) => 
 				assetType: params.item,
 				totalStat: game.visits,
 				last7DaysStat: await last7days(game.universeid),
-				adStats: undefined
+				adStats: undefined,
+				version: game.clientversion
 			}))
 		)
 	}
