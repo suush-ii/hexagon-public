@@ -110,7 +110,7 @@ export const clanImages: Record<HexagonClans, string> = {
 }
 
 export const friendlyClanNames: Record<HexagonClans, string> = {
-	cone: 'Commutative Decisions of Hexagon',
+	cone: 'Hexagon Builders Club',
 	jamrio: 'Labour Collective of Hexagon',
 	wuff: 'Euanthe Knights of Hexagon'
 }

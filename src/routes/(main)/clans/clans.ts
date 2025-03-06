@@ -19,9 +19,13 @@ As times progress, the goals of this clan will change, but so will Hexagon, and 
 
     - Economy: Making sure everyone is able to express themselves without the limitations of price gouging or hoarding is very core to us. We hope for more social gears and hats to be added, with respect for user-created items in the way they are priced.
 `,
-	cone: `Make your voice be heard!
-The Whole basis of Cone's Clan is for you take part in shaping Hexagon for the better!
-You can vote for what YOU want!`
+	cone: `A clan focused on developers and builders. It is dedicated to showing off your projects and builds. We value developers and show their decent projects publicly. What we consider decent:
+	- A game that has modern elements
+
+	- New concepts or a game intended as a puzzle/platformer game (like RAGE GAME)
+
+	- A considerably good game developer
+`
 }
 
 export const formSchema = z.object({
