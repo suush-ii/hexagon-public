@@ -20,11 +20,12 @@ As times progress, the goals of this clan will change, but so will Hexagon, and 
     - Economy: Making sure everyone is able to express themselves without the limitations of price gouging or hoarding is very core to us. We hope for more social gears and hats to be added, with respect for user-created items in the way they are priced.
 `,
 	cone: `A clan focused on developers and builders. It is dedicated to showing off your projects and builds. We value developers and show their decent projects publicly. What we consider decent:
+
 	- A game that has modern elements
 
 	- New concepts or a game intended as a puzzle/platformer game (like RAGE GAME)
 
-	- A considerably good game developer
+	- A considerably good game developer like you!
 `
 }
 
