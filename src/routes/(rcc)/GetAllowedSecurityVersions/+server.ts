@@ -6,7 +6,8 @@ export const GET: RequestHandler = async () => {
 			'0.178.0pcplayer',
 			'0.176.0pcplayer',
 			'2.183.0androidapp',
-			'0.194.0pcplayer', // MediText BullShit Again
+			'0.206.0pcplayer', // MediText BullShit Again
+			'"0.206.0pcplayer"',
 			'INTERNALandroidapp',
 			'INTERNALiosapp'
 		]
