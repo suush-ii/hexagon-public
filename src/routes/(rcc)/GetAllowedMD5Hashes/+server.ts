@@ -9,7 +9,6 @@ export const GET: RequestHandler = async () => {
 			'a8c849c7dfed2e02969fd55301be7374',
 			'8e246cbf18054169c48d7f2c8e844230',
 			'42bd28bb0701e1a2a870a4d38b0b2955',
-			'57dcd0e521407f3bd2c743eb6dc619c2' // Medi's Batshit Insane 2015 Client For Whatever Reason
 		]
 	})
 }
