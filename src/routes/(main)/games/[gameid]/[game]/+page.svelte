@@ -221,6 +221,7 @@
 									baseurl={data.baseurl}
 									placeid={data.place.placeid}
 									canModerate={data.canModerate}
+									version={data.place.associatedgame.clientversion}
 									{shutdownForm}
 									{originalForm}
 								/>
