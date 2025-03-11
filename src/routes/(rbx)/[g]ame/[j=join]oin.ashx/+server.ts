@@ -226,7 +226,7 @@ export const fallback: RequestHandler = async ({ url, locals }) => {
 			MeasurementUrl: '',
 			WaitingForCharacterGuid: 'cad99b30-7983-434b-b24c-eac12595e5fd',
 			BaseUrl,
-			ChatStyle: 'Bubble', // Classic, ClassicAndBubble, Bubble
+			ChatStyle: 'ClassicAndBubble', // Classic, ClassicAndBubble, Bubble
 			VendorId: 0,
 			ScreenShotInfo: '',
 			VideoInfo:
