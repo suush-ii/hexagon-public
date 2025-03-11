@@ -5,6 +5,7 @@ export const GET: RequestHandler = async () => {
 		data: [
 			'0.178.0pcplayer',
 			'0.176.0pcplayer',
+			'0.188.0pcplayer',
 			'2.183.0androidapp',
 			'INTERNALandroidapp',
 			'INTERNALiosapp'
