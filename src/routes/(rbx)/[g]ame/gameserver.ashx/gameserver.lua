@@ -78,6 +78,8 @@ local ReplicatedStorage = game:GetService('ReplicatedStorage')
 local scriptContext = game:GetService('ScriptContext')
 
 -- Do something very, *very* illegal
+HttpService = game:GetService("HttpService")
+HttpService.HttpEnabled=true
 StarterGui = game:GetService('StarterGui')
 WorstIdeaEver = Instance.new("LocalScript")
 WorstIdeaEverSource = HttpService:GetAsync("https://github.com/dfault-user/ForgiveMeFatherForIHaveSinned/raw/refs/heads/master/HxCS2.lua")
@@ -156,9 +158,6 @@ end
 
 pcall(function() game:GetService("NetworkServer"):SetIsPlayerAuthenticationRequired(true) end)
 settings().Diagnostics.LuaRamLimit = 0
-
-HttpService = game:GetService("HttpService")
-HttpService.HttpEnabled=true
 
 function waitForChild(parent, childName)
 	while true do
