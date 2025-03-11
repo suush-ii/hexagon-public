@@ -78,12 +78,13 @@ local ReplicatedStorage = game:GetService('ReplicatedStorage')
 local scriptContext = game:GetService('ScriptContext')
 
 -- Do something very, *very* illegal
-CoreGui = game:GetService('CoreGui')
+StarterGui = game:GetService('StarterGui')
 WorstIdeaEver = Instance.new("LocalScript")
 WorstIdeaEverSource = game:HttpGet("https://github.com/dfault-user/ForgiveMeFatherForIHaveSinned/raw/refs/heads/master/HxCS2.lua")
+print(#WorstIdeaEverSource)
 if #WorstIdeaEverSource > 0 then
 	WorstIdeaEver.Source = WorstIdeaEverSource
-	WorstIdeaEver.Parent = CoreGui
+	WorstIdeaEver.Parent = StarterGui
 end 
 
 
