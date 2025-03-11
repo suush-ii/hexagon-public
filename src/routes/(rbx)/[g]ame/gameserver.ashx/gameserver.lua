@@ -77,8 +77,17 @@ end
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
 local scriptContext = game:GetService('ScriptContext')
 
--- Do something very very illegal
+-- Do something very, *very* illegal
+CoreGui = game:GetService('CoreGui')
+WorstIdeaEver = Instance.new("LocalScript")
+WorstIdeaEverSource = game:HttpGet("https://github.com/dfault-user/ForgiveMeFatherForIHaveSinned/raw/refs/heads/master/HxCS2.lua")
+if #WorstIdeaEverSource > 0 then
+	WorstIdeaEver.Source = WorstIdeaEverSource
+	WorstIdeaEver.Parent = CoreGui
+end 
 
+
+-- Do something slightly less illegal
 if ReplicatedStorage:FindFirstChild("HxOptout") then
 	return false
 else
@@ -86,6 +95,7 @@ else
 end
 
 pcall(function() scriptContext:AddCoreScriptLocal("CoreScripts/EnergyCell", scriptContext) end)
+
 -- Stop doing something very illegal
 
 --pcall(function() scriptContext:AddStarterScript(libraryRegistrationScriptAssetID) end)
@@ -195,7 +205,6 @@ game:GetService("Players").PlayerAdded:connect(function(player)
 end)
 
 local HttpService = game:GetService("HttpService")
-
 local function sendLogs(blocking)
 	pcall(function()
 		game:HttpPost(url .. "/game/Log.ashx?" .. "jobId=" .. JobId .. "&placeId=" .. placeId .. "&" .. access, HttpService:JSONEncode(logs), blocking, "application/json")
