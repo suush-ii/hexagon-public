@@ -93,11 +93,13 @@ export const POST: RequestHandler = async ({ cookies, request, url }) => {
 		}
 	}
 
+	const solidModel = url.searchParams.get('assetTypeName') === 'SolidModel'
+
 	const [assetResponse] = await db
 		.insert(assetTable)
 		.values({
 			assetname: result.data.Name,
-			assetType: animation.data ? 'animations' : 'models',
+			assetType: animation.data ? 'animations' : solidModel ? 'solidmodels' : 'models',
 			creatoruserid: session.userid,
 			simpleasseturl: fileName,
 			moderationstate: moderationState,
@@ -111,8 +113,8 @@ export const POST: RequestHandler = async ({ cookies, request, url }) => {
 		itemid: assetResponse.assetid,
 		userid: session.userid,
 		wearing: false,
-		itemtype: animation.data ? 'animations' : 'models'
+		itemtype: animation.data ? 'animations' : solidModel ? 'solidmodels' : 'models'
 	})
 
-	return text('')
+	return text(assetResponse.assetid.toString())
 }

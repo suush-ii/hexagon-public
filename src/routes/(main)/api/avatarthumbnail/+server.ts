@@ -14,6 +14,7 @@ import pending from '$lib/icons/iconpending.png'
 import rejected from '$lib/icons/iconrejected.png'
 import audio from '$lib/icons/audio.png'
 import animation from '$lib/icons/animation.png'
+import solidmodel from '$lib/icons/solidmodel.png'
 const assetUrl = `http://${env.BASE_URL}/Asset/`
 
 const avatarSchema = z.object({
@@ -119,7 +120,8 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 			item?.assetType === 'gamepasses' ||
 			item?.assetType === 'badges' ||
 			item?.assetType === 'models' ||
-			item?.assetType === 'animations')
+			item?.assetType === 'animations' ||
+			item?.assetType === 'solidmodels')
 	) {
 		error(400, { success: false, message: 'Malformed JSON.', data: {} })
 	}
@@ -180,6 +182,17 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 				message: '',
 				data: {
 					url: animation,
+					status: 'completed'
+				}
+			})
+		}
+
+		if (item.assetType === 'solidmodels') {
+			return json({
+				success: true,
+				message: '',
+				data: {
+					url: solidmodel,
 					status: 'completed'
 				}
 			})
