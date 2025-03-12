@@ -211,6 +211,8 @@ game:GetService("Players").PlayerAdded:connect(function(player)
 	end
 end)
 
+local HttpService = game:GetService("HttpService")
+
 local function sendLogs(blocking)
 	pcall(function()
 		game:HttpPost(url .. "/game/Log.ashx?" .. "jobId=" .. JobId .. "&placeId=" .. placeId .. "&" .. access, HttpService:JSONEncode(logs), blocking, "application/json")
