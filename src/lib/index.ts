@@ -63,7 +63,8 @@ export const assetTypes = [
 	'gamepasses',
 	'meshes',
 	'models',
-	'animations'
+	'animations',
+	'solidmodels'
 ] as const
 
 export const hexagonBadges = [
