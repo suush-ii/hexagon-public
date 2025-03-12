@@ -77,24 +77,8 @@ end
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
 local scriptContext = game:GetService('ScriptContext')
 
--- Do something very, *very* illegal
+-- Do something very very illegal
 
--- HttpService = game:GetService("HttpService")
--- HttpService.HttpEnabled=true
--- StarterGui = game:GetService('StarterGui')
--- StarterGui.ResetPlayerGuiOnSpawn = false
-
--- WorstIdeaEver = Instance.new("LocalScript")
--- WorstIdeaEver.Name = "ChatScript2"
--- WorstIdeaEver.RobloxLocked = true
--- WorstIdeaEverSource = HttpService:GetAsync("https://github.com/dfault-user/ForgiveMeFatherForIHaveSinned/raw/refs/heads/master/HxCS2.lua?"..math.random(10000,50000))
--- if #WorstIdeaEverSource > 0 then
--- 	WorstIdeaEver.Source = WorstIdeaEverSource
--- 	WorstIdeaEver.Parent = StarterGui
--- end 
-
-
--- Do something slightly less illegal
 if ReplicatedStorage:FindFirstChild("HxOptout") then
 	return false
 else
@@ -102,7 +86,6 @@ else
 end
 
 pcall(function() scriptContext:AddCoreScriptLocal("CoreScripts/EnergyCell", scriptContext) end)
-
 -- Stop doing something very illegal
 
 --pcall(function() scriptContext:AddStarterScript(libraryRegistrationScriptAssetID) end)
