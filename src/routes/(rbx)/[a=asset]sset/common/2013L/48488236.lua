@@ -19,7 +19,8 @@ local ADMINS =
 	brandan = 'rbxassetid://11458', -- HEXAGON ASSET
 	nailsrails = 'rbxassetid://25262', -- HEXAGON ASSET
 	radmaster = 'rbxassetid://13676', -- HEXAGON ASSET
-	mallory = 'rbxassetid://161078086'
+	mallory = 'rbxassetid://161078086',
+	ellie = "rbxassetid://25787" -- HEXAGON ASSET
 }
 
 local Images = {
