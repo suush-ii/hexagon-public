@@ -265,13 +265,16 @@ export const GET: RequestHandler = async (event) => {
 		)
 	}
 
+	if (existingAsset?.assetType === 'solidmodels') {
+		redirect(302, `https://${s3Url}/${'models'}/` + existingAsset?.simpleasseturl)
+	}
+
 	if (
 		existingAsset?.assetType === 'audio' ||
 		existingAsset?.assetType === 'images' ||
 		existingAsset?.assetType === 'meshes' ||
 		existingAsset?.assetType === 'models' ||
-		existingAsset?.assetType === 'animations' ||
-		existingAsset?.assetType === 'solidmodels'
+		existingAsset?.assetType === 'animations'
 	) {
 		if (existingAsset?.assetType === 'audio') {
 			if (!event.url.searchParams.get('id') && event.url.searchParams.get('studioid')) {
