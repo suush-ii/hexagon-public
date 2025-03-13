@@ -113,11 +113,17 @@ export const adminLogsTable = pgTable('adminlogs', {
 	logid: bigserial('logid', { mode: 'number' }).notNull().primaryKey(),
 	userid: bigint('userid', { mode: 'number' }).notNull(),
 	associatedid: bigint('associatedid', { mode: 'number' }).notNull(),
-	associatedidtype: text('associatedidtype').$type<'item' | 'user' | 'game' | 'job'>().notNull(),
+	associatedidtype: text('associatedidtype')
+		.$type<'item' | 'user' | 'game' | 'job' | 'move'>()
+		.notNull(),
 	time: timestamp('time', { mode: 'date', withTimezone: true }).notNull().defaultNow(),
 	action: text('action').$type<ActionTypes>().notNull(),
 	banlength: text('banlength').$type<moderationTypes>(),
-	newrole: text('newrole').$type<userRole>()
+	newrole: text('newrole').$type<userRole>(),
+	movedto: bigint('movedto', { mode: 'number' }),
+	movedinventoryitem: bigint('movedinventoryitem', { mode: 'number' }),
+	moveditem: bigint('moveditem', { mode: 'number' }),
+	deleteditem: bigint('deleteditem', { mode: 'number' })
 })
 
 export const bansTable = pgTable('bans', {
@@ -181,6 +187,18 @@ export const adminLogsRelations = relations(adminLogsTable, ({ one }) => ({
 	user: one(usersTable, {
 		fields: [adminLogsTable.associatedid],
 		references: [usersTable.userid]
+	}),
+	movedItem: one(assetTable, {
+		fields: [adminLogsTable.moveditem],
+		references: [assetTable.assetid]
+	}),
+	movedToUser: one(usersTable, {
+		fields: [adminLogsTable.movedto],
+		references: [usersTable.userid]
+	}),
+	deletedItem: one(assetTable, {
+		fields: [adminLogsTable.deleteditem],
+		references: [assetTable.assetid]
 	})
 }))
 

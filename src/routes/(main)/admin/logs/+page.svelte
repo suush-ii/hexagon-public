@@ -26,7 +26,10 @@
 		assetname: string,
 		gamename: string,
 		banlength: string,
-		newrole: string
+		newrole: string,
+		itemid?: number,
+		newid?: number,
+		newname?: string
 	) {
 		let text = getText(action).replace('{name}', username)
 
@@ -57,6 +60,22 @@
 			return text
 				.replace('{type}', depluralize(assettype.charAt(0).toUpperCase() + assettype.slice(1)))
 				.replace('{itemname}', assetname)
+				.replace('{id}', associatedid.toString())
+		}
+
+		if (action === 'moveitem') {
+			return text
+				.replace('{itemname}', assetname)
+				.replace('{id}', associatedid.toString())
+				.replace('{itemid}', itemid!.toString())
+				.replace('{newid}', newid!.toString())
+				.replace('{newname}', newname!)
+		}
+
+		if (action === 'deleteitem') {
+			return text
+				.replace('{itemname}', assetname)
+				.replace('{itemid}', itemid!?.toString())
 				.replace('{id}', associatedid.toString())
 		}
 	}
@@ -165,16 +184,24 @@
 												? '/games/' + log.associatedid
 												: log.associatedidtype === 'user'
 													? `/users/${log.associatedid}/profile`
-													: ''}
+													: log.associatedidtype === 'move'
+														? `/admin/users/inventory/${log?.movedinventoryitem}`
+														: ''}
 										>{formatAction(
 											log.action,
 											log?.user?.username ?? '',
 											log.associatedid,
 											log?.asset?.assetType ?? '',
-											log?.asset?.assetname ?? '',
+											log?.asset?.assetname ??
+												log?.movedItem?.assetname ??
+												log?.deletedItem?.assetname ??
+												'',
 											log?.game?.places[0].placename ?? '',
 											log.banlength ?? '',
-											log.newrole ?? ''
+											log.newrole ?? '',
+											log?.movedItem?.assetid ?? log?.deletedItem?.assetid ?? 0,
+											log?.movedToUser?.userid,
+											log?.movedToUser?.username
 										)}</a
 									></Table.Cell
 								>

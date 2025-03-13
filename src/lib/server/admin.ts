@@ -10,7 +10,9 @@ export const actionTypes = [
 	'moderatedasset',
 	'shutdownjob',
 	'shutdownalljobs',
-	'uploadasset'
+	'uploadasset',
+	'moveitem',
+	'deleteitem'
 ] as const
 
 export type ActionTypes = (typeof actionTypes)[number]
@@ -27,5 +29,7 @@ export const friendlyActionNames: Record<ActionTypes, string> = {
 	moderatedasset: 'Moderated Asset',
 	shutdownjob: 'Shutdown Job',
 	shutdownalljobs: 'Shutdown All Jobs',
-	uploadasset: 'Upload Asset'
+	uploadasset: 'Upload Asset',
+	moveitem: 'Move Item',
+	deleteitem: 'Delete Item'
 }

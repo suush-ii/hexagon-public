@@ -179,7 +179,8 @@ local Chat = {
 				"vista",
 				"Chess",
 				"brandan",
-				"NailsRails"
+				"NailsRails",
+				"ellie"
 								},
 
 			SafeChat_List = {

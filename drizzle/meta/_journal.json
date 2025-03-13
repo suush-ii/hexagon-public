@@ -736,6 +736,13 @@
       "when": 1740204167368,
       "tag": "0105_shocking_texas_twister",
       "breakpoints": true
+    },
+    {
+      "idx": 106,
+      "version": "7",
+      "when": 1741831402290,
+      "tag": "0106_tearful_manta",
+      "breakpoints": true
     }
   ]
 }

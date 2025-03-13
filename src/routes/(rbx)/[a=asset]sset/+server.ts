@@ -265,6 +265,10 @@ export const GET: RequestHandler = async (event) => {
 		)
 	}
 
+	if (existingAsset?.assetType === 'solidmodels') {
+		redirect(302, `https://${s3Url}/${'models'}/` + existingAsset?.simpleasseturl)
+	}
+
 	if (
 		existingAsset?.assetType === 'audio' ||
 		existingAsset?.assetType === 'images' ||

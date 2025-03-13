@@ -386,7 +386,8 @@ export const load: PageServerLoad = async ({ params, locals, url }) => {
 			favorites: assetTable.favorites,
 			limited: assetTable.limited,
 			recentaverageprice: assetTable.recentaverageprice,
-			author: { username: usersTable.username }
+			author: { username: usersTable.username },
+			inventoryid: inventoryTable.inventoryid
 		})
 		.from(inventoryTable)
 		.innerJoin(assetTable, eq(inventoryTable.itemid, assetTable.assetid))

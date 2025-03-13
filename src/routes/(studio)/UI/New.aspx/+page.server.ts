@@ -58,8 +58,6 @@ export const actions: Actions = {
 
 		const { Name, Description, Genre } = form.data
 
-		console.log(animation)
-
 		return redirect(
 			302,
 			`/UI/Upload.aspx?Name=${encodeURIComponent(Name)}&Description=${encodeURIComponent(Description)}&Genre=${encodeURIComponent(Genre)}&Animation=${animation.data}`

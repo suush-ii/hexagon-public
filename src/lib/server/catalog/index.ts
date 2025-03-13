@@ -11,6 +11,7 @@ export const commonWhere = and(
 	not(eq(assetTable.assetType, 'meshes')),
 	not(eq(assetTable.assetType, 'models')),
 	not(eq(assetTable.assetType, 'animations')),
+	not(eq(assetTable.assetType, 'solidmodels')),
 	eq(assetTable.moderationstate, 'approved'),
 	eq(assetTable.onsale, true)
 ) // library assets
@@ -28,6 +29,7 @@ export const commonWhereLibrary = and(
 	not(eq(assetTable.assetType, 'faces')),
 	not(eq(assetTable.assetType, 'images')),
 	not(eq(assetTable.assetType, 't-shirts')),
+	not(eq(assetTable.assetType, 'solidmodels')),
 	eq(assetTable.moderationstate, 'approved'),
 	eq(assetTable.onsale, true)
 ) // library assets

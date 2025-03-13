@@ -116,7 +116,9 @@
 						  data.item.assetType === 't-shirts' ||
 						  data.item.assetType === 'gamepasses' ||
 						  data.item.assetType === 'badges' ||
-						  data.item.assetType === 'models'
+						  data.item.assetType === 'models' ||
+						  data.item.assetType === 'animations' ||
+						  data.item.assetType === 'solidmodels'
 						? true
 						: false}
 			>

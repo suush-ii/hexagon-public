@@ -12,7 +12,10 @@ export const actionTexts: Record<ActionTypes, string> = {
 	moderatedasset: 'Moderated a {type} {itemname} (ID: {id})',
 	shutdownjob: 'Shutdown a game job in {gamename}',
 	shutdownalljobs: 'Shut all game jobs for {gamename}',
-	uploadasset: 'Uploaded {type}: {itemname} (ID: {id})'
+	uploadasset: 'Uploaded {type}: {itemname} (ID: {id})',
+	moveitem:
+		'Moved {itemname} (ItemID: {itemid}) from (UserID: {id}) (User: {name}) to {UserID: {newid}} (User: {newname})',
+	deleteitem: 'Deleted {itemname} (ItemID: {itemid}) (User: {name})'
 }
 
 export function getText(action: ActionTypes): string {

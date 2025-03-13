@@ -75,6 +75,24 @@ export const load: PageServerLoad = async ({ url }) => {
 				columns: {
 					username: true
 				}
+			},
+			movedItem: {
+				columns: {
+					assetname: true,
+					assetid: true
+				}
+			},
+			movedToUser: {
+				columns: {
+					username: true,
+					userid: true
+				}
+			},
+			deletedItem: {
+				columns: {
+					assetname: true,
+					assetid: true
+				}
 			}
 		},
 		orderBy: desc(adminLogsTable.time),
