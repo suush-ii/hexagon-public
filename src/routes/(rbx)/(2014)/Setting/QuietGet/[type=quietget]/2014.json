@@ -702,7 +702,7 @@
 	"FFlagStudioToolBoxInsertUseRayTrace": "True",
 	"FFlagInterpolationUseWightedDelay": "True",
 	"FFlagUseInGameTopBar": "False",
-	"FFlagNewPurchaseScript": "True",
+	"FFlagNewPurchaseScript": "False",
 	"FFlagStudioEnableGamepadSupport": "True",
 	"FFlagStudioRemoveDuplicateParts": "True",
 	"FFlagStudioLaunchDecalToolAfterDrag": "True",
