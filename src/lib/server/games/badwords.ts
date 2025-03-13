@@ -94,6 +94,7 @@ export const badwords = [
 	'fagging',
 	'faggit',
 	'faggot',
+	'faggots',
 	'faggs',
 	'fagit',
 	'fagot',
