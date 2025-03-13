@@ -81,6 +81,7 @@ const adminPanelPermissions = [
 	{ path: '/admin/sitealert', requiredLevel: 1.5 },
 	{ path: '/admin/configuration', requiredLevel: 1.5 },
 	{ path: '/admin/reports', requiredLevel: 3 },
+	{ path: '/admin/users/inventory', requiredLevel: 1.5 },
 	{ path: '/admin/users', requiredLevel: 3 },
 	{ path: '/admin/catalog/moderateasset', requiredLevel: 3 },
 	{ path: '/admin/catalog', requiredLevel: 4 },

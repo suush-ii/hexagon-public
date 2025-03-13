@@ -60,6 +60,7 @@
 						favorites={item.favorites}
 						limited={item.limited}
 						recentaverageprice={item.recentaverageprice}
+						inventoryId={item.inventoryid}
 					/>
 				{/each}
 			{:else}

@@ -1,7 +1,7 @@
 <script lang="ts">
 	//import * as Avatar from '$src/components/ui/avatar'
 	import Avatar from './avatar.svelte'
-	import { MoonStar } from 'lucide-svelte'
+	import { Cog, MoonStar } from 'lucide-svelte'
 	import RelativeTime from '@yaireo/relative-time'
 	import { formatCompactNumber } from '$lib/utils'
 	import { page } from '$app/stores'
@@ -9,6 +9,7 @@
 	const relativeTime = new RelativeTime()
 
 	import { slugify } from '$lib/utils'
+	import Button from '../ui/button/button.svelte'
 
 	export let itemName: string
 
@@ -29,6 +30,8 @@
 	export let limited: string | null
 
 	export let recentaverageprice: number | null
+
+	export let inventoryId: number = 0
 </script>
 
 <div
@@ -41,6 +44,17 @@
 			{itemName}
 			disable3d={true}
 		>
+			{#if inventoryId && ($page.data?.user?.role === 'owner' || $page.data?.user?.role === 'manager')}
+				<Button
+					size="icon"
+					variant="outline"
+					class="absolute right-0 top-0"
+					href="/admin/users/inventory/{inventoryId}"
+				>
+					<Cog /></Button
+				>
+			{/if}
+
 			{#if limited}
 				<div class="h-7 absolute left-0 bottom-0">
 					<img class="w-full h-full" src="/Images/{limited}.svg" alt={limited} />
