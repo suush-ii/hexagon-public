@@ -192,9 +192,9 @@
 											log?.user?.username ?? '',
 											log.associatedid,
 											log?.asset?.assetType ?? '',
-											log?.asset?.assetname ??
-												log?.movedItem?.assetname ??
+											log?.movedItem?.assetname ??
 												log?.deletedItem?.assetname ??
+												log?.asset?.assetname ??
 												'',
 											log?.game?.places[0].placename ?? '',
 											log.banlength ?? '',

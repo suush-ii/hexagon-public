@@ -1,12 +1,10 @@
 <script lang="ts">
 	import { pageName } from '$src/stores'
 	import Avatar from '$src/components/catalog/avatar.svelte'
-	import * as ImageAvatar from '$src/components/ui/avatar'
 
 	pageName.set('Admin')
 
 	import type { PageData } from './$types'
-	import { getImage } from '$lib/games/getImage'
 	import { moveSchema } from './schema'
 
 	import { type SuperValidated, type Infer, superForm } from 'sveltekit-superforms'
