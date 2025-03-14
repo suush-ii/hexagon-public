@@ -111,16 +111,20 @@ async function parseRbxm(url: string, assetid: number) {
 	})
 	const assetData = await assetResponse.arrayBuffer()
 
-	return new Response(
-		rbxmParse(Buffer.from(assetData)) ?? assetData /* parse returns nothing if mesh is old */,
-		{
-			status: 200,
-			headers: {
-				'Content-Type': 'application/octet-stream',
-				'Content-Disposition': `attachment; filename*=UTF-8''${assetid}`
-			}
+	const parsed = rbxmParse(Buffer.from(assetData))
+
+	if (!parsed) {
+		/* parse returns nothing if rbxmx fails */
+		return error(400, { success: false, message: 'Asset Fail', data: {} })
+	}
+
+	return new Response(parsed, {
+		status: 200,
+		headers: {
+			'Content-Type': 'application/octet-stream',
+			'Content-Disposition': `attachment; filename*=UTF-8''${assetid}`
 		}
-	)
+	})
 }
 
 export const GET: RequestHandler = async (event) => {
