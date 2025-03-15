@@ -47,6 +47,9 @@ pcall(function() settings()["Task Scheduler"].PriorityMethod = Enum.PriorityMeth
 
 
 settings().Network.PhysicsSend = Enum.PhysicsSendMethod.TopNErrors
+settings().Network.DataSendRate = 1000
+settings().Network.PhysicsSendRate = 1000
+settings().Network.ReceiveRate = 1000
 settings().Network.ExperimentalPhysicsEnabled = true
 settings().Network.WaitingForCharacterLogRate = 100
 settings().Physics.ParallelPhysics = true
