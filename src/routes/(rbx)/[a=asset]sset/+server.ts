@@ -429,7 +429,6 @@ export const GET: RequestHandler = async (event) => {
 			(cachedAsset?.assettypeid == hatAssetId ||
 				cachedAsset?.assettypeid == faceAssetId ||
 				cachedAsset?.assettypeid == gearAssetId ||
-				cachedAsset?.assettypeid == animationAssetId ||
 				cachedAsset?.assettypeid == modelAssetId) &&
 			event.request.headers.get('user-agent') === '2013ox/WinInet'
 		) {
@@ -475,7 +474,6 @@ export const GET: RequestHandler = async (event) => {
 					(data.assetTypeId === hatAssetId ||
 						data.assetTypeId === faceAssetId ||
 						data.assetTypeId === gearAssetId ||
-						data.assetTypeId === animationAssetId ||
 						data.assetTypeId === modelAssetId) &&
 					event.request.headers.get('user-agent') === '2013ox/WinInet'
 				) {
