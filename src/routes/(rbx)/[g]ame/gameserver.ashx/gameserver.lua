@@ -49,6 +49,7 @@ pcall(function() settings()["Task Scheduler"].PriorityMethod = Enum.PriorityMeth
 settings().Network.PhysicsSend = Enum.PhysicsSendMethod.TopNErrors
 settings().Network.ExperimentalPhysicsEnabled = true
 settings().Network.WaitingForCharacterLogRate = 100
+settings().Physics.ParallelPhysics = true
 pcall(function() settings().Diagnostics:LegacyScriptMode() end)
 
 -----------------------------------START GAME SHARED SCRIPT------------------------------
