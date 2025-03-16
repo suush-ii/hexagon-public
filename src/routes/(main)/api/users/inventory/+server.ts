@@ -1,8 +1,8 @@
-import { error, json, text } from '@sveltejs/kit'
+import { error, json } from '@sveltejs/kit'
 import type { RequestHandler } from './$types'
 import { db } from '$src/lib/server/db'
-import { assetTable, inventoryTable, relationsTable, usersTable } from '$lib/server/schema'
-import { and, count, eq, ne, or } from 'drizzle-orm'
+import { assetTable, inventoryTable, usersTable } from '$lib/server/schema'
+import { count, eq } from 'drizzle-orm'
 import { z } from 'zod'
 
 const inventorySchema = z.object({
@@ -24,6 +24,14 @@ export const POST: RequestHandler = async ({ request }) => {
 	if (!result.success) {
 		const errors = result.error.issues.map((issue) => issue.message) // get us only the error msgs
 		error(400, { success: false, message: 'Malformed JSON.', data: { errors } })
+	}
+
+	const user = await db.query.usersTable.findFirst({
+		where: eq(usersTable.userid, result.data.userid)
+	})
+
+	if (!user) {
+		return json({ success: false, message: 'User not found.', data: {} })
 	}
 
 	const size = 100
