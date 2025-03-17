@@ -52,7 +52,8 @@ const config = {
 				},
 				success: 'hsl(var(--success))',
 				orange: 'hsl(var(--orange))',
-				'site-manager': 'hsl(var(--site-manager))'
+				'site-manager': 'hsl(var(--site-manager))',
+				owner: 'hsl(var(--owner))'
 			},
 			borderRadius: {
 				lg: 'var(--radius)',

@@ -166,7 +166,9 @@
 
 					{#if data.role === 'manager'}
 						<h1 class="text-lg text-site-manager mx-auto">[ Site Manager ]</h1>
-					{:else if data.role === 'admin' || data.role === 'owner'}
+					{:else if data.role === 'owner'}
+						<h1 class="text-lg text-owner mx-auto">[ Benefactor ]</h1>
+					{:else if data.role === 'admin'}
 						<h1 class="text-lg text-destructive mx-auto">[ Administrator ]</h1>
 					{:else if data.role === 'mod'}
 						<h1 class="text-lg text-destructive mx-auto">[ Moderator ]</h1>
