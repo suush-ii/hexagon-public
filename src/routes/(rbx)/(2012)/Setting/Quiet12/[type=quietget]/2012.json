@@ -21,5 +21,7 @@
 	"FLogRCCDataModelInit": "7",
 	"FLogRenderTextureCompositorBudget": "64",
 	"FLogReplicationDataLifetime": "0",
-	"FLogTaskSchedulerRun": "0"
+	"FLogTaskSchedulerRun": "0",
+	"PublishedProjectsPageUrl": "/ide/publish",
+	"StartPageUrl": "/ide/welcome"
 }
