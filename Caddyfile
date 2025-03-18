@@ -1,3 +1,14 @@
+{
+    # Required as a third-party handler
+    order ipinfo_free first
+    # Configure module
+    ipinfo_free_config {
+        url {$IPINFO_FREE_URL}
+        cron "10 16 * * *"
+        path /tmp/caddy_ipinfo
+    }
+}
+
 (hexagon_error) {
     handle_errors {
         root * /var/www/hexagon-backup
@@ -16,6 +27,8 @@
 }
 
 http://api.hexagon.pw, http://hexagon.pw, http://www.hexagon.pw {
+    ipinfo_free "{http.request.uri.query.ip}"
+
     log
     import hexagon_error
 
@@ -32,6 +45,7 @@ http://api.hexagon.pw, http://hexagon.pw, http://www.hexagon.pw {
         header_up Host "hexagon.pw"
         header_up Origin "https://hexagon.pw"
         header_up CF-Connecting-IP {header.cf-connecting-ip}
+        header_up Asn {ipinfo_free.asn}
     }
 
     uri path_regexp /{2,} /

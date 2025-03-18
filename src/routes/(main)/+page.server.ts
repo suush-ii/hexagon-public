@@ -13,6 +13,7 @@ import { RateLimiter } from 'sveltekit-rate-limiter/server'
 import verificationWords from '$lib/server/verificationwords'
 import { z } from 'zod'
 import { filter } from './admin/users/applications/queue'
+import { isBlacklistedAsn } from '$lib/server/blacklistedAsn'
 
 const uuid = z.string().uuid()
 
@@ -76,6 +77,10 @@ export const actions: Actions = {
 
 		if (config?.[0]?.registrationEnabled === false) {
 			return message(form, 'Registration disabled.')
+		}
+
+		if (isBlacklistedAsn(event.request.headers.get('Asn')) === true) {
+			return message(form, 'VPN not allowed.')
 		}
 
 		const keyDb = await db
@@ -233,6 +238,10 @@ export const actions: Actions = {
 
 		if (await limiter.isLimited(event)) {
 			return message(form, 'Your submitting too fast!')
+		}
+
+		if (isBlacklistedAsn(event.request.headers.get('Asn')) === true) {
+			return message(form, 'VPN not allowed.')
 		}
 
 		const currentApplication = await db.query.applicationsTable.findFirst({

@@ -40,7 +40,7 @@ services:
     networks:
       - hexagon-nw
   caddy:
-    image: caddy:2-alpine
+    build: './caddy'
     restart: always
     volumes:
       - type: bind
@@ -51,6 +51,8 @@ services:
       - '/home/sushi/hexagon-maintenance/build:/var/www/hexagon-backup'
     networks:
       - hexagon-nw
+    env_file:
+      - .env.caddy
   umami:
     image: docker.umami.is/umami-software/umami:postgresql-latest
     env_file:
