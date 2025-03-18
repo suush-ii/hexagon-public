@@ -27,7 +27,7 @@
 }
 
 http://api.hexagon.pw, http://hexagon.pw, http://www.hexagon.pw {
-    ipinfo_free "{http.request.uri.query.ip}"
+    ipinfo_free "{header.cf-connecting-ip}"
 
     log
     import hexagon_error
