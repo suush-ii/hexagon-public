@@ -1,12 +1,12 @@
 import { error, text, type RequestHandler } from '@sveltejs/kit'
 import script from './edit.lua?raw'
 import { env } from '$env/dynamic/private'
-import { createSign } from 'node:crypto'
 import { z } from 'zod'
 import { db } from '$lib/server/db'
 import { placesTable } from '$src/lib/server/schema'
 import { eq } from 'drizzle-orm'
 import { auth } from '$lib/server/lucia'
+import { signScript } from '$src/lib/server/signScript'
 
 const scriptNew: string = script.replaceAll('roblox.com', env.BASE_URL as string)
 
@@ -56,9 +56,5 @@ export const GET: RequestHandler = async (event) => {
 		scriptNewArgs = scriptNewArgs.replaceAll('{UploadUrl}', '')
 	}
 
-	const sign = createSign('SHA1')
-	sign.update('\r\n' + scriptNewArgs)
-	const signature = sign.sign(env.CLIENT_PRIVATE_KEY as string, 'base64')
-
-	return text('--rbxsig%' + signature + '%\r\n' + scriptNewArgs)
+	return text(await signScript(scriptNewArgs, event.request.headers.get('user-agent')))
 }

@@ -34,6 +34,14 @@ let luas = formatPath(
 	})
 )
 
+let oldLuas = formatPath(
+	import.meta.glob(['./common/2012L/*.lua'], {
+		eager: true,
+		query: '?raw',
+		import: 'default'
+	})
+)
+
 if (!building) {
 	luas = Object.fromEntries(
 		Object.entries(luas).map(([key, _corescript]) => {
@@ -50,6 +58,24 @@ if (!building) {
 			return [key, corescript]
 		})
 	)
+
+	oldLuas = Object.fromEntries(
+		Object.entries(oldLuas).map(([key, _corescript]) => {
+			let corescript: string = _corescript as string
+			corescript = corescript.replaceAll('www.roblox.com', env.BASE_URL as string)
+
+			corescript = `--rbxassetid%${key}%\r` + corescript
+			const sign = createSign('SHA1')
+			sign.update('\r\n' + corescript)
+
+			const signature = sign.sign(env.CLIENT_PRIVATE_KEY as string, 'base64')
+
+			corescript = '%' + signature + '%\r\n' + corescript
+			return [key, corescript]
+		})
+	)
+
+	luas = { ...luas, ...oldLuas }
 }
 
 function formatPath(glob: Record<string, unknown>) {

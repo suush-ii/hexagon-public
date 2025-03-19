@@ -70,7 +70,7 @@ pcall(function() game:GetService("Players"):SetBuildUserPermissionsUrl("https://
 
 workspace:SetPhysicsThrottleEnabled(true)
 
-local addedBuildTools = true
+local addedBuildTools = {addedBuildTools}
 local screenGui = game:GetService("CoreGui"):FindFirstChild("RobloxGui")
 
 local inStudio = false or false
@@ -86,9 +86,9 @@ function doVisit()
 			end
 		end
 	else
-		if false then
-			game:Load("")
-			pcall(function() visit:SetUploadUrl("") end)
+		if {Build} then
+			game:Load("http://www.roblox.com/asset/?id={PlaceId}")
+			pcall(function() visit:SetUploadUrl("{UploadUrl}") end)
 		else
 			pcall(function() visit:SetUploadUrl("") end)
 		end
@@ -134,7 +134,7 @@ end
 
 success, err = pcall(doVisit)
 
-if not inStudio and not addedBuildTools then
+if not addedBuildTools then
 	local playerName = Instance.new("StringValue")
 	playerName.Name = "PlayerName"
 	playerName.Value = player.Name
