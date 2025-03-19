@@ -232,6 +232,10 @@ export const GET: RequestHandler = async (event) => {
 		error(400, { success: false, message: 'Malformed ID.', data: {} })
 	}
 
+	const rbxmParse =
+		event.request.headers.get('user-agent') === '2013ox/WinInet' ||
+		event.request.headers.get('user-agent') === '2012ox/WinInet'
+
 	const assetId = result.data
 
 	const corescript = luas[assetId]
@@ -287,7 +291,7 @@ export const GET: RequestHandler = async (event) => {
 			existingAsset?.assetType === 'gears' ||
 			existingAsset?.assetType === 'heads' ||
 			existingAsset?.assetType === 'models') &&
-		event.request.headers.get('user-agent') === '2013ox/WinInet'
+		rbxmParse
 	) {
 		return parseRbxm(
 			`https://${s3Url}/${existingAsset.assetType}/` + existingAsset?.simpleasseturl,
@@ -456,7 +460,7 @@ export const GET: RequestHandler = async (event) => {
 				cachedAsset?.assettypeid == faceAssetId ||
 				cachedAsset?.assettypeid == gearAssetId ||
 				cachedAsset?.assettypeid == modelAssetId) &&
-			event.request.headers.get('user-agent') === '2013ox/WinInet'
+			rbxmParse
 		) {
 			return parseRbxm(url, assetId)
 		}
@@ -501,7 +505,7 @@ export const GET: RequestHandler = async (event) => {
 						data.assetTypeId === faceAssetId ||
 						data.assetTypeId === gearAssetId ||
 						data.assetTypeId === modelAssetId) &&
-					event.request.headers.get('user-agent') === '2013ox/WinInet'
+					rbxmParse
 				) {
 					return parseRbxm(url, assetId)
 				}
