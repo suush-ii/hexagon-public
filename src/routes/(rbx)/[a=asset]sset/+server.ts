@@ -131,38 +131,11 @@ async function parseMesh(url: string, filehash: string) {
 	)
 }
 
-function isRobloxFileBinary(buffer: ArrayBuffer) {
-	const view = new DataView(buffer)
-	const decoder = new TextDecoder('utf-8')
-
-	const headerBytes = new Uint8Array(buffer, 0, 7)
-	const header = decoder.decode(headerBytes)
-
-	if (header !== '<roblox') {
-		throw new Error('Not a valid RBXM file')
-	}
-
-	const eighthByte = view.getUint8(7)
-
-	return eighthByte === 0x21
-}
-
 async function parseRbxm(url: string, assetid: number) {
 	const assetResponse = await fetch(url, {
 		headers: { 'User-Agent': 'Roblox/WinInet' }
 	})
 	const assetData = await assetResponse.arrayBuffer()
-
-	if (!isRobloxFileBinary(assetData)) {
-		// IS XML
-		return new Response(assetData, {
-			status: 200,
-			headers: {
-				'Content-Type': 'application/octet-stream',
-				'Content-Disposition': `attachment; filename*=UTF-8''${assetid}`
-			}
-		})
-	}
 
 	const parsed = rbxmParse(Buffer.from(assetData))
 
