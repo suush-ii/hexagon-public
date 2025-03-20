@@ -3,7 +3,7 @@ import { error, redirect, type Actions } from '@sveltejs/kit'
 import { z } from 'zod'
 import { db } from '$lib/server/db'
 import { eq } from 'drizzle-orm'
-import { adminLogsTable, inventoryTable, usersTable } from '$src/lib/server/schema'
+import { adminLogsTable, inventoryTable, privateSellersTable } from '$src/lib/server/schema'
 import { fail, setError, superValidate } from 'sveltekit-superforms'
 import { moveSchema } from './schema'
 import { zod } from 'sveltekit-superforms/adapters'
@@ -95,6 +95,10 @@ export const actions: Actions = {
 			})
 			.where(eq(inventoryTable.inventoryid, Number(params.inventoryid)))
 
+		await db
+			.delete(privateSellersTable)
+			.where(eq(privateSellersTable.inventoryid, Number(params.inventoryid)))
+
 		await db.insert(adminLogsTable).values({
 			userid: locals.user.userid,
 			associatedid: item.owner.userid,
@@ -136,6 +140,10 @@ export const actions: Actions = {
 		await db
 			.delete(inventoryTable)
 			.where(eq(inventoryTable.inventoryid, Number(params.inventoryid)))
+
+		await db
+			.delete(privateSellersTable)
+			.where(eq(privateSellersTable.inventoryid, Number(params.inventoryid)))
 
 		await db.insert(adminLogsTable).values({
 			userid: locals.user.userid,
