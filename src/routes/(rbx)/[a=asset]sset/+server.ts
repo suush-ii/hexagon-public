@@ -64,13 +64,13 @@ if (!building) {
 			let corescript: string = _corescript as string
 			corescript = corescript.replaceAll('www.roblox.com', env.BASE_URL as string)
 
-			corescript = `--rbxassetid%${key}%\r` + corescript
+			corescript = `%${key}%\n` + corescript
 			const sign = createSign('SHA1')
-			sign.update('\r\n' + corescript)
+			sign.update(corescript)
 
 			const signature = sign.sign(env.CLIENT_PRIVATE_KEY as string, 'base64')
 
-			corescript = '%' + signature + '%\r\n' + corescript
+			corescript = '%' + signature + '%' + corescript
 			return [key, corescript]
 		})
 	)
