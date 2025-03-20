@@ -11,6 +11,7 @@ import { createSign } from 'node:crypto'
 import script from './join.lua?raw'
 import scriptDefault from './join_studio.lua?raw'
 import type { HexagonClans } from '$lib/types'
+import { signScript } from '$lib/server/signScript'
 
 const scriptNew: string = script.replaceAll('roblox.com', env.BASE_URL as string)
 const scriptNewDefault: string = scriptDefault.replaceAll('roblox.com', env.BASE_URL as string)
@@ -39,7 +40,7 @@ function clanToMembership(clan: HexagonClans | null) {
 	}
 }
 
-export const fallback: RequestHandler = async ({ url, locals }) => {
+export const fallback: RequestHandler = async ({ url, locals, request }) => {
 	const studioJoinResult = await studioJoinSchema.safeParseAsync({
 		userid: url.searchParams.get('UserID') ?? undefined,
 		port: url.searchParams.get('serverPort') ?? undefined,
@@ -47,8 +48,6 @@ export const fallback: RequestHandler = async ({ url, locals }) => {
 	})
 
 	if (studioJoinResult.success) {
-		console.log(studioJoinResult)
-
 		let scriptNewArgs = scriptNewDefault
 
 		scriptNewArgs = scriptNewArgs.replaceAll('{UserId}', studioJoinResult.data.userid.toString())
@@ -62,11 +61,7 @@ export const fallback: RequestHandler = async ({ url, locals }) => {
 			CharacterAppearance + '?userId=' + studioJoinResult.data.userid
 		)
 
-		const sign = createSign('SHA1')
-		sign.update('\r\n' + scriptNewArgs)
-		const signature = sign.sign(env.CLIENT_PRIVATE_KEY as string, 'base64')
-
-		return text('--rbxsig%' + signature + '%\r\n' + scriptNewArgs)
+		return text(await signScript(scriptNewArgs, request.headers.get('user-agent')))
 	}
 
 	const jobid = url.searchParams.get('jobid')
@@ -311,11 +306,7 @@ export const fallback: RequestHandler = async ({ url, locals }) => {
 				scriptNewArgs = scriptNewArgs.replaceAll(`{${key}}`, joinJson[key].toString())
 			}
 
-			const sign = createSign('SHA1')
-			sign.update('\r\n' + scriptNewArgs)
-			const signature = sign.sign(env.CLIENT_PRIVATE_KEY as string, 'base64')
-
-			return text('--rbxsig%' + signature + '%\r\n' + scriptNewArgs)
+			return text(await signScript(scriptNewArgs, request.headers.get('user-agent')))
 		}
 
 		const sign = createSign('SHA1')
