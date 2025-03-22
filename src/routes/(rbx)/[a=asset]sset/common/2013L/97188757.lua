@@ -641,7 +641,7 @@ end
 function Chat:UpdateChat(cPlayer, message)
 
 	-- Hexagon Brandan
-	local cSound = Instance.new("Sound", CoreGuiService)
+	local cSound = Instance.new("Sound", Player)
 	cSound.Name = "ChatNotify"
 	cSound.SoundId = "rbxassetid://29912"
 	cSound.PlayOnRemove = true
