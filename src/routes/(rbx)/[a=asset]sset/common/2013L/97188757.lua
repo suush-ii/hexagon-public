@@ -640,10 +640,18 @@ end
 -- The message is what the player chatted 
 function Chat:UpdateChat(cPlayer, message)
 
+
 	-- Hexagon Brandan
+	local SoundId = "29912"
+	-- Determine if player has a custom chat sound
+	local cCustomChatSound = cPlayer:FindFirstChild("Hx13ChatSound")
+	if cCustomChatSound ~= nil and cCustomChatSound.ClassName == "NumberValue" then
+		SoundId = tostring(cCustomChatSound.Value)
+	end
+	
 	local cSound = Instance.new("Sound", Camera)
 	cSound.Name = "ChatNotify"
-	cSound.SoundId = "rbxassetid://29912"
+	cSound.SoundId = "rbxassetid://"..SoundId
 	cSound.PlayOnRemove = true
 	cSound.Volume = 1
 	wait()
