@@ -528,7 +528,7 @@ end
 
 -- Scrolling
 function Chat:ScrollQueue(value)	 
-	--[[for i = 1, #self.MessageQueue do 
+	for i = 1, #self.MessageQueue do 
 		if self.MessageQueue[i] then 
 			for _, label in pairs(self.MessageQueue[i]) do 
 				local next = self.MessageQueue[i].Next
@@ -542,7 +542,7 @@ function Chat:ScrollQueue(value)
 				end 
 			end 
 		end 
-	end ]]
+	end
 end
 
 -- Handles the rendering of the text objects in their appropriate places
@@ -639,6 +639,16 @@ end
 -- When the playerChatted event fires 
 -- The message is what the player chatted 
 function Chat:UpdateChat(cPlayer, message)
+
+	-- Hexagon Brandan
+	local cSound = Instance.new("Sound", Camera)
+	cSound.Name = "ChatNotify"
+	cSound.SoundId = "rbxassetid://29912"
+	cSound.PlayOnRemove = true
+	cSound.Volume = 1
+	wait()
+	cSound:Remove()
+
 	local messageField = {
 							['Player'] = cPlayer,
 							['Message'] = message
@@ -1023,7 +1033,7 @@ function Chat:CreateChatBar()
 									BackgroundTransparency = 1.0;
 									ZIndex = 2.0;
 									Parent = self.Gui;
-									Text = "To chat click here or press \"/\" key";
+									Text = "To chat click here or press the \"/\" key";
 									TextColor3 = Color3.new(1, 1, 0.9);
 									Position = UDim2.new(0, 0, 1, 0);
 									TextXAlignment = Enum.TextXAlignment.Left;
