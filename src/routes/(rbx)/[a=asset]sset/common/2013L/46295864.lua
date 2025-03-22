@@ -1213,7 +1213,7 @@ if UserSettings then
 			settingsButton.Image = "rbxasset://textures/ui/SettingsButton.png"
 			settingsButton.BackgroundTransparency = 1
 			settingsButton.Active = false
-			settingsButton.Size = UDim2.new(0,54,0,46)
+			settingsButton.Size = UDim2.new(0,108,0,92)
 			settingsButton.Position = UDim2.new(0,2,0,50)
 			settingsButton.Parent = gui.BottomLeftControl
 		end
