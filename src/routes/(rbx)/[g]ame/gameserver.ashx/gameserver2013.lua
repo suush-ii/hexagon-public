@@ -626,13 +626,6 @@ CHAT LOG 4 HEXAGON BY BRANDAN
 game:GetService("Players").PlayerAdded:connect(function(player)
 	player.Chatted:connect(function(message)
 		logChatEvent(player, message)
-		local cS = Instance.new("Sound", workspace)
-		cS.Name = "ChatNotify"
-		cS.SoundId = "rbxassetid://29912"
-		cS.PlayOnRemove = true
-		cS.Volume = 1
-		wait()
-		cS:Remove()
 	end)
 end)
 
