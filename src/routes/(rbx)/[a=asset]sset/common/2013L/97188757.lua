@@ -321,7 +321,7 @@ local Chat = {
 												['Hobbies'] = {'/sc 6_8', true,
 																['Computers'] = { ['Building computers'] = true, ['Videogames'] = true, ['Coding'] = true, ['Hacking'] = true},
 																['The Internet'] = { ['lol. teh internets!'] = true, ['Watching vids'] = true},
-																 ['Dance'] = true, ['cSound'] = true, ['Listening to music'] = true, ['Arts and crafts'] = true,
+																 ['Dance'] = true, ['Gymnastics'] = true, ['Listening to music'] = true, ['Arts and crafts'] = true,
 																 ['Martial Arts'] = {['Karate'] = true, ['Judo'] = true, ['Taikwon Do'] = true, ['Wushu'] = true, ['Street fighting'] = true},
 																 ['Music lessons'] = {['Playing in my band'] = true, ['Playing piano'] = true, ['Playing guitar'] = true, 
         																				['Playing violin'] = true, ['Playing drums'] = true, ['Playing a weird instrument'] = true}
@@ -641,7 +641,7 @@ end
 function Chat:UpdateChat(cPlayer, message)
 
 	-- Hexagon Brandan
-	local cSound = Instance.new("Sound", workspace)
+	local cSound = Instance.new("Sound", CoreGuiService)
 	cSound.Name = "ChatNotify"
 	cSound.SoundId = "rbxassetid://29912"
 	cSound.PlayOnRemove = true
