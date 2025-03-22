@@ -651,6 +651,7 @@ function Chat:UpdateChat(cPlayer, message)
 	
 	local cSound = Instance.new("Sound", Camera)
 	cSound.Name = "ChatNotify"
+	cSound.Pitch = math.random(0.9, 1.1)
 	cSound.SoundId = "rbxassetid://"..SoundId
 	cSound.PlayOnRemove = true
 	cSound.Volume = 1
