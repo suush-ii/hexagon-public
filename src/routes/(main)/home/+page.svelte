@@ -33,8 +33,9 @@
 					userid={data.user.userid}
 					username={data.user.username}
 					disableoutline={true}
-					css="w-48 h-48 !rounded-none"
+					css="w-48 h-48 outline-dashed outline-blue-500 rounded-xl"
 				/>
+				<!-- someone should really make sense of that ^ later to actually use the user state, for now it is bloo -->
 			</a>
 
 			<h1 class="text-5xl leading-none tracking-tight font-semibold my-auto">
