@@ -760,7 +760,7 @@ function Chat:CreateMessage(cPlayer, message)
 		pLabel = Gui.Create'TextLabel' 
 					{
 						Name = pName;
-						Text = pName .. ":";
+						Text = "[" .. pName .. "]:";
 						TextColor3 = pColor;
 						FontSize = Chat.Configuration.FontSize;
 						TextXAlignment = Enum.TextXAlignment.Left;
