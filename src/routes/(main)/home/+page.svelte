@@ -27,7 +27,7 @@
 
 	<div class="container p-8 flex flex-col">
 		<div class="flex">
-			<a href="/users/{data.user.userid}/profile">
+			<a style="padding-right: 15px" href="/users/{data.user.userid}/profile">
 				<Avatar
 					state={'online'}
 					userid={data.user.userid}
