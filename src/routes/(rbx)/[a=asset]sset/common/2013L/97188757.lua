@@ -766,7 +766,6 @@ function Chat:CreateMessage(cPlayer, message)
 						TextXAlignment = Enum.TextXAlignment.Left;
 						TextYAlignment = Enum.TextYAlignment.Top;
 						Parent = self.RenderFrame;
-						Font = Enum.Font.SourceSans;
 						TextWrapped = false;
 						Size = UDim2.new(1, 0, 0.1, 0);
 						BackgroundTransparency = 1.0;
@@ -799,7 +798,6 @@ function Chat:CreateMessage(cPlayer, message)
 							Size = UDim2.new(1, 0, 0.5, 0);							
 							TextColor3 = Chat.Configuration.MessageColor;
 							FontSize = Chat.Configuration.FontSize;
-							Font = Enum.Font.SourceSans;
 							TextXAlignment = Enum.TextXAlignment.Left;	
 							TextYAlignment = Enum.TextYAlignment.Top;						
 							Text = ""; -- this is to stop when the engine reverts the swear words to default, which is button, ugh
