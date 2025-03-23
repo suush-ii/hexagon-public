@@ -571,24 +571,24 @@ local function createGameMainMenu(baseZIndex, shield)
 	stopRecordButton.Visible = false
 	stopRecordButton.Parent = gui
 	
-	local reportAbuseButton = createTextButton("Cry to Mods",Enum.ButtonStyle.RobloxButton,Enum.FontSize.Size18,UDim2.new(0,164,0,50),UDim2.new(0,82,0,306))
+	local reportAbuseButton = createTextButton("Report Abuse",Enum.ButtonStyle.RobloxButton,Enum.FontSize.Size18,UDim2.new(0,164,0,50),UDim2.new(0,82,0,306))
 	reportAbuseButton.Name = "ReportAbuseButton"
 	reportAbuseButton.ZIndex = baseZIndex + 4
 	reportAbuseButton.Parent = gameMainMenuFrame
 	
-	local leaveGameButton = createTextButton("Rage Quit",Enum.ButtonStyle.RobloxButton,Enum.FontSize.Size24,UDim2.new(0,340,0,50),UDim2.new(0,82,0,358))
+	local leaveGameButton = createTextButton("Quit",Enum.ButtonStyle.RobloxButton,Enum.FontSize.Size24,UDim2.new(0,340,0,50),UDim2.new(0,82,0,358))
 	leaveGameButton.Name = "LeaveGameButton"
 	leaveGameButton.ZIndex = baseZIndex + 4
 	leaveGameButton.Parent = gameMainMenuFrame
 	
-	local resumeGameButton = createTextButton("RESUME THE MAYHEM",Enum.ButtonStyle.RobloxButtonDefault,Enum.FontSize.Size24,UDim2.new(0,340,0,50),UDim2.new(0,82,0,54))
+	local resumeGameButton = createTextButton("Back to Game",Enum.ButtonStyle.RobloxButtonDefault,Enum.FontSize.Size24,UDim2.new(0,340,0,50),UDim2.new(0,82,0,54))
 	resumeGameButton.Name = "resumeGameButton"
 	resumeGameButton.ZIndex = baseZIndex + 4
 	resumeGameButton.Parent = gameMainMenuFrame
 	resumeGameButton.Modal = true
 	resumeGameButton.MouseButton1Click:connect(function() resumeGameFunction(shield) end)
 	
-	local gameSettingsButton = createTextButton("Settings Tuah",Enum.ButtonStyle.RobloxButton,Enum.FontSize.Size24,UDim2.new(0,340,0,50),UDim2.new(0,82,0,156))
+	local gameSettingsButton = createTextButton("Game Settings",Enum.ButtonStyle.RobloxButton,Enum.FontSize.Size24,UDim2.new(0,340,0,50),UDim2.new(0,82,0,156))
 	gameSettingsButton.Name = "SettingsButton"
 	gameSettingsButton.ZIndex = baseZIndex + 4
 	gameSettingsButton.Parent = gameMainMenuFrame
