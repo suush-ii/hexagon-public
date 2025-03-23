@@ -13,6 +13,7 @@ import { getUserState } from '$lib/server/userState'
 import { imageSql } from '$lib/server/games/getImage'
 import { alias } from 'drizzle-orm/pg-core'
 import { activeSql } from '$lib/server/games/activeSql'
+import { error } from '@sveltejs/kit'
 
 const welcomeMessages = [
 	'Welkom',
@@ -141,7 +142,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 
 	const sender = alias(usersTable, 'sender')
 
-	const user = await db
+	const friendMap = await db
 		.select({
 			username: sender.username,
 			userid: sender.userid,
@@ -161,7 +162,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 		.limit(9)
 		.orderBy(desc(sender.lastactivetime), desc(sender.activegame))
 
-	const friends = user.map((request) => {
+	const friends = friendMap.map((request) => {
 		const status = getUserState(
 			request.lastactivetime,
 			request.activegame,
@@ -172,10 +173,43 @@ export const load: PageServerLoad = async ({ locals }) => {
 		return { ...request, status }
 	})
 
+	const user = await db.query.usersTable.findFirst({
+		columns: {
+			username: true,
+			userid: true,
+			lastactivetime: true,
+			joindate: true,
+			activegame: true,
+			role: true,
+			blurb: true,
+			sitebadges: true,
+			wipeouts: true,
+			knockouts: true,
+			studiopresencelocation: true,
+			studiopresenceping: true,
+			registeredclan: true,
+			gamepresenceping: true
+		},
+		where: eq(usersTable.userid, locals.user.userid)
+	})
+
+	if (!user) {
+		return error(404, { success: false, message: 'User not found' })
+	}
+
+	const status = getUserState(
+		user.lastactivetime,
+		user.activegame,
+		user.studiopresencelocation,
+		user.studiopresenceping,
+		user.gamepresenceping
+	)
+
 	return {
 		welcomeMessage: welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)],
 		recentlyPlayed,
 		friendCount: friendCount[0].count,
-		friends
+		friends,
+		status
 	}
 }

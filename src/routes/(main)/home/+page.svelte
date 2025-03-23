@@ -27,15 +27,13 @@
 
 	<div class="container p-8 flex flex-col">
 		<div class="flex">
-			<a style="padding-right: 15px" href="/users/{data.user.userid}/profile">
+			<a class="pr-[15px]" href="/users/{data.user.userid}/profile">
 				<Avatar
-					state={'online'}
+					state={data.status}
 					userid={data.user.userid}
 					username={data.user.username}
-					disableoutline={true}
-					css="w-48 h-48 outline-dashed outline-blue-500 rounded-xl"
+					css="w-48 h-48 !rounded-none"
 				/>
-				<!-- someone should really make sense of that ^ later to actually use the user state, for now it is bloo -->
 			</a>
 
 			<h1 class="text-5xl leading-none tracking-tight font-semibold my-auto">
