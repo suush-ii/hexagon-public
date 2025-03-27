@@ -79,6 +79,10 @@ export const actions: Actions = {
 			return message(form, 'Registration disabled.')
 		}
 
+		if (await limiter.isLimited(event)) {
+			return message(form, 'Your submitting too fast!')
+		}
+
 		if (isBlacklistedAsn(event.request.headers.get('Asn')) === true) {
 			return message(form, 'VPN not allowed.')
 		}
@@ -97,6 +101,18 @@ export const actions: Actions = {
 			if (keyDb?.[0].useable === false) {
 				return setError(form, 'key', 'Key already used!')
 			}
+		}
+
+		const currentAccount = await db.query.usersTable.findFirst({
+			where: or(
+				eq(usersTable.registerip, event.getClientAddress()),
+				eq(usersTable.lastip, event.getClientAddress())
+			),
+			columns: { userid: true }
+		})
+
+		if (currentAccount) {
+			return message(form, 'Your ineligible to register.')
 		}
 
 		let application
