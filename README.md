@@ -4,6 +4,8 @@ Setup env using .env.example if you don't have arbiter set DISABLE_RENDER to tru
 
 To setup dev environment easily I made a docker container for this.
 
+Probably shouldn't use this to create a revival but it's a good resource to learn things from. :)
+
 ```bash
 docker compose -f compose_dev.yml build
 docker compose -f compose_dev.yml up
